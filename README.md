@@ -23,8 +23,6 @@
 
 NuExpansionHunter builds on [Illumina ExpansionHunter v5.0.0](https://github.com/Illumina/ExpansionHunter/tree/v5.0.0). It retains EH's genotyping logic and reduces work in mate retrieval, graph alignment, seed lookup, and BAM compression. An optional memory-mapped catalog cache lets samples reuse graphs, metadata, and indexes prepared once for the same catalog and reference. Read evidence, mate caches, and alignment workspaces remain separate for each sample.
 
-The previous version passed full HG002 output comparisons at 4, 8, 16, and 32 cores. The new catalog-cache and interval-query changes have passed unit tests, subset output checks, and a complete HG002 output comparison at 32 cores. The latest timings use saved original-EH measurements; see [benchmarks](#benchmarks) for results and the validation scope at each core count.
-
 > [!IMPORTANT]
 > Use **PCR-free whole-genome sequencing data**, the **reference used to align the reads**, and a **catalog for that assembly**.
 
@@ -212,105 +210,87 @@ See [JsonWriter.cpp](ehunter/io/JsonWriter.cpp), [VcfHeader.cpp](ehunter/io/VcfH
 
 ## Implementation Status and Roadmap <sup><sub>[↑ Contents](#contents)</sub></sup>
 
-NuExpansionHunter separates reusable catalog data from the state collected for each sample. The optional cache stores the reusable data once. Without a cache, the program builds it during each run.
+NuExpansionHunter retains EH's genotyping model and reduces repeated catalog construction, seed lookup, alignment memory, and output overhead.
 
-Use the [catalog preparation command](#catalog-cache) to create the cache, then supply `--catalog-cache` for subsequent samples. Reuse requires the same catalog, reference, contig dictionary, and index settings.
+### MMAP catalog reuse
 
-The archive holds graphs, sequences and other strings, locus and variant metadata, exact 10-mer membership sets, 14-mer path indexes, and interval indexes. Samples read these arrays directly from a read-only mapping instead of rebuilding them. Evidence, mate caches, alignment workspaces, statistics, and genotypes remain sample-specific. Cache loading checks input fingerprints, the builder source fingerprint, layout, and record checksums; caches must be rebuilt after a source change. Preparation publishes the file only after writing it successfully.
+Graphs, sequences, metadata, 10/14-mer indexes, and interval indexes are prepared once and stored in an offset-based archive. Each sample reads these arrays directly through a read-only **memory map (MMAP)**, without reconstructing the catalog's strings, paths, and indexes as heap objects. Read evidence, mate caches, and alignment workspaces remain separate for each sample.
 
-Memory mapping does not impose a fixed RAM limit. Accessed file pages can contribute to resident memory, alongside each sample's mutable state. A larger catalog can therefore increase both cache size and peak RSS. Cache validation also takes time: input fingerprinting and record checksums are part of each sample's loading cost.
+The archive can be reused across samples with the same catalog, reference, contig dictionary, index settings, and builder version. MMAP avoids repeated construction and allows the operating system to manage file-backed pages; it does not impose a fixed RAM limit. See [cache usage](#catalog-cache) and [implementation](ehunter/io/PreparedCatalog.cpp).
 
-For coordinate-sorted reads, the current-read lookup uses an interval sweep. Remote mates still use the complete interval index, including off-target regions. A read that moves backward in coordinate order uses the full query path. The sweep does not evict locus evidence.
+### Compact, exact k-mer lookup
 
-The latest changes passed the EH unit suite, all 30 bundled GraphTools tests, and exact output comparisons on the example and the 10,000-read-pair HG002 subset with all 174,293 loci. VCF and JSON matched byte for byte; BAM headers and all record fields, tags, and duplicate counts matched after ignoring record order.
+The 10-mer orientation index stores membership keys only. The 14-mer alignment index stores path coordinates and node IDs in flat arrays, with short single-node paths packed into two 16-bit fields. Rolling two-bit encoding avoids re-encoding overlapping read substrings, and path views construct only the requested paths. All matching paths and their multiplicities are retained. See [KmerIndex.cpp](ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/KmerIndex.cpp).
 
-The latest full HG002 runs measured each core count once and compared timing and memory with the saved original-EH results. The 32-core run passed a complete output comparison with retained original-EH outputs. The new 4-, 8-, and 16-core runs completed timing and BAM integrity checks without full-output comparisons. Their validation scope is reported in the benchmark below. The target of less than 300 GB RAM for a 5-million-locus catalog has not been measured.
+### Coordinate-ordered interval lookup
 
-NuExpansionHunter collects reads, aligns them to locus graphs, and estimates repeat sizes. Seeking and streaming use separate read-collection paths; the full-WGS benchmark exercises streaming. Click a filename to open its implementation.
+A sweep advances through sorted extraction intervals as reads move along the genome, checking the active intervals for each read. Remote mates and backward-moving reads still use the full interval tree, including off-target regions. The sweep preserves matching order and duplicates and does not discard locus evidence. See [AnalyzerFinder.cpp](ehunter/sample/AnalyzerFinder.cpp).
+
+### Smaller alignment state and fewer read copies
+
+The affine-gap aligner reuses temporary score rows and stores insertion traceback decisions as one bit per cell, preserving the original scores and traceback. Streaming queues are allocated on activation and released when empty; recovered mates transfer their sequence buffers instead of copying them. See [alignment storage](ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrixVectorized.hh) and [streaming collection](ehunter/sample/HtsStreamingSampleAnalysis.cpp).
+
+### Batched mate retrieval and parallel BAM output
+
+Seeking mode batches indexed mate-region queries and restores the original read-pair order. Realigned BAM output uses a writer queue and parallel BGZF compression, with write and close failures propagated to the caller. See [mate retrieval](ehunter/sample/MateExtractor.cpp) and [BAM output](ehunter/io/BamletWriter.cpp).
+
+### Processing flow
 
 ```mermaid
 flowchart TB
-    INPUT["Catalog, reference, and BAM contig dictionary"]
-    PREP["Prepare once: graphs, strings, metadata,<br/>10/14-mer indexes, and interval indexes"]
-    CACHE[("Read-only catalog archive")]
-    MAP["Per sample: validate and map archive"]
-    BUILD["Without cache: build catalog data per sample"]
-    SEEK["Seeking: collect reads and batch mate queries<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/sample/HtsSeekingSampleAnalysis.cpp'>HtsSeekingSampleAnalysis.cpp</a><br/><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/sample/MateExtractor.cpp'>MateExtractor.cpp</a></small>"]
-    STREAM["Streaming: one pass through reads<br/>Current reads: coordinate sweep<br/>Remote mates and off-targets: full interval query"]
-    ALIGN["Seed and align reads to locus graphs<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/GappedAligner.cpp'>GappedAligner.cpp</a><br/><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/locus/LocusAligner.cpp'>LocusAligner.cpp</a></small>"]
-    GT["Estimate repeat sizes and confidence intervals<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/genotyping/StrGenotyper.cpp'>StrGenotyper.cpp</a></small>"]
-    CALLS["VCF and JSON calls<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/io/VcfWriter.cpp'>VcfWriter.cpp</a> · <a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/io/JsonWriter.cpp'>JsonWriter.cpp</a></small>"]
-    BAM["Parallel BGZF realigned-read output<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/io/BamletWriter.cpp'>BamletWriter.cpp</a></small>"]
-    INPUT -->|"Prepare once"| PREP
-    PREP --> CACHE --> MAP
+    INPUT["Catalog + reference + contig dictionary"]
+    PREP["Prepare once<br/>Graphs, metadata, exact seed indexes,<br/>interval tree and sorted intervals"]
+    CACHE[("MMAP catalog archive")]
+    MAP["Each sample: read static data through MMAP"]
+    BUILD["Without cache: construct static data per run"]
+    READS["Sample BAM / CRAM"]
+    SEEK["Seeking<br/>Batch indexed mate queries"]
+    STREAM["Streaming<br/>Sweep current-read intervals<br/>Query full tree for remote mates"]
+    ALIGN["Exact seed lookup + graph alignment<br/>Rolling keys, path views, compact DP state"]
+    EVIDENCE["Per-sample evidence and genotyping"]
+    CALLS["VCF + JSON"]
+    BAM["Queued BAM output<br/>Parallel BGZF compression"]
+    INPUT --> PREP --> CACHE --> MAP
     INPUT -->|"No cache"| BUILD
     MAP --> SEEK
     MAP --> STREAM
     BUILD --> SEEK
     BUILD --> STREAM
+    READS --> SEEK
+    READS --> STREAM
     SEEK --> ALIGN
     STREAM --> ALIGN
-    ALIGN --> GT --> CALLS
+    ALIGN --> EVIDENCE --> CALLS
     ALIGN --> BAM
-
-    classDef input fill:#f0f5f1,stroke:#789482,color:#243c30
-    classDef stage fill:#f5f3fa,stroke:#9383ad,color:#382e4b
+    classDef reusable fill:#f0f5f1,stroke:#789482,color:#243c30
+    classDef sample fill:#f5f3fa,stroke:#9383ad,color:#382e4b
     classDef output fill:#f1f5fa,stroke:#7f96ae,color:#263d55
-    class INPUT,CACHE input
-    class PREP,MAP,BUILD,SEEK,STREAM,ALIGN,GT stage
+    class INPUT,PREP,CACHE reusable
+    class MAP,BUILD,READS,SEEK,STREAM,ALIGN,EVIDENCE sample
     class CALLS,BAM output
 ```
 
-| Component | Status | What it does |
-| :--- | :--- | :--- |
-| Batched mate retrieval (seeking) | Implemented; output checks passed | Reads requested intervals together and matches mates by fragment ID and mate number |
-| Compact affine-alignment state | Implemented; differential and output checks passed | Reuses match and insertion-score storage and keeps the exact insertion traceback predicate as one bit per cell |
-| Rolling encoded seed lookup | Implemented; differential and output checks passed | Avoids repeated substring encoding and materializes only the selected graph path |
-| Demand-allocated streaming queues | Implemented; queue and output checks passed | Allocates a per-locus read-pair queue only while that locus is active |
-| Streaming mate ownership transfer | Implemented; output checks passed | Moves cached mates out of their container nodes without copying sequence buffers |
-| Parallel BGZF output | Implemented; writer and full-WGS checks passed | Compresses the realigned-read BAM in parallel and reports asynchronous write or close failures |
-| Initialized BAM padding | Implemented; writer reproducibility checks passed | Initializes packed sequence bytes, including unused bits in odd-length reads |
-| Memory-mapped catalog | Implemented; unit, subset, and 32-core full HG002 output checks passed | Reads static graph, string, metadata, seed, and interval arrays directly from a reusable mapping |
-| Compact seed storage | Implemented; differential and subset output checks passed | Stores exact 10-mer membership keys and 14-mer path data in flat arrays; materializes a path when needed |
-| Coordinate interval sweep | Implemented; query, subset, and 32-core full HG002 output checks passed | Uses read order for current-read lookup and retains full lookup for remote mates and off-target regions |
+### Roadmap
 
-<details>
-<summary><strong>Inside NuExpansionHunter</strong></summary>
-
-- **Catalog reuse:** [PreparedCatalog.cpp](ehunter/io/PreparedCatalog.cpp) writes the static catalog and indexes into one archive. [MappedData.hh](ehunter/thirdparty/graph-tools-master-f421f4c/include/graphutils/MappedData.hh) provides views into its arrays and strings. Locus, graph, and variant handles retain the mapping owner so their data stays valid while in use. Each sample still allocates its own evidence and alignment state.
-- **Interval queries:** [AnalyzerFinder.cpp](ehunter/sample/AnalyzerFinder.cpp) reads the prepared interval tree and sorted interval arrays. Its sweep tracks current-read overlap; mate queries use the complete tree. [GenomeMask.cpp](ehunter/sample/GenomeMask.cpp) reads the prepared coarse mask. Target and off-target regions remain in both indexes.
-- **Read retrieval (seeking):** `recoverMates()` in [HtsSeekingSampleAnalysis.cpp](ehunter/sample/HtsSeekingSampleAnalysis.cpp) collects mate queries and calls `MateExtractor::extractMates()` in [MateExtractor.cpp](ehunter/sample/MateExtractor.cpp). The method uses `sam_itr_regarray()` to query the union of the original intervals. Matching mates follow input-file order and are returned in the original read-pair order.
-- **Streaming collection:** [HtsStreamingSampleAnalysis.cpp](ehunter/sample/HtsStreamingSampleAnalysis.cpp) transfers a cached mate by extracting its container node. [HtsStreamingReadPairQueue.cpp](ehunter/sample/HtsStreamingReadPairQueue.cpp) constructs a locus queue on activation and releases it when empty.
-- **Seed lookup:** [OrientationPredictor.cpp](ehunter/alignment/OrientationPredictor.cpp) and [GappedAligner.cpp](ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/GappedAligner.cpp) carry rolling two-bit k-mers. [KmerIndex.cpp](ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/KmerIndex.cpp) stores membership keys and path records in flat arrays, exposes encoded lookup, and materializes only the selected path. Mapped indexes do not retain the construction maps.
-- **Graph alignment:** [AffineAlignMatrixVectorized.hh](ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrixVectorized.hh) keeps temporary match and insertion scores in reusable rows. It retains the historical insertion traceback decision in a compact bit matrix; deletion and primary score matrices remain unchanged.
-- **BAM output:** [BamletWriter.cpp](ehunter/io/BamletWriter.cpp) initializes packed sequence bytes, starts HTS compression workers before the asynchronous writer, drains queued records after a failure, and explicitly joins and closes the writer so errors reach the main path. The pinned HTSlib patches make setup rollback and asynchronous queue cleanup deterministic.
-
-</details>
-
-| Area | Next work |
-| :--- | :--- |
-| Benchmark confidence | Repeat paired measurements to quantify run-to-run and node-to-node variation |
-| Additional validation | Add samples, sequencing datasets, catalogs, and large-expansion cases |
-| Large catalogs | Measure preparation cost, per-sample time, and memory at roughly 5 million loci; the single-process target is below 300 GB RAM |
-| Builds | Test additional compilers and platforms and simplify portable source builds |
-| Review | Complete the pending comprehensive human audit |
+- Reduce per-sample processing time and investigate the 8-core performance difference.
+- Further compact seed and path storage; target less than 300 GB RAM for a 5-million-locus catalog without slower sample processing. This scale has not yet been tested.
+- Extend output-equivalence checks to more samples, catalogs, and large expansions.
+- Improve build portability and complete the human code audit.
 
 <a id="benchmarks"></a>
 
 ## Benchmarks <sup><sub>[↑ Contents](#contents)</sub></sup>
 
-The latest MMAP version processed the complete human **HG002** WGS dataset: **830,172,418 primary reads (415,086,209 pairs)**, using the Illumina **174,293-locus** catalog. Each core count ran once. The original **Illumina ExpansionHunter v5.0.0** timings and memory measurements come from the earlier benchmark; the original was not rerun. CPU-hours are allocated physical cores × wall time.
+We benchmarked NuExpansionHunter on the complete **HG002 Illumina PCR-free WGS dataset** using the **174,293-locus Illumina hg38 catalog** on Brown Oscar.
 
-| Physical cores | Historical original → latest MMAP | Speedup | Allocated CPU-hours saved | Peak RSS, original → MMAP | Latest full output comparison |
-| ---: | ---: | ---: | ---: | ---: | :--- |
-| 4 | 3295.60 → 2240.79 s | 1.471× | 32.01% | 15.338 → 15.196 GiB (−0.93%) | Not performed |
-| 8 | 1703.73 → 1348.26 s | 1.264× | 20.86% | 15.681 → 15.194 GiB (−3.10%) | Not performed |
-| 16 | 1248.94 → 703.92 s | 1.774× | 43.64% | 29.584 → 15.207 GiB (−48.60%) | Not performed |
-| 32 | 1064.28 → 489.48 s | 2.174× | 54.01% | 35.956 → 15.215 GiB (−57.68%) | **Output identical*** |
+| Physical cores | Runtime, original EH → NuExpansionHunter | Speedup | CPU-hours saved | Peak RSS, original → optimized |
+| ---: | ---: | ---: | ---: | ---: |
+| 4 | 3295.60 → 2240.79 s | 1.471× | 32.01% | 15.338 → 15.196 GiB |
+| 8 | 1703.73 → 1348.26 s | 1.264× | 20.86% | 15.681 → 15.194 GiB |
+| 16 | 1248.94 → 703.92 s | 1.774× | 43.64% | 29.584 → 15.207 GiB |
+| 32 | 1064.28 → 489.48 s | 2.174× | 54.01% | 35.956 → 15.215 GiB |
 
-\* At 32 cores, VCF and JSON were byte-identical to the retained original outputs. The BAM header and all **74,565,578** records, fields, tags, and duplicate counts matched after ignoring record order. The latest 4/8/16-core runs had BAM integrity checks but no complete output comparison. The previous optimized version passed full output comparisons at all four core counts.
-
-One-time cache preparation took **490.75 seconds** and is excluded from these per-sample times. These comparisons use historical baselines across separate runs and nodes. The latest 8-core run was 7.7% slower than the previous optimized observation, so the results do not show a uniform additional speed improvement from MMAP. See [benchmark details](BENCHMARKS.md) for phase timings, preparation cost, CPU time, RAM, and the historical paired results.
+The 32-core full HG002 output matched original EH: VCF/JSON byte-identical and BAM content identical ignoring record order. Original timings are from earlier runs; one-time cache preparation is excluded. See [benchmark methods and validation](BENCHMARKS.md) for details.
 
 <a id="ai-use-and-review"></a>
 
