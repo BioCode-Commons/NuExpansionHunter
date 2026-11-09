@@ -248,14 +248,14 @@ flowchart TB
 
 We compare NuExpansionHunter with **Illumina ExpansionHunter v5.0.0** on the complete human **HG002** WGS dataset: **830,172,418 primary reads (415,086,209 pairs)**. Each row is one paired baseline/candidate run on the same node; CPU-hours are allocated physical cores × wall time.
 
-| Physical cores | Original → NuExpansionHunter | Speedup | Allocated CPU-hours saved | Peak RSS change | Output equivalence |
+| Physical cores | Original → NuExpansionHunter | Speedup | Allocated CPU-hours saved | Peak RSS, original → NuExpansionHunter | Output identical* |
 | ---: | ---: | ---: | ---: | ---: | :--- |
-| 4 | 3295.60 → 2313.77 s | 1.424× | 29.79% | +2.12% | Passed |
-| 8 | 1703.73 → 1251.67 s | 1.361× | 26.53% | −0.04% | Passed |
-| 16 | 1248.94 → 765.53 s | 1.631× | 38.71% | −46.99% | Passed |
-| 32 | 1064.28 → 596.87 s | 1.783× | 43.92% | −56.33% | Passed |
+| 4 | 3295.60 → 2313.77 s | 1.424× | 29.79% | 15.338 → 15.664 GiB (+2.12%) | Yes |
+| 8 | 1703.73 → 1251.67 s | 1.361× | 26.53% | 15.681 → 15.674 GiB (−0.04%) | Yes |
+| 16 | 1248.94 → 765.53 s | 1.631× | 38.71% | 29.584 → 15.683 GiB (−46.99%) | Yes |
+| 32 | 1064.28 → 596.87 s | 1.783× | 43.92% | 35.956 → 15.701 GiB (−56.33%) | Yes |
 
-At every core count, VCF and JSON were byte-identical; the BAM header and all **74,565,578** records, fields, tags, and duplicate counts matched after canonicalizing record order. These are single paired runs on one sample and catalog, not medians or confidence intervals. See [benchmark details](BENCHMARKS.md) for methods, CPU time, RAM, and limitations.
+\* VCF and JSON were byte-identical. The BAM header and all **74,565,578** records, fields, tags, and duplicate counts were identical after ignoring record order. These are single paired runs on one sample and catalog, not medians or confidence intervals. See [benchmark details](BENCHMARKS.md) for methods, CPU time, RAM, and limitations.
 
 <a id="ai-use-and-review"></a>
 

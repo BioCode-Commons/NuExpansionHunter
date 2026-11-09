@@ -43,12 +43,14 @@ The full-WGS benchmark uses streaming mode, so it does not measure the seeking-o
 
 EH wall time covers ExpansionHunter execution only. Output comparison is separate. Allocated CPU-hours are physical cores × wall hours; process CPU-hours are GNU `time` user + system CPU seconds divided by 3600.
 
-| Cores | EH wall time, original → candidate | Speedup | Allocated CPU-hours, original → candidate | CPU-hour saving | Process CPU-hours, original → candidate | Peak RSS, original → candidate | Output check |
+| Cores | EH wall time, original → candidate | Speedup | Allocated CPU-hours, original → candidate | CPU-hour saving | Process CPU-hours, original → candidate | Peak RSS, original → candidate | Output identical* |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |
-| 4 | 3295.602 → 2313.767 s | **1.424×** | 3.662 → 2.571 | **29.79%** | 3.390 → 2.347 | 15.338 → 15.664 GiB (+2.12%) | Passed |
-| 8 | 1703.735 → 1251.675 s | **1.361×** | 3.786 → 2.781 | **26.53%** | 3.304 → 2.366 | 15.681 → 15.674 GiB (−0.04%) | Passed |
-| 16 | 1248.945 → 765.532 s | **1.631×** | 5.551 → 3.402 | **38.71%** | 3.865 → 2.356 | 29.584 → 15.683 GiB (−46.99%) | Passed |
-| 32 | 1064.277 → 596.874 s | **1.783×** | 9.460 → 5.306 | **43.92%** | 4.126 → 2.499 | 35.956 → 15.701 GiB (−56.33%) | Passed |
+| 4 | 3295.602 → 2313.767 s | **1.424×** | 3.662 → 2.571 | **29.79%** | 3.390 → 2.347 | 15.338 → 15.664 GiB (+2.12%) | Yes |
+| 8 | 1703.735 → 1251.675 s | **1.361×** | 3.786 → 2.781 | **26.53%** | 3.304 → 2.366 | 15.681 → 15.674 GiB (−0.04%) | Yes |
+| 16 | 1248.945 → 765.532 s | **1.631×** | 5.551 → 3.402 | **38.71%** | 3.865 → 2.356 | 29.584 → 15.683 GiB (−46.99%) | Yes |
+| 32 | 1064.277 → 596.874 s | **1.783×** | 9.460 → 5.306 | **43.92%** | 4.126 → 2.499 | 35.956 → 15.701 GiB (−56.33%) | Yes |
+
+\* VCF and JSON were byte-identical. BAM headers and records were identical after ignoring record order, as described below.
 
 The speedup is not monotonic between 4 and 8 cores. In this single pair, the original scaled by 1.934× from 4 to 8 cores, while NuExpansionHunter scaled by 1.849×. The 16- and 32-core runs also show much lower peak memory with compact alignment state and demand-allocated locus queues. Repeated runs are needed before attributing the 4-to-8-core difference to a specific cause.
 
