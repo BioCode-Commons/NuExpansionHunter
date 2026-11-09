@@ -85,7 +85,7 @@ public:
 private:
     struct LocusAnalyzerQueue
     {
-        std::queue<ReadPair> queue;
+        boost::optional<std::queue<ReadPair>> queue;
 
         /// Queue mutex is used to synchronize between the two queue interaction threads (reader and writer)
         std::mutex mutex;

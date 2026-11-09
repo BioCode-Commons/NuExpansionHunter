@@ -1,0 +1,409 @@
+--- a/thread_pool.c
++++ b/thread_pool.c
+@@ -43,6 +43,7 @@
+
+ static void hts_tpool_process_detach_locked(hts_tpool *p,
+                                             hts_tpool_process *q);
++static void hts_tpool_process_shutdown_locked(hts_tpool_process *q);
+
+ //#define DEBUG
+
+@@ -84,7 +85,16 @@
+  */
+ static int hts_tpool_add_result(hts_tpool_job *j, void *data) {
+     hts_tpool_process *q = j->q;
+-    hts_tpool_result *r;
++    hts_tpool_result *r = q->in_only ? NULL : malloc(sizeof(*r));
++    if (!q->in_only && !r) {
++        /* Callback ownership is retired before n_processing reaches zero. */
++        if (j->result_cleanup) j->result_cleanup(data);
++        pthread_mutex_lock(&q->p->pool_m);
++        if (--q->n_processing == 0) pthread_cond_signal(&q->none_processing_c);
++        hts_tpool_process_shutdown_locked(q);
++        pthread_mutex_unlock(&q->p->pool_m);
++        return -1;
++    }
+
+     pthread_mutex_lock(&q->p->pool_m);
+
+@@ -98,12 +108,6 @@
+     if (q->in_only) {
+         pthread_mutex_unlock(&q->p->pool_m);
+         return 0;
+-    }
+-
+-    if (!(r = malloc(sizeof(*r)))) {
+-        pthread_mutex_unlock(&q->p->pool_m);
+-        hts_tpool_process_shutdown(q);
+-        return -1;
+     }
+
+     r->next = NULL;
+@@ -527,7 +531,7 @@
+             // Iterate over queues, finding one with jobs and also
+             // room to put the result.
+             //if (q && q->input_head && !hts_tpool_process_output_full(q)) {
+-            if (q && q->input_head && q->qsize - q->n_output > p->tsize - p->nwaiting) {
++            if (q && !q->shutdown && q->input_head && q->qsize - q->n_output > p->tsize - p->nwaiting) {
+                 //printf("Work\n");
+                 work_to_do = 1;
+                 break;
+@@ -572,6 +576,7 @@
+         while (q->input_head && q->qsize - q->n_output > q->n_processing) {
+             if (p->shutdown)
+                 goto shutdown;
++            if (q->shutdown) break;
+
+             j = q->input_head;
+             assert(j->p == p);
+@@ -599,8 +604,11 @@
+             DBG_OUT(stderr, "%d: Processing queue %p, serial %"PRId64"\n",
+                     worker_id(j->p), q, j->serial);
+
+-            if (hts_tpool_add_result(j, j->func(j->arg)) < 0)
+-                goto err;
++            if (hts_tpool_add_result(j, j->func(j->arg)) < 0) {
++                free(j);
++                pthread_mutex_lock(&p->pool_m);
++                break; /* release this worker's process reference below */
++            }
+             //memset(j, 0xbb, sizeof(*j));
+             free(j);
+
+@@ -623,11 +631,6 @@
+ #endif
+     return NULL;
+
+- err:
+-#ifdef DEBUG
+-    fprintf(stderr, "%d: Failed to add result\n", worker_id(p));
+-#endif
+-    return NULL;
+ }
+
+ static void wake_next_worker(hts_tpool_process *q, int locked) {
+@@ -911,19 +914,21 @@
+
+     // Wait for n_input and n_processing to hit zero.
+     while (q->n_input || q->n_processing) {
+-        while (q->n_input)
++        while (q->n_input && !q->shutdown)
+             pthread_cond_wait(&q->input_empty_c, &p->pool_m);
+-        if (q->shutdown) break;
++        /* Cancellation does not end ownership of callbacks already running. */
+         while (q->n_processing)
+             pthread_cond_wait(&q->none_processing_c, &p->pool_m);
+         if (q->shutdown) break;
+-    }
+-
++        /* An active callback/producer may have dispatched new input while
++         * this caller was waiting. Keep the original stable-drain loop. */
++    }
++    int undispatched = q->n_input;
+     pthread_mutex_unlock(&p->pool_m);
+
+     DBG_OUT(stderr, "Flushed complete for pool %p, queue %p\n", p, q);
+
+-    return 0;
++    return undispatched ? -1 : 0;
+ }
+
+ /*
+--- a/bgzf.c
++++ b/bgzf.c
+@@ -140,6 +140,7 @@
+     pthread_t io_task;
+     pthread_mutex_t job_pool_m;
+     int jobs_pending; // number of jobs waiting
++    int write_error; // terminal write error, protected by job_pool_m
+     int flush_pending;
+     void *free_block;
+     int hit_eof;  // r/w entirely within main thread
+@@ -1171,12 +1172,21 @@
+ /* Function to clean up when jobs are discarded (e.g. during seek)
+  * This works for results too, as results are the same struct with
+  * decompressed data stored in it. */
+-static void job_cleanup(void *arg) {
+-    bgzf_job *j = (bgzf_job *)arg;
++/* Retire each accepted write job once, whether written or discarded. */
++static void job_retire(bgzf_job *j, int error) {
+     mtaux_t *mt = j->fp->mt;
+     pthread_mutex_lock(&mt->job_pool_m);
++    if (j->fp->is_write) {
++        mt->write_error |= error;
++        mt->jobs_pending--;
++    }
+     pool_free(mt->job_pool, j);
+     pthread_mutex_unlock(&mt->job_pool_m);
++}
++
++/* A discarded write job cannot belong to a successful flush. */
++static void job_cleanup(void *arg) {
++    job_retire((bgzf_job *)arg, BGZF_ERR_MT);
+ }
+
+ static void *bgzf_encode_func(void *arg) {
+@@ -1257,77 +1267,65 @@
+     BGZF *fp = (BGZF *)vp;
+     mtaux_t *mt = fp->mt;
+     hts_tpool_result *r;
++    int error = 0;
+
+     if (fp->idx_build_otf) {
+         fp->idx->moffs = fp->idx->noffs = 1;
+         fp->idx->offs = (bgzidx1_t*) calloc(fp->idx->moffs, sizeof(bgzidx1_t));
+-        if (!fp->idx->offs) goto err;
+-    }
+-
+-    // Iterates until result queue is shutdown, where it returns NULL.
++        if (!fp->idx->offs) error = BGZF_ERR_IO;
++    }
++    pthread_mutex_lock(&mt->job_pool_m);
++    mt->write_error |= error;
++    pthread_mutex_unlock(&mt->job_pool_m);
++
++    /* After first failure retain ownership and drain without further writes.
++     * Close is responsible for the one reset/shutdown sequence. */
+     while ((r = hts_tpool_next_result_wait(mt->out_queue))) {
+         bgzf_job *j = (bgzf_job *)hts_tpool_result_data(r);
+         assert(j);
++        pthread_mutex_lock(&mt->job_pool_m);
++        error |= mt->write_error;
++        pthread_mutex_unlock(&mt->job_pool_m);
++        error |= j->errcode;
++        if (error) goto retire;
+
+         if (fp->idx_build_otf) {
+             fp->idx->noffs++;
+-            if ( fp->idx->noffs > fp->idx->moffs )
+-            {
++            if (fp->idx->noffs > fp->idx->moffs) {
++                bgzidx1_t *grown;
+                 fp->idx->moffs = fp->idx->noffs;
+                 kroundup32(fp->idx->moffs);
+-                fp->idx->offs = (bgzidx1_t*) realloc(fp->idx->offs, fp->idx->moffs*sizeof(bgzidx1_t));
+-                if ( !fp->idx->offs ) goto err;
++                grown = (bgzidx1_t*)realloc(fp->idx->offs, fp->idx->moffs*sizeof(bgzidx1_t));
++                if (!grown) goto io_error;
++                fp->idx->offs = grown;
+             }
+-            fp->idx->offs[ fp->idx->noffs-1 ].uaddr = fp->idx->offs[ fp->idx->noffs-2 ].uaddr + j->uncomp_len;
+-            fp->idx->offs[ fp->idx->noffs-1 ].caddr = fp->idx->offs[ fp->idx->noffs-2 ].caddr + j->comp_len;
+-        }
+-
+-        // Flush any cached hts_idx_push calls
+-        if (bgzf_idx_flush(fp) < 0)
+-            goto err;
+-
+-        if (hwrite(fp->fp, j->comp_data, j->comp_len) != j->comp_len)
+-            goto err;
+-
+-        // Update our local block_address.  Cannot be fp->block_address due to no
+-        // locking in bgzf_tell.
++            fp->idx->offs[fp->idx->noffs-1].uaddr = fp->idx->offs[fp->idx->noffs-2].uaddr + j->uncomp_len;
++            fp->idx->offs[fp->idx->noffs-1].caddr = fp->idx->offs[fp->idx->noffs-2].caddr + j->comp_len;
++        }
++        if (bgzf_idx_flush(fp) < 0) goto io_error;
++        if (hwrite(fp->fp,j->comp_data,j->comp_len) != j->comp_len) goto io_error;
+         pthread_mutex_lock(&mt->idx_m);
+         mt->block_address += j->comp_len;
+         pthread_mutex_unlock(&mt->idx_m);
+-
+-        /*
+-         * Periodically call hflush (which calls fsync when on a file).
+-         * This avoids the fsync being done at the bgzf_close stage,
+-         * which can sometimes cause signficant delays.  As this is in
+-         * a separate thread, spreading the sync delays throughout the
+-         * program execution seems better.
+-         * Frequency of 1/512 has been chosen by experimentation
+-         * across local XFS, NFS and Lustre tests.
+-         */
+         if (++mt->flush_pending % 512 == 0)
+-            if (hflush(fp->fp) != 0)
+-                goto err;
+-
+-
+-        hts_tpool_delete_result(r, 0);
+-
+-        // Also updated by main thread
+-        pthread_mutex_lock(&mt->job_pool_m);
+-        pool_free(mt->job_pool, j);
+-        mt->jobs_pending--;
+-        pthread_mutex_unlock(&mt->job_pool_m);
+-    }
+-
+-    if (hflush(fp->fp) != 0)
+-        goto err;
+-
+-    hts_tpool_process_destroy(mt->out_queue);
+-
+-    return NULL;
+-
+- err:
+-    hts_tpool_process_destroy(mt->out_queue);
+-    return (void *)-1;
++            if (hflush(fp->fp) != 0) goto io_error;
++        goto retire;
++
++ io_error:
++        error |= BGZF_ERR_IO;
++ retire:
++        hts_tpool_delete_result(r,0);
++        job_retire(j,error);
++    }
++    if (hflush(fp->fp) != 0) error |= BGZF_ERR_IO;
++    pthread_mutex_lock(&mt->job_pool_m);
++    mt->write_error |= error;
++    error = mt->write_error;
++    pthread_mutex_unlock(&mt->job_pool_m);
++    /* Release only our reference. Close owns reset/shutdown; a pool error may
++     * have ended this thread before close, and must not cause two resets. */
++    hts_tpool_process_ref_decr(mt->out_queue);
++    return error ? (void *)-1 : NULL;
+ }
+
+
+@@ -1706,6 +1704,12 @@
+
+     // Also updated by writer thread
+     pthread_mutex_lock(&mt->job_pool_m);
++    if (mt->write_error) {
++        int error = mt->write_error;
++        pthread_mutex_unlock(&mt->job_pool_m);
++        fp->errcode |= error;
++        return -1;
++    }
+     bgzf_job *j = pool_alloc(mt->job_pool);
+     if (j) mt->jobs_pending++;
+     pthread_mutex_unlock(&mt->job_pool_m);
+@@ -1737,34 +1741,28 @@
+
+  fail:
+     job_cleanup(j);
++    fp->errcode |= BGZF_ERR_MT;
++    return -1;
++}
++
++static int mt_flush_queue(BGZF *fp)
++{
++    mtaux_t *mt = fp->mt;
++    int error;
+     pthread_mutex_lock(&mt->job_pool_m);
+-    mt->jobs_pending--;
++    while (mt->jobs_pending != 0 && !mt->write_error) {
++        pthread_mutex_unlock(&mt->job_pool_m);
++        usleep(10000);
++        pthread_mutex_lock(&mt->job_pool_m);
++    }
++    error = mt->write_error;
+     pthread_mutex_unlock(&mt->job_pool_m);
+-    return -1;
+-}
+-
+-static int mt_flush_queue(BGZF *fp)
+-{
+-    mtaux_t *mt = fp->mt;
+-
+-    // Drain the encoder jobs.
+-    // We cannot use hts_tpool_flush here as it can cause deadlock if
+-    // the queue is full up of decoder tasks.  The best solution would
+-    // be to have one input queue per type of job, but we don't right now.
+-    //hts_tpool_flush(mt->pool);
+-    pthread_mutex_lock(&mt->job_pool_m);
+-    while (mt->jobs_pending != 0) {
+-        pthread_mutex_unlock(&mt->job_pool_m);
+-        usleep(10000); // FIXME: replace by condition variable
+-        pthread_mutex_lock(&mt->job_pool_m);
+-    }
+-    pthread_mutex_unlock(&mt->job_pool_m);
+-
+-    // Wait on bgzf_mt_writer to drain the queue
+-    if (hts_tpool_process_flush(mt->out_queue) != 0)
+-        return -1;
+-
+-    return (fp->errcode == 0)? 0 : -1;
++    if (error) {
++        fp->errcode |= error;
++        return -1;
++    }
++    if (hts_tpool_process_flush(mt->out_queue) != 0) return -1;
++    return fp->errcode == 0 ? 0 : -1;
+ }
+
+ static int lazy_flush(BGZF *fp)
+@@ -1911,53 +1909,41 @@
+         if (!fp->mt->free_block)
+             fp->uncompressed_block = NULL;
+         if (mt_destroy(fp->mt) < 0)
+-            fp->errcode = BGZF_ERR_IO;
++            fp->errcode |= BGZF_ERR_IO;
++        fp->mt = NULL;
+     }
+ }
+
+ int bgzf_close(BGZF* fp)
+ {
+-    int ret, block_length;
+-    if (fp == 0) return -1;
++    int ret = 0, block_length;
++    if (!fp) return -1;
+     if (fp->is_write && fp->is_compressed) {
+-        if (bgzf_flush(fp) != 0) {
+-            bgzf_close_mt(fp);
+-            return -1;
+-        }
+-        fp->compress_level = -1;
+-        block_length = deflate_block(fp, 0); // write an empty block
+-        if (block_length < 0) {
+-            hts_log_debug("Deflate block operation failed: %s", bgzf_zerr(block_length, NULL));
+-            bgzf_close_mt(fp);
+-            return -1;
+-        }
+-        if (hwrite(fp->fp, fp->compressed_block, block_length) < 0
+-            || hflush(fp->fp) != 0) {
+-            hts_log_error("File write failed");
+-            fp->errcode |= BGZF_ERR_IO;
+-            return -1;
+-        }
+-    }
+-
++        if (bgzf_flush(fp) != 0) ret = -1;
++        if (!ret) {
++            fp->compress_level = -1;
++            block_length = deflate_block(fp,0);
++            if (block_length < 0) ret = -1;
++            else if (hwrite(fp->fp,fp->compressed_block,block_length) < 0 || hflush(fp->fp) != 0) {
++                fp->errcode |= BGZF_ERR_IO;
++                ret = -1;
++            }
++        }
++    }
+     bgzf_close_mt(fp);
+-
+-    if ( fp->is_gzip )
+-    {
+-        if (fp->gz_stream == NULL) ret = Z_OK;
+-        else if (!fp->is_write) ret = inflateEnd(fp->gz_stream);
+-        else ret = deflateEnd(fp->gz_stream);
+-        if (ret != Z_OK) {
+-            hts_log_error("Call to inflateEnd/deflateEnd failed: %s", bgzf_zerr(ret, NULL));
+-        }
++    if (fp->errcode) ret = -1;
++    if (fp->is_gzip) {
++        int zret = fp->gz_stream == NULL ? Z_OK :
++            !fp->is_write ? inflateEnd(fp->gz_stream) : deflateEnd(fp->gz_stream);
++        if (zret != Z_OK) ret = -1;
+         free(fp->gz_stream);
+     }
+-    ret = hclose(fp->fp);
+-    if (ret != 0) return -1;
++    if (hclose(fp->fp) != 0) ret = -1;
+     bgzf_index_destroy(fp);
+     free(fp->uncompressed_block);
+     free_cache(fp);
+     free(fp);
+-    return 0;
++    return ret;
+ }
+
+ void bgzf_set_cache_size(BGZF *fp, int cache_size)

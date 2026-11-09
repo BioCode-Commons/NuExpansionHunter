@@ -913,6 +913,8 @@ public:
         }
     }
 
+    Two_d_destructive_iterator(const Two_d_destructive_iterator &other) = default;
+
     // Arithmetic: we just do arithmetic on pos.  We don't even need to
     // do bounds checking, since STL doesn't consider that its job.  :-)
     // NOTE: this is not amortized constant time!  What do we do about it?

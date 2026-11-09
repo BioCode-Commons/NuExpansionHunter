@@ -1,0 +1,216 @@
+--- a/thread_pool.c
++++ b/thread_pool.c
+@@ -353,12 +353,18 @@
+  *         NULL on failure
+  */
+ hts_tpool_process *hts_tpool_process_init(hts_tpool *p, int qsize, int in_only) {
++    int err;
+     hts_tpool_process *q = malloc(sizeof(*q));
+-
+-    pthread_cond_init(&q->output_avail_c,   NULL);
+-    pthread_cond_init(&q->input_not_full_c, NULL);
+-    pthread_cond_init(&q->input_empty_c,    NULL);
+-    pthread_cond_init(&q->none_processing_c,NULL);
++    if (!q) return NULL;
++
++    if ((err = pthread_cond_init(&q->output_avail_c, NULL)) != 0)
++        goto fail_alloc;
++    if ((err = pthread_cond_init(&q->input_not_full_c, NULL)) != 0)
++        goto fail_output;
++    if ((err = pthread_cond_init(&q->input_empty_c, NULL)) != 0)
++        goto fail_input_full;
++    if ((err = pthread_cond_init(&q->none_processing_c, NULL)) != 0)
++        goto fail_input_empty;
+
+     q->p           = p;
+     q->input_head  = NULL;
+@@ -376,13 +382,21 @@
+     q->shutdown    = 0;
+     q->wake_dispatch = 0;
+     q->ref_count   = 1;
+-
+     q->next        = NULL;
+     q->prev        = NULL;
+-
+     hts_tpool_process_attach(p, q);
+-
+     return q;
++
++ fail_input_empty:
++    pthread_cond_destroy(&q->input_empty_c);
++ fail_input_full:
++    pthread_cond_destroy(&q->input_not_full_c);
++ fail_output:
++    pthread_cond_destroy(&q->output_avail_c);
++ fail_alloc:
++    free(q);
++    errno = err;
++    return NULL;
+ }
+
+ /* Deallocates memory for a thread process-queue.
+@@ -687,8 +701,10 @@
+  *         NULL on failure
+  */
+ hts_tpool *hts_tpool_init(int n) {
+-    int i;
++    int i, err = ENOMEM, conditions = 0, workers = 0;
++    pthread_mutexattr_t attr;
+     hts_tpool *p = malloc(sizeof(*p));
++    if (!p) return NULL;
+     p->tsize = n;
+     p->njobs = 0;
+     p->nwaiting = 0;
+@@ -698,34 +714,55 @@
+     p->n_count = 0;
+     p->n_running = 0;
+     p->t = malloc(n * sizeof(p->t[0]));
+-
+-    pthread_mutexattr_t attr;
+-    pthread_mutexattr_init(&attr);
+-    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+-    pthread_mutex_init(&p->pool_m, &attr);
++    if (!p->t) goto fail_pool;
++    p->t_stack = malloc(n * sizeof(*p->t_stack));
++    if (!p->t_stack) goto fail_workers_array;
++    p->t_stack_top = -1;
++
++    if ((err = pthread_mutexattr_init(&attr)) != 0) goto fail_stack;
++    if ((err = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE)) != 0)
++        goto fail_attr;
++    if ((err = pthread_mutex_init(&p->pool_m, &attr)) != 0) goto fail_attr;
+     pthread_mutexattr_destroy(&attr);
+
+-    if (!(p->t_stack = malloc(n * sizeof(*p->t_stack))))
+-        return NULL;
+-    p->t_stack_top = -1;
+-
+-    pthread_mutex_lock(&p->pool_m);
+-
++    /* No thread can observe a partially initialized condition-variable set. */
+     for (i = 0; i < n; i++) {
+         hts_tpool_worker *w = &p->t[i];
+         p->t_stack[i] = 0;
+         w->p = p;
+         w->idx = i;
+-        pthread_cond_init(&w->pending_c, NULL);
+-        if (0 != pthread_create(&w->tid, NULL, tpool_worker, w)) {
++        if ((err = pthread_cond_init(&w->pending_c, NULL)) != 0)
++            goto fail_conditions;
++        conditions++;
++    }
++    pthread_mutex_lock(&p->pool_m);
++    for (i = 0; i < n; i++) {
++        if ((err = pthread_create(&p->t[i].tid, NULL, tpool_worker, &p->t[i])) != 0) {
++            p->shutdown = 1;
++            /* Created workers are still waiting to acquire pool_m. */
+             pthread_mutex_unlock(&p->pool_m);
+-            return NULL;
++            while (workers) pthread_join(p->t[--workers].tid, NULL);
++            goto fail_conditions;
+         }
+-    }
+-
++        workers++;
++    }
+     pthread_mutex_unlock(&p->pool_m);
+-
+     return p;
++
++ fail_conditions:
++    while (conditions) pthread_cond_destroy(&p->t[--conditions].pending_c);
++    pthread_mutex_destroy(&p->pool_m);
++    goto fail_stack;
++ fail_attr:
++    pthread_mutexattr_destroy(&attr);
++ fail_stack:
++    free(p->t_stack);
++ fail_workers_array:
++    free(p->t);
++ fail_pool:
++    free(p);
++    errno = err;
++    return NULL;
+ }
+
+ /*
+--- a/bgzf.c
++++ b/bgzf.c
+@@ -1592,39 +1592,52 @@
+ }
+
+ int bgzf_thread_pool(BGZF *fp, hts_tpool *pool, int qsize) {
+-    // No gain from multi-threading when not compressed
+-    if (!fp->is_compressed)
+-        return 0;
+-
+-    mtaux_t *mt;
++    /* Build an unpublished owner first; commit only before its I/O thread. */
++    int err = ENOMEM;
++    mtaux_t *mt, *previous_mt = fp->mt;
++    if (!fp->is_compressed) return 0;
+     mt = (mtaux_t*)calloc(1, sizeof(mtaux_t));
+     if (!mt) return -1;
+-    fp->mt = mt;
+-
+     mt->pool = pool;
+     mt->n_threads = hts_tpool_size(pool);
+-    if (!qsize)
+-        qsize = mt->n_threads*2;
+-    if (!(mt->out_queue = hts_tpool_process_init(mt->pool, qsize, 0))) {
+-        free(mt);
+-        return -1;
+-    }
+-    hts_tpool_process_ref_incr(mt->out_queue);
+-
++    if (!qsize) qsize = mt->n_threads*2;
++    mt->out_queue = hts_tpool_process_init(mt->pool, qsize, 0);
++    if (!mt->out_queue) { err = errno; goto fail_mt; }
+     mt->job_pool = pool_create(sizeof(bgzf_job));
+-
+-    pthread_mutex_init(&mt->job_pool_m, NULL);
+-    pthread_mutex_init(&mt->command_m, NULL);
+-    pthread_mutex_init(&mt->idx_m, NULL);
+-    pthread_cond_init(&mt->command_c, NULL);
++    if (!mt->job_pool) goto fail_queue;
++
++    if ((err = pthread_mutex_init(&mt->job_pool_m, NULL)) != 0) goto fail_job_pool;
++    if ((err = pthread_mutex_init(&mt->command_m, NULL)) != 0) goto fail_job_mutex;
++    if ((err = pthread_mutex_init(&mt->idx_m, NULL)) != 0) goto fail_command_mutex;
++    if ((err = pthread_cond_init(&mt->command_c, NULL)) != 0) goto fail_index_mutex;
+     mt->flush_pending = 0;
+     mt->jobs_pending = 0;
+-    mt->free_block = fp->uncompressed_block; // currently in-use block
++    mt->free_block = fp->uncompressed_block;
+     mt->block_address = fp->block_address;
+-    pthread_create(&mt->io_task, NULL,
+-                   fp->is_write ? bgzf_mt_writer : bgzf_mt_reader, fp);
+-
+-    return 0;
++    hts_tpool_process_ref_incr(mt->out_queue);
++    fp->mt = mt;
++    err = pthread_create(&mt->io_task, NULL,
++                        fp->is_write ? bgzf_mt_writer : bgzf_mt_reader, fp);
++    if (err == 0) return 0;
++
++    /* pthread_create failure starts no I/O owner. Release its reserved ref. */
++    fp->mt = previous_mt;
++    hts_tpool_process_ref_decr(mt->out_queue);
++    pthread_cond_destroy(&mt->command_c);
++ fail_index_mutex:
++    pthread_mutex_destroy(&mt->idx_m);
++ fail_command_mutex:
++    pthread_mutex_destroy(&mt->command_m);
++ fail_job_mutex:
++    pthread_mutex_destroy(&mt->job_pool_m);
++ fail_job_pool:
++    pool_destroy(mt->job_pool);
++ fail_queue:
++    hts_tpool_process_destroy(mt->out_queue);
++ fail_mt:
++    free(mt);
++    errno = err;
++    return -1;
+ }
+
+ int bgzf_mt(BGZF *fp, int n_threads, int n_sub_blks)

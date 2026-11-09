@@ -44,12 +44,32 @@ static int countNonoverlappingKmerMatches(const string& query, const KmerIndex& 
     const std::size_t kmerLength = kmerIndex.kmerLength();
     int matchCount = 0;
     size_t position = 0;
+    size_t scanned = 0;
+    size_t validSuffixLength = 0;
+    uint32_t key = 0;
+    // KmerIndex uses at most 32 bits; widening the mask shift also covers k=16.
+    const uint32_t mask = static_cast<uint32_t>((uint64_t(1) << (2 * kmerLength)) - 1);
     while (position + kmerLength <= query.length())
     {
-        string kmer = query.substr(position, kmerLength);
-        std::transform(kmer.begin(), kmer.end(), kmer.begin(), ::toupper);
+        // Keep the scan inside the current window, including when the window is empty.
+        scanned = std::max(scanned, position);
+        // Carry the exact encoding of the last k bases; each input base is read once.
+        while (scanned < position + kmerLength)
+        {
+            const int base = ::toupper(query[scanned++]);
+            const uint32_t code = (base == 'C') + 2 * (base == 'G') + 3 * (base == 'T');
+            key = ((key << 2) | code) & mask;
+            if (base == 'A' || base == 'C' || base == 'G' || base == 'T')
+            {
+                ++validSuffixLength;
+            }
+            else
+            {
+                validSuffixLength = 0;
+            }
+        }
 
-        if (kmerIndex.contains(kmer))
+        if (validSuffixLength >= kmerLength && kmerIndex.containsEncodedKmer(key))
         {
             ++matchCount;
             position += kmerLength;

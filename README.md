@@ -21,7 +21,7 @@
 
 ---
 
-NuExpansionHunter builds on [Illumina ExpansionHunter v5.0.0](https://github.com/Illumina/ExpansionHunter/tree/v5.0.0). It batches mate queries, reuses a row of alignment scores, and initializes BAM sequence padding.
+NuExpansionHunter builds on [Illumina ExpansionHunter v5.0.0](https://github.com/Illumina/ExpansionHunter/tree/v5.0.0). It keeps the caller's outputs unchanged while reducing work and memory in mate retrieval, graph alignment, streaming queues, seed lookup, and BAM compression.
 
 > [!IMPORTANT]
 > Use **PCR-free whole-genome sequencing data**, the **reference used to align the reads**, and a **catalog for that assembly**.
@@ -190,17 +190,17 @@ See [JsonWriter.cpp](ehunter/io/JsonWriter.cpp), [VcfHeader.cpp](ehunter/io/VcfH
 
 ## Implementation Status and Roadmap <sup><sub>[↑ Contents](#contents)</sub></sup>
 
-NuExpansionHunter collects reads, aligns them to locus graphs, and estimates repeat sizes. Batched mate retrieval applies to seeking mode. Click a filename to open its implementation.
+NuExpansionHunter collects reads, aligns them to locus graphs, and estimates repeat sizes. Seeking and streaming use separate read-collection paths; the full-WGS benchmark exercises streaming. Click a filename to open its implementation.
 
 ```mermaid
 flowchart TB
-    SETUP["Load reference and build locus graphs<br/><small><a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/io/CatalogLoading.cpp'>CatalogLoading.cpp</a><br/><a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/io/RegionGraph.cpp'>RegionGraph.cpp</a></small>"]
-    SEEK["Seeking: collect reads and batch mate queries<br/><small><a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/sample/HtsSeekingSampleAnalysis.cpp'>HtsSeekingSampleAnalysis.cpp</a><br/><a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/sample/MateExtractor.cpp'>MateExtractor.cpp</a></small>"]
-    STREAM["Streaming: collect reads in one pass<br/><small><a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/sample/HtsStreamingSampleAnalysis.cpp'>HtsStreamingSampleAnalysis.cpp</a></small>"]
-    ALIGN["Align reads to locus graphs<br/><small><a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/locus/LocusAligner.cpp'>LocusAligner.cpp</a></small>"]
-    GT["Estimate repeat sizes and confidence intervals<br/><small><a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/genotyping/StrGenotyper.cpp'>StrGenotyper.cpp</a></small>"]
-    CALLS["VCF and JSON calls<br/><small><a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/io/VcfWriter.cpp'>VcfWriter.cpp</a> · <a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/io/JsonWriter.cpp'>JsonWriter.cpp</a></small>"]
-    BAM["Realigned reads<br/><small><a href='https://github.com/BioCode-Commons/ExpansionHunter/blob/zk_refactor/ehunter/io/BamletWriter.cpp'>BamletWriter.cpp</a></small>"]
+    SETUP["Load reference and build locus graphs<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/io/CatalogLoading.cpp'>CatalogLoading.cpp</a><br/><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/io/RegionGraph.cpp'>RegionGraph.cpp</a></small>"]
+    SEEK["Seeking: collect reads and batch mate queries<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/sample/HtsSeekingSampleAnalysis.cpp'>HtsSeekingSampleAnalysis.cpp</a><br/><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/sample/MateExtractor.cpp'>MateExtractor.cpp</a></small>"]
+    STREAM["Streaming: collect reads in one pass<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/sample/HtsStreamingSampleAnalysis.cpp'>HtsStreamingSampleAnalysis.cpp</a></small>"]
+    ALIGN["Seed and align reads to locus graphs<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/GappedAligner.cpp'>GappedAligner.cpp</a><br/><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/locus/LocusAligner.cpp'>LocusAligner.cpp</a></small>"]
+    GT["Estimate repeat sizes and confidence intervals<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/genotyping/StrGenotyper.cpp'>StrGenotyper.cpp</a></small>"]
+    CALLS["VCF and JSON calls<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/io/VcfWriter.cpp'>VcfWriter.cpp</a> · <a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/io/JsonWriter.cpp'>JsonWriter.cpp</a></small>"]
+    BAM["Parallel BGZF realigned-read output<br/><small><a href='https://github.com/BioCode-Commons/NuExpansionHunter/blob/zk_refactor/ehunter/io/BamletWriter.cpp'>BamletWriter.cpp</a></small>"]
     SETUP --> SEEK --> ALIGN
     SETUP --> STREAM --> ALIGN
     ALIGN --> GT --> CALLS
@@ -216,36 +216,46 @@ flowchart TB
 
 | Component | Status | What it does |
 | :--- | :--- | :--- |
-| Batched mate retrieval | Implemented; output checks passed | Reads the requested intervals together and matches each mate by fragment ID and mate number |
-| Reusable DP row | Implemented; alignment and traceback checks passed | Reuses one row of temporary match scores during graph alignment |
+| Batched mate retrieval (seeking) | Implemented; output checks passed | Reads requested intervals together and matches mates by fragment ID and mate number |
+| Compact affine-alignment state | Implemented; differential and output checks passed | Reuses match and insertion-score storage and keeps the exact insertion traceback predicate as one bit per cell |
+| Rolling encoded seed lookup | Implemented; differential and output checks passed | Avoids repeated substring encoding and materializes only the selected graph path |
+| Demand-allocated streaming queues | Implemented; queue and output checks passed | Allocates a per-locus read-pair queue only while that locus is active |
+| Streaming mate ownership transfer | Implemented; output checks passed | Moves cached mates out of their container nodes without copying sequence buffers |
+| Parallel BGZF output | Implemented; writer and full-WGS checks passed | Compresses the realigned-read BAM in parallel and reports asynchronous write or close failures |
 | Initialized BAM padding | Implemented; writer reproducibility checks passed | Initializes packed sequence bytes, including unused bits in odd-length reads |
 
 <details>
 <summary><strong>Inside NuExpansionHunter</strong></summary>
 
-- **Read retrieval:** [MateExtractor.cpp](ehunter/sample/MateExtractor.cpp) collects requested mates through a multi-region iterator. Matches follow input-file order and are returned in the original read-pair order.
-- **Graph alignment:** [AffineAlignMatrixVectorized.hh](ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrixVectorized.hh) keeps temporary match scores in a reusable row. The other score matrices and traceback remain available.
-- **BAM encoding:** [BamletWriter.cpp](ehunter/io/BamletWriter.cpp) initializes the packed sequence buffer before writing bases. This removes uninitialized padding without changing the encoded sequence.
+- **Read retrieval (seeking):** `recoverMates()` in [HtsSeekingSampleAnalysis.cpp](ehunter/sample/HtsSeekingSampleAnalysis.cpp) collects mate queries and calls `MateExtractor::extractMates()` in [MateExtractor.cpp](ehunter/sample/MateExtractor.cpp). The method uses `sam_itr_regarray()` to query the union of the original intervals. Matching mates follow input-file order and are returned in the original read-pair order.
+- **Streaming collection:** [HtsStreamingSampleAnalysis.cpp](ehunter/sample/HtsStreamingSampleAnalysis.cpp) transfers a cached mate by extracting its container node. [HtsStreamingReadPairQueue.cpp](ehunter/sample/HtsStreamingReadPairQueue.cpp) constructs a locus queue on activation and releases it when empty.
+- **Seed lookup:** [OrientationPredictor.cpp](ehunter/alignment/OrientationPredictor.cpp) and [GappedAligner.cpp](ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/GappedAligner.cpp) carry rolling two-bit k-mers. [KmerIndex.cpp](ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/KmerIndex.cpp) exposes encoded lookup and a non-owning path view, avoiding whole-vector copies.
+- **Graph alignment:** [AffineAlignMatrixVectorized.hh](ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrixVectorized.hh) keeps temporary match and insertion scores in reusable rows. It retains the historical insertion traceback decision in a compact bit matrix; deletion and primary score matrices remain unchanged.
+- **BAM output:** [BamletWriter.cpp](ehunter/io/BamletWriter.cpp) initializes packed sequence bytes, starts HTS compression workers before the asynchronous writer, drains queued records after a failure, and explicitly joins and closes the writer so errors reach the main path. The pinned HTSlib patches make setup rollback and asynchronous queue cleanup deterministic.
 
 </details>
 
 | Area | Next work |
 | :--- | :--- |
-| Benchmarks | Complete the full HG002 WGS benchmark |
-| Validation | Add sequencing datasets and large-expansion cases |
-| Builds | Refresh dependency setup and simplify portable source builds |
+| Benchmark confidence | Repeat paired measurements to quantify run-to-run and node-to-node variation |
+| Additional validation | Add samples, sequencing datasets, catalogs, and large-expansion cases |
+| Builds | Test additional compilers and platforms and simplify portable source builds |
+| Review | Complete the pending comprehensive human audit |
 
 <a id="benchmarks"></a>
 
 ## Benchmarks <sup><sub>[↑ Contents](#contents)</sub></sup>
 
-We compare NuExpansionHunter with **Illumina ExpansionHunter v5.0.0** on the complete human **HG002** WGS dataset: **830,172,418 primary reads (415,086,209 pairs)**.
+We compare NuExpansionHunter with **Illumina ExpansionHunter v5.0.0** on the complete human **HG002** WGS dataset: **830,172,418 primary reads (415,086,209 pairs)**. Each row is one paired baseline/candidate run on the same node; CPU-hours are allocated physical cores × wall time.
 
-| Input | Workload | Threads | Status |
-| :--- | :--- | :--- | :--- |
-| HG002, NovaSeq PCR-free, nominal 35× WGS | 174,293 STR loci; streaming through the complete BAM | 8, 16, 32, 64 | Queued |
+| Physical cores | Original → NuExpansionHunter | Speedup | Allocated CPU-hours saved | Peak RSS change | Output equivalence |
+| ---: | ---: | ---: | ---: | ---: | :--- |
+| 4 | 3295.60 → 2313.77 s | 1.424× | 29.79% | +2.12% | Passed |
+| 8 | 1703.73 → 1251.67 s | 1.361× | 26.53% | −0.04% | Passed |
+| 16 | 1248.94 → 765.53 s | 1.631× | 38.71% | −46.99% | Passed |
+| 32 | 1064.28 → 596.87 s | 1.783× | 43.92% | −56.33% | Passed |
 
-Each thread count uses three paired runs to measure runtime, peak RAM, and output consistency. We allow small RAM increases and report the changes in MiB and percent. See [benchmark details](BENCHMARKS.md) for inputs, settings, and results.
+At every core count, VCF and JSON were byte-identical; the BAM header and all **74,565,578** records, fields, tags, and duplicate counts matched after canonicalizing record order. These are single paired runs on one sample and catalog, not medians or confidence intervals. See [benchmark details](BENCHMARKS.md) for methods, CPU time, RAM, and limitations.
 
 <a id="ai-use-and-review"></a>
 

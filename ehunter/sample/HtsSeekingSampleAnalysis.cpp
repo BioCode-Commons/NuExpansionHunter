@@ -31,7 +31,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <boost/functional/hash.hpp>
 #include <boost/optional.hpp>
 #include <boost/smart_ptr/make_unique.hpp>
 
@@ -64,7 +63,12 @@ namespace ehunter
 
 namespace
 {
-using AlignmentStatsCatalog = unordered_map<ReadId, LinearAlignmentStats, boost::hash<ReadId>>;
+struct ReadIdHash
+{
+    std::size_t operator()(const ReadId& readId) const { return hash_value(readId); }
+};
+
+using AlignmentStatsCatalog = unordered_map<ReadId, LinearAlignmentStats, ReadIdHash>;
 
 vector<GenomicRegion>
 combineRegions(const vector<GenomicRegion>& targetRegions, const vector<GenomicRegion>& offtargetRegions)

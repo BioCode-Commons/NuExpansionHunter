@@ -120,13 +120,15 @@ int main(int argc, char** argv)
         const OutputPaths& outputPaths = params.outputPaths();
 
         locus::AlignWriterPtr bamletWriter;
+        std::shared_ptr<BamletWriter> bamletOutput;
         if (params.disableBamletOutput)
         {
             bamletWriter.reset(new graphtools::BlankAlignmentWriter());
         }
         else
         {
-            bamletWriter.reset(new BamletWriter(outputPaths.bamlet(), reference.contigInfo(), regionCatalog));
+            bamletOutput.reset(new BamletWriter(outputPaths.bamlet(), reference.contigInfo(), regionCatalog, params.threadCount));
+            bamletWriter = bamletOutput;
         }
 
         SampleFindings sampleFindings;
@@ -149,6 +151,7 @@ int main(int argc, char** argv)
 
         JsonWriter jsonWriter(sampleParams, reference.contigInfo(), regionCatalog, sampleFindings);
         writeToFile(outputPaths.json(), jsonWriter);
+        if (bamletOutput) bamletOutput->finish();
     }
     catch (const std::exception& e)
     {
