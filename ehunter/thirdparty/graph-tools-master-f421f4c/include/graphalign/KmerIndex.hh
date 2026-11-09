@@ -22,6 +22,7 @@
 #pragma once
 
 #include <memory>
+#include <cstdint>
 #include <string>
 #include <unordered_set>
 
@@ -48,7 +49,31 @@ public:
     ///
     /// Calling this with kmer that isn't contained in the index triggers a runtime error
     std::vector<Path> getPaths(const std::string& kmer) const;
+
+    // A non-owning view of paths for one encoded kmer. The index must outlive the
+    // view and remain unchanged. Each requested Path is materialized separately,
+    // so a multi-path lookup does not copy the whole path vector.
+    class PathView
+    {
+    public:
+        size_t size() const;
+        Path operator[](size_t path_index) const;
+
+    private:
+        friend class KmerIndex;
+        const KmerIndex* index_ = nullptr;
+        const std::vector<Path>* paths_ = nullptr;
+        uint16_t mini_start_position_ = 0;
+        uint16_t mini_node_id_ = 0;
+        bool is_minipath_ = false;
+    };
+
+    // The caller supplies an A/C/G/T key encoded at this index's kmer length.
+    PathView findEncodedPaths(uint32_t kmer_key) const;
+
     bool contains(const std::string& kmer) const;
+    /// Query a valid k-base A/C/G/T key encoded with TwoBitKmerEncoder.
+    bool containsEncodedKmer(uint32_t key) const;
     size_t numPaths(const std::string& kmer) const;
     std::unordered_set<std::string> kmers() const;
     size_t kmerLength() const;

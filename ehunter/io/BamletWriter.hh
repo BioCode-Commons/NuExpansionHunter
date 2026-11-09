@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include <exception>
 #include <memory>
 #include <string>
 #include <thread>
@@ -53,8 +54,12 @@ class BamletWriter : public graphtools::AlignmentWriter, private boost::noncopya
 {
 public:
     BamletWriter(
-        const std::string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog);
+        const std::string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
+        int compressionThreads);
     ~BamletWriter() override;
+
+    // Called after all producers finish; propagate asynchronous write/close failure.
+    void finish();
 
     /// Thread safe
     void write(
@@ -80,6 +85,7 @@ private:
 
     ConcurrentQueue<bam1_t*> writeQueue_;
     std::thread writeThread_;
+    std::exception_ptr writeError_; // writer owns until join; main reads afterward
 };
 
 }

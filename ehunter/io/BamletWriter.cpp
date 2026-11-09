@@ -1,4 +1,3 @@
-// Modified for NuExpansionHunter (2026): initialize packed sequence bytes before writing bases.
 //
 // Expansion Hunter
 // Copyright 2016-2019 Illumina, Inc.
@@ -45,6 +44,22 @@ using std::vector;
 namespace ehunter
 {
 
+// Establish the owned HTS compression pool before starting the existing writer
+// thread. A failed setup then unwinds the file without a joinable std::thread.
+static htsFile* openBamletFile(const string& path, int compressionThreads)
+{
+    std::unique_ptr<htsFile, decltype(&hts_close)> file(hts_open(path.c_str(), "wb"), hts_close);
+    if (!file)
+    {
+        throw std::runtime_error("Failed to open BAMlet output " + path);
+    }
+    if (hts_set_threads(file.get(), compressionThreads) != 0)
+    {
+        throw std::runtime_error("Failed to initialize BAMlet compression threads");
+    }
+    return file.release();
+}
+
 static GraphReferenceMapping generateMapping(const ReferenceContigInfo& contigInfo, const LocusSpecification& locusSpec)
 {
     GraphReferenceMapping mapping(&locusSpec.regionGraph());
@@ -66,11 +81,11 @@ static GraphReferenceMapping generateMapping(const ReferenceContigInfo& contigIn
 #define bam1_seq_seti(s, i, c) ((s)[(i) >> 1] = ((s)[(i) >> 1] & 0xf << (((i)&1) << 2)) | (c) << ((~(i)&1) << 2))
 
 BamletWriter::BamletWriter(
-    const string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog)
-    : filePtr_(hts_open(bamletPath.c_str(), "wb"), hts_close)
+    const string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
+    int compressionThreads)
+    : filePtr_(openBamletFile(bamletPath, compressionThreads), hts_close)
     , bamHeader_(bam_hdr_init(), bam_hdr_destroy)
     , contigInfo_(contigInfo)
-    , writeThread_(&BamletWriter::writeHtsAlignments, this)
 {
     for (const auto& locusSpec : regionCatalog)
     {
@@ -78,12 +93,25 @@ BamletWriter::BamletWriter(
     }
 
     writeHeader();
+    writeThread_ = std::thread(&BamletWriter::writeHtsAlignments, this);
 }
 
 BamletWriter::~BamletWriter()
 {
-    writeQueue_.push(nullptr);
-    writeThread_.join();
+    // Explicit finish() reports errors on the main path. Unwinding still owns cleanup.
+    try { finish(); } catch (...) {}
+}
+
+void BamletWriter::finish()
+{
+    if (writeThread_.joinable())
+    {
+        writeQueue_.push(nullptr);
+        writeThread_.join();
+    }
+    const int closeResult = filePtr_ ? hts_close(filePtr_.release()) : 0;
+    if (writeError_) std::rethrow_exception(writeError_);
+    if (closeResult != 0) throw std::runtime_error("Cannot close alignment output");
 }
 
 void BamletWriter::writeHeader()
@@ -240,10 +268,16 @@ void BamletWriter::writeHtsAlignments()
         writeQueue_.pop(htsAlignmentPtr);
         if (not htsAlignmentPtr)
             return;
-        if (bam_write1(filePtr_->fp.bgzf, htsAlignmentPtr) == 0)
+        if (!writeError_)
         {
-            throw std::logic_error("Cannot write alignment");
+            try
+            {
+                if (bam_write1(filePtr_->fp.bgzf, htsAlignmentPtr) <= 0)
+                    throw std::logic_error("Cannot write alignment");
+            }
+            catch (...) { writeError_ = std::current_exception(); }
         }
+        // Continue draining after failure so locus producers cannot deadlock.
         bam_destroy1(htsAlignmentPtr);
     }
 }

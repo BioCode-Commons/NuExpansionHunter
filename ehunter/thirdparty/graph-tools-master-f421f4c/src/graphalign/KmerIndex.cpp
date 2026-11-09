@@ -259,10 +259,14 @@ bool KmerIndex::contains(const std::string& kmer) const
         return false;
     }
 
-    const auto kmer_key = pimpl_->kmer_coder.encode(kmer);
+    return containsEncodedKmer(pimpl_->kmer_coder.encode(kmer));
+}
+
+bool KmerIndex::containsEncodedKmer(uint32_t key) const
+{
     return (
-        (pimpl_->kmer_to_minipaths_map.find(kmer_key) != pimpl_->kmer_to_minipaths_map.end())
-        or (pimpl_->kmer_to_paths_map.find(kmer_key) != pimpl_->kmer_to_paths_map.end()));
+        (pimpl_->kmer_to_minipaths_map.find(key) != pimpl_->kmer_to_minipaths_map.end())
+        or (pimpl_->kmer_to_paths_map.find(key) != pimpl_->kmer_to_paths_map.end()));
 }
 
 size_t KmerIndex::numPaths(const std::string& kmer) const
@@ -303,6 +307,43 @@ std::vector<Path> KmerIndex::getPaths(const std::string& kmer) const
     {
         return pimpl_->kmer_to_paths_map.at(kmer_key);
     }
+}
+
+size_t KmerIndex::PathView::size() const
+{
+    return is_minipath_ ? 1 : (paths_ ? paths_->size() : 0);
+}
+
+Path KmerIndex::PathView::operator[](size_t path_index) const
+{
+    // As with a vector subscript, path_index must be less than size().
+    if (is_minipath_)
+    {
+        return index_->pimpl_->MiniPathToPath({ mini_start_position_, mini_node_id_ });
+    }
+    return (*paths_)[path_index];
+}
+
+KmerIndex::PathView KmerIndex::findEncodedPaths(uint32_t kmer_key) const
+{
+    PathView view;
+    view.index_ = this;
+    const auto mini = pimpl_->kmer_to_minipaths_map.find(kmer_key);
+    if (mini != pimpl_->kmer_to_minipaths_map.end())
+    {
+        view.is_minipath_ = true;
+        view.mini_start_position_ = mini->second.start_position;
+        view.mini_node_id_ = mini->second.node_id;
+    }
+    else
+    {
+        const auto paths = pimpl_->kmer_to_paths_map.find(kmer_key);
+        if (paths != pimpl_->kmer_to_paths_map.end())
+        {
+            view.paths_ = &paths->second;
+        }
+    }
+    return view;
 }
 
 unordered_set<string> KmerIndex::kmers() const

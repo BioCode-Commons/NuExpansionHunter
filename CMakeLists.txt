@@ -21,6 +21,8 @@ ExternalProject_Add(htslib
 	GIT_REPOSITORY "https://github.com/samtools/htslib.git"
 	GIT_TAG "1.10.2"
 	UPDATE_COMMAND ""
+	PATCH_COMMAND ${GIT_EXECUTABLE} apply ${CMAKE_SOURCE_DIR}/cmake/patches/htslib-1.10.2-setup-rollback.patch
+		COMMAND ${GIT_EXECUTABLE} apply ${CMAKE_SOURCE_DIR}/cmake/patches/htslib-1.10.2-runtime-lifecycle.patch
 	CONFIGURE_COMMAND ""
 	BUILD_COMMAND $(MAKE)
 	INSTALL_COMMAND $(MAKE) install prefix=${installDir}
@@ -58,6 +60,7 @@ ExternalProject_Add(spdlog
 	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
 		-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
 		-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+		-DCMAKE_POLICY_VERSION_MINIMUM=3.5
 )
 
 
@@ -68,6 +71,7 @@ ExternalProject_Add(googletest
 	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
 		-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
 		-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+		-DCMAKE_POLICY_VERSION_MINIMUM=3.5
 		-DCMAKE_CXX_FLAGS=-Wno-error=maybe-uninitialized
 )
 

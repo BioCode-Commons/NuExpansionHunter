@@ -125,6 +125,65 @@ list<GraphAlignment> GappedGraphAligner::align(const string& query, AlignerSelec
     }
 }
 
+// Seed search advances to the right end of an extended path. That end cannot
+// precede the original kmer's end: extending left changes its start and length
+// by opposite amounts. A cursor can therefore encode visited windows in one
+// forward pass, while preserving the search's original skip and tie rules.
+class SeedKmerCursor
+{
+public:
+    SeedKmerCursor(const string& query, size_t kmer_length, size_t encoded_length)
+        : query_(query)
+        , kmer_length_(kmer_length)
+        , encoded_length_(encoded_length)
+        , mask_(static_cast<uint32_t>((uint64_t(1) << (2 * encoded_length)) - 1))
+    {
+    }
+
+    bool seek(size_t position)
+    {
+        // Preserve numPaths' original length validation before examining bases.
+        // The index constructor, unlike the size_t search setting, has validated
+        // the encoder width. Use that width for the mask even when no window fits.
+        if (kmer_length_ != encoded_length_)
+        {
+            return false;
+        }
+        // Skipped characters precede the next window and cannot affect its key.
+        scanned_ = std::max(scanned_, position);
+        while (scanned_ < position + kmer_length_)
+        {
+            const char base = query_[scanned_++];
+            uint32_t bits = 0;
+            switch (base)
+            {
+            case 'A': break;
+            case 'C': bits = 1; break;
+            case 'G': bits = 2; break;
+            case 'T': bits = 3; break;
+            default:
+                valid_suffix_ = 0;
+                key_ = (key_ << 2) & mask_;
+                continue;
+            }
+            key_ = ((key_ << 2) | bits) & mask_;
+            valid_suffix_ = std::min(kmer_length_, valid_suffix_ + 1);
+        }
+        return valid_suffix_ == kmer_length_;
+    }
+
+    uint32_t key() const { return key_; }
+
+private:
+    const string& query_;
+    const size_t kmer_length_;
+    const size_t encoded_length_;
+    const uint32_t mask_;
+    size_t scanned_ = 0;
+    size_t valid_suffix_ = 0;
+    uint32_t key_ = 0;
+};
+
 optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignmentSeed(const string& query) const
 {
     string upperQuery = query;
@@ -134,12 +193,14 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
 
     bool found_multipath_kmer = false;
     size_t kmer_start_position = 0;
+    SeedKmerCursor unique_cursor(upperQuery, kmer_len_, kmer_index_.kmerLength());
     while (kmer_start_position + kmer_len_ <= upperQuery.length())
     {
-        const string kmer = upperQuery.substr(kmer_start_position, static_cast<size_t>(kmer_len_));
+        const auto paths = unique_cursor.seek(kmer_start_position)
+            ? kmer_index_.findEncodedPaths(unique_cursor.key()) : KmerIndex::PathView();
 
         // Initiate seed construction from a unique kmer
-        auto num_kmer_paths = kmer_index_.numPaths(kmer);
+        auto num_kmer_paths = paths.size();
         if (num_kmer_paths > 1)
         {
             found_multipath_kmer = true;
@@ -147,9 +208,8 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
 
         if (num_kmer_paths == 1)
         {
-            const Path kmer_path = kmer_index_.getPaths(kmer).front();
             // This call updates kmer_start_position to the start of the extended path
-            Path extended_path = extendPathMatching(kmer_path, upperQuery, kmer_start_position);
+            Path extended_path = extendPathMatching(paths[0], upperQuery, kmer_start_position);
 
             if (!optional_seed || extended_path.length() > optional_seed->path.length())
             {
@@ -172,19 +232,21 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
     // If the search for unique kmer failed, consider kmers that correspond to multiple paths
     const int kMaxPathCount = 10;
     kmer_start_position = 0;
+    SeedKmerCursor multipath_cursor(upperQuery, kmer_len_, kmer_index_.kmerLength());
     while (kmer_start_position + kmer_len_ <= upperQuery.length())
     {
-        const string kmer = upperQuery.substr(kmer_start_position, static_cast<size_t>(kmer_len_));
+        const auto paths = multipath_cursor.seek(kmer_start_position)
+            ? kmer_index_.findEncodedPaths(multipath_cursor.key()) : KmerIndex::PathView();
 
-        const int numPaths = kmer_index_.numPaths(kmer);
+        const int numPaths = paths.size();
         if (0 < numPaths && numPaths <= kMaxPathCount)
         {
             size_t longest_kmer_path_extension = 0;
             size_t kmer_start_position_for_longest_extension = 0;
-            for (const Path& kmer_path : kmer_index_.getPaths(kmer))
+            for (size_t path_index = 0; path_index < paths.size(); ++path_index)
             {
                 size_t kmer_start_position_for_kmer_path = kmer_start_position;
-                Path extended_path = extendPathMatching(kmer_path, upperQuery, kmer_start_position_for_kmer_path);
+                Path extended_path = extendPathMatching(paths[path_index], upperQuery, kmer_start_position_for_kmer_path);
 
                 if (longest_kmer_path_extension < extended_path.length())
                 {

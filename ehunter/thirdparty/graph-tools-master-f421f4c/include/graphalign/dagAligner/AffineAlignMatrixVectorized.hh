@@ -1,4 +1,3 @@
-// Modified for NuExpansionHunter (2026): reuse one row of temporary match scores.
 //
 // GraphTools library
 // Copyright 2017-2019 Illumina, Inc.
@@ -42,11 +41,18 @@ namespace dagAligner
         const PenaltyMatrix penaltyMatrix_;
         const Score gapOpen_;
         const Score gapExt_;
+        // The legacy traceback compares a promoted gap sum with a narrowed score.
+        // Record whether that sum can equal any Score, once per scoring object.
+        const bool gapOpeningRepresentable_;
 
         PaddedAlignMatrix<step> v_;
-        // Match scores are consumed in the current row; traceback uses v_, f_, and e_.
+        // Match scores are consumed in the current row; traceback uses v_, e_, and insertionTrace_.
         std::vector<Score> g_;
-        PaddedAlignMatrix<step> f_;
+        // The insertion recurrence is horizontal. Historical f scores are needed
+        // only through isInsertion(), so retain that exact predicate as one bit.
+        std::vector<Score> insertionLeft_;
+        std::vector<uint64_t> insertionTrace_;
+        std::size_t insertionWordsPerRow_ = 0;
         PaddedAlignMatrix<step> e_;
 
         std::vector<typename PenaltyMatrix::QueryChar> query_;
@@ -58,6 +64,7 @@ namespace dagAligner
             : penaltyMatrix_(penaltyMatrix)
             , gapOpen_(gapOpen)
             , gapExt_(gapExt)
+            , gapOpeningRepresentable_(Score(int(gapOpen) + int(gapExt)) == int(gapOpen) + int(gapExt))
         {
         }
 
@@ -106,9 +113,8 @@ namespace dagAligner
                 return false;
             }
 
-            const Score insExtScore = v_.at(q, t) - f_.at(q - 1, t);
-            const Score insOpenScore = v_.at(q, t) - v_.at(q - 1, t);
-            return gapExt_ == insExtScore || gapOpen_ + gapExt_ == insOpenScore;
+            const std::size_t word = (t + 1) * insertionWordsPerRow_ + q / 64;
+            return (insertionTrace_[word] >> (q % 64)) & uint64_t(1);
         }
 
         bool isDeletion(int q, int t, int p) const
@@ -163,7 +169,11 @@ namespace dagAligner
 
             v_.reset(qLen, tLen);
             g_.resize((qLen + step - 1) / step * step);
-            f_.reset(qLen, tLen);
+            insertionLeft_.resize(std::size_t(tLen) + 1);
+            insertionLeft_.front() = 0;
+            std::fill(insertionLeft_.begin() + 1, insertionLeft_.end(), SCORE_MIN);
+            insertionWordsPerRow_ = (std::size_t(qLen) + 63) / 64;
+            insertionTrace_.resize(insertionWordsPerRow_ * (std::size_t(tLen) + 1));
             e_.reset(qLen, tLen);
 
             // top left must be 0 and never change
@@ -171,7 +181,7 @@ namespace dagAligner
             {
                 throw std::logic_error("Incorrectly initialized v_");
             }
-            if (f_.at(-1, -1))
+            if (insertionLeft_.front())
             {
                 throw std::logic_error("Incorrectly initialized f_");
             }
@@ -190,13 +200,13 @@ namespace dagAligner
                     {
                         const int p = *prevNodeIndexIt;
                         v_.at(-1, t) = std::max(v_.at(-1, t), Score(v_.at(-1, p) + gapOpen_ + gapExt_));
-                        f_.at(-1, t) = std::max(v_.at(-1, t), Score(f_.at(-1, p) + gapOpen_ + gapExt_));
+                        insertionLeft_[t + 1] = std::max(v_.at(-1, t), Score(insertionLeft_[p + 1] + gapOpen_ + gapExt_));
                     }
                 }
                 else
                 {
                     v_.at(-1, t) = 0;
-                    f_.at(-1, t) = 0;
+                    insertionLeft_[t + 1] = 0;
                 }
             }
 
@@ -205,6 +215,24 @@ namespace dagAligner
             {
                 v_.at(q, -1) = v_.at(q - 1, -1) + gapOpen_ + gapExt_;
                 e_.at(q, -1) = e_.at(q - 1, -1) + gapOpen_ + gapExt_;
+            }
+
+            // Preserve the query boundary's observable insertion predicates too.
+            Score previousF = insertionLeft_.front();
+            for (int start = 0; start < qLen;)
+            {
+                uint64_t trace = 0;
+                const int end = start + std::min(64, qLen - start);
+                for (int q = start; q < end; ++q)
+                {
+                    const Score insExtScore = v_.at(q, -1) - previousF;
+                    const Score insOpenScore = v_.at(q, -1) - v_.at(q - 1, -1);
+                    const bool insertion = gapExt_ == insExtScore || gapOpen_ + gapExt_ == insOpenScore;
+                    trace |= uint64_t(insertion) << (q - start);
+                    previousF = SCORE_MIN;
+                }
+                insertionTrace_[start / 64] = trace;
+                start = end;
             }
         }
 
@@ -299,15 +327,32 @@ namespace dagAligner
         void recomputeForInsertion(int qLen, int t)
         {
             Score* v = v_.row(0, t);
-            Score* f = f_.row(0, t);
-            Score* fp = f_.row(-1, t);
-            Score* vp = v_.row(-1, t);
-
-            // cannot be vectorized since insertion is computed horisontally
-            for (int i = 0; i < qLen; ++i)
+            Score previousF = insertionLeft_[t + 1];
+            Score previousV = v_.at(-1, t);
+            for (int start = 0; start < qLen;)
             {
-                f[i] = std::max<Score>(f[i], std::max<Score>((fp[i] + gapExt_), (vp[i] + gapOpen_ + gapExt_)));
-                v[i] = std::max(v[i], f[i]);
+                uint64_t trace = 0;
+                const int end = start + std::min(64, qLen - start);
+                for (int i = start; i < end; ++i)
+                {
+                    // f at an unprocessed interior cell is SCORE_MIN. Preserve
+                    // each original Score conversion before comparing the terms.
+                    const Score extension = previousF + gapExt_;
+                    const Score opening = previousV + gapOpen_ + gapExt_;
+                    const Score currentF = std::max(extension, opening);
+                    const Score currentV = std::max(v[i], currentF);
+                    // Equality of modular score differences is equality with the
+                    // original narrowed terms. V >= both terms; if the promoted
+                    // opening sum is representable, either equality means V == F.
+                    const Score traceScore = gapOpeningRepresentable_ ? currentF : extension;
+                    const bool insertion = currentV == traceScore;
+                    trace |= uint64_t(insertion) << (i - start);
+                    v[i] = currentV;
+                    previousF = currentF;
+                    previousV = currentV;
+                }
+                insertionTrace_[(t + 1) * insertionWordsPerRow_ + start / 64] = trace;
+                start = end;
             }
         }
 

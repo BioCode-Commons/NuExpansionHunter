@@ -1,3 +1,4 @@
+// Modified for NuExpansionHunter (2026): transfer cached mates without copying sequence buffers.
 //
 // Expansion Hunter
 // Copyright 2016-2019 Illumina, Inc.
@@ -268,8 +269,8 @@ SampleFindings htsStreamingSampleAnalysis(
             unpairedReads.emplace(std::move(read));
             continue;
         }
-        Read mate = std::move(*mateIterator);
-        unpairedReads.erase(mateIterator);
+        auto mateNode = unpairedReads.extract(mateIterator);
+        Read mate = std::move(mateNode.value());
 
         const int64_t readEnd = readStreamer.currentReadPosition() + read.sequence().length();
         const int64_t mateEnd = readStreamer.currentMatePosition() + mate.sequence().length();

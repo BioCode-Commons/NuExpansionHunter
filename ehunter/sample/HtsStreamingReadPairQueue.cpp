@@ -39,9 +39,10 @@ bool HtsStreamingReadPairQueue::insertReadPair(const unsigned locusIndex, ReadPa
         activeLocusAnalyzerQueues_++;
         globalLock.unlock();
 
+        locusAnalyzerQueue.queue.emplace();
         locusAnalyzerQueue.isActive = true;
     }
-    locusAnalyzerQueue.queue.emplace(std::move(readPair));
+    locusAnalyzerQueue.queue->emplace(std::move(readPair));
     return wasInActive;
 }
 
@@ -50,12 +51,13 @@ void HtsStreamingReadPairQueue::getNextReadPair(const unsigned locusIndex, boost
     auto& locusAnalyzerQueue(queues_[locusIndex]);
     std::unique_lock<std::mutex> locusAnalyzerQueueLock(locusAnalyzerQueue.mutex);
 
-    if (locusAnalyzerQueue.queue.empty())
+    if (!locusAnalyzerQueue.queue || locusAnalyzerQueue.queue->empty())
     {
         std::unique_lock<std::mutex> globalLock(mutex_);
         activeLocusAnalyzerQueues_--;
         globalLock.unlock();
 
+        locusAnalyzerQueue.queue = boost::none;
         locusAnalyzerQueue.isActive = false;
         locusAnalyzerQueueLock.unlock();
 
@@ -64,8 +66,8 @@ void HtsStreamingReadPairQueue::getNextReadPair(const unsigned locusIndex, boost
     }
     else
     {
-        readPair = std::move(locusAnalyzerQueue.queue.front());
-        locusAnalyzerQueue.queue.pop();
+        readPair = std::move(locusAnalyzerQueue.queue->front());
+        locusAnalyzerQueue.queue->pop();
     }
 }
 
