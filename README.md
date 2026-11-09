@@ -273,7 +273,7 @@ flowchart TB
 ### Roadmap
 
 - Reduce per-sample processing time and investigate the 8-core performance difference.
-- Further compact seed and path storage; target less than 300 GB RAM for a 5-million-locus catalog without slower sample processing. This scale has not yet been tested.
+- Further compact seed and path storage for larger catalogs.
 - Extend output-equivalence checks to more samples, catalogs, and large expansions.
 - Improve build portability and complete the human code audit.
 

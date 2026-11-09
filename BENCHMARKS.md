@@ -32,7 +32,7 @@ The first two columns correspond to the `catalog_graph_seconds` and `catalog_ind
 
 Preparing this catalog took **490.755 seconds**, with **2.617 GiB peak RSS**, and produced a **13,402,416,541-byte archive** (12.482 GiB). Preparation used one application thread inside an eight-core allocation: **1.091 allocated CPU-hours** and **0.135 process CPU-hours**. This cost is paid once for a compatible catalog, reference, contig dictionary, index configuration, and builder source version; it is not included in the per-sample table. A first sample that also requires preparation pays both costs.
 
-The archive maps graphs, strings, locus and variant metadata, 10-mer membership keys, 14-mer path indexes, and interval indexes. Sample evidence and alignment workspaces remain separate. MMAP does not impose a fixed RSS limit: file pages and mutable sample state both contribute to resident memory. No 5-million-locus run or sub-300-GB memory result has been measured.
+The archive maps graphs, strings, locus and variant metadata, 10-mer membership keys, 14-mer path indexes, and interval indexes. Sample evidence and alignment workspaces remain separate. MMAP does not impose a fixed RSS limit: file pages and mutable sample state both contribute to resident memory.
 
 ### Latest output validation
 
