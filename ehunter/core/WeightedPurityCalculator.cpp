@@ -133,17 +133,21 @@ WeightedPurityCalculator::WeightedPurityCalculator(const std::string& repeatUnit
 double WeightedPurityCalculator::score(const string& querySequence) const
 {
     vector<double> scores;
-    for (const auto& repeatUnit : repeatUnits_)
-    {
-        scores.push_back(score(repeatUnit, querySequence));
-    }
+    if (!prepared_.empty())
+        for (auto repeatUnit : prepared_)
+            scores.push_back(score(repeatUnit, querySequence));
+    else
+        for (const auto& repeatUnit : repeatUnits_)
+        {
+            scores.push_back(score(repeatUnit, querySequence));
+        }
 
     const double weightedPurity
         = *std::max_element(scores.begin(), scores.end()) / static_cast<double>(querySequence.length());
     return weightedPurity;
 }
 
-double WeightedPurityCalculator::score(const std::string& repeatUnit, const std::string& querySequence) const
+double WeightedPurityCalculator::score(graphtools::TextView repeatUnit, const std::string& querySequence) const
 {
     double score = 0;
     for (int position = 0; position != static_cast<int>(querySequence.length()); ++position)

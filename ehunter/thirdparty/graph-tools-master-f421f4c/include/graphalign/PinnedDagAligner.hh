@@ -322,7 +322,7 @@ private:
             const NodeId currentNodeId = shouldVisit.front();
             shouldVisit.pop_front();
 
-            const std::string& currentNodeSeq = graph.nodeSeq(currentNodeId);
+            const auto currentNodeSeq = graph.nodeSeq(currentNodeId);
             const int currentNodeSeqOffset = nodeStartSeqOffset[currentNodeId];
 
             // avoid dealing with individual node startNodeOffset (only start node has it)
@@ -332,7 +332,7 @@ private:
                 const int successorSeqOffset
                     = -1 == currentNodeSeqOffset ? 0 : currentNodeSeqOffset + currentNodeSeq.length();
                 // sequence does not terminate at this node, enqueue successors
-                const std::set<NodeId>& successors = graph.successors(currentNodeId);
+                const auto successors = graph.successors(currentNodeId);
                 for (const NodeId successorId : successors)
                 {
                     const auto seenSuccessor = nodeStartSeqOffset.find(successorId);
@@ -370,7 +370,7 @@ private:
                 throw std::logic_error("node should not be in the subgraph");
             }
 
-            const std::set<NodeId>& successors = graph.successors(nodeIdOffset.first);
+            const auto successors = graph.successors(nodeIdOffset.first);
             if (successors.end() != successors.find(nodeIdOffset.first))
             {
                 const std::size_t nodeSeqLen = graph.nodeSeq(nodeIdOffset.first).length();
@@ -398,9 +398,9 @@ private:
         linkPredecessors(graph, originalIds, mappedIds, idEdges);
 
         // group edges by successor node
-        std::sort(idEdges.begin(), idEdges.end(), [](const IdEdge& left, const IdEdge& right) {
-            return left.second < right.second || (left.second == right.second && left.first < right.first);
-        });
+        std::sort(
+            idEdges.begin(), idEdges.end(), [](const IdEdge& left, const IdEdge& right)
+            { return left.second < right.second || (left.second == right.second && left.first < right.first); });
 
         return idEdges;
     }
@@ -538,7 +538,7 @@ private:
         for (const MappedId mappedId : nodeIds)
         {
             const NodeId originalId = originalIds.at(mappedId);
-            const std::string& nodeSeq = graph.nodeSeq(originalId);
+            const auto nodeSeq = graph.nodeSeq(originalId);
             if (!startOffset || -1 != nodeStartSeqOffset.at(originalId))
             {
                 const std::size_t nodePartLen = nodeSeq.length() - startOffset;

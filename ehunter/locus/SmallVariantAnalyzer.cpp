@@ -73,7 +73,7 @@ std::unique_ptr<VariantFindings> SmallVariantAnalyzer::analyze(const LocusStats&
     AlleleCheckSummary refAlleleStatus(AlleleStatus::kUncertain, 0);
     AlleleCheckSummary altAlleleStatus(AlleleStatus::kUncertain, 0);
 
-    if (stats.meanReadLength() == 0 || stats.depth() < genotyperParams_.minLocusCoverage)
+    if (stats.meanReadLength() == 0 || stats.depth() < genotyperParameters().minLocusCoverage)
     {
         genotypeFilter = genotypeFilter | GenotypeFilter::kLowDepth;
     }
@@ -85,18 +85,18 @@ std::unique_ptr<VariantFindings> SmallVariantAnalyzer::analyze(const LocusStats&
         switch (variantSubtype_)
         {
         case VariantSubtype::kInsertion:
-            altNode = nodeIds_.front();
+            altNode = nodeIds().front();
             break;
         case VariantSubtype::kDeletion:
             altNode = ClassifierOfAlignmentsToVariant::kInvalidNodeId;
             break;
         case VariantSubtype::kSwap:
-            altNode = (refNode == nodeIds_.front()) ? nodeIds_.back() : nodeIds_.front();
+            altNode = (refNode == nodeIds().front()) ? nodeIds().back() : nodeIds().front();
             break;
         case VariantSubtype::kSMN:
-            if (refNode != nodeIds_.front())
+            if (refNode != nodeIds().front())
                 throw std::logic_error("Invalid SMN specification");
-            altNode = nodeIds_.back();
+            altNode = nodeIds().back();
             break;
         default:
             std::ostringstream encoding;
@@ -109,8 +109,8 @@ std::unique_ptr<VariantFindings> SmallVariantAnalyzer::analyze(const LocusStats&
 
         const double haplotypeDepth = stats.alleleCount() == AlleleCount::kTwo ? stats.depth() / 2 : stats.depth();
         const int minBreakpointSpanningReads = stats.alleleCount() == AlleleCount::kTwo
-            ? genotyperParams_.minBreakpointSpanningReads
-            : (genotyperParams_.minBreakpointSpanningReads / 2);
+            ? genotyperParameters().minBreakpointSpanningReads
+            : (genotyperParameters().minBreakpointSpanningReads / 2);
 
         SmallVariantGenotyper smallVariantGenotyper(haplotypeDepth, stats.alleleCount());
         genotype = smallVariantGenotyper.genotype(refNodeSupport, altNodeSupport);

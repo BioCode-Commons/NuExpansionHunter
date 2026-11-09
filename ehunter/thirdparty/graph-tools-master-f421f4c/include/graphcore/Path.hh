@@ -40,7 +40,7 @@ public:
     typedef std::vector<NodeId>::const_iterator const_iterator;
 
     /// Checks if the inputs define a well-formed path.
-    Path(const Graph* graph_raw_ptr, int32_t start_position, const std::vector<NodeId>& nodes, int32_t end_position);
+    Path(const Graph* graph_raw_ptr, int32_t start_position, std::vector<NodeId> nodes, int32_t end_position);
     ~Path() = default;
 
     bool operator==(const Path& other) const;

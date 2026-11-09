@@ -20,6 +20,7 @@
 //
 
 #pragma once
+#include "graphalign/KmerIndex.hh"
 
 #include <fstream>
 #include <memory>
@@ -112,6 +113,7 @@ private:
 class HeuristicParameters
 {
 public:
+    std::shared_ptr<const graphtools::KmerIndexArchive> catalogIndexes;
     HeuristicParameters(
         int regionExtensionLength, int qualityCutoffForGoodBaseCall, bool skipUnaligned,
         const graphtools::AlignerType alignerType, int kmerLenForAlignment = 14, int paddingLength = 10,
@@ -189,6 +191,8 @@ public:
 
     int threadCount;
     bool disableBamletOutput;
+    std::string catalogCache;
+    bool prepareCatalogCache = false;
 
 private:
     InputPaths inputPaths_;

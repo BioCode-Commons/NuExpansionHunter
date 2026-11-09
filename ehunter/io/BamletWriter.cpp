@@ -60,25 +60,22 @@ static htsFile* openBamletFile(const string& path, int compressionThreads)
     return file.release();
 }
 
-static GraphReferenceMapping generateMapping(const ReferenceContigInfo& contigInfo, const LocusSpecification& locusSpec)
+static void validateMapping(const ReferenceContigInfo& contigInfo, const LocusSpecification& locusSpec)
 {
-    GraphReferenceMapping mapping(&locusSpec.regionGraph());
-
     for (const auto& nodeAndRegion : locusSpec.referenceProjectionOfNodes())
     {
         auto nodeId = nodeAndRegion.first;
         const auto& region = nodeAndRegion.second;
         const auto& regionEncoding = encode(contigInfo, region);
         ReferenceInterval referenceInterval = ReferenceInterval::parseRegion(regionEncoding);
-        mapping.addMapping(nodeId, referenceInterval);
+        graphtools::NodeReferenceMapping mapping(locusSpec.regionGraph(), nodeId, referenceInterval);
+        (void)mapping;
     }
-
-    return mapping;
 }
 
 // Set a base in the bit-backed read sequence representation of a BAM record. (4 bits per base).
 // Sets position i to base c in sequence s.
-#define bam1_seq_seti(s, i, c) ((s)[(i) >> 1] = ((s)[(i) >> 1] & 0xf << (((i)&1) << 2)) | (c) << ((~(i)&1) << 2))
+#define bam1_seq_seti(s, i, c) ((s)[(i) >> 1] = ((s)[(i) >> 1] & 0xf << (((i) & 1) << 2)) | (c) << ((~(i) & 1) << 2))
 
 BamletWriter::BamletWriter(
     const string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
@@ -86,11 +83,13 @@ BamletWriter::BamletWriter(
     : filePtr_(openBamletFile(bamletPath, compressionThreads), hts_close)
     , bamHeader_(bam_hdr_init(), bam_hdr_destroy)
     , contigInfo_(contigInfo)
+    , catalog_(regionCatalog)
 {
-    for (const auto& locusSpec : regionCatalog)
-    {
-        graphReferenceMappings_.emplace(locusSpec.locusId(), generateMapping(contigInfo, locusSpec));
-    }
+    if (!regionCatalog.mappedBytes().data)
+        for (const auto& locusSpec : regionCatalog)
+        {
+            validateMapping(contigInfo, locusSpec);
+        }
 
     writeHeader();
     writeThread_ = std::thread(&BamletWriter::writeHtsAlignments, this);
@@ -99,7 +98,13 @@ BamletWriter::BamletWriter(
 BamletWriter::~BamletWriter()
 {
     // Explicit finish() reports errors on the main path. Unwinding still owns cleanup.
-    try { finish(); } catch (...) {}
+    try
+    {
+        finish();
+    }
+    catch (...)
+    {
+    }
 }
 
 void BamletWriter::finish()
@@ -110,8 +115,10 @@ void BamletWriter::finish()
         writeThread_.join();
     }
     const int closeResult = filePtr_ ? hts_close(filePtr_.release()) : 0;
-    if (writeError_) std::rethrow_exception(writeError_);
-    if (closeResult != 0) throw std::runtime_error("Cannot close alignment output");
+    if (writeError_)
+        std::rethrow_exception(writeError_);
+    if (closeResult != 0)
+        throw std::runtime_error("Cannot close alignment output");
 }
 
 void BamletWriter::writeHeader()
@@ -140,11 +147,28 @@ void BamletWriter::writeHeader()
 }
 
 void BamletWriter::write(
-    const string& locusId, const string& fragmentName, const string& query, bool isFirstMate, bool isReversed,
+    graphtools::TextView locusId, const string& fragmentName, const string& query, bool isFirstMate, bool isReversed,
     bool isMateReversed, const GraphAlignment& alignment)
 {
-    const GraphReferenceMapping& referenceMapping = graphReferenceMappings_.at(locusId);
-    auto optionalReferenceInterval = referenceMapping.map(alignment.path());
+    const auto locusIndex = catalog_.findLocusIndex(locusId);
+    boost::optional<ReferenceInterval> optionalReferenceInterval;
+    for (const auto& nodePath : graphtools::generateSubpathForEachNode(alignment.path()))
+    {
+        const auto node = nodePath.nodeIds().front();
+        if (node >= catalog_.nodeCount(locusIndex))
+            throw std::logic_error("Invalid node " + std::to_string(node));
+        const auto region = catalog_.referenceRegion(locusIndex, node);
+        if (region)
+        {
+            if (nodePath.startPosition() >= region->length())
+                throw std::logic_error("Cannot map position outside node");
+            optionalReferenceInterval.emplace(
+                contigInfo_.getContigName(region->contigIndex()), region->start() + nodePath.startPosition(),
+                region->start() + nodePath.startPosition());
+        }
+        if (optionalReferenceInterval)
+            break;
+    }
 
     if (optionalReferenceInterval)
     {
@@ -161,7 +185,7 @@ void BamletWriter::write(
 static string summarizeAlignment(const GraphAlignment& alignment)
 {
     const vector<string> customTagComponents
-        = { alignment.path().graphRawPtr()->graphId, to_string(alignment.path().startPosition()),
+        = { alignment.path().graphRawPtr()->graphId(), to_string(alignment.path().startPosition()),
             alignment.generateCigar() };
 
     return boost::algorithm::join(customTagComponents, ",");
@@ -275,7 +299,10 @@ void BamletWriter::writeHtsAlignments()
                 if (bam_write1(filePtr_->fp.bgzf, htsAlignmentPtr) <= 0)
                     throw std::logic_error("Cannot write alignment");
             }
-            catch (...) { writeError_ = std::current_exception(); }
+            catch (...)
+            {
+                writeError_ = std::current_exception();
+            }
         }
         // Continue draining after failure so locus producers cannot deadlock.
         bam_destroy1(htsAlignmentPtr);

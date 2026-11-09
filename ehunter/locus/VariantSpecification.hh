@@ -72,40 +72,98 @@ struct VariantClassification
     VariantSubtype subtype;
 };
 
+struct MappedVariant
+{
+    graphtools::Slice id, nodes;
+    GenomicRegion referenceLocus;
+    VariantClassification classification;
+    int64_t refNode;
+    graphtools::Slice purity;
+};
+
 class VariantSpecification
 {
 public:
+    VariantSpecification(graphtools::MappedBytes bytes, const MappedVariant* record)
+        : mapped_(std::move(bytes))
+        , record_(record)
+    {
+    }
     VariantSpecification(
         std::string id, VariantClassification classification, GenomicRegion referenceLocus,
         std::vector<graphtools::NodeId> nodes, boost::optional<graphtools::NodeId> optionalRefNode)
-        : id_(std::move(id))
-        , classification_(classification)
-        , referenceLocus_(std::move(referenceLocus))
-        , nodes_(std::move(nodes))
-        , optionalRefNode_(optionalRefNode)
+        : owned_(std::make_shared<Owned>(
+              Owned { std::move(id), classification, referenceLocus, std::move(nodes), optionalRefNode }))
     {
         assertConsistency();
     }
 
-    const std::string& id() const { return id_; }
-    VariantClassification classification() const { return classification_; }
-    const GenomicRegion& referenceLocus() const { return referenceLocus_; }
-    const std::vector<graphtools::NodeId>& nodes() const { return nodes_; }
-    const boost::optional<graphtools::NodeId>& optionalRefNode() const { return optionalRefNode_; }
+    graphtools::TextView id() const { return record_ ? mapped_.text(record_->id) : graphtools::TextView(owned_->id); }
+    VariantClassification classification() const { return record_ ? record_->classification : owned_->classification; }
+    const GenomicRegion& referenceLocus() const& { return record_ ? record_->referenceLocus : owned_->referenceLocus; }
+    GenomicRegion referenceLocus() const&& { return record_ ? record_->referenceLocus : owned_->referenceLocus; }
+    void retainOwner(std::shared_ptr<const void> owner)
+    {
+        if (record_)
+            mapped_.owner = std::move(owner);
+    }
+    void requirePreparedAddress(const void* address, size_t length) const
+    {
+        const auto start = reinterpret_cast<uintptr_t>(mapped_.data);
+        const auto value = reinterpret_cast<uintptr_t>(address);
+        if (!record_ || !mapped_.owner || value < start || value - start > mapped_.size
+            || length > mapped_.size - (value - start))
+            throw std::logic_error("Prepared analyzer parameters must belong to its retained catalog mapping");
+    }
+    graphtools::CatalogRange<graphtools::TextView> purityPermutations() const
+    {
+        if (!record_)
+            return {};
+        return { mapped_.data,
+                 record_->purity.count,
+                 [](const void* base, size_t i, const void* aux, size_t)
+                 {
+                     const auto slice = static_cast<const graphtools::Slice*>(aux)[i];
+                     return graphtools::TextView(static_cast<const char*>(base) + slice.offset, slice.count);
+                 },
+                 mapped_.array<graphtools::Slice>(record_->purity),
+                 mapped_.size,
+                 mapped_.owner };
+    }
+    graphtools::CatalogRange<graphtools::NodeId> nodes() const
+    {
+        if (record_)
+            return graphtools::CatalogRange<graphtools::NodeId>::fromArray(
+                mapped_.array<graphtools::NodeId>(record_->nodes), record_->nodes.count, mapped_.owner);
+        return graphtools::CatalogRange<graphtools::NodeId>::fromVector(owned_->nodes, owned_);
+    }
+    boost::optional<graphtools::NodeId> optionalRefNode() const
+    {
+        if (!record_)
+            return owned_->optionalRefNode;
+        return record_->refNode < 0 ? boost::optional<graphtools::NodeId>()
+                                    : boost::optional<graphtools::NodeId>(record_->refNode);
+    }
 
     bool operator==(const VariantSpecification& other) const
     {
-        return id_ == other.id_ && classification_ == other.classification() && nodes_ == other.nodes_;
+        return id() == other.id() && classification() == other.classification() && nodes() == other.nodes();
     }
 
     void assertConsistency() const;
 
 private:
-    std::string id_;
-    VariantClassification classification_;
-    GenomicRegion referenceLocus_;
-    std::vector<graphtools::NodeId> nodes_;
-    boost::optional<graphtools::NodeId> optionalRefNode_;
+    struct Owned
+    {
+        std::string id;
+        VariantClassification classification;
+        GenomicRegion referenceLocus;
+        std::vector<graphtools::NodeId> nodes;
+        boost::optional<graphtools::NodeId> optionalRefNode;
+    };
+    std::shared_ptr<const Owned> owned_;
+    graphtools::MappedBytes mapped_;
+    const MappedVariant* record_ = nullptr;
 };
 
 std::ostream& operator<<(std::ostream& out, VariantType type);

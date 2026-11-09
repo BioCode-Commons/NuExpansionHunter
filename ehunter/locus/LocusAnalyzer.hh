@@ -62,9 +62,12 @@ public:
     using Align = graphtools::GraphAlignment;
     using Node = graphtools::NodeId;
 
-    LocusAnalyzer(LocusSpecification locusSpec, const HeuristicParameters& params, AlignWriterPtr writer);
+    // A value handle shares owned catalog storage or borrows mapped payload.
+    LocusAnalyzer(
+        LocusSpecification locusSpec, const HeuristicParameters& params, AlignWriterPtr writer,
+        uint64_t archiveSlot = 0);
 
-    const std::string& locusId() const { return locusSpec_.locusId(); }
+    graphtools::TextView locusId() const { return locusSpec_.locusId(); }
     const LocusSpecification& locusSpec() const { return locusSpec_; }
 
     void processMates(Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector);

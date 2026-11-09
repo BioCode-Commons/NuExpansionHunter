@@ -59,12 +59,14 @@ struct UserParameters
     string alignerType;
     int regionExtensionLength;
     int qualityCutoffForGoodBaseCall = 20;
-    bool skipUnaligned;
+    bool skipUnaligned = false;
 
     string analysisMode;
     string logLevel;
     int threadCount;
     bool disableBamletOutput = false;
+    string catalogCache;
+    bool prepareCatalogCache = false;
 };
 
 boost::optional<UserParameters> tryParsingUserParameters(int argc, char** argv)
@@ -91,6 +93,8 @@ boost::optional<UserParameters> tryParsingUserParameters(int argc, char** argv)
         ("aligner,a", po::value<string>(&params.alignerType)->default_value("dag-aligner"), "Specify which aligner to use (dag-aligner or path-aligner)")
         ("analysis-mode,m", po::value<string>(&params.analysisMode)->default_value("seeking"), "Specify which analysis workflow to use (seeking or streaming)")
         ("threads,n", po::value(&params.threadCount)->default_value(1), "Number of threads to use")
+        ("catalog-cache", po::value<string>(&params.catalogCache), "Read-only prepared catalog k-mer archive")
+        ("prepare-catalog-cache", po::bool_switch(&params.prepareCatalogCache), "Build --catalog-cache and exit before processing reads")
     ;
     // clang-format on
 
@@ -175,6 +179,8 @@ static void assertIndexExists(const string& htsFilePath)
 
 void assertValidity(const UserParameters& userParameters)
 {
+    if (userParameters.prepareCatalogCache && userParameters.catalogCache.empty())
+        throw std::invalid_argument("--prepare-catalog-cache requires --catalog-cache");
     // Validate analysis Mode:
     if ((userParameters.analysisMode != "seeking") and (userParameters.analysisMode != "streaming"))
     {
@@ -345,9 +351,12 @@ boost::optional<ProgramParameters> tryLoadingProgramParameters(int argc, char** 
         throw std::invalid_argument(message);
     }
 
-    return ProgramParameters(
+    ProgramParameters result(
         inputPaths, outputPaths, sampleParameters, heuristicParameters, analysisMode, logLevel, userParams.threadCount,
         userParams.disableBamletOutput);
+    result.catalogCache = userParams.catalogCache;
+    result.prepareCatalogCache = userParams.prepareCatalogCache;
+    return result;
 }
 
 }

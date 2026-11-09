@@ -52,8 +52,20 @@ public:
     RepeatAlignmentClassifier(const graphtools::Graph& graph, int32_t repeat_node_id);
     AlignmentType Classify(const GraphAlignment& alignment) const;
     GraphAlignment GetCanonicalAlignment(const std::list<GraphAlignment>& alignments) const;
-    const std::set<graphtools::NodeId>& leftFlankNodeIds() const { return left_flank_node_ids_; }
-    const std::set<graphtools::NodeId>& rightFlankNodeIds() const { return right_flank_node_ids_; }
+    std::set<graphtools::NodeId> leftFlankNodeIds() const
+    {
+        auto view = leftView();
+        std::set<graphtools::NodeId> result(view.begin(), view.end());
+        result.erase(repeat_node_id_);
+        return result;
+    }
+    std::set<graphtools::NodeId> rightFlankNodeIds() const
+    {
+        auto view = rightView();
+        std::set<graphtools::NodeId> result(view.begin(), view.end());
+        result.erase(repeat_node_id_);
+        return result;
+    }
 
     bool operator==(const RepeatAlignmentClassifier& other) const;
 
@@ -61,6 +73,18 @@ private:
     int32_t repeat_node_id_;
     std::set<graphtools::NodeId> left_flank_node_ids_;
     std::set<graphtools::NodeId> right_flank_node_ids_;
+    graphtools::CatalogRange<graphtools::NodeId> mappedLeft_, mappedRight_;
+    bool mapped_ = false;
+    graphtools::CatalogRange<graphtools::NodeId> leftView() const
+    {
+        return mapped_ ? mappedLeft_
+                       : graphtools::CatalogRange<graphtools::NodeId>::fromContainer(left_flank_node_ids_);
+    }
+    graphtools::CatalogRange<graphtools::NodeId> rightView() const
+    {
+        return mapped_ ? mappedRight_
+                       : graphtools::CatalogRange<graphtools::NodeId>::fromContainer(right_flank_node_ids_);
+    }
 };
 
 }

@@ -63,7 +63,7 @@ public:
 
     /// Thread safe
     void write(
-        const std::string& locusId, const std::string& fragmentName, const std::string& query, bool isFirstMate,
+        graphtools::TextView locusId, const std::string& fragmentName, const std::string& query, bool isFirstMate,
         bool isReversed, bool isMateReversed, const graphtools::GraphAlignment& alignment) override;
 
 private:
@@ -81,7 +81,7 @@ private:
     std::unique_ptr<bam_hdr_t, decltype(&bam_hdr_destroy)> bamHeader_;
     ReferenceContigInfo contigInfo_;
 
-    std::unordered_map<std::string, graphtools::GraphReferenceMapping> graphReferenceMappings_;
+    const RegionCatalog& catalog_;
 
     ConcurrentQueue<bam1_t*> writeQueue_;
     std::thread writeThread_;

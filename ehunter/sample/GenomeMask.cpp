@@ -21,6 +21,7 @@
 
 #include "GenomeMask.hh"
 
+#include "sample/PreparedIntervals.hh"
 #include <cassert>
 
 namespace ehunter
@@ -37,6 +38,16 @@ inline size_t binPos(int64_t pos)
 
 bool GenomeMask::query(int32_t contigId, int64_t pos) const
 {
+    if (contigId < 0 || pos < 0)
+        return false;
+    if (prepared_.data)
+    {
+        if (uint64_t(contigId) >= roots_.count)
+            return false;
+        const auto mask = prepared_.array<PreparedContigIntervals>(roots_)[contigId].mask;
+        const auto bin = uint64_t(pos) >> 10;
+        return bin / 64 < mask.count && (prepared_.array<uint64_t>(mask)[bin / 64] & (uint64_t(1) << (bin % 64)));
+    }
     if (contigId >= static_cast<int>(mask_.size()))
     {
         return false;

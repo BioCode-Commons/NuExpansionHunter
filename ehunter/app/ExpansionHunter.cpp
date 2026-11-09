@@ -42,11 +42,13 @@
 #include "io/CatalogLoading.hh"
 #include "io/JsonWriter.hh"
 #include "io/ParameterLoading.hh"
+#include "io/PreparedCatalog.hh"
 #include "io/SampleStats.hh"
 #include "io/VcfWriter.hh"
 #include "locus/VariantFindings.hh"
 #include "sample/HtsSeekingSampleAnalysis.hh"
 #include "sample/HtsStreamingSampleAnalysis.hh"
+#include <chrono>
 
 namespace spd = spdlog;
 
@@ -114,8 +116,27 @@ int main(int argc, char** argv)
         FastaReference reference(inputPaths.reference(), extractReferenceContigInfo(inputPaths.htsFile()));
 
         spdlog::info("Loading variant catalog from disk {}", inputPaths.catalog());
-        const HeuristicParameters& heuristicParams = params.heuristics();
-        const RegionCatalog regionCatalog = loadLocusCatalogFromDisk(inputPaths.catalog(), heuristicParams, reference);
+        const auto catalogStart = std::chrono::steady_clock::now();
+        HeuristicParameters heuristicParams = params.heuristics();
+        const RegionCatalog regionCatalog = (!params.catalogCache.empty() && !params.prepareCatalogCache)
+            ? loadPreparedCatalog(params.catalogCache, inputPaths, heuristicParams, reference.contigInfo())
+            : loadLocusCatalogFromDisk(inputPaths.catalog(), heuristicParams, reference);
+        spdlog::info(
+            "Phase catalog_graph_seconds={}",
+            std::chrono::duration<double>(std::chrono::steady_clock::now() - catalogStart).count());
+
+        if (params.prepareCatalogCache)
+        {
+            spdlog::info("Preparing reusable catalog k-mer indexes");
+            prepareCatalogCache(
+                params.catalogCache, regionCatalog, inputPaths, heuristicParams, reference.contigInfo());
+            spdlog::info("Catalog k-mer preparation complete");
+            return 0;
+        }
+        if (!params.catalogCache.empty())
+        {
+            heuristicParams.catalogIndexes = regionCatalog.archive();
+        }
 
         const OutputPaths& outputPaths = params.outputPaths();
 
@@ -127,7 +148,8 @@ int main(int argc, char** argv)
         }
         else
         {
-            bamletOutput.reset(new BamletWriter(outputPaths.bamlet(), reference.contigInfo(), regionCatalog, params.threadCount));
+            bamletOutput.reset(
+                new BamletWriter(outputPaths.bamlet(), reference.contigInfo(), regionCatalog, params.threadCount));
             bamletWriter = bamletOutput;
         }
 
@@ -146,12 +168,17 @@ int main(int argc, char** argv)
         }
 
         spdlog::info("Writing output to disk");
+        const auto outputStart = std::chrono::steady_clock::now();
         VcfWriter vcfWriter(sampleParams.id(), reference, regionCatalog, sampleFindings);
         writeToFile(outputPaths.vcf(), vcfWriter);
 
         JsonWriter jsonWriter(sampleParams, reference.contigInfo(), regionCatalog, sampleFindings);
         writeToFile(outputPaths.json(), jsonWriter);
-        if (bamletOutput) bamletOutput->finish();
+        if (bamletOutput)
+            bamletOutput->finish();
+        spdlog::info(
+            "Phase output_seconds={}",
+            std::chrono::duration<double>(std::chrono::steady_clock::now() - outputStart).count());
     }
     catch (const std::exception& e)
     {

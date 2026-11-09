@@ -73,6 +73,7 @@ add_library(ExpansionHunterLib
         genotyping/TwoAlleleStrGenotyper.hh genotyping/TwoAlleleStrGenotyper.cpp
         io/BamletWriter.hh io/BamletWriter.cpp
         io/CatalogLoading.hh io/CatalogLoading.cpp
+        io/PreparedCatalog.hh io/PreparedCatalog.cpp
         io/GraphBlueprint.hh io/GraphBlueprint.cpp
         io/JsonWriter.hh io/JsonWriter.cpp
         io/LocusSpecDecoding.hh io/LocusSpecDecoding.cpp
@@ -123,12 +124,28 @@ target_link_libraries(ExpansionHunterLib PUBLIC
         spdlog::spdlog
         absl::flat_hash_set)
 
+# Prepared catalog semantics follow the source, not just the public EH version.
+# Reject an archive produced by a different implementation even when its input
+# paths and binary layout happen to match.
+file(GLOB_RECURSE PREPARED_SCHEMA_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.hh" "${CMAKE_CURRENT_SOURCE_DIR}/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+list(FILTER PREPARED_SCHEMA_SOURCES EXCLUDE REGEX "/tests/|Test\\.cpp$")
+list(SORT PREPARED_SCHEMA_SOURCES)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${PREPARED_SCHEMA_SOURCES})
+set(PREPARED_SCHEMA_PARTS "")
+foreach(PREPARED_SOURCE IN LISTS PREPARED_SCHEMA_SOURCES)
+    file(SHA256 "${PREPARED_SOURCE}" PREPARED_SOURCE_HASH)
+    string(APPEND PREPARED_SCHEMA_PARTS "${PREPARED_SOURCE_HASH}")
+endforeach()
+string(SHA256 PREPARED_SCHEMA_ID "${PREPARED_SCHEMA_PARTS}")
+set_property(SOURCE io/PreparedCatalog.cpp PROPERTY COMPILE_DEFINITIONS EH_PREPARED_SCHEMA_ID="${PREPARED_SCHEMA_ID}")
+
 add_executable(ExpansionHunter
         app/ExpansionHunter.cpp
         )
 target_link_libraries(ExpansionHunter ExpansionHunterLib)
 
 add_executable(UnitTests
+        tests/CatalogIndexTest.cpp
         tests/AlignMatrixTest.cpp
         tests/AlignmentClassifierTest.cpp
         tests/AlignmentSummaryTest.cpp

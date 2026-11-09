@@ -42,13 +42,13 @@ TEST(GraphLoading, ValidGraph_Loaded)
 
     Graph const graph = parseGraph(jGraph);
 
-    ASSERT_EQ("TestGraph", graph.graphId);
+    ASSERT_EQ("TestGraph", graph.graphId());
     ASSERT_EQ(jGraph["nodes"].size(), graph.numNodes());
     ASSERT_EQ(jGraph["edges"].size(), graph.numEdges());
     for (size_t i = 0; i != graph.numNodes(); ++i)
     {
-        ASSERT_EQ(jGraph["nodes"][i]["name"], graph.nodeName(i));
-        ASSERT_EQ(jGraph["nodes"][i]["sequence"], graph.nodeSeq(i));
+        ASSERT_EQ(jGraph["nodes"][i]["name"].get<std::string>(), graph.nodeName(i));
+        ASSERT_EQ(jGraph["nodes"][i]["sequence"].get<std::string>(), graph.nodeSeq(i));
     }
     ASSERT_TRUE(graph.hasEdge(0, 1));
     ASSERT_TRUE(graph.hasEdge(1, 2));
@@ -154,7 +154,7 @@ TEST(GraphWriting, Graph_RoundTrip)
     Json jGraph = graphToJson(graph);
     Graph newGraph = parseGraph(jGraph);
 
-    ASSERT_EQ("Small Graph", graph.graphId);
+    ASSERT_EQ("Small Graph", graph.graphId());
     ASSERT_EQ(graph.numNodes(), newGraph.numNodes());
     ASSERT_EQ(graph.numEdges(), newGraph.numEdges());
     for (size_t i = 0; i != graph.numNodes(); ++i)

@@ -53,7 +53,7 @@ list<Path> extendPathStart(const Path& path, int32_t extension_len)
     }
     else
     {
-        const set<NodeId> pred_node_ids = path.graphRawPtr()->predecessors(start_node_id);
+        const auto pred_node_ids = path.graphRawPtr()->predecessors(start_node_id);
         const int32_t leftover_length = extension_len - path.startPosition();
         for (NodeId pred_node_id : pred_node_ids)
         {
@@ -85,7 +85,7 @@ list<Path> extendPathEnd(const Path& path, int32_t extension_len)
     }
     else
     {
-        const set<NodeId> succ_node_ids = path.graphRawPtr()->successors(end_node_id);
+        const auto succ_node_ids = path.graphRawPtr()->successors(end_node_id);
         const int32_t leftover_length = extension_len - max_extension_at_end_node;
         for (NodeId succ_node_id : succ_node_ids)
         {
@@ -125,7 +125,7 @@ Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
     while (moved)
     {
         moved = false;
-        const std::string& node_sequence = graph.nodeSeq(node_in_graph);
+        const auto node_sequence = graph.nodeSeq(node_in_graph);
 
         while (pos_in_query < query.size() && pos_in_node < node_sequence.size()
                && checkIfReferenceBaseMatchesQueryBase(node_sequence.at(pos_in_node), query.at(pos_in_query)))
@@ -152,10 +152,10 @@ Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
             for (auto successor : successors)
             {
                 size_t pos_in_successor = 0;
-                const std::string& successor_sequence = graph.nodeSeq(successor);
+                const auto successor_sequence = graph.nodeSeq(successor);
                 while (pos_in_successor < successor_min_size && pos_in_query + pos_in_successor < query.size()
                        && checkIfReferenceBaseMatchesQueryBase(
-                              successor_sequence.at(pos_in_successor), query[pos_in_query + pos_in_successor]))
+                           successor_sequence.at(pos_in_successor), query[pos_in_query + pos_in_successor]))
                 {
                     ++pos_in_successor;
                 }
@@ -184,7 +184,7 @@ Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
             moved = true;
         }
     }
-    return Path{ &graph, path.startPosition(), nodes, static_cast<int32_t>(pos_in_node) };
+    return Path { &graph, path.startPosition(), nodes, static_cast<int32_t>(pos_in_node) };
 }
 
 Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in_query)
@@ -200,7 +200,7 @@ Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in
     {
         moved = false;
 
-        const std::string& node_sequence = graph.nodeSeq(node_in_graph);
+        const auto node_sequence = graph.nodeSeq(node_in_graph);
 
         while (pos_in_query > 0 && pos_in_node > 0
                && checkIfReferenceBaseMatchesQueryBase(node_sequence.at(pos_in_node - 1), query.at(pos_in_query - 1)))
@@ -225,13 +225,13 @@ Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in
             }
             for (auto predecessor : predecessors)
             {
-                const std::string& predecessor_sequence = graph.nodeSeq(predecessor);
+                const auto predecessor_sequence = graph.nodeSeq(predecessor);
                 size_t pos_in_predecessor = predecessor_sequence.size();
                 size_t match_length = 0;
                 while (pos_in_predecessor > (predecessor_sequence.size() - predecessor_min_size)
                        && pos_in_query - match_length > 0
                        && checkIfReferenceBaseMatchesQueryBase(
-                              predecessor_sequence.at(pos_in_predecessor - 1), query[pos_in_query - match_length - 1]))
+                           predecessor_sequence.at(pos_in_predecessor - 1), query[pos_in_query - match_length - 1]))
                 {
                     --pos_in_predecessor;
                     ++match_length;
@@ -263,7 +263,7 @@ Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in
         }
     }
 
-    return Path{ &graph, static_cast<int32_t>(pos_in_node), nodes, path.endPosition() };
+    return Path { &graph, static_cast<int32_t>(pos_in_node), nodes, path.endPosition() };
 }
 
 Path extendPathMatching(Path path, const std::string& query, size_t& pos_in_query)
@@ -536,7 +536,7 @@ void greedyMerge(std::list<Path>& paths)
             {
                 if (checkPathPrefixSuffixOverlap(*path_a, *path_b))
                 {
-                    const Path merged_a_b{ mergePaths(*path_a, *path_b) };
+                    const Path merged_a_b { mergePaths(*path_a, *path_b) };
                     paths.erase(path_a);
                     paths.erase(path_b);
                     paths.push_back(merged_a_b);
@@ -583,7 +583,7 @@ void exhaustiveMerge(std::list<Path>& paths)
                 }
                 if (checkPathPrefixSuffixOverlap(*path_a, *path_b))
                 {
-                    const Path merged_a_b{ mergePaths(*path_a, *path_b) };
+                    const Path merged_a_b { mergePaths(*path_a, *path_b) };
                     const bool a_contained_in_b = merged_a_b.encode() == path_b->encode();
                     const bool b_contained_in_a = merged_a_b.encode() == path_a->encode();
                     const bool a_eq_b = a_contained_in_b && b_contained_in_a;
@@ -634,7 +634,8 @@ std::list<Path> intersectPaths(Path const& p1, Path const& p2)
     int32_t end = -1;
     std::vector<NodeId> nodes;
 
-    const auto savePath = [&p1, &start, &end, &nodes, &result]() {
+    const auto savePath = [&p1, &start, &end, &nodes, &result]()
+    {
         if (!nodes.empty())
         {
             result.emplace_back(p1.graphRawPtr(), start, nodes, end);

@@ -101,22 +101,25 @@ Graph parseGraph(Json const& jsonGraph)
 Json graphToJson(Graph const& graph)
 {
     Json json;
-    if (!graph.graphId.empty())
+    if (!graph.graphId().empty())
     {
-        json["graph_id"] = graph.graphId;
+        json["graph_id"] = std::string(graph.graphId());
     }
     json["nodes"] = Json::array();
     for (size_t i = 0; i != graph.numNodes(); ++i)
     {
-        json["nodes"].push_back({ { "name", graph.nodeName(i) }, { "sequence", graph.nodeSeq(i) } });
+        json["nodes"].push_back(
+            { { "name", std::string(graph.nodeName(i)) }, { "sequence", std::string(graph.nodeSeq(i)) } });
     }
     json["edges"] = Json::array();
     for (size_t n1 = 0; n1 < graph.numNodes(); ++n1)
     {
         for (NodeId n2 : graph.successors(n1))
         {
-            Json edge = { { "from", graph.nodeName(n1) }, { "to", graph.nodeName(n2) } };
-            auto const& labels = graph.edgeLabels(n1, n2);
+            Json edge = { { "from", std::string(graph.nodeName(n1)) }, { "to", std::string(graph.nodeName(n2)) } };
+            std::vector<std::string> labels;
+            for (auto label : graph.edgeLabels(n1, n2))
+                labels.push_back(std::string(label));
             if (labels.size() > 0)
             {
                 edge["labels"] = labels;

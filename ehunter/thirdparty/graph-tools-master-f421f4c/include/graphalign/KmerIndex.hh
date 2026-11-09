@@ -21,8 +21,9 @@
 
 #pragma once
 
-#include <memory>
 #include <cstdint>
+#include <functional>
+#include <memory>
 #include <string>
 #include <unordered_set>
 
@@ -32,11 +33,34 @@
 namespace graphtools
 {
 
+// A single read-only mapped archive shared by all locus indexes in a process.
+// The preparation process writes slots in catalog order before publishing it.
+class KmerIndexArchive
+{
+public:
+    explicit KmerIndexArchive(const std::string& path);
+    ~KmerIndexArchive();
+    KmerIndexArchive(const KmerIndexArchive&) = delete;
+    KmerIndexArchive& operator=(const KmerIndexArchive&) = delete;
+    const char* record(uint64_t slot, size_t& size) const;
+    uint64_t slotCount() const;
+
+private:
+    const char* data_ = nullptr;
+    size_t size_ = 0;
+};
+
 // Kmer index holds paths that correspond to each kmer that appears in the graph and supports a few standard operations.
 class KmerIndex
 {
 public:
-    explicit KmerIndex(const Graph& graph, int32_t kmer_len = 12);
+    explicit KmerIndex(
+        const Graph& graph, int32_t kmer_len = 12, bool membershipOnly = false,
+        std::shared_ptr<const KmerIndexArchive> archive = {}, uint64_t archiveSlot = 0);
+    void writeRecord(std::ostream& out) const;
+    static void writeBlobRecord(std::ostream& out, const std::string& bytes);
+    static void prepareArchive(
+        const std::string& path, uint64_t slots, const std::function<void(std::ostream&, uint64_t)>& writeSlot);
     KmerIndex(const KmerIndex& other);
     KmerIndex(KmerIndex&& other) noexcept;
     KmerIndex& operator=(const KmerIndex& other);
@@ -62,10 +86,8 @@ public:
     private:
         friend class KmerIndex;
         const KmerIndex* index_ = nullptr;
-        const std::vector<Path>* paths_ = nullptr;
-        uint16_t mini_start_position_ = 0;
-        uint16_t mini_node_id_ = 0;
-        bool is_minipath_ = false;
+        uint32_t entry_ = 0;
+        bool found_ = false;
     };
 
     // The caller supplies an A/C/G/T key encoded at this index's kmer length.

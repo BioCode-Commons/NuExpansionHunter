@@ -2,6 +2,54 @@
 
 [← NuExpansionHunter README](README.md#benchmarks)
 
+## Latest whole-catalog MMAP results
+
+The latest binary, `catalog-mmap-v2` (SHA-256 `d6470f61b65421fd16387052d1c9df7864c2fd48ccf7c1b7f366bf10b42d5e07`), processed the complete HG002 BAM and the same 174,293-locus Illumina catalog described below. Each core count ran once on Oscar Genoa nodes. The original EH measurements were reused from the earlier benchmark; the original was not rerun. These are comparisons with a historical baseline, not new same-node pairs. The operating-system page cache was not cleared.
+
+Per-sample wall time includes cache validation and mapping, analyzer/index initialization, read processing, genotyping, and output. One-time cache preparation and output comparison are excluded and reported separately. Allocated CPU-hours are physical cores × wall hours; process CPU-hours are user + system CPU seconds divided by 3600. RSS is reported in GiB (2³⁰ bytes).
+
+| Cores | Wall time, historical original → MMAP | Speedup | Allocated CPU-hours, original → MMAP | CPU-hour saving | Process CPU-hours, original → MMAP | Peak RSS, original → MMAP | Latest full output comparison |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |
+| 4 | 3295.602 → 2240.789 s | **1.471×** | 3.662 → 2.490 | **32.01%** | 3.390 → 2.300 | 15.338 → 15.196 GiB (−0.93%) | Not performed |
+| 8 | 1703.735 → 1348.256 s | **1.264×** | 3.786 → 2.996 | **20.86%** | 3.304 → 2.487 | 15.681 → 15.194 GiB (−3.10%) | Not performed |
+| 16 | 1248.945 → 703.918 s | **1.774×** | 5.551 → 3.129 | **43.64%** | 3.865 → 2.354 | 29.584 → 15.207 GiB (−48.60%) | Not performed |
+| 32 | 1064.277 → 489.479 s | **2.174×** | 9.460 → 4.351 | **54.01%** | 4.126 → 2.562 | 35.956 → 15.215 GiB (−57.68%) | **Output identical*** |
+
+The candidate ran on `node2353`, `node2354`, `node2426`, and `node2406` for 4, 8, 16, and 32 cores respectively. Compared with the previous optimized version, the new 4-, 16-, and 32-core observations used less time, while the 8-core observation took **7.7% longer** (1348.256 vs 1251.675 seconds). This single-run comparison does not establish a uniform speed improvement from MMAP or isolate the cause of the 8-core difference.
+
+### Per-sample phases
+
+| Cores | Cache validation and mapping | Analyzer/index initialization | Read processing | Genotyping | Output |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 | 33.926 s | 29.469 s | 2158.812 s | 4.385 s | 10.630 s |
+| 8 | 36.063 s | 57.441 s | 1235.432 s | 3.059 s | 11.871 s |
+| 16 | 35.369 s | 48.325 s | 606.683 s | 1.227 s | 9.728 s |
+| 32 | 35.047 s | 60.048 s | 381.358 s | 0.633 s | 9.691 s |
+
+The first two columns correspond to the `catalog_graph_seconds` and `catalog_index_seconds` log fields. In cached runs, the first field measures loading and validating the prepared catalog rather than rebuilding graphs. These phase timers do not cover every setup and teardown operation, so their sum is slightly below total wall time.
+
+### Cache preparation
+
+Preparing this catalog took **490.755 seconds**, with **2.617 GiB peak RSS**, and produced a **13,402,416,541-byte archive** (12.482 GiB). Preparation used one application thread inside an eight-core allocation: **1.091 allocated CPU-hours** and **0.135 process CPU-hours**. This cost is paid once for a compatible catalog, reference, contig dictionary, index configuration, and builder source version; it is not included in the per-sample table. A first sample that also requires preparation pays both costs.
+
+The archive maps graphs, strings, locus and variant metadata, 10-mer membership keys, 14-mer path indexes, and interval indexes. Sample evidence and alignment workspaces remain separate. MMAP does not impose a fixed RSS limit: file pages and mutable sample state both contribute to resident memory. No 5-million-locus run or sub-300-GB memory result has been measured.
+
+### Latest output validation
+
+\* The **32-core complete HG002 run** was compared locally with retained original-EH output from the earlier 32-core run `8574491`. That reference used the same complete input BAM, reference, catalog, sex, aligner, and region extension, and the original binary SHA-256 was `9605813238e33b4f359ce2498bd8e6524d6f704c77742e0a1abe420b70294da8`. The reference used for correctness is separate from the historical timing measurement used in the speedup table.
+
+- VCF and JSON were byte-identical.
+- BAM headers matched exactly.
+- Both BAMs contained **74,565,578 records**. Every SAM field, tag value, and duplicate multiplicity matched after lossless sorting; only record order was ignored.
+
+The latest 4-, 8-, and 16-core runs checked successful execution, nonempty outputs, and BAM integrity (`samtools quickcheck`). Their raw outputs were removed before a full comparison was requested, so they are **not** marked output-identical. The 32-core outputs were removed only after the full comparison passed. Logs, measurements, comparison reports, and cleanup manifests remain on Oscar.
+
+Before these runs, the latest source passed the EH unit suite and all 30 bundled GraphTools tests, including mapped-handle lifetime, archive round trips and corruption rejection, compact-index differential checks, and coordinate queries with remote mates and off-target regions. The example and a 10,000-read-pair HG002 subset with the complete catalog also passed exact VCF/JSON and BAM-content comparisons.
+
+## Historical paired benchmark: stream-team3-bgzf-v1
+
+The following results describe the previous optimized binary. Its full outputs were checked at every core count. They are retained here separately from the latest MMAP measurements.
+
 We compare **Illumina ExpansionHunter v5.0.0** with **NuExpansionHunter** on the complete **HG002 human paired-end WGS** sample. The tested NuExpansionHunter binary is candidate `stream-team3-bgzf-v1` (SHA-256 `799bd667a8b8da55c40d41efdbdfafc65b03bb4a3db9e99b102df7dcb2e13da9`).
 
 ## Data and setup
@@ -93,7 +141,7 @@ ExpansionHunter \
 
 The combined source passed the ExpansionHunter unit suite and all 30 bundled GraphTools tests. Targeted differential tests covered affine-alignment scores and traceback, rolling k-mer lookup, queue behavior, and cached-read ownership. Writer tests covered complete BAM content and failures during setup, record writing, and close. The official example and a paired human-read fixture matched at 2 and 8 threads before the full-WGS runs.
 
-We accept a core count only after the full-WGS output comparison completes. A timing pair alone is not marked as passed.
+In this historical matrix, each core count passed its full-WGS output comparison. The latest MMAP validation scope is reported separately above.
 
 ## Build notes
 
