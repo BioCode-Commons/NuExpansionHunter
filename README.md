@@ -290,7 +290,7 @@ We benchmarked NuExpansionHunter on the complete **HG002 Illumina PCR-free WGS d
 | 16 | 1248.94 → 703.92 s | 1.774× | 43.64% | 29.584 → 15.207 GiB |
 | 32 | 1064.28 → 489.48 s | 2.174× | 54.01% | 35.956 → 15.215 GiB |
 
-The 32-core full HG002 output matched original EH: VCF/JSON byte-identical and BAM content identical ignoring record order. Original timings are from earlier runs; one-time cache preparation is excluded. See [benchmark methods and validation](BENCHMARKS.md) for details.
+**Output identical:** the complete HG002 32-core run matched original EH, with byte-identical VCF/JSON and identical BAM headers and records ignoring record order. Original timings are from earlier runs; one-time cache preparation is excluded. See [benchmark methods and validation](BENCHMARKS.md) for details.
 
 <a id="ai-use-and-review"></a>
 

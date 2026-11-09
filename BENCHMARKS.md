@@ -36,6 +36,8 @@ The archive maps graphs, strings, locus and variant metadata, 10-mer membership 
 
 ### Latest output validation
 
+**Output identical on the complete HG002 32-core run:** VCF/JSON were byte-identical, and BAM headers and all 74,565,578 records matched, including every field, tag, and duplicate count, ignoring record order only.
+
 \* The **32-core complete HG002 run** was compared locally with retained original-EH output from the earlier 32-core run `8574491`. That reference used the same complete input BAM, reference, catalog, sex, aligner, and region extension, and the original binary SHA-256 was `9605813238e33b4f359ce2498bd8e6524d6f704c77742e0a1abe420b70294da8`. The reference used for correctness is separate from the historical timing measurement used in the speedup table.
 
 - VCF and JSON were byte-identical.
