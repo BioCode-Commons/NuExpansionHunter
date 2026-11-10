@@ -236,6 +236,12 @@ See [JsonWriter.cpp](ehunter/io/JsonWriter.cpp), [VcfHeader.cpp](ehunter/io/VcfH
 
 NuExpansionHunter retains EH's genotyping model and reduces repeated catalog construction, seed lookup, alignment memory, and output overhead.
 
+### Jiapeng optimization
+
+The current implementation adds a compact representation for the static repeat indexes. The 10-mer and 14-mer data use structure-of-arrays storage for keys, payloads, and counts; buckets use 16-bit entries when the key range permits and widen to 32-bit entries otherwise. Single-node paths use implicit counts, while count materialization and path views stay lazy. These changes reduce the catalog archive and keep lookup results, path multiplicities, and duplicate evidence exact.
+
+JSON output is written one locus at a time instead of retaining the complete result DOM. Locus IDs are sorted with the existing stable ordering and duplicate IDs keep the last value. Decode and encode pools control HTS/BAM compression work, and the optional BAM queue limit provides backpressure. The main read, pair, query, and dispatch loop remains serial; these controls do not claim a new parallel read-dispatch pipeline.
+
 ### MMAP catalog reuse
 
 Graphs, sequences, metadata, 10/14-mer indexes, and interval indexes are prepared once and stored in an offset-based archive. Each sample reads these arrays directly through a read-only **memory map (MMAP)**, without reconstructing the catalog's strings, paths, and indexes as heap objects. Read evidence, mate caches, and alignment workspaces remain separate for each sample.
@@ -310,8 +316,8 @@ flowchart TB
 
 ### Roadmap
 
-- Reduce per-sample processing time and investigate the 8-core performance difference.
-- Further compact seed and path storage for larger catalogs.
+- Improve parallel read dispatch while preserving read-pair order, remote-mate handling, and off-target interval correctness.
+- Reduce per-sample processing time further, especially at lower core counts.
 - Extend output-equivalence checks to more samples, catalogs, and large expansions.
 - Improve build portability and complete the human code audit.
 
@@ -319,16 +325,16 @@ flowchart TB
 
 ## Benchmarks <sup><sub>[↑ Contents](#contents)</sub></sup>
 
-We benchmarked NuExpansionHunter on the complete **HG002 Illumina PCR-free WGS dataset** using the **174,293-locus Illumina hg38 catalog** on Brown Oscar.
+We benchmarked the current Jiapeng optimization on the complete **HG002 Illumina PCR-free WGS dataset** using the **174,293-locus Illumina hg38 catalog** on Brown Oscar.
 
 | Physical cores | Runtime, original EH → NuExpansionHunter | Speedup | CPU-hours saved | Peak RSS, original → optimized |
 | ---: | ---: | ---: | ---: | ---: |
-| 4 | 3295.60 → 2240.79 s | 1.471× | 32.01% | 15.338 → 15.196 GiB |
-| 8 | 1703.73 → 1348.26 s | 1.264× | 20.86% | 15.681 → 15.194 GiB |
-| 16 | 1248.94 → 703.92 s | 1.774× | 43.64% | 29.584 → 15.207 GiB |
-| 32 | 1064.28 → 489.48 s | 2.174× | 54.01% | 35.956 → 15.215 GiB |
+| 4 | 3295.60 → 2168.56 s | 1.520× | 34.20% | 15.338 → 10.588 GiB |
+| 8 | 1703.73 → 1167.03 s | 1.460× | 31.50% | 15.681 → 10.593 GiB |
+| 16 | 1248.94 → 659.19 s | 1.895× | 47.22% | 29.584 → 10.613 GiB |
+| 32 | 1064.28 → 338.71 s | 3.142× | 68.17% | 35.956 → 10.614 GiB |
 
-**Output identical at 4, 8, 16, and 32 cores:** complete HG002 VCF/JSON matched original EH byte for byte, and BAM headers and records matched ignoring record order. Original timings are from earlier runs; one-time cache preparation is excluded. See [benchmark methods and validation](BENCHMARKS.md) for details.
+**Output identical at 4, 8, 16, and 32 cores:** complete HG002 VCF/JSON matched original EH byte for byte, and BAM headers and all 74,565,578 BAM records matched after ignoring record order only. Original timings are from earlier runs; one-time cache preparation is excluded. See [benchmark methods and validation](BENCHMARKS.md) for details.
 
 <a id="ai-use-and-review"></a>
 

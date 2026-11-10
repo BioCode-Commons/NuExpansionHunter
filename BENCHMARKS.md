@@ -2,7 +2,22 @@
 
 [← NuExpansionHunter README](README.md#benchmarks)
 
-## Latest whole-catalog MMAP results
+## Latest Jiapeng optimization results
+
+The merged `Jiapeng_optimization` implementation was benchmarked on the complete HG002 BAM with the 174,293-locus Illumina catalog. Each core count ran once on Oscar. Original EH timings are historical measurements; the original was not rerun. The table excludes one-time catalog preparation and output-comparison time.
+
+| Cores | Wall time, historical original → Jiapeng | Speedup | Allocated CPU-hours saved | Peak RSS, original → Jiapeng | Latest full output comparison |
+| ---: | ---: | ---: | ---: | ---: | :--- |
+| 4 | 3295.602 → 2168.563 s | **1.520×** | **34.20%** | 15.338 → 10.588 GiB | **Output identical** |
+| 8 | 1703.735 → 1167.031 s | **1.460×** | **31.50%** | 15.681 → 10.593 GiB | **Output identical** |
+| 16 | 1248.945 → 659.187 s | **1.895×** | **47.22%** | 29.584 → 10.613 GiB | **Output identical** |
+| 32 | 1064.277 → 338.709 s | **3.142×** | **68.17%** | 35.956 → 10.614 GiB | **Output identical** |
+
+The complete HG002 output comparison passed at every core count: VCF and JSON were byte-identical, and BAM headers plus all 74,565,578 records, fields, tags, and duplicate counts matched after ignoring record order only. The Jiapeng binary used a fresh compact-index cache; preparation took 443.993 seconds and produced a 9,191,803,561-byte archive. The benchmark used automatic decode/encode settings and the default unbounded BAM output queue. The main read, pair, query, and dispatch loop remains serial.
+
+The comparison is against historical original EH and MMAP v2 timings, not a contemporaneous paired rerun. Relative to the accepted MMAP v2 observations, Jiapeng was 3.3%, 13.4%, 6.8%, and 44.5% faster at 4, 8, 16, and 32 cores respectively. These are single-run observations.
+
+## MMAP v2 whole-catalog results
 
 The latest binary, `catalog-mmap-v2` (SHA-256 `d6470f61b65421fd16387052d1c9df7864c2fd48ccf7c1b7f366bf10b42d5e07`), processed the complete HG002 BAM and the same 174,293-locus Illumina catalog described below. The timing table reports one run per core count on Oscar Genoa nodes. The original EH measurements were reused from the earlier benchmark; the original was not rerun. These are comparisons with a historical baseline, not new same-node pairs. The operating-system page cache was not cleared.
 
