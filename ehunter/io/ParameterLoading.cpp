@@ -22,6 +22,7 @@
 #include "io/ParameterLoading.hh"
 
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #include <boost/filesystem.hpp>
@@ -64,6 +65,9 @@ struct UserParameters
     string analysisMode;
     string logLevel;
     int threadCount;
+    string decodeThreads;
+    string encodeThreads;
+    string bamletQueueMb;
     bool disableBamletOutput = false;
     string catalogCache;
     bool prepareCatalogCache = false;
@@ -92,7 +96,10 @@ boost::optional<UserParameters> tryParsingUserParameters(int argc, char** argv)
     advancedOptions.add_options()
         ("aligner,a", po::value<string>(&params.alignerType)->default_value("dag-aligner"), "Specify which aligner to use (dag-aligner or path-aligner)")
         ("analysis-mode,m", po::value<string>(&params.analysisMode)->default_value("seeking"), "Specify which analysis workflow to use (seeking or streaming)")
-        ("threads,n", po::value(&params.threadCount)->default_value(1), "Number of threads to use")
+        ("threads,n", po::value(&params.threadCount)->default_value(1), "Compute workers; not a total process thread limit")
+        ("decode-threads", po::value<string>(&params.decodeThreads)->default_value("auto"), "Streaming input decompression workers: auto=min(threads,12), 0 or 1=synchronous")
+        ("encode-threads", po::value<string>(&params.encodeThreads)->default_value("auto"), "BAM output compression workers: auto=threads, 0=synchronous; unused with --disable-bamlet-output")
+        ("bamlet-queue-mb", po::value<string>(&params.bamletQueueMb)->default_value("0"), "Opt-in queued BAM-record budget in MiB: 0=unbounded (legacy default); not a process RAM limit")
         ("catalog-cache", po::value<string>(&params.catalogCache), "Read-only prepared catalog k-mer archive")
         ("prepare-catalog-cache", po::bool_switch(&params.prepareCatalogCache), "Build --catalog-cache and exit before processing reads")
     ;
@@ -175,6 +182,44 @@ static void assertIndexExists(const string& htsFilePath)
     }
 
     throw std::invalid_argument("Could not find index of " + htsFilePath);
+}
+
+static int decodeIoThreadCount(const string& encoding, const string& option, int defaultCount)
+{
+    if (encoding == "auto")
+        return defaultCount;
+
+    const string message = option + " must be auto or a non-negative integer no greater than "
+        + to_string(std::numeric_limits<int>::max());
+    if (encoding.empty())
+        throw std::invalid_argument(message);
+
+    int count = 0;
+    for (char digit : encoding)
+    {
+        if (digit < '0' || digit > '9' || count > (std::numeric_limits<int>::max() - (digit - '0')) / 10)
+            throw std::invalid_argument(message);
+        count = count * 10 + (digit - '0');
+    }
+    return count;
+}
+
+static std::size_t decodeBamletQueueBytes(const string& encoding)
+{
+    const std::size_t bytesPerMiB = 1024 * 1024;
+    const std::size_t maxMiB = std::numeric_limits<std::size_t>::max() / bytesPerMiB;
+    const string message = "--bamlet-queue-mb must be a non-negative integer no greater than " + to_string(maxMiB);
+    if (encoding.empty())
+        throw std::invalid_argument(message);
+
+    std::size_t megabytes = 0;
+    for (char digit : encoding)
+    {
+        if (digit < '0' || digit > '9' || megabytes > (maxMiB - (digit - '0')) / 10)
+            throw std::invalid_argument(message);
+        megabytes = megabytes * 10 + (digit - '0');
+    }
+    return megabytes * bytesPerMiB;
 }
 
 void assertValidity(const UserParameters& userParameters)
@@ -356,6 +401,12 @@ boost::optional<ProgramParameters> tryLoadingProgramParameters(int argc, char** 
         userParams.disableBamletOutput);
     result.catalogCache = userParams.catalogCache;
     result.prepareCatalogCache = userParams.prepareCatalogCache;
+    result.decodeThreadCount
+        = decodeIoThreadCount(userParams.decodeThreads, "--decode-threads", std::min(userParams.threadCount, 12));
+    result.encodeThreadCount = decodeIoThreadCount(userParams.encodeThreads, "--encode-threads", userParams.threadCount);
+    result.bamletQueueBytes = decodeBamletQueueBytes(userParams.bamletQueueMb);
+    if (userParams.analysisMode != "streaming" && userParams.decodeThreads != "auto")
+        throw std::invalid_argument("--decode-threads is only supported with --analysis-mode streaming");
     return result;
 }
 

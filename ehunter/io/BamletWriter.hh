@@ -55,7 +55,7 @@ class BamletWriter : public graphtools::AlignmentWriter, private boost::noncopya
 public:
     BamletWriter(
         const std::string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
-        int compressionThreads);
+        int compressionThreads, std::size_t maxQueueBytes = 0);
     ~BamletWriter() override;
 
     // Called after all producers finish; propagate asynchronous write/close failure.
@@ -83,6 +83,8 @@ private:
 
     const RegionCatalog& catalog_;
 
+    // Budget covers queued BAM structs and their allocated data buffers. The
+    // record being written, producer-local records and HTS buffers are separate.
     ConcurrentQueue<bam1_t*> writeQueue_;
     std::thread writeThread_;
     std::exception_ptr writeError_; // writer owns until join; main reads afterward
