@@ -36,6 +36,7 @@
 #include "sample/GenomeQueryCollection.hh"
 #include "sample/HtsFileStreamer.hh"
 #include "sample/HtsStreamingReadPairQueue.hh"
+#include <chrono>
 
 using ehunter::locus::initializeLocusAnalyzers;
 using ehunter::locus::LocusAnalyzer;
@@ -226,12 +227,17 @@ SampleFindings htsStreamingSampleAnalysis(
     ctpl::thread_pool pool(threadCount);
 
     spdlog::info("Initializing all loci");
+    const auto indexStart = std::chrono::steady_clock::now();
     graphtools::AlignerSelector alignerSelector(heuristicParams.alignerType());
     locusAnalyzerThreadSharedData.locusAnalyzers
         = initializeLocusAnalyzers(regionCatalog, heuristicParams, bamletWriter, threadCount);
-    GenomeQueryCollection genomeQuery(locusAnalyzerThreadSharedData.locusAnalyzers);
+    GenomeQueryCollection genomeQuery(locusAnalyzerThreadSharedData.locusAnalyzers, &regionCatalog);
+    spdlog::info(
+        "Phase catalog_index_seconds={}",
+        std::chrono::duration<double>(std::chrono::steady_clock::now() - indexStart).count());
 
     spdlog::info("Streaming reads");
+    const auto readsStart = std::chrono::steady_clock::now();
 
     auto ReadHash = [](const Read& read) { return std::hash<std::string>()(read.fragmentId()); };
     auto ReadEq = [](const Read& read1, const Read& read2) { return (read1.fragmentId() == read2.fragmentId()); };
@@ -275,7 +281,7 @@ SampleFindings htsStreamingSampleAnalysis(
         const int64_t readEnd = readStreamer.currentReadPosition() + read.sequence().length();
         const int64_t mateEnd = readStreamer.currentMatePosition() + mate.sequence().length();
 
-        vector<AnalyzerBundle> analyzerBundles = genomeQuery.analyzerFinder.query(
+        vector<AnalyzerBundle> analyzerBundles = genomeQuery.analyzerFinder.queryStreaming(
             readStreamer.currentReadContigId(), readStreamer.currentReadPosition(), readEnd,
             readStreamer.currentMateContigId(), readStreamer.currentMatePosition(), mateEnd);
 
@@ -305,6 +311,9 @@ SampleFindings htsStreamingSampleAnalysis(
     }
 
     pool.stop(true);
+    spdlog::info(
+        "Phase read_processing_seconds={}",
+        std::chrono::duration<double>(std::chrono::steady_clock::now() - readsStart).count());
 
     // Rethrow exceptions from the pool in thread order:
     if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
@@ -320,6 +329,7 @@ SampleFindings htsStreamingSampleAnalysis(
     }
 
     spdlog::info("Analyzing read evidence");
+    const auto genotypeStart = std::chrono::steady_clock::now();
 
     SampleFindingsThreadSharedData sampleFindingsThreadSharedData;
     std::vector<SampleFindingsThreadLocalData> sampleFindingsThreadLocalDataPool(threadCount);
@@ -355,6 +365,9 @@ SampleFindings htsStreamingSampleAnalysis(
         sampleFindingsThreads[threadIndex].join();
     }
 
+    spdlog::info(
+        "Phase genotyping_seconds={}",
+        std::chrono::duration<double>(std::chrono::steady_clock::now() - genotypeStart).count());
     return sampleFindings;
 }
 

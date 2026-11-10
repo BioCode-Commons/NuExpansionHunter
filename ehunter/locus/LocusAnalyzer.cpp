@@ -40,9 +40,10 @@ namespace ehunter
 namespace locus
 {
 
-LocusAnalyzer::LocusAnalyzer(LocusSpecification locusSpec, const HeuristicParameters& params, AlignWriterPtr writer)
+LocusAnalyzer::LocusAnalyzer(
+    LocusSpecification locusSpec, const HeuristicParameters& params, AlignWriterPtr writer, uint64_t archiveSlot)
     : locusSpec_(std::move(locusSpec))
-    , aligner_(locusSpec_.locusId(), &locusSpec_.regionGraph(), params, std::move(writer))
+    , aligner_(locusSpec_.locusId(), &locusSpec_.regionGraph(), params, std::move(writer), archiveSlot)
     , statsCalc_(locusSpec_.typeOfChromLocusLocatedOn(), locusSpec_.regionGraph())
 {
     for (const auto& variantSpec : locusSpec_.variantSpecs())
@@ -61,16 +62,27 @@ LocusAnalyzer::LocusAnalyzer(LocusSpecification locusSpec, const HeuristicParame
                         = "Region " + locusSpec_.locusId() + " must not have more than one rare repeat";
                     throw std::logic_error(message);
                 }
-                addIrrPairFinder(motif);
+                if (locusSpec_.isPrepared())
+                    irrPairFinder_ = IrrPairFinder(motif, variantSpec.purityPermutations());
+                else
+                    addIrrPairFinder(motif);
             }
 
-            addRepeatAnalyzer(variantSpec.id(), repeatNodeId);
+            if (locusSpec_.isPrepared())
+                variantAnalyzers_.emplace_back(make_unique<RepeatAnalyzer>(
+                    variantSpec, locusSpec_.regionGraph(), locusSpec_.genotyperParameters()));
+            else
+                addRepeatAnalyzer(variantSpec.id(), repeatNodeId);
         }
         else if (variantSpec.classification().type == VariantType::kSmallVariant)
         {
-            addSmallVariantAnalyzer(
-                variantSpec.id(), variantSpec.classification().subtype, variantSpec.nodes(),
-                variantSpec.optionalRefNode());
+            if (locusSpec_.isPrepared())
+                variantAnalyzers_.emplace_back(make_unique<SmallVariantAnalyzer>(
+                    variantSpec, locusSpec_.regionGraph(), locusSpec_.genotyperParameters()));
+            else
+                addSmallVariantAnalyzer(
+                    variantSpec.id(), variantSpec.classification().subtype, variantSpec.nodes(),
+                    variantSpec.optionalRefNode());
         }
         else
         {
@@ -114,10 +126,12 @@ void LocusAnalyzer::processOntargetMates(Read& read, Read* mate, graphtools::Ali
     }
     else
     {
-        if (alignedPair.first) {
+        if (alignedPair.first)
+        {
             statsCalc_.inspectRead(*alignedPair.first);
         }
-        if (alignedPair.second) {
+        if (alignedPair.second)
+        {
             statsCalc_.inspectRead(*alignedPair.second);
         }
     }

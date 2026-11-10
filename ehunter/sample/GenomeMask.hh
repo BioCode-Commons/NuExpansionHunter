@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "graphutils/MappedData.hh"
 #include <string>
 #include <vector>
 
@@ -34,10 +35,17 @@ class GenomeMask
 public:
     void addRegion(int32_t contigId, int64_t start, int64_t stop);
     bool query(int32_t contigId, int64_t pos) const;
+    void usePrepared(graphtools::MappedBytes bytes, graphtools::Slice roots)
+    {
+        prepared_ = bytes;
+        roots_ = roots;
+    }
 
 private:
     using contigMask = std::vector<bool>;
     std::vector<contigMask> mask_;
+    graphtools::MappedBytes prepared_;
+    graphtools::Slice roots_ { 0, 0 };
 };
 
 }

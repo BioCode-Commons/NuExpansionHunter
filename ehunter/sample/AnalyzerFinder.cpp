@@ -177,8 +177,15 @@ void processAnalyzerBundleReadPair(
     }
 }
 
-AnalyzerFinder::AnalyzerFinder(vector<unique_ptr<LocusAnalyzer>>& locusAnalyzers)
+AnalyzerFinder::AnalyzerFinder(vector<unique_ptr<LocusAnalyzer>>& locusAnalyzers, const RegionCatalog* catalog)
 {
+    if (catalog && catalog->mappedBytes().data)
+    {
+        prepared_ = catalog->mappedBytes();
+        preparedRoots_ = catalog->preparedIntervals();
+        prepared_.array<PreparedContigIntervals>(preparedRoots_);
+        return;
+    }
     using IntervalWithLocusTypeAndAnalyzer = Interval<std::size_t, AnalyzerBundle>;
 
     unordered_map<int32_t, vector<IntervalWithLocusTypeAndAnalyzer>> contigToIntervals;
@@ -212,34 +219,66 @@ AnalyzerFinder::AnalyzerFinder(vector<unique_ptr<LocusAnalyzer>>& locusAnalyzers
 
 vector<AnalyzerBundle> AnalyzerFinder::query(int32_t contigIndex, int64_t start, int64_t end) const
 {
+    if (prepared_.data)
+    {
+        vector<AnalyzerBundle> result;
+        const auto root = preparedRoot(contigIndex);
+        if (root && start >= 0 && end >= 0)
+            queryPrepared(root->tree, start, end, result);
+        return result;
+    }
     const auto contigTreeIterator = intervalTrees_.find(contigIndex);
     if (contigTreeIterator == intervalTrees_.end())
     {
         return vector<AnalyzerBundle>();
     }
 
-    const auto& intervalsWithBundles = contigTreeIterator->second.findOverlapping(start, end);
-
     vector<AnalyzerBundle> analyzerBundles;
-    for (const auto& intervalWithBundle : intervalsWithBundles)
-    {
-        const bool isReadContainedInInterval = static_cast<int64_t>(intervalWithBundle.start) <= start
-            && end <= static_cast<int64_t>(intervalWithBundle.stop);
-        if (isReadContainedInInterval)
+    contigTreeIterator->second.visit_overlapping(
+        start, end,
+        [&](const AnalyzerIntervalTree::interval& intervalWithBundle)
         {
-            analyzerBundles.push_back(intervalWithBundle.value);
-        }
-    }
+            const bool isReadContainedInInterval = static_cast<int64_t>(intervalWithBundle.start) <= start
+                && end <= static_cast<int64_t>(intervalWithBundle.stop);
+            if (isReadContainedInInterval)
+            {
+                analyzerBundles.push_back(intervalWithBundle.value);
+            }
+        });
 
     return analyzerBundles;
 }
 
-vector<AnalyzerBundle> AnalyzerFinder::query(
-    int32_t readContigId, int64_t readStart, int64_t readEnd, int32_t mateContigId, int64_t mateStart,
-    int64_t mateEnd) const
+const PreparedContigIntervals* AnalyzerFinder::preparedRoot(int32_t contig) const
 {
-    vector<AnalyzerBundle> readAnalyzerBundles = query(readContigId, readStart, readEnd);
-    vector<AnalyzerBundle> mateAnalyzerBundles = query(mateContigId, mateStart, mateEnd);
+    if (contig < 0 || uint64_t(contig) >= preparedRoots_.count)
+        return nullptr;
+    return prepared_.array<PreparedContigIntervals>(preparedRoots_) + contig;
+}
+
+void AnalyzerFinder::queryPrepared(
+    graphtools::Slice tree, uint64_t start, uint64_t end, std::vector<AnalyzerBundle>& result) const
+{
+    if (!tree.count)
+        return;
+    if (tree.count != 1)
+        throw std::runtime_error("Invalid prepared interval tree");
+    const auto& node = *prepared_.array<PreparedIntervalNode>(tree);
+    const auto* intervals = prepared_.array<PreparedInterval>(node.intervals);
+    if (node.intervals.count && end >= intervals[0].start)
+        for (uint64_t i = 0; i < node.intervals.count; ++i)
+            if (intervals[i].start <= start && end <= intervals[i].stop)
+                result.emplace_back(static_cast<locus::RegionType>(intervals[i].regionType), intervals[i].locus);
+    if (start <= node.center)
+        queryPrepared(node.left, start, end, result);
+    if (end >= node.center)
+        queryPrepared(node.right, start, end, result);
+}
+
+static vector<AnalyzerBundle> coalesceQueryResults(
+    vector<AnalyzerBundle> readAnalyzerBundles, vector<AnalyzerBundle> mateAnalyzerBundles, int32_t readContigId,
+    int64_t readStart, int32_t mateContigId, int64_t mateStart)
+{
     vector<AnalyzerBundle> bundles = coalesceCommonBundles(readAnalyzerBundles, mateAnalyzerBundles);
 
     if ((not readAnalyzerBundles.empty()) or (not mateAnalyzerBundles.empty()))
@@ -254,6 +293,81 @@ vector<AnalyzerBundle> AnalyzerFinder::query(
         }
     }
     return bundles;
+}
+
+vector<AnalyzerBundle> AnalyzerFinder::query(
+    int32_t readContigId, int64_t readStart, int64_t readEnd, int32_t mateContigId, int64_t mateStart,
+    int64_t mateEnd) const
+{
+    return coalesceQueryResults(
+        query(readContigId, readStart, readEnd), query(mateContigId, mateStart, mateEnd), readContigId, readStart,
+        mateContigId, mateStart);
+}
+
+vector<AnalyzerBundle> AnalyzerFinder::queryStreaming(
+    int32_t readContigId, int64_t readStart, int64_t readEnd, int32_t mateContigId, int64_t mateStart, int64_t mateEnd)
+{
+    vector<AnalyzerBundle> readBundles;
+    const auto tree = intervalTrees_.find(readContigId);
+    const auto root = prepared_.data ? preparedRoot(readContigId) : nullptr;
+    if ((root || tree != intervalTrees_.end()) && readStart >= 0)
+    {
+        auto sweepIt = sweeps_.find(readContigId);
+        if (sweepIt == sweeps_.end())
+        {
+            Sweep sweep;
+            if (root)
+            {
+                sweep.prepared = graphtools::CatalogRange<PreparedInterval>::fromArray(
+                    prepared_.array<PreparedInterval>(root->sorted), root->sorted.count);
+            }
+            else
+            {
+                // Assign the original tree traversal rank before sorting. This preserves
+                // bundle order, including duplicate intervals, for every query.
+                tree->second.visit_near(
+                    0, std::numeric_limits<std::size_t>::max(),
+                    [&](const AnalyzerIntervalTree::interval& interval)
+                    {
+                        sweep.intervals.push_back(
+                            { interval.start, interval.stop, sweep.intervals.size(), interval.value });
+                    });
+                std::sort(
+                    sweep.intervals.begin(), sweep.intervals.end(),
+                    [](const SweepInterval& a, const SweepInterval& b) { return a.start < b.start; });
+            }
+            sweepIt = sweeps_.emplace(readContigId, std::move(sweep)).first;
+        }
+        auto& sweep = sweepIt->second;
+        if (readStart < sweep.position)
+            readBundles = query(readContigId, readStart, readEnd);
+        else
+        {
+            sweep.position = readStart;
+            while (sweep.next < sweep.size() && sweep.at(sweep.next).start <= std::size_t(readStart))
+                sweep.active.push_back(sweep.next++);
+            sweep.active.erase(
+                std::remove_if(
+                    sweep.active.begin(), sweep.active.end(),
+                    [&](size_t index) { return sweep.at(index).stop < std::size_t(readStart); }),
+                sweep.active.end());
+            std::vector<size_t> matching;
+            for (auto index : sweep.active)
+                if (readEnd >= 0 && sweep.at(index).stop >= std::size_t(readEnd))
+                    matching.push_back(index);
+            std::sort(
+                matching.begin(), matching.end(),
+                [&](size_t a, size_t b) { return sweep.at(a).rank < sweep.at(b).rank; });
+            for (auto index : matching)
+                readBundles.push_back(sweep.at(index).bundle);
+        }
+    }
+    else
+        readBundles = query(readContigId, readStart, readEnd);
+    // Never expire mate or offtarget information using the current read position.
+    return coalesceQueryResults(
+        std::move(readBundles), query(mateContigId, mateStart, mateEnd), readContigId, readStart, mateContigId,
+        mateStart);
 }
 
 }

@@ -56,7 +56,16 @@ public:
 
     ~RepeatAnalyzer() override = default;
 
-    const std::string& repeatUnit() const { return repeatUnit_; }
+    RepeatAnalyzer(VariantSpecification variant, const graphtools::Graph& graph, const GenotyperParameters& params)
+        : VariantAnalyzer(variant, graph, params)
+        , repeatUnit_(graph.nodeSeq(nodeIds().front()))
+        , alignmentStatsCalculator_(nodeIds())
+        , countOfInrepeatReadPairs_(0)
+        , alignMatrix_(nodeIds().front())
+    {
+    }
+
+    graphtools::TextView repeatUnit() const { return repeatUnit_; }
     void addInrepeatReadPair() { countOfInrepeatReadPairs_++; }
 
     void processMates(
@@ -66,9 +75,9 @@ public:
     std::unique_ptr<VariantFindings> analyze(const LocusStats& stats) override;
 
 private:
-    graphtools::NodeId repeatNodeId() const { return nodeIds_.front(); }
+    graphtools::NodeId repeatNodeId() const { return nodeIds().front(); }
 
-    const std::string repeatUnit_;
+    const graphtools::TextView repeatUnit_;
     GraphVariantAlignmentStatsCalculator alignmentStatsCalculator_;
 
     int countOfInrepeatReadPairs_;

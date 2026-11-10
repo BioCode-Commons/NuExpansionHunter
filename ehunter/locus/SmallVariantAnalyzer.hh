@@ -55,6 +55,18 @@ public:
 
     ~SmallVariantAnalyzer() = default;
 
+    SmallVariantAnalyzer(
+        VariantSpecification variant, const graphtools::Graph& graph, const GenotyperParameters& params)
+        : VariantAnalyzer(variant, graph, params)
+        , variantSubtype_(variant.classification().subtype)
+        , optionalRefNode_(variant.optionalRefNode())
+        , alignmentClassifier_(nodeIds())
+        , alignmentStatsCalculator_(nodeIds())
+        , allelePresenceChecker_(params.errorRate, params.likelihoodRatioThreshold)
+    {
+        assert(nodeIds().size() <= 2);
+    }
+
     std::unique_ptr<VariantFindings> analyze(const LocusStats& stats) override;
 
     void processMates(

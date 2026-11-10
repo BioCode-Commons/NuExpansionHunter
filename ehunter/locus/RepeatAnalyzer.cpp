@@ -65,7 +65,7 @@ unique_ptr<VariantFindings> RepeatAnalyzer::analyze(const LocusStats& stats)
     CountTable countsOfFlankingReads;
     CountTable countsOfInrepeatReads;
 
-    if (stats.meanReadLength() == 0 || stats.depth() < genotyperParams_.minLocusCoverage)
+    if (stats.meanReadLength() == 0 || stats.depth() < genotyperParameters().minLocusCoverage)
     {
         genotypeFilter = genotypeFilter | GenotypeFilter::kLowDepth;
     }
@@ -73,8 +73,8 @@ unique_ptr<VariantFindings> RepeatAnalyzer::analyze(const LocusStats& stats)
     {
         // const double haplotypeDepth = stats.alleleCount() == AlleleCount::kTwo ? stats.depth() / 2 : stats.depth();
         const int minBreakpointSpanningReads = stats.alleleCount() == AlleleCount::kTwo
-            ? genotyperParams_.minBreakpointSpanningReads
-            : (genotyperParams_.minBreakpointSpanningReads / 2);
+            ? genotyperParameters().minBreakpointSpanningReads
+            : (genotyperParameters().minBreakpointSpanningReads / 2);
 
         GraphVariantAlignmentStats alignmentStats = alignmentStatsCalculator_.getStats();
         if (alignmentStats.numReadsSpanningRightBreakpoint() < minBreakpointSpanningReads

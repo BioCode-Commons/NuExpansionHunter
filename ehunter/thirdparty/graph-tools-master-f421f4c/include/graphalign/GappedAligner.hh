@@ -104,11 +104,13 @@ public:
      * @param padding_len: Elongate paths by this much during path kmer extension step to allow for gaps
      * @param seed_affix_trim_len: Trim length for the prefix and suffix (=affix) of the path
      */
-    GappedGraphAligner(const Graph* graph_ptr, size_t kmer_len, size_t padding_len, size_t seed_affix_trim_len)
+    GappedGraphAligner(
+        const Graph* graph_ptr, size_t kmer_len, size_t padding_len, size_t seed_affix_trim_len,
+        std::shared_ptr<const KmerIndexArchive> archive = {}, uint64_t slot = 0)
         : kmer_len_(kmer_len)
         , padding_len_(padding_len)
         , seed_affix_trim_len_(seed_affix_trim_len)
-        , kmer_index_(*graph_ptr, kmer_len)
+        , kmer_index_(*graph_ptr, kmer_len, false, std::move(archive), slot)
     {
     }
 

@@ -44,10 +44,11 @@ class OrientationPredictor
 {
 public:
     explicit OrientationPredictor(
-        const graphtools::Graph* graphRawPtr, int kmerLength = 10, int minKmerMatchesToPass = 3)
+        const graphtools::Graph* graphRawPtr, int kmerLength = 10, int minKmerMatchesToPass = 3,
+        std::shared_ptr<const graphtools::KmerIndexArchive> archive = {}, uint64_t slot = 0)
         : kmerLength_(kmerLength)
         , minKmerMatchesToPass_(minKmerMatchesToPass)
-        , kmerIndex_(*graphRawPtr, kmerLength_)
+        , kmerIndex_(*graphRawPtr, kmerLength_, true, std::move(archive), slot)
     {
     }
 

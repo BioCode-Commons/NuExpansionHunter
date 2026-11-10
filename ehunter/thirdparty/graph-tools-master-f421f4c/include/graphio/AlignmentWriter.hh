@@ -36,8 +36,8 @@ class AlignmentWriter
 public:
     virtual ~AlignmentWriter() = default;
     virtual void write(
-        const std::string& locusId, const std::string& fragmentName, const std::string& query, bool isFirstMate,
-        bool isReversed, bool isMateReversed, const GraphAlignment& alignment)
+        TextView locusId, const std::string& fragmentName, const std::string& query, bool isFirstMate, bool isReversed,
+        bool isMateReversed, const GraphAlignment& alignment)
         = 0;
 };
 
@@ -46,7 +46,7 @@ class BlankAlignmentWriter : public AlignmentWriter
 public:
     ~BlankAlignmentWriter() override = default;
     void write(
-        const std::string& locusId, const std::string& fragmentName, const std::string& query, bool isFirstMate,
-        bool isReversed, bool isMateReversed, const GraphAlignment& alignment) override;
+        TextView locusId, const std::string& fragmentName, const std::string& query, bool isFirstMate, bool isReversed,
+        bool isMateReversed, const GraphAlignment& alignment) override;
 };
 }

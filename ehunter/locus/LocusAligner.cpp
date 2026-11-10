@@ -30,10 +30,15 @@ namespace locus
 {
 
 LocusAligner::LocusAligner(
-    std::string locusId, GraphPtr graph, const HeuristicParameters& params, AlignWriterPtr writer)
+    graphtools::TextView locusId, GraphPtr graph, const HeuristicParameters& params, AlignWriterPtr writer,
+    uint64_t archiveSlot)
     : locusId_(std::move(locusId))
-    , aligner_(graph, params.kmerLenForAlignment(), params.paddingLength(), params.seedAffixTrimLength())
-    , orientationPredictor_(graph, params.orientationPredictorKmerLen(), params.orientationPredictorMinKmerCount())
+    , aligner_(
+          graph, params.kmerLenForAlignment(), params.paddingLength(), params.seedAffixTrimLength(),
+          params.catalogIndexes, archiveSlot)
+    , orientationPredictor_(
+          graph, params.orientationPredictorKmerLen(), params.orientationPredictorMinKmerCount(), params.catalogIndexes,
+          archiveSlot + 1)
     , writer_(std::move(writer))
 {
 }

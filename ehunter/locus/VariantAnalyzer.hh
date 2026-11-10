@@ -33,6 +33,7 @@
 #include "core/Parameters.hh"
 #include "core/Read.hh"
 #include "locus/VariantFindings.hh"
+#include "locus/VariantSpecification.hh"
 
 namespace ehunter
 {
@@ -50,6 +51,13 @@ public:
     {
     }
     virtual ~VariantAnalyzer() = default;
+    VariantAnalyzer(VariantSpecification variant, const graphtools::Graph& graph, const GenotyperParameters& params)
+        : graph_(graph)
+        , preparedVariant_(std::move(variant))
+        , preparedGenotyper_(&params)
+    {
+        preparedVariant_->requirePreparedAddress(&params, sizeof(params));
+    }
 
     virtual void processMates(
         const Read& read, const graphtools::GraphAlignment& readAlignment, const Read& mate,
@@ -58,15 +66,28 @@ public:
 
     virtual std::unique_ptr<VariantFindings> analyze(const LocusStats& stats) = 0;
 
-    const std::string& variantId() const { return variantId_; }
+    graphtools::TextView variantId() const
+    {
+        return preparedVariant_ ? preparedVariant_->id() : graphtools::TextView(variantId_);
+    }
     const graphtools::Graph& graph() const { return graph_; }
-    const std::vector<graphtools::NodeId>& nodeIds() const { return nodeIds_; }
+    graphtools::CatalogRange<graphtools::NodeId> nodeIds() const
+    {
+        return preparedVariant_ ? preparedVariant_->nodes()
+                                : graphtools::CatalogRange<graphtools::NodeId>::fromVector(nodeIds_);
+    }
+    const GenotyperParameters& genotyperParameters() const
+    {
+        return preparedGenotyper_ ? *preparedGenotyper_ : genotyperParams_;
+    }
 
 protected:
     std::string variantId_;
     const graphtools::Graph& graph_;
     std::vector<graphtools::NodeId> nodeIds_;
     GenotyperParameters genotyperParams_;
+    boost::optional<VariantSpecification> preparedVariant_;
+    const GenotyperParameters* preparedGenotyper_ = nullptr;
 };
 
 }

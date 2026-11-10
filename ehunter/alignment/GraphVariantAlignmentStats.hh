@@ -52,6 +52,12 @@ class GraphVariantAlignmentStatsCalculator
 {
 public:
     explicit GraphVariantAlignmentStatsCalculator(std::vector<graphtools::NodeId> variantNodes);
+    explicit GraphVariantAlignmentStatsCalculator(graphtools::CatalogRange<graphtools::NodeId> variantNodes);
+    GraphVariantAlignmentStatsCalculator(std::initializer_list<graphtools::NodeId> nodes)
+        : GraphVariantAlignmentStatsCalculator(
+              graphtools::CatalogRange<graphtools::NodeId>::fromArray(nodes.begin(), nodes.size()))
+    {
+    }
 
     void inspect(const graphtools::GraphAlignment& alignment);
     GraphVariantAlignmentStats getStats() const;
@@ -67,7 +73,6 @@ private:
 
     Flank classify(const graphtools::GraphAlignment& alignment) const;
 
-    std::vector<graphtools::NodeId> variantNodes_;
     graphtools::NodeId firstVariantNode_;
     graphtools::NodeId lastVariantNode_;
 

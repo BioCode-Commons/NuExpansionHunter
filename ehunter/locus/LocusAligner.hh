@@ -46,7 +46,9 @@ public:
     using AlignedPair = std::pair<OptionalAlign, OptionalAlign>;
     using AlignWriterPtr = std::shared_ptr<graphtools::AlignmentWriter>;
 
-    LocusAligner(std::string locusId, GraphPtr graph, const HeuristicParameters& params, AlignWriterPtr writer);
+    LocusAligner(
+        graphtools::TextView locusId, GraphPtr graph, const HeuristicParameters& params, AlignWriterPtr writer,
+        uint64_t archiveSlot = 0);
 
     /// \param[in,out] alignerSelector A per-thread alignment workspace which mutates during alignment
     ///
@@ -55,7 +57,7 @@ public:
 private:
     OptionalAlign align(Read& read, graphtools::AlignerSelector& alignerSelector) const;
 
-    std::string locusId_;
+    graphtools::TextView locusId_;
     graphtools::GappedGraphAligner aligner_;
     OrientationPredictor orientationPredictor_;
     AlignWriterPtr writer_;

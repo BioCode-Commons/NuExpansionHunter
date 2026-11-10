@@ -85,7 +85,8 @@ void initializeLocusAnalyzerThread(
             const auto& locusSpec(regionCatalog[locusIndex]);
             locusId = locusSpec.locusId();
 
-            locusAnalyzers[locusIndex].reset(new LocusAnalyzer(locusSpec, heuristicParams, bamletWriter));
+            locusAnalyzers[locusIndex].reset(
+                new LocusAnalyzer(locusSpec, heuristicParams, bamletWriter, uint64_t(locusIndex) * 2 + 1));
         }
     }
     catch (const std::exception& e)
@@ -95,7 +96,6 @@ void initializeLocusAnalyzerThread(
 
         spdlog::error(
             "Exception caught in thread {}  while initializing locus: {} : {}", threadIndex, locusId, e.what());
-        throw;
     }
     catch (...)
     {
@@ -103,7 +103,6 @@ void initializeLocusAnalyzerThread(
         locusThreadData.threadExceptionPtr = std::current_exception();
 
         spdlog::error("Exception caught in thread {}  while initializing locus: {}", threadIndex, locusId);
-        throw;
     }
 }
 
@@ -130,7 +129,10 @@ std::vector<std::unique_ptr<LocusAnalyzer>> initializeLocusAnalyzers(
             std::ref(locusInitThreadLocalDataPool));
     }
 
-    // Rethrow exceptions from worker pool in thread order:
+    for (auto& initThread : initThreads)
+        initThread.join();
+
+    // Rethrow exceptions only after every worker has released its inputs.
     if (locusInitThreadSharedData.isWorkerThreadException.load())
     {
         for (int threadIndex(0); threadIndex < threadCount; ++threadIndex)
@@ -141,11 +143,6 @@ std::vector<std::unique_ptr<LocusAnalyzer>> initializeLocusAnalyzers(
                 std::rethrow_exception(locusThreadData.threadExceptionPtr);
             }
         }
-    }
-
-    for (auto& initThread : initThreads)
-    {
-        initThread.join();
     }
 
     return locusAnalyzers;

@@ -31,6 +31,7 @@
 #include <utility>
 #include <vector>
 
+#include "graphutils/MappedData.hh"
 #include "graphutils/PairHashing.hh"
 
 namespace graphtools
@@ -49,6 +50,20 @@ struct Node
     std::vector<std::string> sequence_expansion;
 };
 
+struct MappedNode
+{
+    Slice name, sequence, expansions, successors, predecessors;
+};
+struct MappedEdge
+{
+    NodeId from, to;
+    Slice labels;
+};
+struct MappedGraph
+{
+    Slice nodes, edges, id;
+};
+
 /**
  * Sequence graph that can hold degenerate nucleotide sequences
  */
@@ -56,25 +71,26 @@ class Graph
 {
 public:
     explicit Graph(size_t num_nodes = 0, std::string const& id = "")
-        : graphId(id)
+        : graphId_(id)
     {
         init(num_nodes);
     }
 
     virtual ~Graph() = default;
+    bool isMapped() const { return mapped_.data != nullptr; }
 
-    size_t numNodes() const { return nodes_.size(); }
-    size_t numEdges() const { return edge_labels_.size(); }
-    const std::string& nodeName(NodeId node_id) const;
+    size_t numNodes() const { return mapped_.data ? mappedGraph_->nodes.count : nodes_.size(); }
+    size_t numEdges() const { return mapped_.data ? mappedGraph_->edges.count : edge_labels_.size(); }
+    TextView nodeName(NodeId node_id) const;
     void setNodeName(NodeId node_id, const std::string& node_name);
-    const std::string& nodeSeq(NodeId node_id) const;
+    TextView nodeSeq(NodeId node_id) const;
     void setNodeSeq(NodeId node_id, const std::string& sequence);
-    const std::vector<std::string>& nodeSeqExpansion(NodeId node_id) const;
+    CatalogRange<TextView> nodeSeqExpansion(NodeId node_id) const;
     void addEdge(NodeId source_node_id, NodeId sink_node_id);
     bool hasEdge(NodeId source_node_id, NodeId sink_node_id) const;
 
     SortedLabels allLabels() const;
-    const Labels& edgeLabels(NodeId source_node_id, NodeId sink_node_id) const;
+    CatalogRange<TextView> edgeLabels(NodeId source_node_id, NodeId sink_node_id) const;
     // All edges in the graph with this label
     std::set<NodeIdPair> edgesWithLabel(const std::string& label) const;
     /**
@@ -86,14 +102,26 @@ public:
     void eraseLabel(const std::string& label);
 
     // this cannot be const if graphs are to be assigned. Currently this happens in unit tests.
-    std::string graphId;
-    const std::set<NodeId>& successors(NodeId node_id) const;
-    const std::set<NodeId>& predecessors(NodeId node_id) const;
+    TextView graphId() const { return mapped_.data ? mapped_.text(mappedGraph_->id) : TextView(graphId_); }
+    void setGraphId(const std::string& id)
+    {
+        assertMutable();
+        graphId_ = id;
+    }
+    CatalogRange<NodeId> successors(NodeId node_id) const;
+    CatalogRange<NodeId> predecessors(NodeId node_id) const;
+    Slice freeze(BlobBuilder& out) const;
+    static Graph mapped(MappedBytes bytes, Slice record);
 
 private:
     void init(size_t num_nodes);
     void assertNodeExists(NodeId node_id) const;
     void assertEdgeExists(NodeIdPair edge) const;
+    void assertMutable() const;
+    const MappedNode& mappedNode(NodeId node) const { return mapped_.array<MappedNode>(mappedGraph_->nodes)[node]; }
+    MappedBytes mapped_;
+    const MappedGraph* mappedGraph_ = nullptr;
+    std::string graphId_;
     std::vector<Node> nodes_;
     std::unordered_map<NodeIdPair, Labels> edge_labels_;
     AdjacencyList adjacency_list_;
@@ -112,7 +140,7 @@ public:
 
     size_t numNodes() const { return graph_.numNodes(); }
     size_t numEdges() const { return graph_.numEdges(); }
-    const std::string& nodeName(NodeId nodeId) const { return graph_.nodeName(nodeId); }
+    TextView nodeName(NodeId nodeId) const { return graph_.nodeName(nodeId); }
     const std::string nodeSeq(NodeId nodeId) const
     {
         std::string ret = graph_.nodeSeq(nodeId);
@@ -122,7 +150,7 @@ public:
     bool hasEdge(NodeId sourceNodeId, NodeId sinkNodeId) const { return graph_.hasEdge(sourceNodeId, sinkNodeId); }
 
     SortedLabels allLabels() const { return graph_.allLabels(); }
-    const Labels& edgeLabels(NodeId sourceNodeId, NodeId sinkNodeId) const
+    CatalogRange<TextView> edgeLabels(NodeId sourceNodeId, NodeId sinkNodeId) const
     {
         return graph_.edgeLabels(sourceNodeId, sinkNodeId);
     }
@@ -130,7 +158,7 @@ public:
     // All edges in the graph with this label
     std::set<NodeIdPair> edgesWithLabel(const std::string& label) const { return graph_.edgesWithLabel(label); }
 
-    const std::set<NodeId>& successors(NodeId nodeId) const { return graph_.predecessors(nodeId); }
-    const std::set<NodeId>& predecessors(NodeId nodeId) const { return graph_.successors(nodeId); }
+    CatalogRange<NodeId> successors(NodeId nodeId) const { return graph_.predecessors(nodeId); }
+    CatalogRange<NodeId> predecessors(NodeId nodeId) const { return graph_.successors(nodeId); }
 };
 }

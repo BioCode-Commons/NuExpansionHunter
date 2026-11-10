@@ -237,6 +237,11 @@ public:
         return true;
     }
 
+    const interval_vector& localIntervals() const { return intervals; }
+    const IntervalTree* leftChild() const { return left.get(); }
+    const IntervalTree* rightChild() const { return right.get(); }
+    Scalar centerCoordinate() const { return center; }
+
     template <class UnaryFunction>
     void visit_all(UnaryFunction f) const {
         if (left) {

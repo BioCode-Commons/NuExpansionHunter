@@ -49,10 +49,14 @@ void initializeGenomeMask(GenomeMask& genomeMask, vector<unique_ptr<locus::Locus
 }
 }
 
-GenomeQueryCollection::GenomeQueryCollection(vector<unique_ptr<LocusAnalyzer>>& locusAnalyzers)
-    : analyzerFinder(locusAnalyzers)
+GenomeQueryCollection::GenomeQueryCollection(
+    vector<unique_ptr<LocusAnalyzer>>& locusAnalyzers, const RegionCatalog* catalog)
+    : analyzerFinder(locusAnalyzers, catalog)
 {
-    initializeGenomeMask(targetRegionMask, locusAnalyzers);
+    if (catalog && catalog->mappedBytes().data)
+        targetRegionMask.usePrepared(catalog->mappedBytes(), catalog->preparedIntervals());
+    else
+        initializeGenomeMask(targetRegionMask, locusAnalyzers);
 }
 
 }

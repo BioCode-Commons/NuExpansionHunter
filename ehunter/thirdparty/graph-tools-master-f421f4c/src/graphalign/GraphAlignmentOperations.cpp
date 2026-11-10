@@ -48,7 +48,7 @@ bool checkConsistency(const GraphAlignment& graph_alignment, const string& query
         query_pos += linear_alignment.queryLength();
 
         NodeId node_id = graph_alignment.getNodeIdByIndex(node_index);
-        const string& node_seq = graph_ptr->nodeSeq(node_id);
+        const auto node_seq = graph_ptr->nodeSeq(node_id);
         if (!checkConsistency(linear_alignment, node_seq, query_piece))
         {
             return false;
@@ -248,7 +248,7 @@ string prettyPrint(const GraphAlignment& graph_alignment, const string& query)
     for (const string& node_query : node_queries)
     {
         NodeId node_id = graph_alignment.getNodeIdByIndex(node_index);
-        const string& node_seq = graph_ptr->nodeSeq(node_id);
+        const auto node_seq = graph_ptr->nodeSeq(node_id);
 
         const auto& linear_alignment = graph_alignment[node_index];
         linear_alignment_encodings.push_back(prettyPrint(linear_alignment, node_seq, node_query));

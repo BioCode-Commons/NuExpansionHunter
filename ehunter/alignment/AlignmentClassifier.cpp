@@ -67,10 +67,19 @@ ostream& operator<<(ostream& os, const AlignmentType& read_class)
 RepeatAlignmentClassifier::RepeatAlignmentClassifier(const graphtools::Graph& graph, int32_t repeat_node_id)
     : repeat_node_id_(repeat_node_id)
 {
-    left_flank_node_ids_ = graph.predecessors(repeat_node_id_);
+    mapped_ = graph.isMapped();
+    if (mapped_)
+    {
+        mappedLeft_ = graph.predecessors(repeat_node_id_);
+        mappedRight_ = graph.successors(repeat_node_id_);
+        return;
+    }
+    const auto predecessors = graph.predecessors(repeat_node_id_);
+    left_flank_node_ids_.insert(predecessors.begin(), predecessors.end());
     left_flank_node_ids_.erase(repeat_node_id_);
 
-    right_flank_node_ids_ = graph.successors(repeat_node_id_);
+    const auto successors = graph.successors(repeat_node_id_);
+    right_flank_node_ids_.insert(successors.begin(), successors.end());
     right_flank_node_ids_.erase(repeat_node_id_);
 }
 
@@ -104,12 +113,12 @@ AlignmentType RepeatAlignmentClassifier::Classify(const GraphAlignment& alignmen
 
     for (auto node_id : alignment.path().nodeIds())
     {
-        if (left_flank_node_ids_.find(node_id) != left_flank_node_ids_.end())
+        if (node_id != static_cast<graphtools::NodeId>(repeat_node_id_) && leftView().count(node_id))
         {
             overlaps_left_flank = true;
         }
 
-        if (right_flank_node_ids_.find(node_id) != right_flank_node_ids_.end())
+        if (node_id != static_cast<graphtools::NodeId>(repeat_node_id_) && rightView().count(node_id))
         {
             overlaps_right_flank = true;
         }
@@ -139,8 +148,8 @@ AlignmentType RepeatAlignmentClassifier::Classify(const GraphAlignment& alignmen
 
 bool RepeatAlignmentClassifier::operator==(const RepeatAlignmentClassifier& other) const
 {
-    return repeat_node_id_ == other.repeat_node_id_ && left_flank_node_ids_ == other.left_flank_node_ids_
-        && right_flank_node_ids_ == other.right_flank_node_ids_;
+    return repeat_node_id_ == other.repeat_node_id_ && leftFlankNodeIds() == other.leftFlankNodeIds()
+        && rightFlankNodeIds() == other.rightFlankNodeIds();
 }
 
 }
