@@ -174,8 +174,8 @@ public:
         InputPaths inputPaths, OutputPaths outputPaths, SampleParameters sample, HeuristicParameters heuristics,
         AnalysisMode analysisMode, LogLevel logLevel, const int initThreadCount, const bool initDisableBamletOutput)
         : threadCount(initThreadCount)
-        , decodeThreadCount(std::min(initThreadCount, 12))
-        , encodeThreadCount(initThreadCount)
+        , decodeThreadCount(0)
+        , encodeThreadCount(0)
         , disableBamletOutput(initDisableBamletOutput)
         , inputPaths_(std::move(inputPaths))
         , outputPaths_(std::move(outputPaths))
@@ -196,7 +196,7 @@ public:
     // Compute workers; I/O pools and coordinator threads are additional.
     int threadCount;
     // Streaming input uses synchronous decoding for 0 or 1; output uses
-    // synchronous compression for 0. Defaults retain the original pool sizes.
+    // synchronous compression for 0. Both default to 0 independently of compute workers.
     int decodeThreadCount;
     int encodeThreadCount;
     // Opt-in budget for queued BAM records only; 0 retains the original unbounded queue.

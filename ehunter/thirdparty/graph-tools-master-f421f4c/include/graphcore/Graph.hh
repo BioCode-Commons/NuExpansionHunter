@@ -110,6 +110,11 @@ public:
     }
     CatalogRange<NodeId> successors(NodeId node_id) const;
     CatalogRange<NodeId> predecessors(NodeId node_id) const;
+    // Internal traversal views: the graph and its mapping must outlive the range
+    // and every iterator. Unlike the owning APIs above, these do not retain the
+    // archive, so concurrent traversals do not update its shared reference count.
+    CatalogRange<NodeId> borrowedSuccessors(NodeId node_id) const;
+    CatalogRange<NodeId> borrowedPredecessors(NodeId node_id) const;
     Slice freeze(BlobBuilder& out) const;
     static Graph mapped(MappedBytes bytes, Slice record);
 
@@ -160,5 +165,39 @@ public:
 
     CatalogRange<NodeId> successors(NodeId nodeId) const { return graph_.predecessors(nodeId); }
     CatalogRange<NodeId> predecessors(NodeId nodeId) const { return graph_.successors(nodeId); }
+    CatalogRange<NodeId> borrowedSuccessors(NodeId nodeId) const { return graph_.borrowedPredecessors(nodeId); }
+    CatalogRange<NodeId> borrowedPredecessors(NodeId nodeId) const { return graph_.borrowedSuccessors(nodeId); }
 };
+
+namespace detail
+{
+// Preserve the existing adjacency API for other graph types, including derived
+// types with their own traversal semantics. Only these exact graph types borrow.
+template <typename GraphT>
+auto borrowedSuccessors(const GraphT& graph, NodeId node) -> decltype(graph.successors(node))
+{
+    return graph.successors(node);
+}
+template <typename GraphT>
+auto borrowedPredecessors(const GraphT& graph, NodeId node) -> decltype(graph.predecessors(node))
+{
+    return graph.predecessors(node);
+}
+inline CatalogRange<NodeId> borrowedSuccessors(const Graph& graph, NodeId node)
+{
+    return graph.borrowedSuccessors(node);
+}
+inline CatalogRange<NodeId> borrowedPredecessors(const Graph& graph, NodeId node)
+{
+    return graph.borrowedPredecessors(node);
+}
+inline CatalogRange<NodeId> borrowedSuccessors(const ReverseGraph& graph, NodeId node)
+{
+    return graph.borrowedSuccessors(node);
+}
+inline CatalogRange<NodeId> borrowedPredecessors(const ReverseGraph& graph, NodeId node)
+{
+    return graph.borrowedPredecessors(node);
+}
+}
 }

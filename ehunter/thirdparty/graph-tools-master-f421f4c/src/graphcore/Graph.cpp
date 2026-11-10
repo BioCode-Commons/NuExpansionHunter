@@ -143,7 +143,11 @@ bool Graph::hasEdge(NodeId source_id, NodeId sink_id) const
     assertNodeExists(source_id);
     assertNodeExists(sink_id);
     if (mapped_.data)
-        return successors(source_id).count(sink_id) != 0;
+    {
+        const auto slice = mappedNode(source_id).successors;
+        const auto* adjacent = mapped_.array<NodeId>(slice);
+        return std::find(adjacent, adjacent + slice.count, sink_id) != adjacent + slice.count;
+    }
     return edge_labels_.find(NodeIdPair(source_id, sink_id)) != edge_labels_.end();
 }
 
@@ -255,6 +259,28 @@ CatalogRange<NodeId> Graph::predecessors(NodeId node_id) const
     {
         const auto slice = mappedNode(node_id).predecessors;
         return CatalogRange<NodeId>::fromArray(mapped_.array<NodeId>(slice), slice.count, mapped_.owner);
+    }
+    return CatalogRange<NodeId>::fromContainer(reverse_adjacency_list_[node_id]);
+}
+
+CatalogRange<NodeId> Graph::borrowedSuccessors(NodeId node_id) const
+{
+    assertNodeExists(node_id);
+    if (mapped_.data)
+    {
+        const auto slice = mappedNode(node_id).successors;
+        return CatalogRange<NodeId>::fromArray(mapped_.array<NodeId>(slice), slice.count);
+    }
+    return CatalogRange<NodeId>::fromContainer(adjacency_list_[node_id]);
+}
+
+CatalogRange<NodeId> Graph::borrowedPredecessors(NodeId node_id) const
+{
+    assertNodeExists(node_id);
+    if (mapped_.data)
+    {
+        const auto slice = mappedNode(node_id).predecessors;
+        return CatalogRange<NodeId>::fromArray(mapped_.array<NodeId>(slice), slice.count);
     }
     return CatalogRange<NodeId>::fromContainer(reverse_adjacency_list_[node_id]);
 }

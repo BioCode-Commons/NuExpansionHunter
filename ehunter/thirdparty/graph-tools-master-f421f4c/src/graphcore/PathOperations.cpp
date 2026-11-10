@@ -53,7 +53,7 @@ list<Path> extendPathStart(const Path& path, int32_t extension_len)
     }
     else
     {
-        const auto pred_node_ids = path.graphRawPtr()->predecessors(start_node_id);
+        const auto pred_node_ids = path.graphRawPtr()->borrowedPredecessors(start_node_id);
         const int32_t leftover_length = extension_len - path.startPosition();
         for (NodeId pred_node_id : pred_node_ids)
         {
@@ -85,7 +85,7 @@ list<Path> extendPathEnd(const Path& path, int32_t extension_len)
     }
     else
     {
-        const auto succ_node_ids = path.graphRawPtr()->successors(end_node_id);
+        const auto succ_node_ids = path.graphRawPtr()->borrowedSuccessors(end_node_id);
         const int32_t leftover_length = extension_len - max_extension_at_end_node;
         for (NodeId succ_node_id : succ_node_ids)
         {
@@ -137,7 +137,7 @@ Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
 
         if (pos_in_node >= node_sequence.size())
         {
-            const auto& successors = graph.successors(node_in_graph);
+            const auto& successors = graph.borrowedSuccessors(node_in_graph);
 
             size_t num_longest_matches = 0;
             size_t current_longest_match = 0;
@@ -212,7 +212,7 @@ Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in
 
         if (pos_in_node == 0)
         {
-            const auto& predecessors = graph.predecessors(node_in_graph);
+            const auto& predecessors = graph.borrowedPredecessors(node_in_graph);
 
             size_t num_longest_matches = 0;
             size_t current_longest_match = 0;
@@ -749,7 +749,7 @@ bool checkIfBookended(const Path& first_path, const Path& second_path)
     }
 
     const Graph& graph = *first_path.graphRawPtr();
-    const auto& successors = graph.successors(first_path_end_node);
+    const auto& successors = graph.borrowedSuccessors(first_path_end_node);
     const bool are_ends_on_neighboring_nodes = successors.find(second_path_start_node) != successors.end();
     const auto first_paths_last_node_length = static_cast<int>(graph.nodeSeq(first_path_end_node).length());
     const bool is_first_path_ends_at_node_end = first_path.endPosition() == first_paths_last_node_length;

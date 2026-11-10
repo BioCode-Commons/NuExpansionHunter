@@ -66,6 +66,7 @@ struct UserParameters
     string logLevel;
     int threadCount;
     string decodeThreads;
+    bool decodeThreadsExplicit = false;
     string encodeThreads;
     string bamletQueueMb;
     bool disableBamletOutput = false;
@@ -97,8 +98,8 @@ boost::optional<UserParameters> tryParsingUserParameters(int argc, char** argv)
         ("aligner,a", po::value<string>(&params.alignerType)->default_value("dag-aligner"), "Specify which aligner to use (dag-aligner or path-aligner)")
         ("analysis-mode,m", po::value<string>(&params.analysisMode)->default_value("seeking"), "Specify which analysis workflow to use (seeking or streaming)")
         ("threads,n", po::value(&params.threadCount)->default_value(1), "Compute workers; not a total process thread limit")
-        ("decode-threads", po::value<string>(&params.decodeThreads)->default_value("auto"), "Streaming input decompression workers: auto=min(threads,12), 0 or 1=synchronous")
-        ("encode-threads", po::value<string>(&params.encodeThreads)->default_value("auto"), "BAM output compression workers: auto=threads, 0=synchronous; unused with --disable-bamlet-output")
+        ("decode-threads", po::value<string>(&params.decodeThreads)->default_value("0"), "Streaming input decompression workers: 0 (default) or 1=synchronous, auto=min(threads,12)")
+        ("encode-threads", po::value<string>(&params.encodeThreads)->default_value("0"), "BAM output compression workers: 0 (default)=synchronous, auto=threads; unused with --disable-bamlet-output")
         ("bamlet-queue-mb", po::value<string>(&params.bamletQueueMb)->default_value("0"), "Opt-in queued BAM-record budget in MiB: 0=unbounded (legacy default); not a process RAM limit")
         ("catalog-cache", po::value<string>(&params.catalogCache), "Read-only prepared catalog k-mer archive")
         ("prepare-catalog-cache", po::bool_switch(&params.prepareCatalogCache), "Build --catalog-cache and exit before processing reads")
@@ -137,6 +138,7 @@ boost::optional<UserParameters> tryParsingUserParameters(int argc, char** argv)
     }
 
     params.disableBamletOutput = argumentMap.count("disable-bamlet-output");
+    params.decodeThreadsExplicit = !argumentMap["decode-threads"].defaulted();
 
     po::notify(argumentMap);
 
@@ -405,7 +407,7 @@ boost::optional<ProgramParameters> tryLoadingProgramParameters(int argc, char** 
         = decodeIoThreadCount(userParams.decodeThreads, "--decode-threads", std::min(userParams.threadCount, 12));
     result.encodeThreadCount = decodeIoThreadCount(userParams.encodeThreads, "--encode-threads", userParams.threadCount);
     result.bamletQueueBytes = decodeBamletQueueBytes(userParams.bamletQueueMb);
-    if (userParams.analysisMode != "streaming" && userParams.decodeThreads != "auto")
+    if (userParams.analysisMode != "streaming" && userParams.decodeThreadsExplicit && userParams.decodeThreads != "auto")
         throw std::invalid_argument("--decode-threads is only supported with --analysis-mode streaming");
     return result;
 }

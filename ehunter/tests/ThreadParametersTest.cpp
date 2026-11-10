@@ -2,6 +2,7 @@
 
 #include "io/ParameterLoading.hh"
 
+#include <algorithm>
 #include <fstream>
 #include <limits>
 #include <string>
@@ -57,22 +58,37 @@ private:
     boost::filesystem::path directory_;
 };
 
-TEST_F(ThreadParametersTest, AutomaticIoPoolsRetainExistingDefaults)
+TEST_F(ThreadParametersTest, IoDefaultsStaySynchronousAsComputeWorkersIncrease)
 {
     const auto defaults = load({});
     EXPECT_EQ(defaults.threadCount, 1);
-    EXPECT_EQ(defaults.decodeThreadCount, 1);
-    EXPECT_EQ(defaults.encodeThreadCount, 1);
+    EXPECT_EQ(defaults.decodeThreadCount, 0);
+    EXPECT_EQ(defaults.encodeThreadCount, 0);
 
-    const auto four = load({ "--threads=4" });
-    EXPECT_EQ(four.threadCount, 4);
-    EXPECT_EQ(four.decodeThreadCount, 4);
-    EXPECT_EQ(four.encodeThreadCount, 4);
+    for (const int threads : { 1, 4, 32 })
+    {
+        const auto parameters = load({ "--threads=" + std::to_string(threads) });
+        EXPECT_EQ(parameters.threadCount, threads);
+        EXPECT_EQ(parameters.decodeThreadCount, 0);
+        EXPECT_EQ(parameters.encodeThreadCount, 0);
 
-    const auto many = load({ "--threads=32", "--decode-threads=auto", "--encode-threads=auto" });
-    EXPECT_EQ(many.threadCount, 32);
-    EXPECT_EQ(many.decodeThreadCount, 12);
-    EXPECT_EQ(many.encodeThreadCount, 32);
+        const ProgramParameters constructed(parameters.inputPaths(), parameters.outputPaths(), parameters.sample(),
+            parameters.heuristics(), parameters.analysisMode(), parameters.logLevel(), threads, false);
+        EXPECT_EQ(constructed.decodeThreadCount, 0);
+        EXPECT_EQ(constructed.encodeThreadCount, 0);
+    }
+}
+
+TEST_F(ThreadParametersTest, ExplicitAutoRetainsLegacyIoPoolSizing)
+{
+    for (const int threads : { 1, 4, 32 })
+    {
+        const auto parameters = load(
+            { "--threads=" + std::to_string(threads), "--decode-threads=auto", "--encode-threads=auto" });
+        EXPECT_EQ(parameters.threadCount, threads);
+        EXPECT_EQ(parameters.decodeThreadCount, std::min(threads, 12));
+        EXPECT_EQ(parameters.encodeThreadCount, threads);
+    }
 }
 
 TEST_F(ThreadParametersTest, IoPoolsCanBeConfiguredIndependently)
@@ -81,6 +97,8 @@ TEST_F(ThreadParametersTest, IoPoolsCanBeConfiguredIndependently)
     EXPECT_EQ(parameters.threadCount, 4);
     EXPECT_EQ(parameters.decodeThreadCount, 2);
     EXPECT_EQ(parameters.encodeThreadCount, 3);
+    EXPECT_EQ(load({ "--decode-threads=2" }).encodeThreadCount, 0);
+    EXPECT_EQ(load({ "--encode-threads=3" }).decodeThreadCount, 0);
 
     for (const auto& value : { "0", "1" })
     {
@@ -109,8 +127,13 @@ TEST_F(ThreadParametersTest, InvalidAndOverflowingIoCountsAreRejected)
 
 TEST_F(ThreadParametersTest, SeekingModeDoesNotSilentlyIgnoreExplicitDecodeThreads)
 {
-    const auto automatic = load({ "--threads=4", "--encode-threads=0" }, "seeking");
-    EXPECT_EQ(automatic.encodeThreadCount, 0);
+    const auto defaults = load({ "--threads=32" }, "seeking");
+    EXPECT_EQ(defaults.decodeThreadCount, 0);
+    EXPECT_EQ(defaults.encodeThreadCount, 0);
+    EXPECT_EQ(load({ "--threads=4", "--encode-threads=3" }, "seeking").encodeThreadCount, 3);
+    EXPECT_EQ(load({ "--threads=32", "--decode-threads=auto" }, "seeking").decodeThreadCount, 12);
+    EXPECT_THROW(load({ "--decode-threads=0" }, "seeking"), std::invalid_argument);
+    EXPECT_THROW(load({ "--decode-threads=1" }, "seeking"), std::invalid_argument);
     EXPECT_THROW(load({ "--decode-threads=2" }, "seeking"), std::invalid_argument);
 }
 

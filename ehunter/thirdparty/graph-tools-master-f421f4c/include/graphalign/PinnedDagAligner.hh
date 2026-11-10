@@ -332,7 +332,7 @@ private:
                 const int successorSeqOffset
                     = -1 == currentNodeSeqOffset ? 0 : currentNodeSeqOffset + currentNodeSeq.length();
                 // sequence does not terminate at this node, enqueue successors
-                const auto successors = graph.successors(currentNodeId);
+                const auto successors = detail::borrowedSuccessors(graph, currentNodeId);
                 for (const NodeId successorId : successors)
                 {
                     const auto seenSuccessor = nodeStartSeqOffset.find(successorId);
@@ -370,7 +370,7 @@ private:
                 throw std::logic_error("node should not be in the subgraph");
             }
 
-            const auto successors = graph.successors(nodeIdOffset.first);
+            const auto successors = detail::borrowedSuccessors(graph, nodeIdOffset.first);
             if (successors.end() != successors.find(nodeIdOffset.first))
             {
                 const std::size_t nodeSeqLen = graph.nodeSeq(nodeIdOffset.first).length();
@@ -456,7 +456,7 @@ private:
             const NodeId originalId = originalIds.at(mappedId);
 
             bool selfRepeat = false;
-            for (const NodeId& predecessorId : graph.predecessors(originalId))
+            for (const NodeId& predecessorId : detail::borrowedPredecessors(graph, originalId))
             {
                 if (predecessorId != originalId)
                 {

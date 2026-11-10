@@ -125,8 +125,8 @@ new cache filename and the same preparation command above.
 | `--output-prefix` | Required | Output path prefix; create its parent directory first |
 | `--analysis-mode` | `seeking` | `seeking` or `streaming` |
 | `--threads` | `1` | Number of analysis workers; I/O workers and coordinator threads are additional |
-| `--decode-threads` | `auto` | Streaming input decompression workers; `auto` retains `min(--threads, 12)`, and `0` or `1` uses synchronous input |
-| `--encode-threads` | `auto` | BAM output compression workers; `auto` retains `--threads`, and `0` uses synchronous compression |
+| `--decode-threads` | `0` | Streaming input decompression; `0` or `1` runs synchronously in the reading thread, `N >= 2` creates `N` workers, and explicit `auto` selects `min(--threads, 12)` |
+| `--encode-threads` | `0` | BAM output compression; `0` runs synchronously in the BAM writer thread, `N >= 1` creates `N` workers, and explicit `auto` selects `--threads` |
 | `--bamlet-queue-mb` | `0` | Queued BAM record budget in MiB; `0` retains the unbounded queue |
 | `--sex` | `female` | `male` or `female`; sets ploidy on sex chromosomes |
 | `--region-extension-length` | `1000` | Bases searched around on-target and off-target regions |
@@ -135,10 +135,17 @@ new cache filename and the same preparation command above.
 | `--catalog-cache` | None | Read static catalog data from a prepared memory-mapped archive |
 | `--prepare-catalog-cache` | Off | Build the specified cache and exit before processing reads |
 
+The defaults are `--decode-threads 0 --encode-threads 0`. These values disable
+additional HTS codec worker pools; input decoding and BAM output compression still
+run synchronously in their calling threads. Analysis workers and workflow
+coordination still run, and BAMlet output retains its dedicated writer, so
+`--threads` is not a process-wide thread limit. Explicit numeric values or `auto`
+override the codec defaults. The decoder option applies to streaming mode; BAM
+encoder settings are unused when BAMlet output is disabled.
+
 For multiple samples on one node, tune the analysis, decompression and compression
-pools together: `--threads` alone is not a process-wide CPU limit. The default I/O
-pool sizes and unbounded BAM queue retain the previous behavior. Explicit resource
-settings require throughput measurements on the target workload.
+pools together and measure throughput on the target workload. The BAM queue still
+defaults to unbounded (`--bamlet-queue-mb 0`).
 
 A nonzero `--bamlet-queue-mb` makes producers wait when queued BAM records fill the
 budget. It counts BAM structs and their allocated data buffers, excluding producer
