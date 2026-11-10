@@ -148,8 +148,9 @@ int main(int argc, char** argv)
         }
         else
         {
-            bamletOutput.reset(
-                new BamletWriter(outputPaths.bamlet(), reference.contigInfo(), regionCatalog, params.threadCount));
+            bamletOutput.reset(new BamletWriter(
+                outputPaths.bamlet(), reference.contigInfo(), regionCatalog, params.encodeThreadCount,
+                params.bamletQueueBytes));
             bamletWriter = bamletOutput;
         }
 
@@ -163,8 +164,12 @@ int main(int argc, char** argv)
         else
         {
             spdlog::info("Running sample analysis in streaming mode");
+            spdlog::info(
+                "Thread pools: compute={}, decode={}, encode={} (I/O pools and coordinator threads are additional)",
+                params.threadCount, params.decodeThreadCount, params.disableBamletOutput ? 0 : params.encodeThreadCount);
             sampleFindings = htsStreamingSampleAnalysis(
-                inputPaths, sampleParams.sex(), heuristicParams, params.threadCount, regionCatalog, bamletWriter);
+                inputPaths, sampleParams.sex(), heuristicParams, params.threadCount, regionCatalog, bamletWriter,
+                params.decodeThreadCount);
         }
 
         spdlog::info("Writing output to disk");
