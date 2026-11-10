@@ -152,6 +152,7 @@ add_executable(UnitTests
         tests/AlleleCheckerTest.cpp
         tests/ClassifierOfAlignmentsToVariantTest.cpp
         tests/ConcurrentQueueTest.cpp
+        tests/BamletWriterTest.cpp
         tests/CountTableTest.cpp
         tests/FragLogliksTest.cpp
         tests/GenomeMaskTest.cpp
@@ -161,6 +162,8 @@ add_executable(UnitTests
         tests/GreedyAlignmentIntersectorTest.cpp
         tests/HighQualityBaseRunFinderTest.cpp
         tests/LocusStatsTest.cpp
+        tests/JsonWriterTest.cpp
+        tests/ThreadParametersTest.cpp
         tests/ReadSupportCalculatorTest.cpp
         tests/ReadTest.cpp
         tests/RegionGraphTest.cpp
