@@ -4,15 +4,15 @@
 
 ## Latest whole-catalog MMAP results
 
-The latest binary, `catalog-mmap-v2` (SHA-256 `d6470f61b65421fd16387052d1c9df7864c2fd48ccf7c1b7f366bf10b42d5e07`), processed the complete HG002 BAM and the same 174,293-locus Illumina catalog described below. Each core count ran once on Oscar Genoa nodes. The original EH measurements were reused from the earlier benchmark; the original was not rerun. These are comparisons with a historical baseline, not new same-node pairs. The operating-system page cache was not cleared.
+The latest binary, `catalog-mmap-v2` (SHA-256 `d6470f61b65421fd16387052d1c9df7864c2fd48ccf7c1b7f366bf10b42d5e07`), processed the complete HG002 BAM and the same 174,293-locus Illumina catalog described below. The timing table reports one run per core count on Oscar Genoa nodes. The original EH measurements were reused from the earlier benchmark; the original was not rerun. These are comparisons with a historical baseline, not new same-node pairs. The operating-system page cache was not cleared.
 
 Per-sample wall time includes cache validation and mapping, analyzer/index initialization, read processing, genotyping, and output. One-time cache preparation and output comparison are excluded and reported separately. Allocated CPU-hours are physical cores × wall hours; process CPU-hours are user + system CPU seconds divided by 3600. RSS is reported in GiB (2³⁰ bytes).
 
 | Cores | Wall time, historical original → MMAP | Speedup | Allocated CPU-hours, original → MMAP | CPU-hour saving | Process CPU-hours, original → MMAP | Peak RSS, original → MMAP | Latest full output comparison |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |
-| 4 | 3295.602 → 2240.789 s | **1.471×** | 3.662 → 2.490 | **32.01%** | 3.390 → 2.300 | 15.338 → 15.196 GiB (−0.93%) | Not performed |
-| 8 | 1703.735 → 1348.256 s | **1.264×** | 3.786 → 2.996 | **20.86%** | 3.304 → 2.487 | 15.681 → 15.194 GiB (−3.10%) | Not performed |
-| 16 | 1248.945 → 703.918 s | **1.774×** | 5.551 → 3.129 | **43.64%** | 3.865 → 2.354 | 29.584 → 15.207 GiB (−48.60%) | Not performed |
+| 4 | 3295.602 → 2240.789 s | **1.471×** | 3.662 → 2.490 | **32.01%** | 3.390 → 2.300 | 15.338 → 15.196 GiB (−0.93%) | **Output identical*** |
+| 8 | 1703.735 → 1348.256 s | **1.264×** | 3.786 → 2.996 | **20.86%** | 3.304 → 2.487 | 15.681 → 15.194 GiB (−3.10%) | **Output identical*** |
+| 16 | 1248.945 → 703.918 s | **1.774×** | 5.551 → 3.129 | **43.64%** | 3.865 → 2.354 | 29.584 → 15.207 GiB (−48.60%) | **Output identical*** |
 | 32 | 1064.277 → 489.479 s | **2.174×** | 9.460 → 4.351 | **54.01%** | 4.126 → 2.562 | 35.956 → 15.215 GiB (−57.68%) | **Output identical*** |
 
 The candidate ran on `node2353`, `node2354`, `node2426`, and `node2406` for 4, 8, 16, and 32 cores respectively. Compared with the previous optimized version, the new 4-, 16-, and 32-core observations used less time, while the 8-core observation took **7.7% longer** (1348.256 vs 1251.675 seconds). This single-run comparison does not establish a uniform speed improvement from MMAP or isolate the cause of the 8-core difference.
@@ -36,15 +36,15 @@ The archive maps graphs, strings, locus and variant metadata, 10-mer membership 
 
 ### Latest output validation
 
-**Output identical on the complete HG002 32-core run:** VCF/JSON were byte-identical, and BAM headers and all 74,565,578 records matched, including every field, tag, and duplicate count, ignoring record order only.
+**Output identical on complete HG002 at 4, 8, 16, and 32 cores:** VCF/JSON were byte-identical, and BAM headers and all 74,565,578 records matched, including every field, tag, and duplicate count, ignoring record order only.
 
-\* The **32-core complete HG002 run** was compared locally with retained original-EH output from the earlier 32-core run `8574491`. That reference used the same complete input BAM, reference, catalog, sex, aligner, and region extension, and the original binary SHA-256 was `9605813238e33b4f359ce2498bd8e6524d6f704c77742e0a1abe420b70294da8`. The reference used for correctness is separate from the historical timing measurement used in the speedup table.
+\* Complete outputs from all four core counts were compared locally with retained original-EH output from the earlier 32-core run `8574491`. That reference used the same complete input BAM, reference, catalog, sex, aligner, and region extension, and the original binary SHA-256 was `9605813238e33b4f359ce2498bd8e6524d6f704c77742e0a1abe420b70294da8`. The reference used for correctness is separate from the historical timing measurement used in the speedup table.
 
 - VCF and JSON were byte-identical.
 - BAM headers matched exactly.
 - Both BAMs contained **74,565,578 records**. Every SAM field, tag value, and duplicate multiplicity matched after lossless sorting; only record order was ignored.
 
-The latest 4-, 8-, and 16-core runs checked successful execution, nonempty outputs, and BAM integrity (`samtools quickcheck`). Their raw outputs were removed before a full comparison was requested, so they are **not** marked output-identical. The 32-core outputs were removed only after the full comparison passed. Logs, measurements, comparison reports, and cleanup manifests remain on Oscar.
+The 32-core comparison used the run reported in the timing table. Separate correctness runs at 4, 8, and 16 cores then passed the same full comparison against the retained original output. Their timings do not replace the measurements in the performance table. Each verified run contained 74,565,578 BAM records. Raw outputs were removed only after comparison passed; logs, measurements, comparison reports, and cleanup manifests remain on Oscar.
 
 Before these runs, the latest source passed the EH unit suite and all 30 bundled GraphTools tests, including mapped-handle lifetime, archive round trips and corruption rejection, compact-index differential checks, and coordinate queries with remote mates and off-target regions. The example and a 10,000-read-pair HG002 subset with the complete catalog also passed exact VCF/JSON and BAM-content comparisons.
 
