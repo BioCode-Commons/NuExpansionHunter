@@ -3,6 +3,7 @@
 #include "graphcore/GraphBuilders.hh"
 #include "graphcore/PathOperations.hh"
 #include "graphio/GraphJson.hh"
+#include "graphutils/KmerEncoding.hh"
 #include "graphutils/SequenceOperations.hh"
 #include "io/PreparedCatalog.hh"
 #include "sample/AnalyzerFinder.hh"
@@ -11,7 +12,10 @@
 
 #include <cstdio>
 #include <fstream>
+#include <functional>
 #include <map>
+#include <sstream>
+#include <utility>
 #include <unistd.h>
 
 namespace
@@ -80,6 +84,278 @@ TEST(CompactCatalogIndex, MatchesEnumeratedPathsAndMembership)
     }
 }
 
+TEST(CompactCatalogIndex, ViewsPreservePathOrderMultiplicityAndRepeatedNodes)
+{
+    const auto graph = graphtools::makeStrGraph("ACN", "A", "GTA");
+    for (int k = 1; k <= 6; ++k)
+    {
+        SCOPED_TRACE(k);
+        const auto expected = enumerate(graph, k);
+        const graphtools::KmerIndex index(graph, k), membership(graph, k, true);
+        const graphtools::TwoBitKmerEncoder encoder(k);
+        std::vector<size_t> uniqueNodeCounts(graph.numNodes(), 0);
+        std::map<std::pair<graphtools::NodeId, graphtools::NodeId>, size_t> uniqueEdgeCounts;
+        for (const auto& item : expected)
+        {
+            const auto encoded = encoder.encode(item.first);
+            const auto view = index.findEncodedPaths(encoded);
+            ASSERT_EQ(item.second.size(), view.size());
+            EXPECT_EQ(item.second.size(), index.numPaths(item.first));
+            EXPECT_EQ(item.second, index.getPaths(item.first));
+            for (size_t i = 0; i < item.second.size(); ++i)
+                EXPECT_EQ(item.second[i], view[i]);
+            EXPECT_THROW(view[view.size()], std::out_of_range);
+            EXPECT_TRUE(membership.containsEncodedKmer(encoded));
+            EXPECT_THROW(membership.findEncodedPaths(encoded).size(), std::logic_error);
+            if (item.second.size() == 1)
+            {
+                const auto& nodes = item.second.front().nodeIds();
+                for (auto node : nodes)
+                    ++uniqueNodeCounts[node];
+                for (size_t i = 1; i < nodes.size(); ++i)
+                    ++uniqueEdgeCounts[{ nodes[i - 1], nodes[i] }];
+            }
+        }
+        for (graphtools::NodeId node = 0; node < graph.numNodes(); ++node)
+        {
+            EXPECT_EQ(uniqueNodeCounts[node], index.numUniqueKmersOverlappingNode(node));
+            for (auto next : graph.successors(node))
+                EXPECT_EQ(uniqueEdgeCounts[std::make_pair(node, next)], index.numUniqueKmersOverlappingEdge(node, next));
+        }
+    }
+}
+
+TEST(CompactCatalogIndex, EmptyIndexesAndMembershipSurviveMapping)
+{
+    graphtools::Graph graph(1);
+    graph.setNodeSeq(0, "ACG");
+    ArchiveFile file;
+    graphtools::KmerIndex::prepareArchive(file.path, 2, [&](std::ostream& out, uint64_t slot) {
+        graphtools::KmerIndex(graph, 16, slot != 0).writeRecord(out);
+    });
+    auto archive = std::make_shared<graphtools::KmerIndexArchive>(file.path);
+    for (bool membership : { false, true })
+    {
+        const graphtools::KmerIndex index(graph, 16, membership), mapped(graph, 16, membership, archive, membership);
+        for (const auto* candidate : { &index, &mapped })
+        {
+            EXPECT_TRUE(candidate->kmers().empty());
+            EXPECT_TRUE(candidate->encode().empty());
+            EXPECT_FALSE(candidate->containsEncodedKmer(0));
+            EXPECT_FALSE(candidate->containsEncodedKmer(0xffffffffU));
+            EXPECT_EQ(0u, candidate->findEncodedPaths(0).size());
+            EXPECT_THROW(candidate->findEncodedPaths(0)[0], std::out_of_range);
+            EXPECT_THROW(candidate->getPaths(std::string(16, 'A')), std::out_of_range);
+        }
+    }
+}
+
+TEST(CompactCatalogIndex, SixteenBaseKeysKeepAllBitsForMiniAndMultiplePaths)
+{
+    graphtools::Graph graph(4);
+    graph.setNodeSeq(0, std::string(16, 'A'));
+    graph.setNodeSeq(1, std::string(16, 'T'));
+    graph.setNodeSeq(2, std::string(16, 'T'));
+    graph.setNodeSeq(3, std::string(8, 'C') + std::string(8, 'G'));
+    const graphtools::KmerIndex index(graph, 16), membership(graph, 16, true);
+    ArchiveFile file;
+    graphtools::KmerIndex::prepareArchive(file.path, 2, [&](std::ostream& out, uint64_t slot) {
+        (slot ? membership : index).writeRecord(out);
+    });
+    auto archive = std::make_shared<graphtools::KmerIndexArchive>(file.path);
+    const graphtools::KmerIndex mapped(graph, 16, false, archive, 0), mappedMembership(graph, 16, true, archive, 1);
+    const std::vector<graphtools::Path> aPaths { graphtools::Path(&graph, 0, { 0 }, 16) };
+    const std::vector<graphtools::Path> tPaths {
+        graphtools::Path(&graph, 0, { 1 }, 16), graphtools::Path(&graph, 0, { 2 }, 16)
+    };
+    for (const auto* candidate : { &index, &mapped })
+    {
+        EXPECT_EQ(aPaths, candidate->getPaths(std::string(16, 'A')));
+        EXPECT_EQ(tPaths, candidate->getPaths(std::string(16, 'T')));
+        EXPECT_EQ(1u, candidate->findEncodedPaths(0).size());
+        EXPECT_EQ(2u, candidate->findEncodedPaths(0xffffffffU).size());
+    }
+    for (const auto* candidate : { &index, &membership, &mapped, &mappedMembership })
+    {
+        EXPECT_TRUE(candidate->containsEncodedKmer(0));
+        EXPECT_TRUE(candidate->containsEncodedKmer(0xffffffffU));
+        EXPECT_FALSE(candidate->containsEncodedKmer(0x55555555U)); // C repeated 16 times
+        EXPECT_FALSE(candidate->contains(std::string(16, 'N')));
+    }
+}
+
+TEST(CompactCatalogIndex, MiniStartBoundaryAndFullPathFallbackAreLossless)
+{
+    const std::string tail = "ATGCGTACGTTAGCAATCGT";
+    graphtools::Graph graph(1);
+    graph.setNodeSeq(0, std::string(65535, 'C') + tail);
+    const graphtools::KmerIndex index(graph, 16);
+    ArchiveFile file;
+    graphtools::KmerIndex::prepareArchive(file.path, 1, [&](std::ostream& out, uint64_t) { index.writeRecord(out); });
+    auto archive = std::make_shared<graphtools::KmerIndexArchive>(file.path);
+    const graphtools::KmerIndex mapped(graph, 16, false, archive, 0);
+    ASSERT_LT(index.kmers().size(), 65535u); // Narrow buckets, with both mini and full entries.
+    for (int position : { 65535, 65536 })
+    {
+        SCOPED_TRACE(position);
+        const std::string key = tail.substr(position - 65535, 16);
+        const std::vector<graphtools::Path> expected { graphtools::Path(&graph, position, { 0 }, position + 16) };
+        EXPECT_EQ(expected, index.getPaths(key));
+        EXPECT_EQ(expected, mapped.getPaths(key));
+    }
+    EXPECT_EQ(index, mapped);
+}
+
+TEST(CompactCatalogIndex, MiniNodeIdBoundaryFallsBackWithoutTruncation)
+{
+    graphtools::Graph graph(65537);
+    for (graphtools::NodeId node = 0; node < 65535; ++node)
+        graph.setNodeSeq(node, "C"); // These isolated nodes cannot provide a 16-mer.
+    graph.setNodeSeq(65535, std::string(16, 'A'));
+    graph.setNodeSeq(65536, std::string(16, 'T'));
+    const graphtools::KmerIndex index(graph, 16);
+    ArchiveFile file;
+    graphtools::KmerIndex::prepareArchive(file.path, 1, [&](std::ostream& out, uint64_t) { index.writeRecord(out); });
+    auto archive = std::make_shared<graphtools::KmerIndexArchive>(file.path);
+    const graphtools::KmerIndex mapped(graph, 16, false, archive, 0);
+    const std::vector<graphtools::Path> mini { graphtools::Path(&graph, 0, { 65535 }, 16) };
+    const std::vector<graphtools::Path> full { graphtools::Path(&graph, 0, { 65536 }, 16) };
+    for (const auto* candidate : { &index, &mapped })
+    {
+        EXPECT_EQ(mini, candidate->getPaths(std::string(16, 'A')));
+        EXPECT_EQ(full, candidate->getPaths(std::string(16, 'T')));
+        EXPECT_EQ(1u, candidate->numUniqueKmersOverlappingNode(65535));
+        EXPECT_EQ(1u, candidate->numUniqueKmersOverlappingNode(65536));
+    }
+}
+
+TEST(CompactCatalogIndex, LargeRandomGraphExercisesWideBuckets)
+{
+    std::string sequence(70000, 'A');
+    uint32_t state = 173;
+    for (char& base : sequence)
+    {
+        state ^= state << 13;
+        state ^= state >> 17;
+        state ^= state << 5;
+        base = "ACGT"[state & 3];
+    }
+    graphtools::Graph graph(1);
+    graph.setNodeSeq(0, sequence);
+    const graphtools::KmerIndex index(graph, 16);
+    const auto expected = enumerate(graph, 16);
+    ASSERT_GT(expected.size(), 65535u);
+    EXPECT_EQ(expected.size(), index.kmers().size());
+    ArchiveFile file;
+    graphtools::KmerIndex::prepareArchive(file.path, 1, [&](std::ostream& out, uint64_t) { index.writeRecord(out); });
+    auto archive = std::make_shared<graphtools::KmerIndexArchive>(file.path);
+    const graphtools::KmerIndex mapped(graph, 16, false, archive, 0);
+    const graphtools::TwoBitKmerEncoder encoder(16);
+    for (const auto& item : expected)
+    {
+        const auto key = encoder.encode(item.first);
+        ASSERT_TRUE(index.containsEncodedKmer(key));
+        ASSERT_TRUE(mapped.containsEncodedKmer(key));
+        ASSERT_EQ(item.second, index.getPaths(item.first));
+        ASSERT_EQ(item.second, mapped.getPaths(item.first));
+    }
+    EXPECT_FALSE(index.containsEncodedKmer(0));
+    EXPECT_FALSE(mapped.containsEncodedKmer(0));
+}
+
+TEST(CompactCatalogIndex, BucketIndexWidthBoundaryPreservesAllKeys)
+{
+    // B(4,8) has all 65,536 eight-base words exactly once. Trimming one
+    // character gives precisely 65,535 entries, the last uint16_t index.
+    std::string sequence;
+    std::vector<int> digits(33, 0);
+    std::function<void(int, int)> appendCycle = [&](int depth, int period) {
+        if (depth > 8)
+        {
+            if (8 % period == 0)
+                for (int i = 1; i <= period; ++i)
+                    sequence += "ACGT"[digits[i]];
+            return;
+        }
+        digits[depth] = digits[depth - period];
+        appendCycle(depth + 1, period);
+        for (int value = digits[depth - period] + 1; value < 4; ++value)
+        {
+            digits[depth] = value;
+            appendCycle(depth + 1, depth);
+        }
+    };
+    appendCycle(1, 1);
+    ASSERT_EQ(65536u, sequence.size());
+    sequence += sequence.substr(0, 7);
+    const graphtools::TwoBitKmerEncoder encoder(8);
+    for (size_t entryCount : { 65535u, 65536u })
+    {
+        SCOPED_TRACE(entryCount);
+        graphtools::Graph graph(1);
+        graph.setNodeSeq(0, sequence.substr(0, entryCount + 7));
+        const graphtools::KmerIndex index(graph, 8);
+        ASSERT_EQ(entryCount, index.kmers().size());
+        ArchiveFile file;
+        graphtools::KmerIndex::prepareArchive(file.path, 1, [&](std::ostream& out, uint64_t) { index.writeRecord(out); });
+        auto archive = std::make_shared<graphtools::KmerIndexArchive>(file.path);
+        const graphtools::KmerIndex mapped(graph, 8, false, archive, 0);
+        for (size_t position = 0; position < entryCount; ++position)
+        {
+            const auto key = encoder.encode(sequence.substr(position, 8));
+            ASSERT_TRUE(index.containsEncodedKmer(key));
+            ASSERT_TRUE(mapped.containsEncodedKmer(key));
+        }
+        const auto lastKey = sequence.substr(entryCount - 1, 8);
+        const auto position = static_cast<int32_t>(entryCount - 1);
+        const std::vector<graphtools::Path> expected { graphtools::Path(&graph, position, { 0 }, position + 8) };
+        EXPECT_EQ(expected, index.getPaths(lastKey));
+        EXPECT_EQ(expected, mapped.getPaths(lastKey));
+        if (entryCount == 65535)
+        {
+            const auto missingKey = encoder.encode(sequence.substr(65535, 8));
+            EXPECT_FALSE(index.containsEncodedKmer(missingKey));
+            EXPECT_FALSE(mapped.containsEncodedKmer(missingKey));
+        }
+    }
+}
+
+TEST(CompactCatalogIndex, MappedCopyAndMoveKeepArchiveAlive)
+{
+    const auto graph = graphtools::makeStrGraph("ACGTACGTACGTACGT", "A", "TTTTACGTACGTACGT");
+    const graphtools::KmerIndex expected(graph, 14);
+    auto retained = [&]() {
+        ArchiveFile file;
+        graphtools::KmerIndex::prepareArchive(file.path, 1, [&](std::ostream& out, uint64_t) { expected.writeRecord(out); });
+        auto archive = std::make_shared<graphtools::KmerIndexArchive>(file.path);
+        const graphtools::KmerIndex mapped(graph, 14, false, archive, 0);
+        graphtools::KmerIndex copy(mapped);
+        graphtools::KmerIndex assigned(graph, 14);
+        assigned = copy;
+        archive.reset();
+        return assigned;
+    }(); // The source indexes, external archive handle, and file name are gone.
+    graphtools::KmerIndex moved(std::move(retained));
+    graphtools::KmerIndex assigned(graph, 14);
+    assigned = std::move(moved);
+    EXPECT_EQ(expected, assigned);
+    EXPECT_EQ(expected.encode(), assigned.encode());
+}
+
+TEST(CompactCatalogIndex, PreviousArchiveVersionIsRejected)
+{
+    const auto graph = graphtools::makeDeletionGraph("ACGT", "A", "TGCA");
+    ArchiveFile file;
+    graphtools::KmerIndex::prepareArchive(file.path, 1, [&](std::ostream& out, uint64_t) {
+        graphtools::KmerIndex(graph, 4).writeRecord(out);
+    });
+    std::fstream oldFormat(file.path, std::ios::in | std::ios::out | std::ios::binary);
+    const uint64_t previousMagic = 0x0000000245484b49ULL;
+    oldFormat.write(reinterpret_cast<const char*>(&previousMagic), sizeof(previousMagic));
+    oldFormat.close();
+    EXPECT_THROW(graphtools::KmerIndexArchive(file.path), std::runtime_error);
+}
+
 TEST(CompactCatalogIndex, MappedArchiveRoundTripAndValidation)
 {
     auto graph = graphtools::makeDeletionGraph("ACGTACGTACGTACGT", "GG", "CATACGTACGTACGT");
@@ -96,6 +372,7 @@ TEST(CompactCatalogIndex, MappedArchiveRoundTripAndValidation)
     EXPECT_THROW(graphtools::KmerIndex(graph, 14, true, archive, 0), std::runtime_error);
     graph.setNodeSeq(0, "TCGTACGTACGTACGT");
     EXPECT_THROW(graphtools::KmerIndex(graph, 14, false, archive, 0), std::runtime_error);
+    graph.setNodeSeq(0, "ACGTACGTACGTACGT");
     EXPECT_THROW(
         graphtools::KmerIndex::prepareArchive(file.path, 0, [](std::ostream&, uint64_t) { }), std::runtime_error);
     archive.reset();
@@ -107,7 +384,15 @@ TEST(CompactCatalogIndex, MappedArchiveRoundTripAndValidation)
     damaged.put(byte ^ 1);
     damaged.close();
     auto corrupt = std::make_shared<graphtools::KmerIndexArchive>(file.path);
-    EXPECT_THROW(graphtools::KmerIndex(graph, 10, true, corrupt, 1), std::runtime_error);
+    try
+    {
+        graphtools::KmerIndex unexpected(graph, 10, true, corrupt, 1);
+        FAIL() << "Expected a checksum failure";
+    }
+    catch (const std::runtime_error& error)
+    {
+        EXPECT_NE(std::string::npos, std::string(error.what()).find("checksum"));
+    }
     ArchiveFile incomplete;
     EXPECT_THROW(
         graphtools::KmerIndex::prepareArchive(
