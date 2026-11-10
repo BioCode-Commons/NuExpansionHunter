@@ -21,8 +21,9 @@
 
 #include "io/JsonWriter.hh"
 
-#include <iomanip>
+#include <algorithm>
 #include <sstream>
+#include <utility>
 #include <vector>
 
 #include <boost/algorithm/string/join.hpp>
@@ -63,10 +64,48 @@ void JsonWriter::write(std::ostream& out)
     sampleParametersRecord["SampleId"] = sampleParams_.id();
     sampleParametersRecord["Sex"] = streamToString(sampleParams_.sex());
 
-    Json resultsRecord;
-    const unsigned locusCount(sampleFindings_.size());
-    for (unsigned locusIndex(0); locusIndex < locusCount; ++locusIndex)
+    // Keep only borrowed IDs and indexes for ordering. The catalog owns these
+    // strings for the entire write, including when it is memory mapped.
+    using LocusOutputEntry = std::pair<graphtools::TextView, size_t>;
+    vector<LocusOutputEntry> loci;
+    loci.reserve(sampleFindings_.size());
+    for (size_t i = 0; i < sampleFindings_.size(); ++i)
+        loci.emplace_back(regionCatalog_[i].locusId(), i);
+    std::sort(
+        loci.begin(), loci.end(), [](const LocusOutputEntry& left, const LocusOutputEntry& right)
+        {
+            const int order = left.first.compare(right.first);
+            return order < 0 || (order == 0 && left.second > right.second);
+        });
+
+    // Use the same JSON serializer as before for strings, floating point values
+    // and each locus's nested records. Only shift the indentation of its lines.
+    auto writeRecord = [&out](const Json& record, size_t indentation)
     {
+        const string encoded = record.dump(2);
+        const string padding(indentation, ' ');
+        size_t start = 0;
+        for (size_t end = encoded.find('\n'); end != string::npos; end = encoded.find('\n', start))
+        {
+            out.write(encoded.data() + start, end - start + 1);
+            out.write(padding.data(), padding.size());
+            start = end + 1;
+        }
+        out.write(encoded.data() + start, encoded.size() - start);
+    };
+
+    out.width(0);
+    out << "{\n";
+    if (!loci.empty())
+        out << "  \"LocusResults\": {\n";
+    bool firstLocus = true;
+    for (size_t position = 0; position < loci.size(); ++position)
+    {
+        // JSON objects previously kept the final catalog entry for a duplicate
+        // ID. Equal IDs are sorted by descending index to retain that behavior.
+        if (position && loci[position].first == loci[position - 1].first)
+            continue;
+        const size_t locusIndex = loci[position].second;
         const LocusSpecification& locusSpec = regionCatalog_[locusIndex];
         const LocusFindings& locusFindings = sampleFindings_[locusIndex];
         const std::string& locusId(locusSpec.locusId());
@@ -93,17 +132,18 @@ void JsonWriter::write(std::ostream& out)
         {
             locusRecord["Variants"] = variantRecords;
         }
-        resultsRecord[locusId] = locusRecord;
+        if (!firstLocus)
+            out << ",\n";
+        firstLocus = false;
+        out << "    " << Json(locusId).dump() << ": ";
+        writeRecord(locusRecord, 4);
     }
 
-    Json sampleRecords;
-    if (!resultsRecord.empty())
-    {
-        sampleRecords["LocusResults"] = resultsRecord;
-    }
-    sampleRecords["SampleParameters"] = sampleParametersRecord;
-
-    out << std::setw(2) << sampleRecords << std::endl;
+    if (!loci.empty())
+        out << "\n  },\n";
+    out << "  \"SampleParameters\": ";
+    writeRecord(sampleParametersRecord, 2);
+    out << "\n}" << std::endl;
 }
 
 static string encodeGenotype(const RepeatGenotype& genotype)

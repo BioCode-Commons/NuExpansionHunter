@@ -104,6 +104,10 @@ ExpansionHunter \
 
 Preparation exits before processing reads. Then add `--catalog-cache results/catalog.ki` to each sample's usual command. Keep the reference and catalog arguments: the program checks them against the cache. Use a new cache filename when rebuilding; preparation does not overwrite an existing file. Without `--catalog-cache`, the usual command still builds catalog data in memory.
 
+The compressed index layout uses archive format version 3. Caches prepared with
+earlier versions are rejected and must be rebuilt with this executable, using a
+new cache filename and the same preparation command above.
+
 <a id="usage-and-parameters"></a>
 
 ## Usage and parameters <sup><sub>[↑ Contents](#contents)</sub></sup>
@@ -120,13 +124,33 @@ Preparation exits before processing reads. Then add `--catalog-cache results/cat
 | `--variant-catalog` | Required | JSON catalog of loci to genotype |
 | `--output-prefix` | Required | Output path prefix; create its parent directory first |
 | `--analysis-mode` | `seeking` | `seeking` or `streaming` |
-| `--threads` | `1` | Number of analysis threads |
+| `--threads` | `1` | Number of analysis workers; I/O workers and coordinator threads are additional |
+| `--decode-threads` | `auto` | Streaming input decompression workers; `auto` retains `min(--threads, 12)`, and `0` or `1` uses synchronous input |
+| `--encode-threads` | `auto` | BAM output compression workers; `auto` retains `--threads`, and `0` uses synchronous compression |
+| `--bamlet-queue-mb` | `0` | Queued BAM record budget in MiB; `0` retains the unbounded queue |
 | `--sex` | `female` | `male` or `female`; sets ploidy on sex chromosomes |
 | `--region-extension-length` | `1000` | Bases searched around on-target and off-target regions |
 | `--aligner` | `dag-aligner` | `dag-aligner` or `path-aligner` |
 | `--log-level` | `info` | `trace`, `debug`, `info`, `warn`, or `error` |
 | `--catalog-cache` | None | Read static catalog data from a prepared memory-mapped archive |
 | `--prepare-catalog-cache` | Off | Build the specified cache and exit before processing reads |
+
+For multiple samples on one node, tune the analysis, decompression and compression
+pools together: `--threads` alone is not a process-wide CPU limit. The default I/O
+pool sizes and unbounded BAM queue retain the previous behavior. Explicit resource
+settings require throughput measurements on the target workload.
+
+A nonzero `--bamlet-queue-mb` makes producers wait when queued BAM records fill the
+budget. It counts BAM structs and their allocated data buffers, excluding producer
+workspaces, the record being written, queue bookkeeping and HTS compression buffers.
+A record larger than the budget can enter an empty queue so it is never discarded.
+This is a queue budget, not a limit on process RAM, and backpressure can affect runtime.
+The writer continues draining after a write failure and reports the error on completion.
+
+JSON output is serialized one locus at a time, retaining the existing key order,
+formatting and final-entry behavior for duplicate locus IDs. A compact ordering
+table and the existing sample findings remain in memory; the full JSON results tree
+and its duplicate are no longer retained.
 
 Use `ExpansionHunter --help` for the public options and `ExpansionHunter --version` for the version.
 
@@ -221,6 +245,20 @@ The archive can be reused across samples with the same catalog, reference, conti
 ### Compact, exact k-mer lookup
 
 The 10-mer orientation index stores membership keys only. The 14-mer alignment index stores path coordinates and node IDs in flat arrays, with short single-node paths packed into two 16-bit fields. Rolling two-bit encoding avoids re-encoding overlapping read substrings, and path views construct only the requested paths. All matching paths and their multiplicities are retained. See [KmerIndex.cpp](ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/KmerIndex.cpp).
+
+Entries eligible for packed single-node paths occupy 8 bytes instead of 12: their path count is implicit,
+while complex entries retain explicit 32-bit counts in a separate array. Keys
+and path payloads are stored separately so hash probes only read keys. Hash
+buckets use 16-bit entry numbers for indexes with at most 65,535 distinct keys,
+and retain 32-bit numbers for larger indexes. Keys and path offsets keep their
+full width, and path order and duplicates are preserved. This layout applies to
+both in-memory indexes and mapped archives, without decompressing archive blocks.
+The reduction depends on each graph's keys and paths and does not set a limit on
+total sample RAM.
+
+The [branch validation report](docs/Jiapeng_optimization_report.md) records output
+comparisons, archive sizes and local timings. The 5.58-million-locus WGS and
+multi-sample throughput targets still require validation on representative data.
 
 ### Coordinate-ordered interval lookup
 

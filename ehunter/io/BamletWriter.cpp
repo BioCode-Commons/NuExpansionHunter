@@ -53,7 +53,7 @@ static htsFile* openBamletFile(const string& path, int compressionThreads)
     {
         throw std::runtime_error("Failed to open BAMlet output " + path);
     }
-    if (hts_set_threads(file.get(), compressionThreads) != 0)
+    if (compressionThreads > 0 && hts_set_threads(file.get(), compressionThreads) != 0)
     {
         throw std::runtime_error("Failed to initialize BAMlet compression threads");
     }
@@ -79,11 +79,12 @@ static void validateMapping(const ReferenceContigInfo& contigInfo, const LocusSp
 
 BamletWriter::BamletWriter(
     const string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
-    int compressionThreads)
+    int compressionThreads, std::size_t maxQueueBytes)
     : filePtr_(openBamletFile(bamletPath, compressionThreads), hts_close)
     , bamHeader_(bam_hdr_init(), bam_hdr_destroy)
     , contigInfo_(contigInfo)
     , catalog_(regionCatalog)
+    , writeQueue_(maxQueueBytes)
 {
     if (!regionCatalog.mappedBytes().data)
         for (const auto& locusSpec : regionCatalog)
@@ -111,7 +112,7 @@ void BamletWriter::finish()
 {
     if (writeThread_.joinable())
     {
-        writeQueue_.push(nullptr);
+        writeQueue_.push(nullptr, 0);
         writeThread_.join();
     }
     const int closeResult = filePtr_ ? hts_close(filePtr_.release()) : 0;
@@ -214,7 +215,10 @@ void BamletWriter::write(
     bool isReversed, bool isMateReversed, const GraphAlignment& alignment)
 {
 
-    bam1_t* htsAlignmentPtr = bam_init1();
+    std::unique_ptr<bam1_t, decltype(&bam_destroy1)> ownedAlignment(bam_init1(), bam_destroy1);
+    if (!ownedAlignment)
+        throw std::bad_alloc();
+    bam1_t* htsAlignmentPtr = ownedAlignment.get();
 
     if (interval.contig.empty())
     {
@@ -254,7 +258,10 @@ void BamletWriter::write(
     htsAlignmentPtr->l_data = htsAlignmentPtr->core.l_qname + seqQualLength;
     htsAlignmentPtr->m_data = htsAlignmentPtr->l_data;
     kroundup32(htsAlignmentPtr->m_data);
-    htsAlignmentPtr->data = (uint8_t*)realloc(htsAlignmentPtr->data, htsAlignmentPtr->m_data);
+    auto* data = static_cast<uint8_t*>(realloc(htsAlignmentPtr->data, htsAlignmentPtr->m_data));
+    if (!data)
+        throw std::bad_alloc();
+    htsAlignmentPtr->data = data;
     memcpy(htsAlignmentPtr->data, fragmentName.c_str(), htsAlignmentPtr->core.l_qname); // first set qname
 
     uint8_t* htsSequencePtr = bam_get_seq(htsAlignmentPtr);
@@ -277,11 +284,14 @@ void BamletWriter::write(
     }
 
     string alignmentEncoding = summarizeAlignment(alignment);
-    bam_aux_append(
+    const int appendResult = bam_aux_append(
         htsAlignmentPtr, graphAlignmentBamTag.c_str(), 'Z', alignmentEncoding.length() + 1,
         reinterpret_cast<uint8_t*>(&alignmentEncoding[0]));
+    if (appendResult != 0)
+        throw std::runtime_error("Cannot append graph alignment BAM tag");
 
-    writeQueue_.push(htsAlignmentPtr);
+    writeQueue_.push(htsAlignmentPtr, sizeof(bam1_t) + std::size_t(htsAlignmentPtr->m_data));
+    ownedAlignment.release();
 }
 
 void BamletWriter::writeHtsAlignments()

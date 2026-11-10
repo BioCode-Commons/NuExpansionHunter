@@ -22,6 +22,7 @@
 #include "graphalign/KmerIndex.hh"
 
 #include <algorithm>
+#include <boost/config.hpp>
 #include <boost/uuid/detail/sha1.hpp>
 #include <cstdio>
 #include <cstring>
@@ -64,6 +65,11 @@ template <typename T> T readValue(const char* data)
 template <typename T> void appendValue(std::string& data, const T& value)
 {
     data.append(reinterpret_cast<const char*>(&value), sizeof(value));
+}
+template <typename T> void writeValue(char*& cursor, const T& value)
+{
+    std::memcpy(cursor, &value, sizeof(value));
+    cursor += sizeof(value);
 }
 std::string graphIdentity(const Graph& graph)
 {
@@ -110,7 +116,10 @@ uint32_t hashKey(uint32_t key)
     key *= 0x846ca68bU;
     return key ^ (key >> 16);
 }
-constexpr uint64_t archiveMagic = 0x0000000245484b49ULL;
+// Version 3 stores narrow hash buckets and omits counts for the minipath prefix.
+// Reject earlier archives rather than interpreting their layout as this one.
+constexpr uint64_t archiveMagic = 0x0000000345484b49ULL;
+constexpr size_t indexHeaderSize = 20;
 }
 
 KmerIndexArchive::KmerIndexArchive(const std::string& path)
@@ -245,13 +254,22 @@ struct KmerIndex::Impl
     void addKmerPaths(const std::list<Path>& kmer_paths);
     void freeze();
     void bind(const char* bytes, size_t size);
+    uint32_t key(uint32_t index) const
+    {
+        return readValue<uint32_t>(data + entriesOffset + size_t(index) * sizeof(uint32_t));
+    }
     Entry entry(uint32_t index) const
     {
         if (membershipOnly)
-            return { readValue<uint32_t>(data + entriesOffset + size_t(index) * 4), 0, 0 };
-        return readValue<Entry>(data + entriesOffset + index * sizeof(Entry));
+            return { key(index), 0, 0 };
+        const auto payload = readValue<uint32_t>(data + entriesOffset + (size_t(entryCount) + index) * sizeof(uint32_t));
+        const uint32_t count = index < miniCount
+            ? 0
+            : readValue<uint32_t>(data + countsOffset + size_t(index - miniCount) * sizeof(uint32_t));
+        return { key(index), payload, count };
     }
-    uint32_t find(uint32_t key) const;
+    template <typename Bucket> BOOST_FORCEINLINE uint32_t findInTable(uint32_t key) const;
+    BOOST_FORCEINLINE uint32_t find(uint32_t key) const;
     Path path(uint32_t entryIndex, size_t pathIndex) const;
     Path MiniPathToPath(const MiniPath& miniPath) const;
 
@@ -265,8 +283,8 @@ public:
     std::string storage;
     std::shared_ptr<const KmerIndexArchive> archive;
     const char* data = nullptr;
-    size_t dataSize = 0, entriesOffset = 0, pathsOffset = 0, nodesOffset = 0;
-    uint32_t entryCount = 0, bucketCount = 0, pathCount = 0, nodeCount = 0;
+    size_t dataSize = 0, entriesOffset = 0, countsOffset = 0, pathsOffset = 0, nodesOffset = 0;
+    uint32_t entryCount = 0, bucketCount = 0, pathCount = 0, nodeCount = 0, miniCount = 0;
     struct Builder
     {
         StringToMiniPathsMap minis;
@@ -423,18 +441,47 @@ void KmerIndex::Impl::freeze()
             bucket = (bucket + 1) & (buckets - 1);
         table[bucket] = narrow(i + 1);
     }
-    appendValue(storage, narrow(entries.size()));
-    appendValue(storage, buckets);
-    appendValue(storage, narrow(paths.size()));
-    appendValue(storage, narrow(nodes.size()));
-    storage.append(reinterpret_cast<const char*>(table.data()), table.size() * sizeof(uint32_t));
-    if (membershipOnly)
-        for (const auto& item : entries)
-            appendValue(storage, item.key);
+    const size_t bucketWidth = entries.size() <= std::numeric_limits<uint16_t>::max() ? 2 : 4;
+    const size_t countBytes = membershipOnly ? 0 : (entries.size() - kmer_to_minipaths_map.size()) * sizeof(uint32_t);
+    storage.resize(
+        indexHeaderSize + table.size() * bucketWidth + entries.size() * (membershipOnly ? 4 : 8)
+        + countBytes + paths.size() * sizeof(StoredPath) + nodes.size() * sizeof(NodeId));
+    char* cursor = &storage[0];
+    writeValue(cursor, narrow(entries.size()));
+    writeValue(cursor, buckets);
+    writeValue(cursor, narrow(paths.size()));
+    writeValue(cursor, narrow(nodes.size()));
+    writeValue(cursor, membershipOnly ? uint32_t(0) : narrow(kmer_to_minipaths_map.size()));
+    // Bucket values are one-based entry indexes; zero is the empty sentinel.
+    // Preserve the full 32-bit representation when any value would not fit.
+    if (entries.size() <= std::numeric_limits<uint16_t>::max())
+        for (auto index : table)
+            writeValue(cursor, static_cast<uint16_t>(index));
     else
-        storage.append(reinterpret_cast<const char*>(entries.data()), entries.size() * sizeof(Entry));
-    storage.append(reinterpret_cast<const char*>(paths.data()), paths.size() * sizeof(StoredPath));
-    storage.append(reinterpret_cast<const char*>(nodes.data()), nodes.size() * sizeof(NodeId));
+    {
+        std::memcpy(cursor, table.data(), table.size() * sizeof(uint32_t));
+        cursor += table.size() * sizeof(uint32_t);
+    }
+    // Keep keys contiguous in both index types: probing never loads path
+    // payloads and uses the same fixed stride for membership and alignment.
+    for (const auto& item : entries)
+        writeValue(cursor, item.key);
+    if (!membershipOnly)
+    {
+        // freeze() already places minipaths first. Their count is implicitly
+        // one path (logical count zero), so only full entries need a count.
+        for (const auto& item : entries)
+            writeValue(cursor, item.payload);
+        for (size_t i = kmer_to_minipaths_map.size(); i < entries.size(); ++i)
+            writeValue(cursor, entries[i].count);
+    }
+    if (!paths.empty())
+    {
+        std::memcpy(cursor, paths.data(), paths.size() * sizeof(StoredPath));
+        cursor += paths.size() * sizeof(StoredPath);
+    }
+    if (!nodes.empty())
+        std::memcpy(cursor, nodes.data(), nodes.size() * sizeof(NodeId));
     builder.reset();
     storage.shrink_to_fit();
     bind(storage.data(), storage.size());
@@ -442,7 +489,7 @@ void KmerIndex::Impl::freeze()
 
 void KmerIndex::Impl::bind(const char* bytes, size_t size)
 {
-    if (size < 16)
+    if (size < indexHeaderSize)
         throw std::runtime_error("Truncated compact index");
     data = bytes;
     dataSize = size;
@@ -450,25 +497,38 @@ void KmerIndex::Impl::bind(const char* bytes, size_t size)
     bucketCount = readValue<uint32_t>(bytes + 4);
     pathCount = readValue<uint32_t>(bytes + 8);
     nodeCount = readValue<uint32_t>(bytes + 12);
-    entriesOffset = 16 + uint64_t(bucketCount) * 4;
-    pathsOffset = entriesOffset + uint64_t(entryCount) * (membershipOnly ? 4 : sizeof(Entry));
+    miniCount = readValue<uint32_t>(bytes + 16);
+    if (miniCount > entryCount || (membershipOnly && miniCount != 0))
+        throw std::runtime_error("Invalid compact index minipath count");
+    const size_t bucketWidth = entryCount <= std::numeric_limits<uint16_t>::max() ? 2 : 4;
+    entriesOffset = indexHeaderSize + uint64_t(bucketCount) * bucketWidth;
+    countsOffset = entriesOffset + uint64_t(entryCount) * (membershipOnly ? 4 : 8);
+    pathsOffset = countsOffset + (membershipOnly ? 0 : uint64_t(entryCount - miniCount) * sizeof(uint32_t));
     nodesOffset = pathsOffset + uint64_t(pathCount) * sizeof(StoredPath);
     if (!bucketCount || (bucketCount & (bucketCount - 1)) || entryCount >= bucketCount
         || nodesOffset + uint64_t(nodeCount) * sizeof(NodeId) != size)
         throw std::runtime_error("Invalid compact index layout");
 }
 
-uint32_t KmerIndex::Impl::find(uint32_t key) const
+BOOST_FORCEINLINE uint32_t KmerIndex::Impl::find(uint32_t key) const
 {
-    uint32_t bucket = hashKey(key) & (bucketCount - 1);
+    // Dispatch outside the probe loop; misses and collisions only read keys,
+    // never the separate full-path counts.
+    return entryCount <= std::numeric_limits<uint16_t>::max() ? findInTable<uint16_t>(key) : findInTable<uint32_t>(key);
+}
+
+template <typename Bucket> BOOST_FORCEINLINE uint32_t KmerIndex::Impl::findInTable(uint32_t query) const
+{
+    uint32_t bucket = hashKey(query) & (bucketCount - 1);
+    const char* const keys = data + entriesOffset;
     for (uint32_t probe = 0; probe < bucketCount; ++probe)
     {
-        const uint32_t index = readValue<uint32_t>(data + 16 + size_t(bucket) * 4);
+        const uint32_t index = readValue<Bucket>(data + indexHeaderSize + size_t(bucket) * sizeof(Bucket));
         if (!index)
             return entryCount;
         if (index > entryCount)
             throw std::runtime_error("Invalid compact index bucket");
-        if (entry(index - 1).key == key)
+        if (readValue<uint32_t>(keys + size_t(index - 1) * sizeof(uint32_t)) == query)
             return index - 1;
         bucket = (bucket + 1) & (bucketCount - 1);
     }

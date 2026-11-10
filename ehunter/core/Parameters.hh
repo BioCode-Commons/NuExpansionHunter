@@ -22,6 +22,8 @@
 #pragma once
 #include "graphalign/KmerIndex.hh"
 
+#include <algorithm>
+#include <cstddef>
 #include <fstream>
 #include <memory>
 #include <sstream>
@@ -172,6 +174,8 @@ public:
         InputPaths inputPaths, OutputPaths outputPaths, SampleParameters sample, HeuristicParameters heuristics,
         AnalysisMode analysisMode, LogLevel logLevel, const int initThreadCount, const bool initDisableBamletOutput)
         : threadCount(initThreadCount)
+        , decodeThreadCount(std::min(initThreadCount, 12))
+        , encodeThreadCount(initThreadCount)
         , disableBamletOutput(initDisableBamletOutput)
         , inputPaths_(std::move(inputPaths))
         , outputPaths_(std::move(outputPaths))
@@ -189,7 +193,14 @@ public:
     AnalysisMode analysisMode() const { return analysisMode_; }
     LogLevel logLevel() const { return logLevel_; }
 
+    // Compute workers; I/O pools and coordinator threads are additional.
     int threadCount;
+    // Streaming input uses synchronous decoding for 0 or 1; output uses
+    // synchronous compression for 0. Defaults retain the original pool sizes.
+    int decodeThreadCount;
+    int encodeThreadCount;
+    // Opt-in budget for queued BAM records only; 0 retains the original unbounded queue.
+    std::size_t bamletQueueBytes = 0;
     bool disableBamletOutput;
     std::string catalogCache;
     bool prepareCatalogCache = false;
