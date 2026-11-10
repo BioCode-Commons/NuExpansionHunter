@@ -211,7 +211,7 @@ void analyzeLocus(
 
 SampleFindings htsStreamingSampleAnalysis(
     const InputPaths& inputPaths, Sex sampleSex, const HeuristicParameters& heuristicParams, const int threadCount,
-    const RegionCatalog& regionCatalog, locus::AlignWriterPtr bamletWriter)
+    const RegionCatalog& regionCatalog, locus::AlignWriterPtr bamletWriter, unsigned decodeThreadCount)
 {
     // Setup thread-specific data structures and thread pool
     const unsigned maxActiveLocusAnalyzerQueues(threadCount + 5);
@@ -244,8 +244,7 @@ SampleFindings htsStreamingSampleAnalysis(
     using ReadCatalog = absl::flat_hash_set<Read, decltype(ReadHash), decltype(ReadEq)>;
     ReadCatalog unpairedReads(1000, ReadHash, ReadEq);
 
-    const unsigned htsDecompressionThreads(std::min(threadCount, 12));
-    htshelpers::HtsFileStreamer readStreamer(inputPaths.htsFile(), inputPaths.reference(), htsDecompressionThreads);
+    htshelpers::HtsFileStreamer readStreamer(inputPaths.htsFile(), inputPaths.reference(), decodeThreadCount);
     while (readStreamer.trySeekingToNextPrimaryAlignment() && readStreamer.isStreamingAlignedReads())
     {
         // Stop processing reads if an exception is thrown in the worker pool:
