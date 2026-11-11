@@ -71,6 +71,8 @@ public:
     bool isStreamingAlignedReads() const;
 
     Read decodeRead() const;
+    // Borrowed until the next seek; asynchronous users must copy needed fields.
+    const bam1_t* currentAlignment() const { return htsAlignmentPtr_; }
 
 private:
     enum class Status

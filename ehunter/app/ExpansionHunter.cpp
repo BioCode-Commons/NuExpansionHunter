@@ -169,7 +169,7 @@ int main(int argc, char** argv)
                 params.threadCount, params.decodeThreadCount, params.disableBamletOutput ? 0 : params.encodeThreadCount);
             sampleFindings = htsStreamingSampleAnalysis(
                 inputPaths, sampleParams.sex(), heuristicParams, params.threadCount, regionCatalog, bamletWriter,
-                params.decodeThreadCount);
+                params.decodeThreadCount, params.readDecodeThreadCount);
         }
 
         spdlog::info("Writing output to disk");

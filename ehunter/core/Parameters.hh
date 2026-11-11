@@ -199,6 +199,9 @@ public:
     // synchronous compression for 0. Defaults retain the original pool sizes.
     int decodeThreadCount;
     int encodeThreadCount;
+    // Additional streaming sequence preprocessing workers; 0 preserves sync.
+    // Each worker owns at most 20,000,000 bytes of batch-cache storage.
+    int readDecodeThreadCount = 0;
     // Opt-in budget for queued BAM records only; 0 retains the original unbounded queue.
     std::size_t bamletQueueBytes = 0;
     bool disableBamletOutput;

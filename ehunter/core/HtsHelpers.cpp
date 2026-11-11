@@ -112,11 +112,16 @@ static Cache_seq_nt16_str_lc seq_nt16_str_lc;
 
 Read decodeRead(bam1_t* htsAlignPtr)
 {
-    const uint32_t samFlag = htsAlignPtr->core.flag;
+    return decodeReadParts(bam_get_qname(htsAlignPtr), htsAlignPtr->core.flag, htsAlignPtr->core.l_qseq,
+        bam_get_seq(htsAlignPtr), bam_get_qual(htsAlignPtr));
+}
+
+Read decodeReadParts(const char* qname, uint32_t samFlag, int32_t readLength,
+    const uint8_t* htsSeqPtr, const uint8_t* htsQualPtr)
+{
     const bool isFirstMate = samFlag & BAM_FREAD1;
     const bool isReversed = samFlag & BAM_FREVERSE;
 
-    const char* qname(bam_get_qname(htsAlignPtr));
     MateNumber mateNumber = isFirstMate ? MateNumber::kFirstMate : MateNumber::kSecondMate;
     ReadId readId(qname, mateNumber);
 
@@ -126,9 +131,6 @@ Read decodeRead(bam1_t* htsAlignPtr)
         // Decode bases and convert low-quality bases to lowercase:
         static const uint8_t lowBaseQualityCutoff(20);
 
-        const uint8_t* htsSeqPtr = bam_get_seq(htsAlignPtr);
-        const uint8_t* htsQualPtr = bam_get_qual(htsAlignPtr);
-        const int32_t readLength = htsAlignPtr->core.l_qseq;
         bases.resize(readLength);
 
         for (int32_t index = 0; index < readLength; ++index)

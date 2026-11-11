@@ -88,6 +88,7 @@ add_library(ExpansionHunterLib
         sample/GenomeQueryCollection.hh sample/GenomeQueryCollection.cpp
         sample/HtsFileSeeker.hh sample/HtsFileSeeker.cpp
         sample/HtsFileStreamer.hh sample/HtsFileStreamer.cpp
+        sample/DecodedReadStream.hh sample/DecodedReadStream.cpp
         sample/HtsSeekingSampleAnalysis.hh sample/HtsSeekingSampleAnalysis.cpp
         sample/HtsStreamingReadPairQueue.hh sample/HtsStreamingReadPairQueue.cpp
         sample/HtsStreamingSampleAnalysis.hh sample/HtsStreamingSampleAnalysis.cpp
@@ -165,6 +166,7 @@ add_executable(UnitTests
         tests/LocusStatsTest.cpp
         tests/JsonWriterTest.cpp
         tests/ThreadParametersTest.cpp
+        tests/DecodedReadStreamTest.cpp
         tests/ReadSupportCalculatorTest.cpp
         tests/ReadTest.cpp
         tests/RegionGraphTest.cpp
