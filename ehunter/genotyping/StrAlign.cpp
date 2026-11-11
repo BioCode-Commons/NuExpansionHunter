@@ -189,8 +189,8 @@ StrAlign ConsistentAlignmentCalculator::clipFromLeft(int numMotifsInAllele, cons
     return { StrAlign::Type::kOutside, 0, 0, 0 };
 }
 
-StrAlign
-ConsistentAlignmentCalculator::clipFromRight(int numMotifsInAllele, const graphtools::GraphAlignment& alignment) const
+ConsistentAlignmentCalculator::PrefixSummary ConsistentAlignmentCalculator::summarizePrefix(
+    int numMotifsInAllele, const graphtools::GraphAlignment& alignment) const
 {
     int leftFlankScore = 0, strScore = 0, rightFlankScore = 0;
     int strIndelCount = 0;
@@ -231,7 +231,33 @@ ConsistentAlignmentCalculator::clipFromRight(int numMotifsInAllele, const grapht
     leftFlankScore = std::max(leftFlankScore, 0);
     rightFlankScore = std::max(rightFlankScore, 0);
 
-    int numMotifsInAlignment = std::count(alignment.path().begin(), alignment.path().end(), strNodeId_);
+    PrefixSummary result;
+    result.leftFlankScore = leftFlankScore;
+    result.strScore = strScore;
+    result.rightFlankScore = rightFlankScore;
+    result.strIndelCount = strIndelCount;
+    // A moved-from GraphAlignment may retain its Path while its alignments
+    // vector is empty. Preserve the original path-based count in that state.
+    result.numMotifsInAlignment = alignment.size() == alignment.path().numNodes()
+        ? motifIndex
+        : std::count(alignment.path().begin(), alignment.path().end(), strNodeId_);
+    return result;
+}
+
+StrAlign
+ConsistentAlignmentCalculator::clipFromRight(int numMotifsInAllele, const graphtools::GraphAlignment& alignment) const
+{
+    return clipFromRightUsingSummary(numMotifsInAllele, alignment, summarizePrefix(numMotifsInAllele, alignment));
+}
+
+StrAlign ConsistentAlignmentCalculator::clipFromRightUsingSummary(
+    int numMotifsInAllele, const graphtools::GraphAlignment& alignment, const PrefixSummary& summary) const
+{
+    const int leftFlankScore = summary.leftFlankScore;
+    const int strScore = summary.strScore;
+    const int rightFlankScore = summary.rightFlankScore;
+    const int strIndelCount = summary.strIndelCount;
+    const int numMotifsInAlignment = summary.numMotifsInAlignment;
     // Alignment does not overlap the repeat
     if (numMotifsInAlignment == 0 && (leftFlankScore == 0 || rightFlankScore == 0))
     {
@@ -292,47 +318,23 @@ ConsistentAlignmentCalculator::clipFromRight(int numMotifsInAllele, const grapht
 
 StrAlign ConsistentAlignmentCalculator::removeStutter(int numMotifsInAllele, const GraphAlignment& alignment) const
 {
-    int leftFlankScore = 0, strScore = 0, rightFlankScore = 0;
-    int strIndelCount = 0;
-    int motifIndex = 0;
-    for (int nodeIndex = 0; nodeIndex != static_cast<int>(alignment.size()); ++nodeIndex)
-    {
-        int node = alignment.getNodeIdByIndex(nodeIndex);
-        const auto& nodeAlign = alignment.alignments()[nodeIndex];
-        int nodeScore = 0;
-        int nodeIndelCount = 0;
-        scoreAlignment(nodeAlign, matchScore_, mismatchScore_, gapOpenScore_, nodeScore, nodeIndelCount);
+    return removeStutterUsingSummary(numMotifsInAllele, alignment, summarizePrefix(numMotifsInAllele, alignment));
+}
 
-        if (node < strNodeId_)
-        {
-            leftFlankScore += nodeScore;
-        }
-        else if (strNodeId_ < node)
-        {
-            rightFlankScore += nodeScore;
-        }
-        else if (motifIndex + 1 <= numMotifsInAllele)
-        {
-            strScore += nodeScore;
-            strIndelCount += nodeIndelCount;
-            ++motifIndex;
-        }
-        else
-        {
-            ++motifIndex;
-        }
-    }
-
-    // Zero out negative scores
-    leftFlankScore = std::max(leftFlankScore, 0);
-    rightFlankScore = std::max(rightFlankScore, 0);
+StrAlign ConsistentAlignmentCalculator::removeStutterUsingSummary(
+    int numMotifsInAllele, const GraphAlignment& alignment, const PrefixSummary& summary) const
+{
+    const int leftFlankScore = summary.leftFlankScore;
+    const int strScore = summary.strScore;
+    const int rightFlankScore = summary.rightFlankScore;
+    const int strIndelCount = summary.strIndelCount;
+    const int numMotifsInAlignment = summary.numMotifsInAlignment;
 
     if (leftFlankScore == 0 || rightFlankScore == 0)
     {
         return { StrAlign::Type::kOutside, 0, 0, 0 };
     }
 
-    const int numMotifsInAlignment = std::count(alignment.path().begin(), alignment.path().end(), strNodeId_);
     const int numDiscrepantMotifs = std::abs(numMotifsInAlignment - numMotifsInAllele);
     const int motifLength = alignment.path().graphRawPtr()->nodeSeq(strNodeId_).length();
     const int discrepantLength = motifLength * numDiscrepantMotifs;
@@ -347,9 +349,12 @@ StrAlign ConsistentAlignmentCalculator::removeStutter(int numMotifsInAllele, con
 StrAlign
 ConsistentAlignmentCalculator::findConsistentAlignment(int numMotifsInAllele, const GraphAlignment& alignment) const
 {
-    StrAlign stutterFreeAlign = removeStutter(numMotifsInAllele, alignment);
+    // These two interpretations accumulate exactly the same prefix scores.
+    // Keep their return logic, warning order, and tie comparisons unchanged.
+    const PrefixSummary prefix = summarizePrefix(numMotifsInAllele, alignment);
+    StrAlign stutterFreeAlign = removeStutterUsingSummary(numMotifsInAllele, alignment, prefix);
     StrAlign leftClipAlign = clipFromLeft(numMotifsInAllele, alignment);
-    StrAlign rightClipAlign = clipFromRight(numMotifsInAllele, alignment);
+    StrAlign rightClipAlign = clipFromRightUsingSummary(numMotifsInAllele, alignment, prefix);
 
     if (stutterFreeAlign.score() > leftClipAlign.score() && stutterFreeAlign.score() > rightClipAlign.score())
     {

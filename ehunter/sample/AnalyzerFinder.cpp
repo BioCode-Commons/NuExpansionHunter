@@ -60,7 +60,7 @@ void filterOutCommonBundles(const vector<AnalyzerBundle>& commonBundles, vector<
     }
     else
     {
-        vector<AnalyzerBundle> remainingBundles;
+        auto nextRemaining = bundles.begin();
         for (auto& bundle : bundles)
         {
             bool bundleAssigned(false);
@@ -74,10 +74,10 @@ void filterOutCommonBundles(const vector<AnalyzerBundle>& commonBundles, vector<
             }
             if (not bundleAssigned)
             {
-                remainingBundles.emplace_back(bundle);
+                *nextRemaining++ = bundle;
             }
         }
-        bundles = remainingBundles;
+        bundles.erase(nextRemaining, bundles.end());
     }
 }
 
@@ -267,8 +267,13 @@ void AnalyzerFinder::queryPrepared(
     const auto* intervals = prepared_.array<PreparedInterval>(node.intervals);
     if (node.intervals.count && end >= intervals[0].start)
         for (uint64_t i = 0; i < node.intervals.count; ++i)
-            if (intervals[i].start <= start && end <= intervals[i].stop)
+        {
+            // Prepared node buckets retain IntervalTree's increasing-start order.
+            if (intervals[i].start > start)
+                break;
+            if (end <= intervals[i].stop)
                 result.emplace_back(static_cast<locus::RegionType>(intervals[i].regionType), intervals[i].locus);
+        }
     if (start <= node.center)
         queryPrepared(node.left, start, end, result);
     if (end >= node.center)

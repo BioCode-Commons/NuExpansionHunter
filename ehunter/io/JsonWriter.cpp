@@ -125,12 +125,12 @@ void JsonWriter::write(std::ostream& out)
 
             VariantJsonWriter variantWriter(contigInfo_, locusSpec, variantSpec);
             variantIdAndFindings.second->accept(&variantWriter);
-            variantRecords[variantId] = variantWriter.record();
+            variantRecords[variantId] = variantWriter.takeRecord();
         }
 
         if (!variantRecords.empty())
         {
-            locusRecord["Variants"] = variantRecords;
+            locusRecord["Variants"] = std::move(variantRecords);
         }
         if (!firstLocus)
             out << ",\n";

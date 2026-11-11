@@ -140,6 +140,20 @@ public:
     StrAlign findConsistentAlignment(int numMotifsInAllele, const graphtools::GraphAlignment& alignment) const;
 
 private:
+    struct PrefixSummary
+    {
+        int leftFlankScore = 0;
+        int strScore = 0;
+        int rightFlankScore = 0;
+        int strIndelCount = 0;
+        int numMotifsInAlignment = 0;
+    };
+    PrefixSummary summarizePrefix(int numMotifsInAllele, const graphtools::GraphAlignment& alignment) const;
+    StrAlign clipFromRightUsingSummary(
+        int numMotifsInAllele, const graphtools::GraphAlignment& alignment, const PrefixSummary& summary) const;
+    StrAlign removeStutterUsingSummary(
+        int numMotifsInAllele, const graphtools::GraphAlignment& alignment, const PrefixSummary& summary) const;
+
     int matchScore_ = 5;
     int mismatchScore_ = -4;
     int gapOpenScore_ = -8;

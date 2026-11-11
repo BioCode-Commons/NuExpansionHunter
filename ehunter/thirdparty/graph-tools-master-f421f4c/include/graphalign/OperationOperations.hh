@@ -23,11 +23,20 @@
 #include <cstdint>
 #include <utility>
 
+#include <boost/utility/string_ref.hpp>
+
 namespace graphtools
 {
 
 // Returns true if a given operation is consistent with the given query and reference sequences
 bool checkConsistency(const Operation& operation, const std::string& reference, const std::string& query);
+
+namespace detail
+{
+    // Internal non-owning slices; the public string API remains unambiguous.
+    bool checkOperationConsistency(
+        const Operation& operation, boost::string_ref reference, boost::string_ref query);
+}
 
 using OperationPair = std::pair<Operation, Operation>;
 

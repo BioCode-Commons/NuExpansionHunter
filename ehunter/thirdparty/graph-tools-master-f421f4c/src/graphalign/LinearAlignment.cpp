@@ -25,6 +25,7 @@
 #include <map>
 #include <sstream>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
 #include "graphalign/OperationOperations.hh"
@@ -106,22 +107,14 @@ void Alignment::decodeCigar(const string& cigar)
 
 uint32_t Alignment::queryLength() const
 {
-    int32_t query_span = 0;
-    for (const auto& operation : operations_)
-    {
-        query_span += operation.queryLength();
-    }
-    return query_span;
+    // An implicitly moved-from Alignment can retain its counts after its list
+    // becomes empty. Preserve the original empty-list length in that state.
+    return operations_.empty() ? 0 : static_cast<uint32_t>(matched_ + mismatched_ + missing_ + inserted_ + clipped_);
 }
 
 uint32_t Alignment::referenceLength() const
 {
-    int32_t reference_span = 0;
-    for (const auto& operation : operations_)
-    {
-        reference_span += operation.referenceLength();
-    }
-    return reference_span;
+    return operations_.empty() ? 0 : static_cast<uint32_t>(matched_ + mismatched_ + missing_ + deleted_);
 }
 
 string Alignment::generateCigar() const
@@ -174,7 +167,7 @@ Alignment Alignment::splitAtReferencePosition(size_t reference_position)
         suffix_operations.splice(suffix_operations.begin(), operations_, operation_it, operations_.end());
 
         updateCounts();
-        return Alignment(first_unused_position, suffix_operations);
+        return Alignment(first_unused_position, std::move(suffix_operations));
     }
     else
     {
@@ -189,7 +182,7 @@ Alignment Alignment::splitAtReferencePosition(size_t reference_position)
         operations_.push_back(prefix_suffix.first);
 
         updateCounts();
-        return Alignment(reference_position, suffix_operations);
+        return Alignment(reference_position, std::move(suffix_operations));
     }
 }
 

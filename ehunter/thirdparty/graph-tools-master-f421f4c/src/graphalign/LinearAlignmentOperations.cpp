@@ -20,11 +20,13 @@
 
 #include "graphalign/LinearAlignmentOperations.hh"
 
+#include <algorithm>
 #include <iostream>
 #include <list>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include "graphalign/OperationOperations.hh"
 
@@ -34,6 +36,23 @@ using std::string;
 
 namespace graphtools
 {
+
+namespace
+{
+    boost::string_ref checkedSlice(const string& sequence, size_t position, size_t count)
+    {
+        if (position > sequence.size())
+        {
+            // Keep std::string::substr's exception type and message for the
+            // malformed ranges that can survive the legacy uint32 span check.
+            sequence.substr(position, count);
+        }
+        const char* begin = sequence.data();
+        if (position != 0)
+            begin += position;
+        return boost::string_ref(begin, std::min(count, sequence.size() - position));
+    }
+}
 
 bool checkConsistency(const Alignment& alignment, const string& reference, const string& query)
 {
@@ -51,10 +70,10 @@ bool checkConsistency(const Alignment& alignment, const string& reference, const
 
     for (const auto& operation : alignment)
     {
-        const string query_piece = query.substr(query_pos, operation.queryLength());
-        const string reference_piece = reference.substr(ref_pos, operation.referenceLength());
+        const auto query_piece = checkedSlice(query, query_pos, operation.queryLength());
+        const auto reference_piece = checkedSlice(reference, ref_pos, operation.referenceLength());
 
-        if (!checkConsistency(operation, reference_piece, query_piece))
+        if (!detail::checkOperationConsistency(operation, reference_piece, query_piece))
         {
             return false;
         }
@@ -141,7 +160,7 @@ Alignment mergeAlignments(const Alignment& first_alignment, const Alignment& sec
 
     first_alignment_operations.splice(first_alignment_operations.end(), second_alignment_operations);
 
-    return Alignment(first_alignment.referenceStart(), first_alignment_operations);
+    return Alignment(first_alignment.referenceStart(), std::move(first_alignment_operations));
 }
 
 int32_t scoreAlignment(const Alignment& alignment, int32_t match_score, int32_t mismatch_score, int32_t gap_score)

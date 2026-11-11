@@ -249,20 +249,24 @@ static optional<NodeId> determineReferenceNode(
     return optionalReferenceNode;
 }
 
-LocusSpecification decodeLocusSpecification(
+static LocusSpecification decodeLocusSpecificationImpl(
     const LocusDescriptionFromUser& userDescription, const Reference& reference,
-    const HeuristicParameters& heuristicParams)
+    const HeuristicParameters& heuristicParams, const TokenParser* parser)
 {
     try
     {
-        assertValidity(userDescription);
+        if (parser)
+            assertValidity(userDescription, *parser);
+        else
+            assertValidity(userDescription);
 
         const int kExtensionLength = heuristicParams.regionExtensionLength();
         auto referenceRegionsWithFlanks = addFlankingRegions(kExtensionLength, userDescription.referenceRegions);
         auto completeLocusStructure
             = extendLocusStructure(reference, referenceRegionsWithFlanks, userDescription.locusStructure);
 
-        GraphBlueprint blueprint = decodeFeaturesFromRegex(completeLocusStructure);
+        GraphBlueprint blueprint = parser ? decodeFeaturesFromRegex(completeLocusStructure, *parser)
+                                          : decodeFeaturesFromRegex(completeLocusStructure);
         graphtools::Graph locusGraph = makeRegionGraph(blueprint, userDescription.locusId);
         auto completeReferenceRegions = addReferenceRegionsForInterruptions(blueprint, referenceRegionsWithFlanks);
 
@@ -334,9 +338,22 @@ LocusSpecification decodeLocusSpecification(
     }
 }
 
-void assertValidity(const LocusDescriptionFromUser& userDescription)
+LocusSpecification decodeLocusSpecification(
+    const LocusDescriptionFromUser& userDescription, const Reference& reference,
+    const HeuristicParameters& heuristicParams)
 {
-    const GraphBlueprint blueprint = decodeFeaturesFromRegex(userDescription.locusStructure);
+    return decodeLocusSpecificationImpl(userDescription, reference, heuristicParams, nullptr);
+}
+
+LocusSpecification decodeLocusSpecification(
+    const LocusDescriptionFromUser& userDescription, const Reference& reference,
+    const HeuristicParameters& heuristicParams, const TokenParser& parser)
+{
+    return decodeLocusSpecificationImpl(userDescription, reference, heuristicParams, &parser);
+}
+
+static void assertBlueprintValidity(const LocusDescriptionFromUser& userDescription, const GraphBlueprint& blueprint)
+{
     int numVariants = 0;
     for (const GraphBlueprintFeature& feature : blueprint)
     {
@@ -365,6 +382,16 @@ void assertValidity(const LocusDescriptionFromUser& userDescription)
             "Locus " + userDescription.locusId + " must specify variant types for " + to_string(numVariants)
             + " variants");
     }
+}
+
+void assertValidity(const LocusDescriptionFromUser& userDescription)
+{
+    assertBlueprintValidity(userDescription, decodeFeaturesFromRegex(userDescription.locusStructure));
+}
+
+void assertValidity(const LocusDescriptionFromUser& userDescription, const TokenParser& parser)
+{
+    assertBlueprintValidity(userDescription, decodeFeaturesFromRegex(userDescription.locusStructure, parser));
 }
 
 }

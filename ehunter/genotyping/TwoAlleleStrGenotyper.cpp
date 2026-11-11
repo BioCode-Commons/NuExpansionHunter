@@ -228,11 +228,13 @@ double TwoAlleleGenotyper::getShortAndLongAlleleLoglik(int shortAlleleSize, int 
     const double longAllelePrior = std::log(1.0 - shortAlleleFrac);
     const double mismapPrior = std::log(0.001);
     const double rightmapPrior = std::log(1.0 - 0.001);
+    const bool isHomozygous = shortAlleleSize == longAlleleSize;
 
     for (int fragIndex = 0; fragIndex != numFrags; ++fragIndex)
     {
         double fragLoglikForShortAllele = fragLogliks_.getLoglik(fragIndex, shortAlleleSize);
-        double fragLoglikForLongAllele = fragLogliks_.getLoglik(fragIndex, longAlleleSize);
+        double fragLoglikForLongAllele
+            = isHomozygous ? fragLoglikForShortAllele : fragLogliks_.getLoglik(fragIndex, longAlleleSize);
 
         const double shortAlleleTerm = shortAllelePrior + fragLoglikForShortAllele;
         const double longAlleleTerm = longAllelePrior + fragLoglikForLongAllele;

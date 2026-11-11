@@ -80,6 +80,15 @@ CountTable& CountTable::operator=(const CountTable& other)
     return *this;
 }
 
+CountTable& CountTable::operator=(CountTable&& other)
+{
+    if (this != &other)
+    {
+        elementsToCounts_ = std::move(other.elementsToCounts_);
+    }
+    return *this;
+}
+
 std::ostream& operator<<(std::ostream& out, const CountTable& count_table)
 {
     string encoding;

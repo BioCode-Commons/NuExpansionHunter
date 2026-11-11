@@ -39,6 +39,7 @@ public:
     }
     const std::vector<std::string>& permutations() const { return repeatUnits_; }
     double score(const std::string& querySequence) const;
+    bool scoreAtLeast(const std::string& querySequence, double cutoff) const;
 
 private:
     double score(graphtools::TextView repeatUnit, const std::string& querySequence) const;

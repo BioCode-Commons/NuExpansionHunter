@@ -20,6 +20,7 @@
 //
 
 #include "alignment/GreedyAlignmentIntersector.hh"
+#include "alignment/OperationsOnAlignments.hh"
 
 #include "gtest/gtest.h"
 
@@ -34,6 +35,21 @@ using graphtools::Graph;
 using graphtools::Path;
 
 using namespace ehunter;
+
+TEST(CanonicalAlignmentTransfer, PreservesInputsAndShrunkIntersection)
+{
+    Graph graph = makeRegionGraph(decodeFeaturesFromRegex("TAAT(CAG)*CAACAG(CCG)*CCTT"));
+    const auto first = decodeGraphAlignment(2, "0[2M]1[3M]1[3M]2[2M]", &graph);
+    const auto second = decodeGraphAlignment(1, "1[2M]1[3M]2[1M]", &graph);
+    const std::list<graphtools::GraphAlignment> input = { first, second };
+    const auto expected = decodeGraphAlignment(1, "1[3S2M]1[3M]2[1M1S]", &graph);
+    EXPECT_EQ(expected, computeCanonicalAlignment(input));
+    EXPECT_EQ(first, input.front());
+    EXPECT_EQ(second, input.back());
+    EXPECT_EQ(first, computeCanonicalAlignment({ first }));
+    const auto disjoint = decodeGraphAlignment(0, "4[4M]", &graph);
+    EXPECT_EQ(first, computeCanonicalAlignment({ first, disjoint }));
+}
 
 TEST(IntersectingPaths, IntersectionStartsAtLoopNode_PathsIntersected)
 {

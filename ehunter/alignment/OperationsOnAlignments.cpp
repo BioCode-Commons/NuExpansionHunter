@@ -169,7 +169,7 @@ GraphAlignment computeCanonicalAlignment(const list<GraphAlignment>& alignments)
         }
     }
 
-    return *canonicalAlignment;
+    return std::move(*canonicalAlignment);
 }
 
 }

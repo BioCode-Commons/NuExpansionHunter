@@ -150,6 +150,28 @@ double WeightedPurityCalculator::score(const string& querySequence) const
     return bestScore / static_cast<double>(querySequence.length());
 }
 
+bool WeightedPurityCalculator::scoreAtLeast(const string& querySequence, double cutoff) const
+{
+    // Finish each phase with the same ordered sum and division as score().
+    // Empty queries produce NaN in score(), which never passes a cutoff.
+    if (querySequence.empty())
+        return false;
+    const double queryLength = static_cast<double>(querySequence.length());
+    if (!prepared_.empty())
+    {
+        for (auto repeatUnit : prepared_)
+            if (score(repeatUnit, querySequence) / queryLength >= cutoff)
+                return true;
+    }
+    else
+    {
+        for (const auto& repeatUnit : repeatUnits_)
+            if (score(repeatUnit, querySequence) / queryLength >= cutoff)
+                return true;
+    }
+    return false;
+}
+
 double WeightedPurityCalculator::score(graphtools::TextView repeatUnit, const std::string& querySequence) const
 {
     double score = 0;

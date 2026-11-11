@@ -98,7 +98,8 @@ unique_ptr<VariantFindings> RepeatAnalyzer::analyze(const LocusStats& stats)
     }
 
     unique_ptr<VariantFindings> variantFindingsPtr(new RepeatFindings(
-        countsOfSpanningReads, countsOfFlankingReads, countsOfInrepeatReads, stats.alleleCount(), repeatGenotype,
+        std::move(countsOfSpanningReads), std::move(countsOfFlankingReads), std::move(countsOfInrepeatReads),
+        stats.alleleCount(), repeatGenotype,
         genotypeFilter));
     return variantFindingsPtr;
 }

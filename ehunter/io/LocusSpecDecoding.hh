@@ -34,6 +34,8 @@
 namespace ehunter
 {
 
+class TokenParser;
+
 enum class VariantTypeFromUser
 {
     kRareRepeat,
@@ -57,9 +59,13 @@ struct LocusDescriptionFromUser
 };
 
 void assertValidity(const LocusDescriptionFromUser& userDescription);
+void assertValidity(const LocusDescriptionFromUser& userDescription, const TokenParser& parser);
 
 LocusSpecification decodeLocusSpecification(
     const LocusDescriptionFromUser& userDescription, const Reference& reference,
     const HeuristicParameters& heuristicParams);
+LocusSpecification decodeLocusSpecification(
+    const LocusDescriptionFromUser& userDescription, const Reference& reference,
+    const HeuristicParameters& heuristicParams, const TokenParser& parser);
 
 }

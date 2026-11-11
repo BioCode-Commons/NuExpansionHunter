@@ -104,3 +104,30 @@ TEST(CalculatingWeightedPurityScore, OwnedAndPreparedMatchModuloReference)
         }
     }
 }
+
+TEST(CalculatingWeightedPurityScore, CutoffMatchesFullScoreAtBoundaries)
+{
+    std::mt19937 random(19351);
+    const string alphabet = "ACGTacgtNX!?";
+    for (const string repeat : { "A", "CG", "CAG", "AACCCC", "BDHKMNRSVWY", "X", "acg" })
+    {
+        const WeightedPurityCalculator owned(repeat);
+        const auto& permutations = owned.permutations();
+        const WeightedPurityCalculator prepared(graphtools::CatalogRange<graphtools::TextView>(
+            &permutations, permutations.size(), permutationAt));
+        for (int trial = 0; trial < 150; ++trial)
+        {
+            string query(trial % 101, 'A');
+            for (char& base : query) base = alphabet[random() % alphabet.size()];
+            const double score = owned.score(query);
+            for (double cutoff : { -std::numeric_limits<double>::infinity(), -1.0, 0.0, 0.9, 1.0,
+                     std::numeric_limits<double>::infinity(), std::numeric_limits<double>::quiet_NaN(), score,
+                     std::nextafter(score, -std::numeric_limits<double>::infinity()),
+                     std::nextafter(score, std::numeric_limits<double>::infinity()) })
+            {
+                EXPECT_EQ(score >= cutoff, owned.scoreAtLeast(query, cutoff));
+                EXPECT_EQ(prepared.score(query) >= cutoff, prepared.scoreAtLeast(query, cutoff));
+            }
+        }
+    }
+}

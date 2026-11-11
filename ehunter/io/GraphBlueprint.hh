@@ -83,6 +83,7 @@ struct GraphBlueprintFeature
 using GraphBlueprint = std::vector<GraphBlueprintFeature>;
 
 GraphBlueprint decodeFeaturesFromRegex(const std::string& regex);
+GraphBlueprint decodeFeaturesFromRegex(const std::string& regex, const TokenParser& parser);
 
 std::ostream& operator<<(std::ostream& out, GraphBlueprintFeatureType tokenType);
 
