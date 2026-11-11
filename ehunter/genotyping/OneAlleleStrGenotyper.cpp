@@ -72,16 +72,30 @@ static Ci getCiAlongX(int& bestX, OneAlleleGenotyper* genotyper, LikelihoodFn li
 
     const int kMaxIntervalWidth = 750;
     double likelihoodRatio = 1;
+    double llShiftLeft = 0;
+    double llShiftRight = 0;
+    bool refreshLeft = true;
+    bool refreshRight = true;
     while (likelihoodRatio >= 0.01 && xTo - xFrom <= kMaxIntervalWidth)
     {
-        double llShiftLeft = (genotyper->*likelihood)(xFrom - 1);
-        double llShiftRight = (genotyper->*likelihood)(xTo + 1);
+        // Only the moved boundary has a new neighboring genotype.
+        if (refreshLeft)
+        {
+            llShiftLeft = (genotyper->*likelihood)(xFrom - 1);
+            refreshLeft = false;
+        }
+        if (refreshRight)
+        {
+            llShiftRight = (genotyper->*likelihood)(xTo + 1);
+            refreshRight = false;
+        }
 
         double gtLoglik;
         if (llShiftLeft >= llShiftRight)
         {
             xFrom -= 1;
-            gtLoglik = (genotyper->*likelihood)(xFrom);
+            gtLoglik = llShiftLeft;
+            refreshLeft = true;
 
             if (gtLoglik > topGtLoglik)
             {
@@ -92,7 +106,8 @@ static Ci getCiAlongX(int& bestX, OneAlleleGenotyper* genotyper, LikelihoodFn li
         else
         {
             xTo += 1;
-            gtLoglik = (genotyper->*likelihood)(xTo);
+            gtLoglik = llShiftRight;
+            refreshRight = true;
 
             if (gtLoglik > topGtLoglik)
             {
@@ -164,14 +179,14 @@ double OneAlleleGenotyper::getAlleleLoglik(int motifCount)
     }
 
     double genotypeLoglik = 0;
+    const double mismapPrior = std::log(0.001);
+    const double rightmapPrior = std::log(1.0 - 0.001);
 
     for (int fragIndex = 0; fragIndex != fragLogliks_.numFrags(); ++fragIndex)
     {
         const double fragLoglik = fragLogliks_.getLoglik(fragIndex, motifCount);
         const double loglikGivenRightmap = fragLoglik;
         const double loglikGivenMismap = topFragLogliks_[fragIndex];
-        const double mismapPrior = std::log(0.001);
-        const double rightmapPrior = std::log(1.0 - 0.001);
         genotypeLoglik += getLogSum(mismapPrior + loglikGivenMismap, rightmapPrior + loglikGivenRightmap);
     }
 

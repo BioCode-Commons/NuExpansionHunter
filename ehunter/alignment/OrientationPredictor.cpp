@@ -85,6 +85,14 @@ static int countNonoverlappingKmerMatches(const string& query, const KmerIndex& 
 OrientationPrediction OrientationPredictor::predict(const std::string& query) const
 {
     const int numForwardMatches = countNonoverlappingKmerMatches(query, kmerIndex_);
+    // Neither orientation can contain more than floor(query length / k)
+    // nonoverlapping matches. Forward wins ties, so a passing forward score
+    // at that upper bound cannot be improved by scanning the reverse strand.
+    if (kmerIndex_.kmerLength() > 0 && numForwardMatches >= minKmerMatchesToPass_
+        && static_cast<size_t>(numForwardMatches) == query.size() / kmerIndex_.kmerLength())
+    {
+        return OrientationPrediction::kAlignsInOriginalOrientation;
+    }
     const int numReverseComplementMatches
         = countNonoverlappingKmerMatches(graphtools::reverseComplement(query), kmerIndex_);
 

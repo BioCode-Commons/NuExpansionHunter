@@ -43,7 +43,7 @@ namespace ehunter
 {
 
 bool checkIfLocallyPlacedReadPair(
-    boost::optional<GraphAlignment> readAlignment, boost::optional<GraphAlignment> mateAlignment,
+    const boost::optional<GraphAlignment>& readAlignment, const boost::optional<GraphAlignment>& mateAlignment,
     int kMinNonRepeatAlignmentScore)
 {
     int nonRepeatAlignmentScore = 0;
@@ -61,7 +61,7 @@ bool checkIfLocallyPlacedReadPair(
     return nonRepeatAlignmentScore >= kMinNonRepeatAlignmentScore;
 }
 
-bool checkIfUpstreamAlignmentIsGood(NodeId nodeId, GraphAlignment alignment)
+bool checkIfUpstreamAlignmentIsGood(NodeId nodeId, const GraphAlignment& alignment)
 {
     const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
 
@@ -84,7 +84,7 @@ bool checkIfUpstreamAlignmentIsGood(NodeId nodeId, GraphAlignment alignment)
     return score >= kScoreCutoff;
 }
 
-bool checkIfDownstreamAlignmentIsGood(NodeId nodeId, GraphAlignment alignment)
+bool checkIfDownstreamAlignmentIsGood(NodeId nodeId, const GraphAlignment& alignment)
 {
     const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
 

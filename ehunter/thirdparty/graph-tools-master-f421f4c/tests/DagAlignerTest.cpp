@@ -773,3 +773,194 @@ TEST(RepeatExpansion, two_repeats)
     EXPECT_EQ(32, bestScore);
     EXPECT_EQ("6[1=]7[3=]8[3=]5[1D1=]", toString(cigars.at(0)));
 }
+
+namespace
+{
+template <int pad>
+typename PaddedAlignMatrix<pad>::const_iterator legacyNextBestAlign(
+    const PaddedAlignMatrix<pad>& matrix, typename PaddedAlignMatrix<pad>::const_iterator start, Score& bestScore)
+{
+    auto it = start;
+    if (matrix.end() == it)
+    {
+        return matrix.end();
+    }
+    if (!(std::distance(matrix.begin(), it) % matrix.paddedRowLen()))
+    {
+        ++it;
+    }
+    if (matrix.rowLen() == std::distance(matrix.begin(), it) % matrix.paddedRowLen())
+    {
+        it += matrix.paddedRowLen() - matrix.rowLen() + 1;
+    }
+    auto best = it;
+    bestScore = *(it++);
+    while (matrix.end() != it)
+    {
+        if (matrix.rowLen() == std::distance(matrix.begin(), it) % matrix.paddedRowLen())
+        {
+            it += matrix.paddedRowLen() - matrix.rowLen() + 1;
+        }
+        if (bestScore < *it)
+        {
+            bestScore = *it;
+            best = it;
+        }
+        ++it;
+    }
+    return best;
+}
+
+template <int pad> void checkBestAlignmentScan()
+{
+    PaddedAlignMatrix<pad> matrix;
+    for (int qLen : { 1, 2, 15, 16, 17, 31, 32, 33, 63, 64, 65 })
+    {
+        matrix.reset(qLen, 7);
+        for (int t = 0; t < 7; ++t)
+        {
+            // Include tied maxima, boundary maxima and negative interior scores.
+            for (int q = -1; q < qLen; ++q)
+            {
+                matrix.at(q, t) = q < 0 ? 3 : (q * 7 + t * 3) % 5 - 3;
+            }
+        }
+        for (int t = 0; t < 7; ++t)
+        {
+            for (int q = -1; q < matrix.paddedRowLen() - 1; ++q)
+            {
+                const auto start = matrix.cellOneOne() + t * matrix.paddedRowLen() + q;
+                if (start > matrix.end())
+                {
+                    continue;
+                }
+                Score expectedScore = 123;
+                Score actualScore = 123;
+                const auto expected = legacyNextBestAlign(matrix, start, expectedScore);
+                const auto actual = matrix.nextBestAlign(start, actualScore);
+                EXPECT_EQ(expected, actual) << "qLen=" << qLen << ", q=" << q << ", t=" << t;
+                EXPECT_EQ(expectedScore, actualScore);
+            }
+        }
+    }
+}
+
+template <bool penalizeMove> void checkSinglePredecessorRecurrence()
+{
+    const FixedPenaltyMatrix<> penalties(5, -4);
+    AffineAlignMatrix<FixedPenaltyMatrix<>, penalizeMove> reference(penalties, -3, -1);
+    AffineAlignMatrixVectorized<FixedPenaltyMatrix<>, penalizeMove> optimized(penalties, -3, -1);
+    const string target = "ACGTNACGT";
+    // Single predecessor rows before and after a join, including a second root.
+    const EdgeMap edges(
+        { 0, 0, 1, 1, 2, 2, 3, 4, 4 }, { 0, 1, 2, 3, 4, 6, 7, 8, 10, 11 },
+        { -1, 0, -1, 2, 1, 3, 4, 4, 5, 6, 7 });
+    for (int qLen : { 1, 15, 16, 17, 63, 64, 65, 129, 2, 32 })
+    {
+        string query;
+        for (int q = 0; q < qLen; ++q)
+        {
+            query += "ANTGXC"[(q * 7 + qLen) % 6];
+        }
+        reference.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        optimized.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        // The public dump excludes padding and compares every V score.
+        EXPECT_EQ(toString(reference), toString(optimized));
+        for (int t = -1; t < int(target.size()); ++t)
+        {
+            for (int q = -1; q < qLen; ++q)
+            {
+                EXPECT_EQ(reference.isInsertion(q, t), optimized.isInsertion(q, t));
+                if (t < 0)
+                {
+                    continue;
+                }
+                for (auto p = edges.prevNodesBegin(t); p != edges.prevNodesEnd(t); ++p)
+                {
+                    EXPECT_EQ(reference.isDeletion(q, t, *p), optimized.isDeletion(q, t, *p));
+                    EXPECT_EQ(reference.isMatch(q, t, *p), optimized.isMatch(q, t, *p));
+                    EXPECT_EQ(reference.isMismatch(q, t, *p), optimized.isMismatch(q, t, *p));
+                }
+            }
+        }
+    }
+}
+template <bool penalizeMove> void checkScoreLimitRecurrence()
+{
+    const string target = "ACGTNACGT";
+    const std::vector<int> nodes = { 0, 0, 1, 1, 2, 2, 3, 4, 4 };
+    // Duplicate each edge to force the general multiple-predecessor recurrence.
+    // Max is idempotent, so this must retain every score and traceback predicate.
+    // The disconnected row also exercises the zero-predecessor fallback.
+    const std::vector<std::size_t> index = { 0, 1, 2, 3, 4, 6, 6, 7, 9, 10 };
+    const std::vector<int> predecessors = { -1, 0, -1, 2, 1, 3, 4, 5, 6, 7 };
+    std::vector<std::size_t> duplicateIndex;
+    std::vector<int> duplicatePredecessors;
+    for (auto i : index)
+    {
+        duplicateIndex.push_back(i * 2);
+    }
+    for (auto predecessor : predecessors)
+    {
+        duplicatePredecessors.push_back(predecessor);
+        duplicatePredecessors.push_back(predecessor);
+    }
+    const EdgeMap edges(nodes, index, predecessors);
+    const EdgeMap duplicateEdges(nodes, duplicateIndex, duplicatePredecessors);
+    const Score settings[][4] = { { 5, -4, -3, -1 }, { 0, 0, 0, 0 }, { 2, -2, 2, 1 },
+                                 { 32767, -32768, 32767, 32767 }, { -32768, 32767, -32768, -32768 },
+                                 { 30000, -30000, 30000, -30000 }, { 1, -1, -32768, -1 }, { -1, 1, 32767, 1 } };
+    for (const auto& scores : settings)
+    {
+        const FixedPenaltyMatrix<> penalties(scores[0], scores[1]);
+        AffineAlignMatrixVectorized<FixedPenaltyMatrix<>, penalizeMove> optimized(penalties, scores[2], scores[3]);
+        AffineAlignMatrixVectorized<FixedPenaltyMatrix<>, penalizeMove> reference(penalties, scores[2], scores[3]);
+        for (int qLen : { 1, 15, 16, 17, 63, 64, 65, 129, 2, 32 })
+        {
+            string query;
+            for (int q = 0; q < qLen; ++q)
+            {
+                query += "ANTGXC"[(q * 7 + qLen) % 6];
+            }
+            reference.init(query.begin(), query.end(), target.begin(), target.end(), duplicateEdges);
+            optimized.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+            EXPECT_EQ(toString(reference), toString(optimized));
+            for (int t = -1; t < int(target.size()); ++t)
+            {
+                for (int q = -1; q < qLen; ++q)
+                {
+                    EXPECT_EQ(reference.isInsertion(q, t), optimized.isInsertion(q, t));
+                    if (t < 0)
+                    {
+                        continue;
+                    }
+                    for (auto p = edges.prevNodesBegin(t); p != edges.prevNodesEnd(t); ++p)
+                    {
+                        EXPECT_EQ(reference.isDeletion(q, t, *p), optimized.isDeletion(q, t, *p));
+                        EXPECT_EQ(reference.isMatch(q, t, *p), optimized.isMatch(q, t, *p));
+                        EXPECT_EQ(reference.isMismatch(q, t, *p), optimized.isMismatch(q, t, *p));
+                    }
+                }
+            }
+        }
+    }
+}
+} // namespace
+
+TEST(PaddedAlignmentMatrix, RowScanPreservesLegacyScoresAndTieOrder)
+{
+    checkBestAlignmentScan<1>();
+    checkBestAlignmentScan<16>();
+}
+
+TEST(AffineAlignmentMatrix, SinglePredecessorRowsMatchScalarRecurrence)
+{
+    checkSinglePredecessorRecurrence<true>();
+    checkSinglePredecessorRecurrence<false>();
+}
+
+TEST(AffineAlignmentMatrix, SinglePredecessorMatchesGeneralRecurrenceAtScoreLimits)
+{
+    checkScoreLimitRecurrence<true>();
+    checkScoreLimitRecurrence<false>();
+}

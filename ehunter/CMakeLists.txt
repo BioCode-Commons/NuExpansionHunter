@@ -161,6 +161,7 @@ add_executable(UnitTests
         tests/GraphBlueprintTest.cpp
         tests/GreedyAlignmentIntersectorTest.cpp
         tests/HighQualityBaseRunFinderTest.cpp
+        tests/OrientationPredictorTest.cpp
         tests/LocusStatsTest.cpp
         tests/JsonWriterTest.cpp
         tests/ThreadParametersTest.cpp

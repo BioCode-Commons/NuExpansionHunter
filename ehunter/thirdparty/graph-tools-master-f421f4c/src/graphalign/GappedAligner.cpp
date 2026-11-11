@@ -321,13 +321,15 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
 
     // Merge alignments together
     list<PathAndAlignment> top_paths_and_alignments;
+    const string seed_cigar = to_string(seed_path.length()) + "M";
     for (PathAndAlignment& prefix_path_and_alignment : prefix_extensions)
     {
         Path& prefix_path = prefix_path_and_alignment.first;
         Path prefix_plus_seed_path = concatenatePaths(prefix_path, seed_path);
+        const int32_t prefix_plus_seed_length = prefix_plus_seed_path.length();
 
         Alignment& prefix_alignment = prefix_path_and_alignment.second;
-        Alignment kmer_alignment(prefix_alignment.referenceLength(), to_string(seed_path.length()) + "M");
+        Alignment kmer_alignment(prefix_alignment.referenceLength(), seed_cigar);
         Alignment prefix_plus_kmer_alignment = mergeAlignments(prefix_alignment, kmer_alignment);
 
         for (PathAndAlignment& suffix_path_and_alignment : suffix_extensions)
@@ -336,7 +338,7 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
             Alignment& suffix_alignment = suffix_path_and_alignment.second;
             Path full_path = concatenatePaths(prefix_plus_seed_path, suffix_path);
 
-            suffix_alignment.setReferenceStart(prefix_plus_seed_path.length());
+            suffix_alignment.setReferenceStart(prefix_plus_seed_length);
             Alignment full_alignment = mergeAlignments(prefix_plus_kmer_alignment, suffix_alignment);
             top_paths_and_alignments.push_back(make_pair(full_path, full_alignment));
         }

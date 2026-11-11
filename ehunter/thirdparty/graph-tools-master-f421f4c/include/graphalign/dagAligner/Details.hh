@@ -256,38 +256,49 @@ namespace dagAligner
         const_iterator nextBestAlign(const_iterator start, Score& bestScore) const
         {
             const_iterator it = start;
-            if (end() == it)
+            const_iterator matrixEnd = end();
+            if (matrixEnd == it)
             {
                 // next line is the end, no more good scores
-                return end();
+                return matrixEnd;
             }
-            if (!(std::distance(begin(), it) % paddedRowLen()))
+            const int stride = paddedRowLen();
+            int column = std::distance(begin(), it) % stride;
+            if (!column)
             {
                 ++it;
+                ++column;
             }
-
-            if (rowLen() == (std::distance(begin(), it) % paddedRowLen()))
+            if (rowLen() == column)
             {
-                it += paddedRowLen() - rowLen() + 1;
+                it += stride - rowLen() + 1;
+                column = 1;
             }
             const_iterator ret = it;
-            bestScore = *(it++);
+            bestScore = *it;
 
-            //
-            while (end() != it)
+            // Scan contiguous row segments: the row boundary and padding skip
+            // are invariant inside each segment. Preserve the legacy scan's
+            // order, including boundary cells on subsequent unpadded rows.
+            const int skip = stride == rowLen() ? 0 : stride - rowLen() + 1;
+            const_iterator rowEnd = it + rowLen() - column + (column > rowLen() ? stride : 0);
+            while (true)
             {
-                if (rowLen() == (std::distance(begin(), it) % paddedRowLen()))
+                for (; it != rowEnd; ++it)
                 {
-                    it += paddedRowLen() - rowLen() + 1;
+                    if (bestScore < *it)
+                    {
+                        bestScore = *it;
+                        ret = it;
+                    }
                 }
-                if (bestScore < *it)
+                if (it == matrixEnd)
                 {
-                    bestScore = *it;
-                    ret = it;
+                    return ret;
                 }
-                ++it;
+                it += skip;
+                rowEnd += stride;
             }
-            return ret;
         }
 
         int targetOffset(const_iterator cell) const { return std::distance(cellOneOne(), cell) / paddedRowLen(); }

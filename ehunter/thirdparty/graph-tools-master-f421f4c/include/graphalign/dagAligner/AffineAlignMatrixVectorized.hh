@@ -244,23 +244,36 @@ namespace dagAligner
 
             for (int t = 0; t < tLen; ++t)
             {
-                std::fill(g_.begin(), g_.end(), SCORE_MIN);
                 const typename PenaltyMatrix::TargetChar tc = target_[t];
                 const Score* const penalties = &alignmentPenalties_[tc].front();
-                for (EdgeMap::OffsetEdges::const_iterator prevNodeIndexIt = edgeMap.prevNodesBegin(t);
-                     edgeMap.prevNodesEnd(t) != prevNodeIndexIt; ++prevNodeIndexIt)
+                const auto prevBegin = edgeMap.prevNodesBegin(t);
+                const auto prevEnd = edgeMap.prevNodesEnd(t);
+                if (prevEnd - prevBegin == 1)
                 {
-                    const int p = *prevNodeIndexIt;
+                    // Most target positions have one predecessor. Since the
+                    // current E/G/V cells start at SCORE_MIN, their first max
+                    // is just the candidate. Fuse the three passes and avoid
+                    // materializing G for these rows.
                     for (int q = 0; q < qLen; q += step)
                     {
-                        recomputeForDeletion(q, t, p);
-                        recomputeForAlign(q, p, penalties + q);
+                        initializeFromPredecessor(q, t, *prevBegin, penalties + q);
                     }
                 }
-
-                for (int q = 0; q < qLen; q += step)
+                else
                 {
-                    consolidate(q, t);
+                    std::fill(g_.begin(), g_.end(), SCORE_MIN);
+                    for (auto prev = prevBegin; prev != prevEnd; ++prev)
+                    {
+                        for (int q = 0; q < qLen; q += step)
+                        {
+                            recomputeForDeletion(q, t, *prev);
+                            recomputeForAlign(q, *prev, penalties + q);
+                        }
+                    }
+                    for (int q = 0; q < qLen; q += step)
+                    {
+                        consolidate(q, t);
+                    }
                 }
                 recomputeForInsertion(qLen, t);
             }
@@ -273,6 +286,35 @@ namespace dagAligner
             for (int i = 0; i < step; ++i)
             {
                 penalties[i] = penaltyMatrix_(query[i], tc);
+            }
+        }
+
+        void initializeFromPredecessor(int q, int t, int p, const Score penalties[step])
+        {
+            const Score* ep = e_.row(q, p);
+            const Score* vp = v_.row(q, p);
+            Score deletion[step];
+            Score match[step];
+            for (int i = 0; i < step; ++i)
+            {
+                // Narrow each candidate before taking max, just as in the
+                // general recurrence (including scores near the 16-bit limits).
+                const Score extension = ep[i] + gapExt_;
+                const Score opening = vp[i] + gapOpen_ + gapExt_;
+                deletion[i] = std::max(extension, opening);
+                match[i] = vp[i - 1] + penalties[i];
+            }
+            // Read predecessor blocks before writing the current block, keeping
+            // these loops vectorizable without assuming pointers do not alias.
+            Score* e = e_.row(q, t);
+            for (int i = 0; i < step; ++i)
+            {
+                e[i] = deletion[i];
+            }
+            Score* v = v_.row(q, t);
+            for (int i = 0; i < step; ++i)
+            {
+                v[i] = std::max(deletion[i], match[i]);
             }
         }
 
