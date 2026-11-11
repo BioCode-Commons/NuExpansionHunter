@@ -389,7 +389,50 @@ namespace dagAligner
             {
                 uint64_t trace = 0;
                 const int end = start + std::min(64, qLen - start);
-                for (int i = start; i < end; ++i)
+                int i = start;
+                if (gapOpeningRepresentable_)
+                {
+                    // Four serial cells share one loop branch and one variable
+                    // trace shift. Keep every candidate narrowed to Score before
+                    // max; the next cell still consumes this cell's exact F/V.
+                    for (; end - i >= 4; i += 4)
+                    {
+                        const Score extension0 = previousF + gapExt_;
+                        const Score opening0 = previousV + gapOpen_ + gapExt_;
+                        const Score currentF0 = std::max(extension0, opening0);
+                        const Score currentV0 = std::max(v[i], currentF0);
+                        v[i] = currentV0;
+
+                        const Score extension1 = currentF0 + gapExt_;
+                        const Score opening1 = currentV0 + gapOpen_ + gapExt_;
+                        const Score currentF1 = std::max(extension1, opening1);
+                        const Score currentV1 = std::max(v[i + 1], currentF1);
+                        v[i + 1] = currentV1;
+
+                        const Score extension2 = currentF1 + gapExt_;
+                        const Score opening2 = currentV1 + gapOpen_ + gapExt_;
+                        const Score currentF2 = std::max(extension2, opening2);
+                        const Score currentV2 = std::max(v[i + 2], currentF2);
+                        v[i + 2] = currentV2;
+
+                        const Score extension3 = currentF2 + gapExt_;
+                        const Score opening3 = currentV2 + gapOpen_ + gapExt_;
+                        const Score currentF3 = std::max(extension3, opening3);
+                        const Score currentV3 = std::max(v[i + 3], currentF3);
+                        v[i + 3] = currentV3;
+
+                        const uint64_t fourBits = uint64_t(currentV0 == currentF0)
+                            | (uint64_t(currentV1 == currentF1) << 1)
+                            | (uint64_t(currentV2 == currentF2) << 2)
+                            | (uint64_t(currentV3 == currentF3) << 3);
+                        trace |= fourBits << (i - start);
+                        previousF = currentF3;
+                        previousV = currentV3;
+                    }
+                }
+                // Preserve the original recurrence for exceptional scoring
+                // parameters and for the final zero to three cells of a word.
+                for (; i < end; ++i)
                 {
                     // f at an unprocessed interior cell is SCORE_MIN. Preserve
                     // each original Score conversion before comparing the terms.
