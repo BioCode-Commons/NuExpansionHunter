@@ -158,9 +158,23 @@ namespace dagAligner
             const int qLen = query_.size();
             const int tLen = target_.size();
 
+            // Only profiles referenced by this target can be read in fill().
+            // The presence table is alphabet-sized, independent of DP dimensions.
+            bool usedTargetChars[PenaltyMatrix::TARGET_CHAR_MAX_ + 1] = {};
+            for (const auto tc : target_)
+            {
+                usedTargetChars[tc] = true;
+            }
             for (typename PenaltyMatrix::TargetChar tc = 0; tc <= PenaltyMatrix::TARGET_CHAR_MAX_; ++tc)
             {
+                // Preserve every profile's original size/capacity history. Lazy
+                // resizing can cause extra geometric growth when an absent code
+                // returns after the query length has changed.
                 alignmentPenalties_[tc].resize((qLen + step - 1) / step * step, 0);
+                if (!usedTargetChars[tc])
+                {
+                    continue;
+                }
                 for (int q = 0; q < qLen; q += step)
                 {
                     computeAlignPenalties(q, tc, &alignmentPenalties_[tc].front() + q);

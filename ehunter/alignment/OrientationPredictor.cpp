@@ -39,6 +39,7 @@ using std::vector;
 namespace ehunter
 {
 
+template <bool reverseComplement = false>
 static int countNonoverlappingKmerMatches(const string& query, const KmerIndex& kmerIndex)
 {
     const std::size_t kmerLength = kmerIndex.kmerLength();
@@ -56,7 +57,25 @@ static int countNonoverlappingKmerMatches(const string& query, const KmerIndex& 
         // Carry the exact encoding of the last k bases; each input base is read once.
         while (scanned < position + kmerLength)
         {
-            const int base = ::toupper(query[scanned++]);
+            int base;
+            if (reverseComplement)
+            {
+                // Read the reverse complement without allocating a second read.
+                // Every other complementBase result (including IUPAC symbols)
+                // is invalid for an A/C/G/T k-mer, so it can be represented by N.
+                switch (query[query.size() - 1 - scanned++])
+                {
+                case 'A': case 'a': base = 'T'; break;
+                case 'C': case 'c': base = 'G'; break;
+                case 'G': case 'g': base = 'C'; break;
+                case 'T': case 't': base = 'A'; break;
+                default: base = 'N'; break;
+                }
+            }
+            else
+            {
+                base = ::toupper(query[scanned++]);
+            }
             const uint32_t code = (base == 'C') + 2 * (base == 'G') + 3 * (base == 'T');
             key = ((key << 2) | code) & mask;
             if (base == 'A' || base == 'C' || base == 'G' || base == 'T')
@@ -93,8 +112,7 @@ OrientationPrediction OrientationPredictor::predict(const std::string& query) co
     {
         return OrientationPrediction::kAlignsInOriginalOrientation;
     }
-    const int numReverseComplementMatches
-        = countNonoverlappingKmerMatches(graphtools::reverseComplement(query), kmerIndex_);
+    const int numReverseComplementMatches = countNonoverlappingKmerMatches<true>(query, kmerIndex_);
 
     const int maxMatches = std::max(numForwardMatches, numReverseComplementMatches);
 

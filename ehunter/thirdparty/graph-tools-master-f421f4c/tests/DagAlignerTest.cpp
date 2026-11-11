@@ -19,6 +19,7 @@
 //
 
 #include "graphalign/DagAlignerAffine.hh"
+#include "graphalign/dagAligner/BaseMatchingPenaltyMatrix.hh"
 
 #include "gtest/gtest.h"
 
@@ -963,4 +964,55 @@ TEST(AffineAlignmentMatrix, SinglePredecessorMatchesGeneralRecurrenceAtScoreLimi
 {
     checkScoreLimitRecurrence<true>();
     checkScoreLimitRecurrence<false>();
+}
+
+namespace
+{
+template <bool penalizeMove> void checkReusedTargetPenaltyProfiles()
+{
+    const BaseMatchingPenaltyMatrix penalties(5, -4);
+    AffineAlignMatrix<BaseMatchingPenaltyMatrix, penalizeMove> reference(penalties, -3, -1);
+    AffineAlignMatrixVectorized<BaseMatchingPenaltyMatrix, penalizeMove> optimized(penalties, -3, -1);
+    const std::vector<string> targets = { "ACGTXBDHKMNRSVWY", "A", "CGTXBDHKMNRSVWY", "CGTXBDHKMNRSVWY",
+                                         "NNNNN", "acgt", "Y", "ACGTXBDHKMNRSVWYACGT", "X", "ACACAC" };
+    const int queryLengths[] = { 16, 48, 32, 48, 17, 16, 31, 129, 2, 7 };
+    for (std::size_t iteration = 0; iteration < targets.size(); ++iteration)
+    {
+        const auto& target = targets[iteration];
+        const int qLen = queryLengths[iteration];
+        string query(qLen, 'A');
+        for (int q = 0; q < qLen; ++q) query[q] = "ANTGXacgt"[(q + iteration) % 9];
+        const EdgeMap edges({ { int(target.size()), int(target.size()) } }, { 0 });
+        // The scalar recurrence computes penalties directly, without profiles.
+        reference.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        optimized.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        EXPECT_EQ(toString(reference), toString(optimized));
+        Score expectedScore = 0, actualScore = 0;
+        const auto expected = reference.template nextBestAlign<false>(reference.alignBegin(), expectedScore);
+        const auto actual = optimized.template nextBestAlign<false>(optimized.alignBegin(), actualScore);
+        EXPECT_EQ(expectedScore, actualScore);
+        EXPECT_EQ(reference.targetOffset(expected), optimized.targetOffset(actual));
+        EXPECT_EQ(reference.queryOffset(expected), optimized.queryOffset(actual));
+        for (int t = -1; t < int(target.size()); ++t)
+        {
+            for (int q = -1; q < qLen; ++q)
+            {
+                EXPECT_EQ(reference.isInsertion(q, t), optimized.isInsertion(q, t));
+                if (t < 0) continue;
+                for (auto p = edges.prevNodesBegin(t); p != edges.prevNodesEnd(t); ++p)
+                {
+                    EXPECT_EQ(reference.isDeletion(q, t, *p), optimized.isDeletion(q, t, *p));
+                    EXPECT_EQ(reference.isMatch(q, t, *p), optimized.isMatch(q, t, *p));
+                    EXPECT_EQ(reference.isMismatch(q, t, *p), optimized.isMismatch(q, t, *p));
+                }
+            }
+        }
+    }
+}
+} // namespace
+
+TEST(AffineAlignmentMatrix, ReusedTargetAlphabetAndLengthsMatchScalarPenalties)
+{
+    checkReusedTargetPenaltyProfiles<true>();
+    checkReusedTargetPenaltyProfiles<false>();
 }
