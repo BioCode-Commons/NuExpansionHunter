@@ -179,7 +179,7 @@ def main():
             raise RuntimeError('Matching system CURL headers missing: ' + str(curl_include))
         report['shared_dependencies'] = {str(p): {'resolved': str(p.resolve()), 'sha256': sha(p)}
                                          for p in (htslib, curl)}
-        flags = '-Wno-unknown-warning-option -Wno-error=deprecated-declarations -Wno-error=deprecated-literal-operator'
+        flags = '-Wno-unknown-warning-option -Wno-error=deprecated-declarations -Wno-error=deprecated-literal-operator -Wno-error=cpp'
         for name, tree in [('baseline', control), ('candidate', candidate)]:
             build = output / ('build-' + name)
             configure = [cmake, '-S', tree / 'ehunter', '-B', build, '-G', 'Ninja',

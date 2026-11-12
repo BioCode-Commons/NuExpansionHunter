@@ -37,6 +37,11 @@ JSON are required before claiming a native x86 speedup.
 ## Build comparability
 
 Both full applications use the same compiler, flags and system libraries.
+Ubuntu's Boost 1.83 Math headers emit a preprocessor warning that future releases
+will require C++14. Both builds use `-Wno-error=cpp` so the warning remains
+visible without becoming an error under the repository's `-Werror`; the C++11
+language standard and application source remain unchanged. Clang documents
+[`-Wcpp` as a synonym for `-W#warnings`](https://releases.llvm.org/18.1.8/tools/clang/docs/DiagnosticsReference.html#wcpp).
 Configure `ehunter/` directly instead of the root dependency superbuild.
 Clang avoids the GraphTools GNU CMake path that adds global `-msse4.2` on x86;
 the runner also checks generated compile commands for global SSE/AVX flags.
