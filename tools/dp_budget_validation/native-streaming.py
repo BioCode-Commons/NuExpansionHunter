@@ -195,10 +195,12 @@ def main():
                 if line and not line.startswith(('#', '//')) and '=' in line:
                     key, value = line.split('=', 1)
                     cache[key.split(':', 1)[0]] = value
-            for key, expected in [('htslib', htslib), ('CURL_LIBRARY', curl), ('CURL_INCLUDE_DIR', curl_include)]:
-                if Path(cache.get(key, '')).resolve() != expected:
-                    raise RuntimeError('CMake selected an unexpected dependency: ' + key)
             shutil.copyfile(build / 'CMakeCache.txt', output / ('cmake-cache-' + name + '.log'))
+            for key, expected in [('htslib', htslib), ('CURL_LIBRARY', curl), ('CURL_INCLUDE_DIR', curl_include)]:
+                observed = Path(cache.get(key, '')).resolve()
+                if observed != expected.resolve():
+                    raise RuntimeError('CMake selected an unexpected dependency: %s; observed=%s; expected=%s'
+                                       % (key, observed, expected.resolve()))
             compile_commands = json.loads((build / 'compile_commands.json').read_text())
             for entry in compile_commands:
                 tokens = entry.get('arguments') or shlex.split(entry['command'])
