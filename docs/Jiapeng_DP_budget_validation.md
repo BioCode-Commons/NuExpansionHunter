@@ -41,6 +41,20 @@ The first dynamic-support implementation sped up the DP stage but regressed the 
 
 The mapped membership check now searches its already-validated raw successor slice directly. The `Graph` retains the mapping throughout the call; no borrowed pointer escapes. Existing node-ID checks, bounds/alignment validation, and public owning range/iterator APIs remain intact. Unsorted and duplicate successor entries retain the same membership semantics. The fair SIMD control applies exactly this same change, so its paired comparison isolates the DP algorithm.
 
+### Direct streaming attribution of `hasEdge`
+
+Two further comparisons hold the DP implementation fixed and change only the reviewed mapped `hasEdge` implementation. Both use covered10k, seven compute workers, one preprocessing worker, compatible prepared caches, HTS decode/encode zero, one excluded warmup and nine serial AB/BA measured pairs. Before timing, the source audit compared 293 production source/header/CMake files for V3/V4 and 292 for the SIMD pair: only `Graph.cpp` changes, exactly at `hasEdge`. Each pair has 160 matching compile commands and identical link flags, except for the expected source-fingerprint constant used to check prepared-cache compatibility. Each binary receives its corresponding prepared cache; the budget-DP header is identical in V3/V4.
+
+| Fixed DP implementation | Before median wall | After median wall | Paired wall reduction | Paired CPU reduction | Wall ratio 95% interval | Faster pairs | Median RSS change |
+|---|---:|---:|---:|---:|---|---:|---:|
+| Exact cost-budget DP, V3 → V4 | 6.091 s | 2.172 s | 64.72% | 67.93% | [0.3348, 0.3952] | 9/9 | +32 KiB |
+| Published SIMD → SIMD with membership fix | 8.221 s | 6.714 s | 15.39% | 16.56% | [0.7781, 0.9059] | 9/9 | −160 KiB |
+
+Both comparisons preserve exact VCF/JSON bytes and complete BAM-header/record-byte multisets. Both pass the original RSS noise gates with **zero additional RSS allowance**; no 20 MB preprocessing allowance is applied. The compact JSON retains every pair, excluded warmup and the source/command audit reference.
+
+These reductions measure the **whole membership replacement**: removal of owning range/iterator copies and repeated shared-owner updates, one checked-array access with direct-pointer traversal, and `find` early exit instead of a complete `count`. They do not assign 64.72% to atomic stalls alone. The effect is conditional on the surrounding DP implementation and parallel workload. These percentages cannot be added to the 52.41% DP comparison or the 56.77% total-change comparison. Absolute timings also drift across separate batches; only each batch's paired comparison supports the stated reduction.
+
+
 ## Native ARM64 streaming measurements
 
 Environment: ARM64, macOS 26.6.2, Apple Clang 21.0.0, release `-O3 -DNDEBUG`. Timed subprocesses run serially with one warmup pair and nine alternating AB/BA measured pairs. Microbench calibration targets 0.7 seconds for the faster binary. No instrumented binary is used for performance claims. CPU is user plus system time.
