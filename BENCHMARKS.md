@@ -2,7 +2,22 @@
 
 [← NuExpansionHunter README](README.md#benchmarks)
 
-## Latest Jiapeng optimization results
+## Multithread branch: complete HG002
+
+The Multithread candidate at commit `91a359c49a9f50afced3bfea102604f2aef480d3` processed the complete HG002 BAM with the 174,293-locus Illumina catalog. Each core count ran once on Oscar; original EH timings are historical observations from separate runs. Per-sample wall time excludes one-time cache preparation and output comparison. Some candidate runs overlapped on a node, so the measurements are not isolated paired comparisons.
+
+| Cores | Wall time, historical original → Multithread | Speedup | Allocated CPU-hours saved | Peak RSS, original → Multithread | Full output comparison |
+| ---: | ---: | ---: | ---: | ---: | :--- |
+| 4 | 3295.602 → 1706.411 s | **1.931×** | 48.22% | 15.338 → 10.596 GiB | **Output identical** |
+| 8 | 1703.735 → 902.082 s | **1.889×** | 47.05% | 15.681 → 10.595 GiB | **Output identical** |
+| 16 | 1248.945 → 576.285 s | **2.167×** | 53.86% | 29.584 → 10.616 GiB | **Output identical** |
+| 32 | 1064.277 → 500.467 s | **2.127×** | 52.98% | 35.956 → 10.615 GiB | **Output identical** |
+
+VCF and JSON were byte-identical to the retained original output; BAM headers and all 74,565,578 records, fields, tags and duplicates matched after ignoring record order. The correctness reference is distinct from the historical timing measurements. The candidate binary SHA-256 was `d730992506721e16d2a0eef1e451e0ea056670bbffd0af5b581564642f5a9f92`. The test build used explicit map initializers in two test files for GCC compatibility; product code was unchanged.
+
+These measurements use default `--read-decode-threads 0`, so they do not measure the optional parallel read-preprocessing pool. Automatic decode and encode settings and the default BAM queue were used. Each row is a single observation; it does not establish run-to-run variation.
+
+## Historical Jiapeng optimization results
 
 The merged `Jiapeng_optimization` implementation was benchmarked on the complete HG002 BAM with the 174,293-locus Illumina catalog. Each core count ran once on Oscar. Original EH timings are historical measurements; the original was not rerun. The table excludes one-time catalog preparation and output-comparison time.
 
