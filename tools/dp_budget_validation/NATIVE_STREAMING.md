@@ -42,6 +42,12 @@ will require C++14. Both builds use `-Wno-error=cpp` so the warning remains
 visible without becoming an error under the repository's `-Werror`; the C++11
 language standard and application source remain unchanged. Clang documents
 [`-Wcpp` as a synonym for `-W#warnings`](https://releases.llvm.org/18.1.8/tools/clang/docs/DiagnosticsReference.html#wcpp).
+Ubuntu's fmt 9 dependency also disables the automatic ostream formatting used
+by the existing logging calls for `ReadId` and `GenomicRegion`. Both builds set
+`-DFMT_DEPRECATED_OSTREAM=1`, the compatibility option documented in the
+[fmt 9 release notes](https://github.com/fmtlib/fmt/releases/tag/9.0.0), to retain
+that behavior without changing application source or the language standard.
+The transitively installed `libfmt-dev` version is recorded alongside spdlog.
 Configure `ehunter/` directly instead of the root dependency superbuild.
 Clang avoids the GraphTools GNU CMake path that adds global `-msse4.2` on x86;
 the runner also checks generated compile commands for global SSE/AVX flags.
