@@ -1,6 +1,6 @@
 # Native cost-budget DP validation
 
-This toolkit compares the production `PinnedDagAligner` wrapper on native ARM NEON or x86-64 AVX2. It checks complete ordered scores, paths and CIGAR outputs before timing. It does not require the full ExpansionHunter build or a genomic reference dataset.
+The standalone `run-native.py` driver compares the production `PinnedDagAligner` wrapper on native ARM NEON or x86-64 AVX2. It checks complete ordered scores, paths and CIGAR outputs before timing, without requiring the full ExpansionHunter build or a genomic reference dataset. For complete application throughput, use the [native streaming reproduction](NATIVE_STREAMING.md); the CI workflow runs that streaming benchmark after standalone correctness checks.
 
 The performance control is **published SIMD plus the same mapped `Graph::hasEdge` fix** as the candidate. This separates DP algorithm changes from removal of shared-owner contention. The script copies the baseline to the new output directory, verifies that `Graph.cpp` differs only by the exact reviewed `hasEdge` replacement, and applies that replacement. It also requires identical SIMD headers and verifies every GraphTools include file and the seven compiled source files, allowing changes only in Graph.cpp, PinnedDagAligner.hh and the new budget header. Both complete source manifests are recorded. It never changes either input checkout.
 
@@ -36,11 +36,13 @@ Each timed workload is calibrated toward 0.7 seconds for the faster binary, foll
 
 These are full-wrapper **single-process microbenchmarks**, including graph extraction/unrolling, DP, traceback and returned alignment parsing. They are not a multithreaded, full-application genotyping benchmark. Existing application-level validation remains necessary for production throughput claims. The pruned matrix is private to pinned alignment; its unused local second-best score is not promised to reproduce the generic dense-matrix second-best value.
 
-## CI artifacts and optional workflow
+## CI artifacts and streaming workflow
 
-`results.json` is the top-level index. Canonical text outputs, binaries and the generated control checkout remain local. The prepared CI workflow uploads JSON and text logs only; it excludes executable binaries, the copied checkout, and large canonical binary streams.
+For the standalone driver, `results.json` is the top-level index. In CI this is `native-results/results.json`; the full-application streaming index is `streaming-results/results.json`, with paired evidence in `streaming-results/benchmark/results.json`. Canonical text outputs, binaries and the generated control checkout remain local. The workflow uploads selected JSON and text logs only; it excludes executable binaries, copied checkouts, synthetic input data, per-locus genotype JSON and BAM outputs.
 
-The workflow is delivered separately as `workflow-artifact/dp-native-avx2.yml`. Publishing tools does not install or execute it. Copy it to `.github/workflows/dp-native-avx2.yml` only with credentials authorized to update GitHub Actions workflows. It uses `contents: read`, Ubuntu 24.04, a 15-minute limit, the pinned SIMD baseline commit, and the current candidate commit. Automatic runs are limited to changes to that workflow on `Jiapeng-DP-SIMD`; manual `workflow_dispatch` is also enabled.
+The workflow installation path is `.github/workflows/dp-native-avx2.yml`. It uses `contents: read`, Ubuntu 24.04, a 45-minute limit, the pinned SIMD baseline commit, and the current candidate commit. It first runs `run-native.py --cxx clang++ --require-avx2 --skip-benchmarks`, then builds both full applications and runs `native-streaming.py` with one discarded warmup and nine alternating streaming E2E pairs. Only streaming performance is measured by CI; the standalone phase establishes correctness and executed native AVX2 evidence. See [NATIVE_STREAMING.md](NATIVE_STREAMING.md) for dependencies, controls, exact output comparison, cache treatment and artifact selection.
+
+Automatic runs are limited to `Jiapeng-DP-SIMD` pushes changing the workflow itself, Python/C/C++ files directly under `tools/dp_budget_validation/`, or files under `ehunter/`. Validation-tool documentation and result-only updates do not trigger a run. Manual `workflow_dispatch` is also enabled.
 
 Official Node 24 action pins were verified against their release commit links and action metadata. GitHub retired the Node 20 runtime on [September 23, 2026](https://github.blog/changelog/2026-09-23-node-20-is-no-longer-available-in-github-actions/):
 
