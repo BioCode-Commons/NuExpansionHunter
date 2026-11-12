@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "core/Parameters.hh"
 #include "locus/LocusFindings.hh"
 #include "locus/LocusSpecification.hh"
@@ -46,6 +48,7 @@ public:
     void visit(const RepeatFindings* repeatFindingsPtr) override;
     void visit(const SmallVariantFindings* smallVariantFindingsPtr) override;
     nlohmann::json record() const { return record_; }
+    nlohmann::json takeRecord() { return std::move(record_); }
 
 private:
     const ReferenceContigInfo& contigInfo_;

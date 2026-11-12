@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <array>
+#include <limits>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -132,28 +133,55 @@ WeightedPurityCalculator::WeightedPurityCalculator(const std::string& repeatUnit
 
 double WeightedPurityCalculator::score(const string& querySequence) const
 {
-    vector<double> scores;
+    double bestScore = -std::numeric_limits<double>::infinity();
     if (!prepared_.empty())
+    {
         for (auto repeatUnit : prepared_)
-            scores.push_back(score(repeatUnit, querySequence));
+            bestScore = std::max(bestScore, score(repeatUnit, querySequence));
+    }
     else
+    {
         for (const auto& repeatUnit : repeatUnits_)
         {
-            scores.push_back(score(repeatUnit, querySequence));
+            bestScore = std::max(bestScore, score(repeatUnit, querySequence));
         }
+    }
 
-    const double weightedPurity
-        = *std::max_element(scores.begin(), scores.end()) / static_cast<double>(querySequence.length());
-    return weightedPurity;
+    return bestScore / static_cast<double>(querySequence.length());
+}
+
+bool WeightedPurityCalculator::scoreAtLeast(const string& querySequence, double cutoff) const
+{
+    // Finish each phase with the same ordered sum and division as score().
+    // Empty queries produce NaN in score(), which never passes a cutoff.
+    if (querySequence.empty())
+        return false;
+    const double queryLength = static_cast<double>(querySequence.length());
+    if (!prepared_.empty())
+    {
+        for (auto repeatUnit : prepared_)
+            if (score(repeatUnit, querySequence) / queryLength >= cutoff)
+                return true;
+    }
+    else
+    {
+        for (const auto& repeatUnit : repeatUnits_)
+            if (score(repeatUnit, querySequence) / queryLength >= cutoff)
+                return true;
+    }
+    return false;
 }
 
 double WeightedPurityCalculator::score(graphtools::TextView repeatUnit, const std::string& querySequence) const
 {
     double score = 0;
+    size_t offset = 0;
+    const size_t repeatLength = repeatUnit.length();
     for (int position = 0; position != static_cast<int>(querySequence.length()); ++position)
     {
-        const int offset = position % repeatUnit.length();
         score += irrdetection::scoreBases(repeatUnit[offset], querySequence[position]);
+        if (++offset == repeatLength)
+            offset = 0;
     }
 
     return score;

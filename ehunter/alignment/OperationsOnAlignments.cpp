@@ -71,7 +71,7 @@ GraphAlignment extendWithSoftclip(const GraphAlignment& graphAlignment, int left
     return GraphAlignment(graphAlignment.path(), sequenceAlignments);
 }
 
-int getNumNonrepeatMatchesUpstream(NodeId nodeId, GraphAlignment alignment)
+int getNumNonrepeatMatchesUpstream(NodeId nodeId, const GraphAlignment& alignment)
 {
     const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
 
@@ -91,7 +91,7 @@ int getNumNonrepeatMatchesUpstream(NodeId nodeId, GraphAlignment alignment)
     return numMatches;
 }
 
-int getNumNonrepeatMatchesDownstream(NodeId nodeId, GraphAlignment alignment)
+int getNumNonrepeatMatchesDownstream(NodeId nodeId, const GraphAlignment& alignment)
 {
     const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
 
@@ -111,7 +111,7 @@ int getNumNonrepeatMatchesDownstream(NodeId nodeId, GraphAlignment alignment)
     return numMatches;
 }
 
-int scoreAlignmentToNonloopNodes(graphtools::GraphAlignment alignment, LinearAlignmentParameters parameters)
+int scoreAlignmentToNonloopNodes(const graphtools::GraphAlignment& alignment, LinearAlignmentParameters parameters)
 {
     int score = 0;
     const Graph& graph = *alignment.path().graphRawPtr();
@@ -128,7 +128,7 @@ int scoreAlignmentToNonloopNodes(graphtools::GraphAlignment alignment, LinearAli
     return score;
 }
 
-int countFullOverlaps(NodeId nodeId, GraphAlignment alignment)
+int countFullOverlaps(NodeId nodeId, const GraphAlignment& alignment)
 {
     const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
 
@@ -169,7 +169,7 @@ GraphAlignment computeCanonicalAlignment(const list<GraphAlignment>& alignments)
         }
     }
 
-    return *canonicalAlignment;
+    return std::move(*canonicalAlignment);
 }
 
 }

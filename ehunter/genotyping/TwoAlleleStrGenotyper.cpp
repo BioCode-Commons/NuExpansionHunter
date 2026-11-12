@@ -73,46 +73,71 @@ static Ci getCiAlongX(int bestX, int bestY, TwoAlleleGenotyper* genotyper, Likel
 
     const int kMaxIntervalWidth = 750;
     double likelihoodRatio = 1;
+    double llShiftLeft0 = 0;
+    double llShiftLeft1 = 0;
+    double llShiftLeft2 = 0;
+    double llShiftRight0 = 0;
+    double llShiftRight1 = 0;
+    double llShiftRight2 = 0;
+    bool refreshLeft = true;
+    bool refreshRight = true;
     while (likelihoodRatio >= 0.01 && xTo - xFrom <= kMaxIntervalWidth)
     {
-        double llShiftLeft0 = (genotyper->*likelihood)(xFrom - 1, yFrom - 1);
-        double llShiftLeft1 = (genotyper->*likelihood)(xFrom - 1, yFrom);
-        double llShiftLeft2 = (genotyper->*likelihood)(xFrom - 1, yFrom + 1);
+        // The unmoved boundary still has exactly the same three candidates.
+        if (refreshLeft)
+        {
+            llShiftLeft0 = (genotyper->*likelihood)(xFrom - 1, yFrom - 1);
+            llShiftLeft1 = (genotyper->*likelihood)(xFrom - 1, yFrom);
+            llShiftLeft2 = (genotyper->*likelihood)(xFrom - 1, yFrom + 1);
+            refreshLeft = false;
+        }
         double llShiftLeft = std::max(std::max(llShiftLeft0, llShiftLeft1), llShiftLeft2);
 
-        double llShiftRight0 = (genotyper->*likelihood)(xTo + 1, yTo + 1);
-        double llShiftRight1 = (genotyper->*likelihood)(xTo + 1, yTo);
-        double llShiftRight2 = (genotyper->*likelihood)(xTo + 1, yTo - 1);
+        if (refreshRight)
+        {
+            llShiftRight0 = (genotyper->*likelihood)(xTo + 1, yTo + 1);
+            llShiftRight1 = (genotyper->*likelihood)(xTo + 1, yTo);
+            llShiftRight2 = (genotyper->*likelihood)(xTo + 1, yTo - 1);
+            refreshRight = false;
+        }
         double llShiftRight = std::max(std::max(llShiftRight0, llShiftRight1), llShiftRight2);
 
         double gtLoglik;
         if (llShiftLeft >= llShiftRight)
         {
             xFrom -= 1;
+            // Preserve the original strict comparisons: a tie between 0 and 2
+            // keeps y unchanged even when candidate 1 is not the maximum.
+            gtLoglik = llShiftLeft1;
             if (llShiftLeft0 > llShiftLeft1 && llShiftLeft0 > llShiftLeft2)
             {
                 yFrom -= 1;
+                gtLoglik = llShiftLeft0;
             }
             else if (llShiftLeft2 > llShiftLeft0 && llShiftLeft2 > llShiftLeft1)
             {
                 yFrom += 1;
+                gtLoglik = llShiftLeft2;
             }
 
-            gtLoglik = (genotyper->*likelihood)(xFrom, yFrom);
+            refreshLeft = true;
         }
         else
         {
             xTo += 1;
+            gtLoglik = llShiftRight1;
             if (llShiftRight0 > llShiftRight1 && llShiftRight0 > llShiftRight2)
             {
                 yTo += 1;
+                gtLoglik = llShiftRight0;
             }
             else if (llShiftRight2 > llShiftRight0 && llShiftRight2 > llShiftRight1)
             {
                 yTo -= 1;
+                gtLoglik = llShiftRight2;
             }
 
-            gtLoglik = (genotyper->*likelihood)(xTo, yTo);
+            refreshRight = true;
         }
 
         totalLoglik = getLogSum(totalLoglik, gtLoglik);
@@ -193,19 +218,29 @@ double TwoAlleleGenotyper::getShortAndLongAlleleLoglik(int shortAlleleSize, int 
     const int longAlleleLen = longAlleleSize * motifLen_ + fragLen_ + 1;
     const double shortAlleleFrac = static_cast<double>(shortAlleleLen) / (shortAlleleLen + longAlleleLen);
     double genotypeLoglik = 0;
+    const int numFrags = fragLogliks_.numFrags();
+    if (numFrags == 0)
+    {
+        return genotypeLoglik;
+    }
 
-    for (int fragIndex = 0; fragIndex != fragLogliks_.numFrags(); ++fragIndex)
+    const double shortAllelePrior = std::log(shortAlleleFrac);
+    const double longAllelePrior = std::log(1.0 - shortAlleleFrac);
+    const double mismapPrior = std::log(0.001);
+    const double rightmapPrior = std::log(1.0 - 0.001);
+    const bool isHomozygous = shortAlleleSize == longAlleleSize;
+
+    for (int fragIndex = 0; fragIndex != numFrags; ++fragIndex)
     {
         double fragLoglikForShortAllele = fragLogliks_.getLoglik(fragIndex, shortAlleleSize);
-        double fragLoglikForLongAllele = fragLogliks_.getLoglik(fragIndex, longAlleleSize);
+        double fragLoglikForLongAllele
+            = isHomozygous ? fragLoglikForShortAllele : fragLogliks_.getLoglik(fragIndex, longAlleleSize);
 
-        const double shortAlleleTerm = std::log(shortAlleleFrac) + fragLoglikForShortAllele;
-        const double longAlleleTerm = std::log(1.0 - shortAlleleFrac) + fragLoglikForLongAllele;
+        const double shortAlleleTerm = shortAllelePrior + fragLoglikForShortAllele;
+        const double longAlleleTerm = longAllelePrior + fragLoglikForLongAllele;
 
         const double loglikGivenRightmap = getLogSum(shortAlleleTerm, longAlleleTerm);
         const double loglikGivenMismap = topFragLogliks_[fragIndex];
-        const double mismapPrior = std::log(0.001);
-        const double rightmapPrior = std::log(1.0 - 0.001);
         genotypeLoglik += getLogSum(mismapPrior + loglikGivenMismap, rightmapPrior + loglikGivenRightmap);
     }
 

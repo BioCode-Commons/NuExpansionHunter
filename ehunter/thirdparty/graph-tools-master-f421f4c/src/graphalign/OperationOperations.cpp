@@ -31,15 +31,26 @@ namespace graphtools
 {
 bool checkConsistency(const Operation& operation, const std::string& reference, const std::string& query)
 {
+    return detail::checkOperationConsistency(operation, reference, query);
+}
+
+bool detail::checkOperationConsistency(
+    const Operation& operation, boost::string_ref reference, boost::string_ref query)
+{
     const bool is_query_full_length = query.length() == operation.length();
     const bool is_ref_full_length = reference.length() == operation.length();
 
     switch (operation.type())
     {
     case OperationType::kMatch:
-        if (is_query_full_length && checkIfReferenceAndQuerySequencesMatch(reference, query))
-            return true;
-        return false;
+        if (!is_query_full_length || reference.length() != query.length())
+            return false;
+        for (size_t index = 0; index != reference.length(); ++index)
+        {
+            if (!checkIfReferenceBaseMatchesQueryBase(reference[index], query[index]))
+                return false;
+        }
+        return true;
 
     case OperationType::kMismatch:
         if (is_query_full_length && query.length() == reference.length())

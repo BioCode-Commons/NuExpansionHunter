@@ -126,6 +126,18 @@ TEST_F(ThreadParametersTest, QueueBudgetSupportsDefaultExplicitAndUnboundedValue
     EXPECT_THROW(load({ "--bamlet-queue-mb=" + std::to_string(maxMiB + 1) }), std::invalid_argument);
 }
 
+TEST_F(ThreadParametersTest, ReadPreprocessingIsExplicitAndStreamingOnly)
+{
+    EXPECT_EQ(load({}).readDecodeThreadCount, 0);
+    const auto parameters = load({ "--threads=28", "--read-decode-threads=4", "--decode-threads=2" });
+    EXPECT_EQ(parameters.threadCount, 28);
+    EXPECT_EQ(parameters.readDecodeThreadCount, 4);
+    EXPECT_EQ(parameters.decodeThreadCount, 2);
+    for (const auto* value : { "-1", "1.5", "auto", "2workers", "999999999999999999999" })
+        EXPECT_THROW(load({ std::string("--read-decode-threads=") + value }), std::invalid_argument);
+    EXPECT_THROW(load({ "--read-decode-threads=2" }, "seeking"), std::invalid_argument);
+}
+
 TEST_F(ThreadParametersTest, InvalidQueueBudgetsAreRejected)
 {
     for (const auto* value : { "-1", "1.5", "auto", "1MB", "99999999999999999999999999999999999999999" })

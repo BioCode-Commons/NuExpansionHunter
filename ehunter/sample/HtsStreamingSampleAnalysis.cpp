@@ -36,6 +36,7 @@
 #include "sample/GenomeQueryCollection.hh"
 #include "sample/HtsFileStreamer.hh"
 #include "sample/HtsStreamingReadPairQueue.hh"
+#include "sample/DecodedReadStream.hh"
 #include <chrono>
 
 using ehunter::locus::initializeLocusAnalyzers;
@@ -211,7 +212,8 @@ void analyzeLocus(
 
 SampleFindings htsStreamingSampleAnalysis(
     const InputPaths& inputPaths, Sex sampleSex, const HeuristicParameters& heuristicParams, const int threadCount,
-    const RegionCatalog& regionCatalog, locus::AlignWriterPtr bamletWriter, unsigned decodeThreadCount)
+    const RegionCatalog& regionCatalog, locus::AlignWriterPtr bamletWriter, unsigned decodeThreadCount,
+    unsigned readDecodeThreadCount)
 {
     // Setup thread-specific data structures and thread pool
     const unsigned maxActiveLocusAnalyzerQueues(threadCount + 5);
@@ -245,70 +247,61 @@ SampleFindings htsStreamingSampleAnalysis(
     ReadCatalog unpairedReads(1000, ReadHash, ReadEq);
 
     htshelpers::HtsFileStreamer readStreamer(inputPaths.htsFile(), inputPaths.reference(), decodeThreadCount);
-    while (readStreamer.trySeekingToNextPrimaryAlignment() && readStreamer.isStreamingAlignedReads())
     {
-        // Stop processing reads if an exception is thrown in the worker pool:
-        if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
+        DecodedReadStream decodedStream(readStreamer, genomeQuery.targetRegionMask, readDecodeThreadCount);
+        while (auto current = decodedStream.next())
         {
-            break;
-        }
-
-        const bool isReadNearTargetRegion = genomeQuery.targetRegionMask.query(
-            readStreamer.currentReadContigId(), readStreamer.currentReadPosition());
-        const bool isMateNearTargetRegion = genomeQuery.targetRegionMask.query(
-            readStreamer.currentMateContigId(), readStreamer.currentMatePosition());
-        if (!isReadNearTargetRegion && !isMateNearTargetRegion)
-        {
-            continue;
-        }
-
-        if (not readStreamer.currentIsPaired())
-        {
-            continue;
-        }
-
-        Read read = readStreamer.decodeRead();
-        const auto mateIterator = unpairedReads.find(read);
-        if (mateIterator == unpairedReads.end())
-        {
-            unpairedReads.emplace(std::move(read));
-            continue;
-        }
-        auto mateNode = unpairedReads.extract(mateIterator);
-        Read mate = std::move(mateNode.value());
-
-        const int64_t readEnd = readStreamer.currentReadPosition() + read.sequence().length();
-        const int64_t mateEnd = readStreamer.currentMatePosition() + mate.sequence().length();
-
-        vector<AnalyzerBundle> analyzerBundles = genomeQuery.analyzerFinder.queryStreaming(
-            readStreamer.currentReadContigId(), readStreamer.currentReadPosition(), readEnd,
-            readStreamer.currentMateContigId(), readStreamer.currentMatePosition(), mateEnd);
-
-        const unsigned bundleCount(analyzerBundles.size());
-        for (unsigned bundleIndex(0); bundleIndex < bundleCount; ++bundleIndex)
-        {
-            auto& bundle(analyzerBundles[bundleIndex]);
-            auto sendReadPair = [&](HtsStreamingReadPairQueue::ReadPair readPair)
+            // Stop processing reads if an exception is thrown in the worker pool:
+            if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
             {
-                if (locusAnalyzerThreadSharedData.readPairQueue.insertReadPair(bundle.locusIndex, std::move(readPair)))
+                break;
+            }
+
+            Read read = std::move(current->read);
+            const auto mateIterator = unpairedReads.find(read);
+            if (mateIterator == unpairedReads.end())
+            {
+                unpairedReads.emplace(std::move(read));
+                continue;
+            }
+            auto mateNode = unpairedReads.extract(mateIterator);
+            Read mate = std::move(mateNode.value());
+
+            const int64_t readEnd = current->position + read.sequence().length();
+            const int64_t mateEnd = current->matePosition + mate.sequence().length();
+
+            vector<AnalyzerBundle> analyzerBundles = genomeQuery.analyzerFinder.queryStreaming(
+                current->contig, current->position, readEnd,
+                current->mateContig, current->matePosition, mateEnd);
+
+            const unsigned bundleCount(analyzerBundles.size());
+            for (unsigned bundleIndex(0); bundleIndex < bundleCount; ++bundleIndex)
+            {
+                auto& bundle(analyzerBundles[bundleIndex]);
+                auto sendReadPair = [&](HtsStreamingReadPairQueue::ReadPair readPair)
                 {
-                    pool.push(
-                        processLocusAnalyzerQueue, std::ref(locusAnalyzerThreadSharedData),
-                        std::ref(locusAnalyzerThreadLocalDataPool), bundle.locusIndex);
-                }
-            };
+                    if (locusAnalyzerThreadSharedData.readPairQueue.insertReadPair(bundle.locusIndex, std::move(readPair)))
+                    {
+                        pool.push(
+                            processLocusAnalyzerQueue, std::ref(locusAnalyzerThreadSharedData),
+                            std::ref(locusAnalyzerThreadLocalDataPool), bundle.locusIndex);
+                    }
+                };
 
-            if ((bundleIndex + 1) < bundleCount)
-            {
-                sendReadPair({ bundle.regionType, bundle.inputType, read, mate });
-            }
-            else
-            {
-                sendReadPair({ bundle.regionType, bundle.inputType, std::move(read), std::move(mate) });
+                if ((bundleIndex + 1) < bundleCount)
+                {
+                    sendReadPair({ bundle.regionType, bundle.inputType, read, mate });
+                }
+                else
+                {
+                    sendReadPair({ bundle.regionType, bundle.inputType, std::move(read), std::move(mate) });
+                }
             }
         }
-    }
 
+        spdlog::info("Read preprocessing workers={} peak_worker_cache_bytes={} synchronous_large_records={}",
+            readDecodeThreadCount, decodedStream.peakWorkerCacheBytes(), decodedStream.synchronousLargeRecords());
+    }
     pool.stop(true);
     spdlog::info(
         "Phase read_processing_seconds={}",

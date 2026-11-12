@@ -21,6 +21,8 @@
 
 #include "genotyping/AlignMatrixFiltering.hh"
 
+#include <utility>
+
 namespace ehunter
 {
 namespace strgt
@@ -66,25 +68,53 @@ void filter(AlignMatrix& aligns)
         return;
     }
 
-    for (int readIndex = aligns.numReads() - 1; readIndex != -1; --readIndex)
+    // Public remove() can leave an odd-sized matrix in a release build. Keep
+    // the old traversal for that state, including a surviving unpaired tail.
+    if (aligns.numReads() % 2 != 0)
     {
-        if (aligns.getBestAlign(readIndex).numIndels() == 0)
+        for (int readIndex = aligns.numReads() - 1; readIndex != -1; --readIndex)
+        {
+            if (aligns.getBestAlign(readIndex).numIndels() == 0)
+                continue;
+            if (readIndex % 2 == 0)
+            {
+                aligns.remove(readIndex + 1);
+                aligns.remove(readIndex);
+            }
+            else
+            {
+                aligns.remove(readIndex);
+                aligns.remove(readIndex - 1);
+                --readIndex;
+            }
+        }
+        return;
+    }
+
+    // Retain surviving pairs in their original order and move each row once.
+    // No auxiliary rows or selection bitmap are needed.
+    int retained = 0;
+    const int numReads = aligns.numReads();
+    for (int readIndex = 0; readIndex != numReads; readIndex += 2)
+    {
+        if (aligns.bestAlignsByRead_[readIndex].numIndels() != 0
+            || aligns.bestAlignsByRead_[readIndex + 1].numIndels() != 0)
         {
             continue;
         }
 
-        if (readIndex % 2 == 0)
+        if (retained != readIndex)
         {
-            aligns.remove(readIndex + 1);
-            aligns.remove(readIndex);
+            for (int mate = 0; mate < 2; ++mate)
+            {
+                aligns.bestAlignsByRead_[retained + mate] = aligns.bestAlignsByRead_[readIndex + mate];
+                aligns.alignScoreMatrix_[retained + mate] = std::move(aligns.alignScoreMatrix_[readIndex + mate]);
+            }
         }
-        else
-        {
-            aligns.remove(readIndex);
-            aligns.remove(readIndex - 1);
-            --readIndex;
-        }
+        retained += 2;
     }
+    aligns.bestAlignsByRead_.erase(aligns.bestAlignsByRead_.begin() + retained, aligns.bestAlignsByRead_.end());
+    aligns.alignScoreMatrix_.erase(aligns.alignScoreMatrix_.begin() + retained, aligns.alignScoreMatrix_.end());
 }
 
 CountTable countAligns(StrAlign::Type alignType, const AlignMatrix& aligns)

@@ -43,14 +43,14 @@ namespace ehunter
 graphtools::GraphAlignment
 extendWithSoftclip(const graphtools::GraphAlignment& alignment, int leftSoftclipLen, int rightSoftclipLen);
 
-int getNumNonrepeatMatchesUpstream(graphtools::NodeId nodeId, graphtools::GraphAlignment alignment);
+int getNumNonrepeatMatchesUpstream(graphtools::NodeId nodeId, const graphtools::GraphAlignment& alignment);
 
-int getNumNonrepeatMatchesDownstream(graphtools::NodeId nodeId, graphtools::GraphAlignment alignment);
+int getNumNonrepeatMatchesDownstream(graphtools::NodeId nodeId, const graphtools::GraphAlignment& alignment);
 
 int scoreAlignmentToNonloopNodes(
-    graphtools::GraphAlignment alignment, LinearAlignmentParameters parameters = LinearAlignmentParameters());
+    const graphtools::GraphAlignment& alignment, LinearAlignmentParameters parameters = LinearAlignmentParameters());
 
-int countFullOverlaps(graphtools::NodeId nodeId, graphtools::GraphAlignment alignment);
+int countFullOverlaps(graphtools::NodeId nodeId, const graphtools::GraphAlignment& alignment);
 
 graphtools::GraphAlignment computeCanonicalAlignment(const std::list<graphtools::GraphAlignment>& alignments);
 

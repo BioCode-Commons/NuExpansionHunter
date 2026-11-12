@@ -40,6 +40,8 @@ namespace htshelpers
 LinearAlignmentStats decodeAlignmentStats(bam1_t* htsAlignPtr);
 bool isPrimaryAlignment(bam1_t* htsAlignPtr);
 Read decodeRead(bam1_t* htsAlignPtr);
+Read decodeReadParts(const char* qname, uint32_t samFlag, int32_t readLength,
+    const uint8_t* packedSequence, const uint8_t* qualities);
 ReferenceContigInfo decodeContigInfo(bam_hdr_t* htsHeaderPtr);
 
 } // namespace htshelpers

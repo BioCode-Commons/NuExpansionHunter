@@ -39,6 +39,7 @@
 #include "core/Common.hh"
 #include "core/Reference.hh"
 #include "io/LocusSpecDecoding.hh"
+#include "io/GraphBlueprint.hh"
 
 using boost::optional;
 using graphtools::NodeId;
@@ -218,10 +219,14 @@ RegionCatalog loadLocusCatalogFromDisk(
 
     RegionCatalog catalog;
     catalog.reserve(catalogJson.size());
+    // Reuse only within this load; do not retain compiled regex state globally.
+    boost::optional<TokenParser> parser;
     for (auto& locusJson : catalogJson)
     {
         LocusDescriptionFromUser userDescription = loadUserDescription(locusJson, reference.contigInfo());
-        LocusSpecification locusSpec = decodeLocusSpecification(userDescription, reference, heuristicParams);
+        if (!parser)
+            parser.emplace();
+        LocusSpecification locusSpec = decodeLocusSpecification(userDescription, reference, heuristicParams, *parser);
         catalog.emplace_back(std::move(locusSpec));
     }
 

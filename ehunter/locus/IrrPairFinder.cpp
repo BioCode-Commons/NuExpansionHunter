@@ -38,9 +38,7 @@ IrrPairFinder::IrrPairFinder(string motif)
 
 bool IrrPairFinder::check(const string& read, const string& mate) const
 {
-    const bool isFirstReadIrr = purityCalculator_.score(read) >= purityCutoff_;
-    const bool isSecondReadIrr = purityCalculator_.score(mate) >= purityCutoff_;
-    return isFirstReadIrr && isSecondReadIrr;
+    return purityCalculator_.scoreAtLeast(read, purityCutoff_) && purityCalculator_.scoreAtLeast(mate, purityCutoff_);
 }
 
 }

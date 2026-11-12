@@ -201,12 +201,9 @@ bool isSkippable(GraphBlueprintFeatureType featureType)
     }
 }
 
-GraphBlueprint decodeFeaturesFromRegex(const string& regex)
+static GraphBlueprint decodeFeaturesFromTokens(const vector<string>& tokens, const TokenParser& parser)
 {
     GraphBlueprint blueprint;
-
-    const auto tokens = tokenizeRegex(regex);
-    TokenParser parser;
 
     NodeId firstUnusedNodeId = 0;
     for (int index = 0; index != static_cast<int>(tokens.size()); ++index)
@@ -251,6 +248,18 @@ GraphBlueprint decodeFeaturesFromRegex(const string& regex)
     }
 
     return blueprint;
+}
+
+GraphBlueprint decodeFeaturesFromRegex(const string& regex)
+{
+    const auto tokens = tokenizeRegex(regex);
+    const TokenParser parser;
+    return decodeFeaturesFromTokens(tokens, parser);
+}
+
+GraphBlueprint decodeFeaturesFromRegex(const string& regex, const TokenParser& parser)
+{
+    return decodeFeaturesFromTokens(tokenizeRegex(regex), parser);
 }
 
 bool doesFeatureDefineVariant(GraphBlueprintFeatureType featureType)

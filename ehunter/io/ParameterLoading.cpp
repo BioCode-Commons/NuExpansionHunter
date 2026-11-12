@@ -67,6 +67,7 @@ struct UserParameters
     int threadCount;
     string decodeThreads;
     string encodeThreads;
+    string readDecodeThreads;
     string bamletQueueMb;
     bool disableBamletOutput = false;
     string catalogCache;
@@ -99,6 +100,7 @@ boost::optional<UserParameters> tryParsingUserParameters(int argc, char** argv)
         ("threads,n", po::value(&params.threadCount)->default_value(1), "Compute workers; not a total process thread limit")
         ("decode-threads", po::value<string>(&params.decodeThreads)->default_value("auto"), "Streaming input decompression workers: auto=min(threads,12), 0 or 1=synchronous")
         ("encode-threads", po::value<string>(&params.encodeThreads)->default_value("auto"), "BAM output compression workers: auto=threads, 0=synchronous; unused with --disable-bamlet-output")
+        ("read-decode-threads", po::value<string>(&params.readDecodeThreads)->default_value("0"), "Additional streaming sequence preprocessing workers; 0=synchronous; at most 20 MB batch cache per worker")
         ("bamlet-queue-mb", po::value<string>(&params.bamletQueueMb)->default_value("0"), "Opt-in queued BAM-record budget in MiB: 0=unbounded (legacy default); not a process RAM limit")
         ("catalog-cache", po::value<string>(&params.catalogCache), "Read-only prepared catalog k-mer archive")
         ("prepare-catalog-cache", po::bool_switch(&params.prepareCatalogCache), "Build --catalog-cache and exit before processing reads")
@@ -404,6 +406,11 @@ boost::optional<ProgramParameters> tryLoadingProgramParameters(int argc, char** 
     result.decodeThreadCount
         = decodeIoThreadCount(userParams.decodeThreads, "--decode-threads", std::min(userParams.threadCount, 12));
     result.encodeThreadCount = decodeIoThreadCount(userParams.encodeThreads, "--encode-threads", userParams.threadCount);
+    if (userParams.readDecodeThreads == "auto")
+        throw std::invalid_argument("--read-decode-threads requires an explicit non-negative worker count");
+    result.readDecodeThreadCount = decodeIoThreadCount(userParams.readDecodeThreads, "--read-decode-threads", 0);
+    if (userParams.analysisMode != "streaming" && result.readDecodeThreadCount)
+        throw std::invalid_argument("--read-decode-threads is only supported with --analysis-mode streaming");
     result.bamletQueueBytes = decodeBamletQueueBytes(userParams.bamletQueueMb);
     if (userParams.analysisMode != "streaming" && userParams.decodeThreads != "auto")
         throw std::invalid_argument("--decode-threads is only supported with --analysis-mode streaming");

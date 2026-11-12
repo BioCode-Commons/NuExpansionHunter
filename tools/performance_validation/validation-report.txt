@@ -1,0 +1,94 @@
+NuExpansionHunter Jiapeng-OPT 实现优化验证报告
+
+本轮实现并筛选四项候选，最终仅保留 candidate1（反向互补方向查询减少重复工作）和 candidate4 v2（只计算当前 target 用到的打分 profile）。两项均有通过门槛的局部收益，candidate2 和 candidate3 两版已排除。最终组合的所有端到端结果文件逐字节一致，峰值 RAM 的中位数和最大值均通过预设波动范围检查。端到端耗时观察与局部收益分开报告；不能由本次合成数据验证推断真实 WGS、其他平台或任意输入的保证。
+
+固定基线为 Jiapeng-OPT 的 9b29510b63ddf39256f2649a1ca0b408b4fd6af9，baseline executable SHA256 为 fb276692b38c5b5991dbc9cfdc86958232ab23f65438e447115835209c077d04。当前组合 executable SHA256 为 ef76e52bc9a99c7e8c16c9086a8a4f163d1cef7619a49291113a8ab1671192fd。该哈希与最终端到端计时所用程序一致。
+
+测试在 macOS arm64、Apple clang 21.0.0、CMake 3.31.6 上进行。正式程序统一采用 Release、-O3 -DNDEBUG -std=gnu++11，以及 -Wno-error=deprecated-literal-operator -Wno-error=deprecated-declarations 两项诊断兼容参数。Boost 1.73、HTSlib 1.10.2 加仓库补丁、spdlog 1.6.1、GoogleTest 1.10、abseil 20210324.2 和 xz 5.4.6 在 baseline/candidate 间保持一致。probe 的实际 flags 单独保存在构建记录，不能把正式程序全部 flags 原样归给 probe。
+
+四项候选的最终实现与筛选：
+
+1. Candidate1：方向预测中避免构造反向互补临时字符串，将反向遍历、互补转换与 rolling k-mer 统计融合，同时保留大小写、非标准碱基、nonoverlapping match 计数及 forward 优先的 tie 规则。mixed、reverse、invalid、long 和加长计时的 short-confirm 均通过；forward 分支没有证明加速，也没有足够证据证明退化。
+2. Candidate2：PinnedDagAligner 的 suffix 查询视图方案正确性检查通过，但 mixed 基本无变化，branch 不到 2% 且耗时不足 0.5 秒，short 观察更慢。因此拒绝，不因减少字符串复制就推定它更快。
+3. Candidate3 v1：省去 DP interior 的冗余初始化。long 获益，但 dense 9/9 更慢，约 +2.10%，故没有通过跨场景筛选。v2 将优化限制为每行恰有一个合法、已完成前驱的图，其余恢复原初始化/分配次序；五个 workload 仍均变慢约 6.04%–14.44%，因此两版全部拒绝。不能把 v1 的 long 结果当作 v2 或最终组合的收益。
+4. Candidate4：仅预计算当前 target 使用到的字符 profile。初版跳过 absent profile resize，会改变 vector 几何扩容历史、可能增加保留容量；v2 保留所有 profile 原有 resize/capacity 历史，仅跳过无用的分数计算。typical、short、join 通过；long 约 1.58% 未达 2%；全简并字符场景观察到约 0.22% 小幅退化，应保留此负向结果，不能声称所有 DP 输入均加速。最终使用 v2。
+
+每个正式 workload 先运行 1 个 warmup pair，然后 9 个独立进程 pair，交替先后顺序；正式计时期间没有并发编译/测试/其他基准。计时为进程启动至退出的 wall time，比较文件在计时后读取。未清空系统 page cache，结果仅对应本地预热协议。
+
+时间准入：配对 candidate/baseline wall ratio 的中位数 <0.98；10,000 次固定种子 bootstrap 的 95% 区间上界 <1；双方运行时间中位数均 >=0.5 秒；同时检查其他代表性场景。表中“耗时减少”是 1 减配对比值中位数，不是两个耗时中位数相除。
+
+RAM 记录 macOS wait4 的每进程 peak ru_maxrss（bytes）。每轮 peak 的中位数和全部轮次最大 peak 均必须不超过其对应 baseline 值加 max(256 KiB, 1%)；两个 gate 分别记录。这是明确噪声带内的经验判断，不等于证明所有输入绝不增加一字节 RAM。不能把略有正向 RSS 差值写成“完全不变”，也不能用 RSS 代替 PSS/USS 或多样本整机占用。
+
+以下26组原始pairs已统一按最终门槛重汇总；所有micro stdout通过完整字节比较，median/max RSS gates均通过。旧summary（有变化时）和原始pairs均保留。time gate 不通过不总意味着变慢，也可能是收益<2%、区间跨1或计时过短。
+
+| 候选/场景 | 中位耗时 base→candidate (s) | 配对耗时减少 | ratio 95%区间 | 峰值RSS中位 base→candidate (KiB) | 全部轮次最大RSS base→candidate (KiB) | 时间gate |
+|---|---:|---:|---|---:|---:|---|
+| candidate1/forward | 0.848917→0.843672 | +0.79% | [0.948886,1.082469] | 1808→1792 | 1824→1808 | 未通过 |
+| candidate1/invalid | 1.354523→0.662486 | +51.31% | [0.479205,0.492355] | 1824→1792 | 1824→1808 | 通过 |
+| candidate1/long | 1.311581→1.018195 | +21.88% | [0.765876,0.790837] | 1904→1888 | 1920→1904 | 通过 |
+| candidate1/mixed | 1.142042→0.751968 | +33.39% | [0.630592,0.680857] | 1824→1792 | 1824→1792 | 通过 |
+| candidate1/reverse | 1.061030→0.769056 | +27.26% | [0.707504,0.759528] | 1824→1792 | 1824→1808 | 通过 |
+| candidate1/short | 0.489367→0.336118 | +29.99%（过短） | [0.671225,0.741948] | 1600→1600 | 1616→1600 | 未通过 |
+| candidate1/short-confirm | 1.308427→0.886379 | +32.40% | [0.659560,0.701544] | 1600→1600 | 1616→1600 | 通过 |
+| candidate2/branch | 0.240094→0.237473 | +1.21%（过短） | [0.986682,0.993241] | 3376→3328 | 3440→3488 | 未通过 |
+| candidate2/mixed | 1.414538→1.414025 | +0.12% | [0.995694,1.004238] | 5536→5616 | 5664→5712 | 未通过 |
+| candidate2/short | 2.140918→2.185857 | -2.10% | [0.997959,1.022511] | 3344→3408 | 3392→3456 | 未通过 |
+| candidate3/dense | 1.318673→1.346106 | -2.10% | [1.016396,1.022615] | 1632→1616 | 1648→1648 | 未通过 |
+| candidate3/join | 2.319821→2.286226 | +1.42% | [0.983795,1.010746] | 1632→1616 | 1648→1648 | 未通过 |
+| candidate3/long | 2.270030→2.191676 | +3.44% | [0.952164,0.966787] | 1936→1936 | 1952→1952 | 通过 |
+| candidate3/short | 1.608329→1.585624 | +1.09% | [0.981546,0.995675] | 1472→1472 | 1472→1472 | 未通过 |
+| candidate3/typical | 2.188948→2.145303 | +1.89% | [0.976720,0.986335] | 1632→1632 | 1648→1648 | 未通过 |
+| candidate3-v2/dense | 1.327230→1.503874 | -13.53% | [1.132266,1.159178] | 1616→1632 | 1632→1648 | 未通过 |
+| candidate3-v2/join | 2.329798→2.668609 | -14.44% | [1.140810,1.172798] | 1632→1616 | 1648→1648 | 未通过 |
+| candidate3-v2/long | 2.273615→2.549221 | -12.14% | [1.107097,1.123681] | 1920→1936 | 1952→1952 | 未通过 |
+| candidate3-v2/short | 1.619417→1.720726 | -6.04% | [1.053461,1.068621] | 1472→1456 | 1472→1472 | 未通过 |
+| candidate3-v2/typical | 2.185433→2.491902 | -14.02% | [1.132156,1.151863] | 1648→1648 | 1648→1648 | 未通过 |
+| candidate4/degenerate | 2.185483→2.190569 | -0.22% | [1.000371,1.003334] | 1616→1632 | 1648→1648 | 未通过 |
+| candidate4/join | 2.338714→2.247241 | +3.88% | [0.935898,0.966129] | 1632→1616 | 1648→1648 | 通过 |
+| candidate4/long | 2.283698→2.244828 | +1.58% | [0.976529,0.989523] | 1936→1936 | 1952→1936 | 未通过 |
+| candidate4/memory | 0.118753→0.105594 | +10.95%（过短） | [0.876358,0.969766] | 10416→10448 | 10448→10608 | 未通过 |
+| candidate4/short | 1.628699→1.422698 | +12.65% | [0.854001,0.875688] | 1472→1456 | 1472→1472 | 通过 |
+| candidate4/typical | 2.201868→2.122731 | +3.58% | [0.961436,0.978020] | 1632→1632 | 1648→1648 | 通过 |
+
+candidate1/short 的首次计时短于0.5秒，不作正式速度证据，由 short-confirm 的较长运行替代。candidate4/memory 同样短于0.5秒，仅用于内存压力观察。过短数据仍保留，不挑选好看的数字替代既定门槛。
+
+正确性与测试范围：
+
+- 最终字符串 probe 与基线在 10,900 个方向预测案例和 516 个 suffix 案例上一致。
+- 独立 DP v2 probe 在 1,052,788 个案例上对完整矩阵/traceback等可观察输出逐字节比较，canonical stream 为397,363,521 bytes，一致；不是只比较checksum。该测试运行在独立 baseline/candidate3-v2/candidate4-v2 probe 上。
+- final-source-binding.json 确认最终 DP 源文件与已测试 candidate4 v2 一致，Details.hh/PinnedDagAligner.hh 回到 baseline。这个源码哈希绑定不是重新对最终组合运行百万案例；不能将二者混写。
+- 最终 ctest：EH 126 tests 中125通过，唯一失败与原基线相同；GraphTools 30/30 test programs通过。原基线为EH124/125通过。失败是 PreparedCatalog.WholeCatalogRoundTripAndIndependentHandleLifetime 中 graph JSON 的 edge labels [b,a] 与 [a,b] 顺序差异，不能写“全部单测通过”。
+- ASan保留默认容器检测时，独立baseline/candidate3-v2/candidate4-v2均在原有computeAlignPenalties查询padding访问处触发container-overflow（逻辑size之外、capacity之内）。未混入本轮性能patch修复。
+- 后续隔离测试用 ASAN_OPTIONS=detect_leaks=0:detect_container_overflow=0，4,212 cases完成且无额外ASan/UBSan诊断；明确排除了容器逻辑越界与泄漏检查。这不是默认sanitizer全通过，也不是最终完整程序的全流程sanitizer验收。
+
+端到端输入仅来自仓库synthetic example，以及把同一坐标locus定义复制32份的dense32。用户没有提供真实数据；dense32不是WGS、32个样本或32倍覆盖率，不能据此宣称真实WGS/多样本吞吐收益。记录实际threads、modes和cache设置；当前这些运行是单计算线程，encode同步，streaming decode同步。其他平台、数据、线程数未验证。
+
+端到端比较要求VCF、JSON、压缩BAM文件所有字节相同，包含BAM顺序、header、记录、标签和重复次数，未做排序或标准化；采用SHA256加完整分块字节比较。程序stdout/日志含运行时间戳，可能出现stdout_identical=false；结果文件是否相同以outputs_identical为准，原日志不改写。每轮预先仅移除该轮三个指定旧结果，避免残留文件误通过。
+
+单项candidate1和candidate4的example/dense32、seeking/streaming smoke结果文件均一致。这些单pair仅验证正确性，不用于正式提速结论。candidate4 dense32 streaming的首次单pair RSS +294,912bytes，曾超256KiB门槛；后续独立9pair确认的median/max RSS均比baseline少65,536bytes，两项RAM gate通过。确认实验配对耗时比0.995781，95%区间[0.984099,1.008661]，未证明端到端加速；保留首次负向观察，不能用后续实验删除它。
+
+最终 c1+c4 组合端到端验收：
+
+| fixture / mode / cache | pairs | 中位耗时 base→candidate (s) | 配对耗时减少 / ratio 95%区间 | 峰值RSS中位 base→candidate (KiB) | 全部轮次最大RSS base→candidate (KiB) | 时间/RAM gates |
+|---|---:|---:|---|---:|---:|---|
+| example / seeking / False | 1 | 0.162752→0.160414 | 仅正确性 smoke | 11632→11552 | 11632→11552 | 未通过/通过 |
+| example / streaming / False | 1 | 0.163480→0.159758 | 仅正确性 smoke | 11296→11200 | 11296→11200 | 未通过/通过 |
+| dense32 / seeking / False | 9 | 5.050967→4.949990 | +1.84% / [0.964923,0.988499] | 12176→12224 | 12576→12528 | 未通过/通过 |
+| dense32 / streaming / False | 9 | 4.916290→4.882302 | +0.39% / [0.987526,1.030585] | 13584→13664 | 13888→14016 | 未通过/通过 |
+| cached32 / seeking / True | 1 | 5.020294→5.371529 | 仅正确性 smoke | 13360→13616 | 13360→13616 | 未通过/通过 |
+| cached32 / streaming / True | 1 | 4.877204→4.792759 | 仅正确性 smoke | 13248→13232 | 13248→13232 | 未通过/通过 |
+| cached32-confirm / seeking / True | 9 | 5.077401→5.010043 | +0.62% / [0.974372,1.007342] | 13392→13344 | 13696→13664 | 未通过/通过 |
+| cached32-confirm / streaming / True | 9 | 4.965502→4.858261 | +1.26% / [0.974109,1.020519] | 13184→13232 | 13504→13520 | 未通过/通过 |
+
+以上每个 pair 的 VCF、JSON 和压缩 BAM 均通过完整字节比较。每种模式另有1个预热pair，预热也检查结果一致性，但不纳入计时统计。cache使用每个二进制单独创建的兼容archive，准备时间不计入sample耗时；源代码指纹发生变化，原有catalog cache需重建。
+
+seeking: 配对耗时减少1.84%，未达到预设2%速度准入门槛；RSS中位差+48 KiB，全部轮次最大差-48 KiB。
+streaming: 配对耗时减少0.39%，未达到预设2%速度准入门槛；RSS中位差+80 KiB，全部轮次最大差+128 KiB。
+
+cache seeking首次单pair观察到约7%的耗时增加，因此新增独立9pair确认实验；首次观察与复测均保留，单pair不作速度结论。
+
+保留依据是两项各自已验证的局部加速，以及最终组合输出完全一致、未观察到明显RAM增长或超过2%的整体退化。只报告这些测试覆盖范围内的事实，不保证所有输入和平台绝对等价；既有undefined behavior及默认sanitizer问题见上文。
+
+证据与复现：同目录README.txt提供构建和运行命令，results.json包含全部数值、二进制/源码SHA256与输入SHA256。完整原始运行记录另在本地交付的validation-evidence.tar.gz：含每轮wall/CPU/RSS、运行顺序、结果文件、比较证据、测试/构建日志、候选patch和DP规范输出压缩文件。归档只将本机workspace绝对路径替换为相对路径；数值、输出字节和原始工作记录未改。evidence-manifest.json记录原始与导出哈希。
+
+可复现源码基线固定为9b29510b63ddf39256f2649a1ca0b408b4fd6af9；本报告、验证工具与最终生产改动在同一提交中交付。

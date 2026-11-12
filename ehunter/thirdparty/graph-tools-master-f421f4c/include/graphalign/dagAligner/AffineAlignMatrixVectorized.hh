@@ -158,9 +158,23 @@ namespace dagAligner
             const int qLen = query_.size();
             const int tLen = target_.size();
 
+            // Only profiles referenced by this target can be read in fill().
+            // The presence table is alphabet-sized, independent of DP dimensions.
+            bool usedTargetChars[PenaltyMatrix::TARGET_CHAR_MAX_ + 1] = {};
+            for (const auto tc : target_)
+            {
+                usedTargetChars[tc] = true;
+            }
             for (typename PenaltyMatrix::TargetChar tc = 0; tc <= PenaltyMatrix::TARGET_CHAR_MAX_; ++tc)
             {
+                // Preserve every profile's original size/capacity history. Lazy
+                // resizing can cause extra geometric growth when an absent code
+                // returns after the query length has changed.
                 alignmentPenalties_[tc].resize((qLen + step - 1) / step * step, 0);
+                if (!usedTargetChars[tc])
+                {
+                    continue;
+                }
                 for (int q = 0; q < qLen; q += step)
                 {
                     computeAlignPenalties(q, tc, &alignmentPenalties_[tc].front() + q);
@@ -244,23 +258,36 @@ namespace dagAligner
 
             for (int t = 0; t < tLen; ++t)
             {
-                std::fill(g_.begin(), g_.end(), SCORE_MIN);
                 const typename PenaltyMatrix::TargetChar tc = target_[t];
                 const Score* const penalties = &alignmentPenalties_[tc].front();
-                for (EdgeMap::OffsetEdges::const_iterator prevNodeIndexIt = edgeMap.prevNodesBegin(t);
-                     edgeMap.prevNodesEnd(t) != prevNodeIndexIt; ++prevNodeIndexIt)
+                const auto prevBegin = edgeMap.prevNodesBegin(t);
+                const auto prevEnd = edgeMap.prevNodesEnd(t);
+                if (prevEnd - prevBegin == 1)
                 {
-                    const int p = *prevNodeIndexIt;
+                    // Most target positions have one predecessor. Since the
+                    // current E/G/V cells start at SCORE_MIN, their first max
+                    // is just the candidate. Fuse the three passes and avoid
+                    // materializing G for these rows.
                     for (int q = 0; q < qLen; q += step)
                     {
-                        recomputeForDeletion(q, t, p);
-                        recomputeForAlign(q, p, penalties + q);
+                        initializeFromPredecessor(q, t, *prevBegin, penalties + q);
                     }
                 }
-
-                for (int q = 0; q < qLen; q += step)
+                else
                 {
-                    consolidate(q, t);
+                    std::fill(g_.begin(), g_.end(), SCORE_MIN);
+                    for (auto prev = prevBegin; prev != prevEnd; ++prev)
+                    {
+                        for (int q = 0; q < qLen; q += step)
+                        {
+                            recomputeForDeletion(q, t, *prev);
+                            recomputeForAlign(q, *prev, penalties + q);
+                        }
+                    }
+                    for (int q = 0; q < qLen; q += step)
+                    {
+                        consolidate(q, t);
+                    }
                 }
                 recomputeForInsertion(qLen, t);
             }
@@ -273,6 +300,35 @@ namespace dagAligner
             for (int i = 0; i < step; ++i)
             {
                 penalties[i] = penaltyMatrix_(query[i], tc);
+            }
+        }
+
+        void initializeFromPredecessor(int q, int t, int p, const Score penalties[step])
+        {
+            const Score* ep = e_.row(q, p);
+            const Score* vp = v_.row(q, p);
+            Score deletion[step];
+            Score match[step];
+            for (int i = 0; i < step; ++i)
+            {
+                // Narrow each candidate before taking max, just as in the
+                // general recurrence (including scores near the 16-bit limits).
+                const Score extension = ep[i] + gapExt_;
+                const Score opening = vp[i] + gapOpen_ + gapExt_;
+                deletion[i] = std::max(extension, opening);
+                match[i] = vp[i - 1] + penalties[i];
+            }
+            // Read predecessor blocks before writing the current block, keeping
+            // these loops vectorizable without assuming pointers do not alias.
+            Score* e = e_.row(q, t);
+            for (int i = 0; i < step; ++i)
+            {
+                e[i] = deletion[i];
+            }
+            Score* v = v_.row(q, t);
+            for (int i = 0; i < step; ++i)
+            {
+                v[i] = std::max(deletion[i], match[i]);
             }
         }
 
@@ -333,7 +389,50 @@ namespace dagAligner
             {
                 uint64_t trace = 0;
                 const int end = start + std::min(64, qLen - start);
-                for (int i = start; i < end; ++i)
+                int i = start;
+                if (gapOpeningRepresentable_)
+                {
+                    // Four serial cells share one loop branch and one variable
+                    // trace shift. Keep every candidate narrowed to Score before
+                    // max; the next cell still consumes this cell's exact F/V.
+                    for (; end - i >= 4; i += 4)
+                    {
+                        const Score extension0 = previousF + gapExt_;
+                        const Score opening0 = previousV + gapOpen_ + gapExt_;
+                        const Score currentF0 = std::max(extension0, opening0);
+                        const Score currentV0 = std::max(v[i], currentF0);
+                        v[i] = currentV0;
+
+                        const Score extension1 = currentF0 + gapExt_;
+                        const Score opening1 = currentV0 + gapOpen_ + gapExt_;
+                        const Score currentF1 = std::max(extension1, opening1);
+                        const Score currentV1 = std::max(v[i + 1], currentF1);
+                        v[i + 1] = currentV1;
+
+                        const Score extension2 = currentF1 + gapExt_;
+                        const Score opening2 = currentV1 + gapOpen_ + gapExt_;
+                        const Score currentF2 = std::max(extension2, opening2);
+                        const Score currentV2 = std::max(v[i + 2], currentF2);
+                        v[i + 2] = currentV2;
+
+                        const Score extension3 = currentF2 + gapExt_;
+                        const Score opening3 = currentV2 + gapOpen_ + gapExt_;
+                        const Score currentF3 = std::max(extension3, opening3);
+                        const Score currentV3 = std::max(v[i + 3], currentF3);
+                        v[i + 3] = currentV3;
+
+                        const uint64_t fourBits = uint64_t(currentV0 == currentF0)
+                            | (uint64_t(currentV1 == currentF1) << 1)
+                            | (uint64_t(currentV2 == currentF2) << 2)
+                            | (uint64_t(currentV3 == currentF3) << 3);
+                        trace |= fourBits << (i - start);
+                        previousF = currentF3;
+                        previousV = currentV3;
+                    }
+                }
+                // Preserve the original recurrence for exceptional scoring
+                // parameters and for the final zero to three cells of a word.
+                for (; i < end; ++i)
                 {
                     // f at an unprocessed interior cell is SCORE_MIN. Preserve
                     // each original Score conversion before comparing the terms.

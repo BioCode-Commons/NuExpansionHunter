@@ -47,6 +47,7 @@ public:
     int getMaxMotifCount() const;
 
     friend void addIrrPairsIfPossibleExpansion(int maxMotifsInRead, AlignMatrix& alignMatrix, int numIrrPairs);
+    friend void filter(AlignMatrix& aligns);
 
 private:
     void add(const graphtools::GraphAlignment& graphAlign);

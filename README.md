@@ -126,6 +126,7 @@ new cache filename and the same preparation command above.
 | `--analysis-mode` | `seeking` | `seeking` or `streaming` |
 | `--threads` | `1` | Number of analysis workers; I/O workers and coordinator threads are additional |
 | `--decode-threads` | `auto` | Streaming input decompression workers; `auto` retains `min(--threads, 12)`, and `0` or `1` uses synchronous input |
+| `--read-decode-threads` | `0` | Additional streaming sequence-preprocessing workers; `0` keeps preprocessing synchronous |
 | `--encode-threads` | `auto` | BAM output compression workers; `auto` retains `--threads`, and `0` uses synchronous compression |
 | `--bamlet-queue-mb` | `0` | Queued BAM record budget in MiB; `0` retains the unbounded queue |
 | `--sex` | `female` | `male` or `female`; sets ploidy on sex chromosomes |
@@ -240,7 +241,7 @@ NuExpansionHunter retains EH's genotyping model and reduces repeated catalog con
 
 The current implementation adds a compact representation for the static repeat indexes. The 10-mer and 14-mer data use structure-of-arrays storage for keys, payloads, and counts; buckets use 16-bit entries when the key range permits and widen to 32-bit entries otherwise. Single-node paths use implicit counts, while count materialization and path views stay lazy. These changes reduce the catalog archive and keep lookup results, path multiplicities, and duplicate evidence exact.
 
-JSON output is written one locus at a time instead of retaining the complete result DOM. Locus IDs are sorted with the existing stable ordering and duplicate IDs keep the last value. Decode and encode pools control HTS/BAM compression work, and the optional BAM queue limit provides backpressure. The main read, pair, query, and dispatch loop remains serial; these controls do not claim a new parallel read-dispatch pipeline.
+JSON output is written one locus at a time instead of retaining the complete result DOM. Decode and encode pools control HTS/BAM compression work, and the optional BAM queue limit provides backpressure. Streaming sequence preprocessing can also use an ordered, bounded worker pool via `--read-decode-threads`; its default is zero. Input access and read-pair dispatch remain on the caller thread. See [DecodedReadStream](ehunter/sample/DecodedReadStream.hh).
 
 ### MMAP catalog reuse
 
@@ -262,9 +263,7 @@ both in-memory indexes and mapped archives, without decompressing archive blocks
 The reduction depends on each graph's keys and paths and does not set a limit on
 total sample RAM.
 
-The [branch validation report](docs/Jiapeng_optimization_report.md) records output
-comparisons, archive sizes and local timings. The 5.58-million-locus WGS and
-multi-sample throughput targets still require validation on representative data.
+The [branch validation report](docs/Jiapeng_optimization_report.md) records output comparisons, archive sizes and local timings.
 
 ### Coordinate-ordered interval lookup
 
@@ -325,16 +324,16 @@ flowchart TB
 
 ## Benchmarks <sup><sub>[↑ Contents](#contents)</sub></sup>
 
-We benchmarked the current Jiapeng optimization on the complete **HG002 Illumina PCR-free WGS dataset** using the **174,293-locus Illumina hg38 catalog** on Brown Oscar.
+We benchmarked the Multithread branch on the complete **HG002 Illumina PCR-free WGS dataset** using the **174,293-locus Illumina hg38 catalog** on Brown Oscar.
 
 | Physical cores | Runtime, original EH → NuExpansionHunter | Speedup | CPU-hours saved | Peak RSS, original → optimized |
 | ---: | ---: | ---: | ---: | ---: |
-| 4 | 3295.60 → 2168.56 s | 1.520× | 34.20% | 15.338 → 10.588 GiB |
-| 8 | 1703.73 → 1167.03 s | 1.460× | 31.50% | 15.681 → 10.593 GiB |
-| 16 | 1248.94 → 659.19 s | 1.895× | 47.22% | 29.584 → 10.613 GiB |
-| 32 | 1064.28 → 338.71 s | 3.142× | 68.17% | 35.956 → 10.614 GiB |
+| 4 | 3295.60 → 1706.41 s | 1.931× | 48.22% | 15.338 → 10.596 GiB |
+| 8 | 1703.73 → 902.08 s | 1.889× | 47.05% | 15.681 → 10.595 GiB |
+| 16 | 1248.94 → 576.29 s | 2.167× | 53.86% | 29.584 → 10.616 GiB |
+| 32 | 1064.28 → 500.47 s | 2.127× | 52.98% | 35.956 → 10.615 GiB |
 
-**Output identical at 4, 8, 16, and 32 cores:** complete HG002 VCF/JSON matched original EH byte for byte, and BAM headers and all 74,565,578 BAM records matched after ignoring record order only. Original timings are from earlier runs; one-time cache preparation is excluded. See [benchmark methods and validation](BENCHMARKS.md) for details.
+**Output identical at 4, 8, 16, and 32 cores:** complete HG002 VCF/JSON matched original EH byte for byte, and BAM headers and all 74,565,578 BAM records matched after ignoring record order only. Original timings are historical; each candidate was measured once with the default synchronous read preprocessing, and one-time cache preparation is excluded. Runs were not paired with the original and some shared a node. See [benchmark methods and validation](BENCHMARKS.md) for details.
 
 <a id="ai-use-and-review"></a>
 

@@ -42,14 +42,14 @@ namespace ehunter
  * @return true if the alignment score to non-repeat nodes exceeds the threshold
  */
 bool checkIfLocallyPlacedReadPair(
-    boost::optional<graphtools::GraphAlignment> readAlignment,
-    boost::optional<graphtools::GraphAlignment> mateAlignment, int kMinNonRepeatAlignmentScore);
+    const boost::optional<graphtools::GraphAlignment>& readAlignment,
+    const boost::optional<graphtools::GraphAlignment>& mateAlignment, int kMinNonRepeatAlignmentScore);
 
 // Checks if alignment upstream of a given node is high quality
-bool checkIfUpstreamAlignmentIsGood(graphtools::NodeId nodeId, graphtools::GraphAlignment alignment);
+bool checkIfUpstreamAlignmentIsGood(graphtools::NodeId nodeId, const graphtools::GraphAlignment& alignment);
 
 // Checks if alignment downstream of a given node is high quality
-bool checkIfDownstreamAlignmentIsGood(graphtools::NodeId nodeId, graphtools::GraphAlignment alignment);
+bool checkIfDownstreamAlignmentIsGood(graphtools::NodeId nodeId, const graphtools::GraphAlignment& alignment);
 
 bool checkIfPassesAlignmentFilters(const graphtools::GraphAlignment& alignment);
 
