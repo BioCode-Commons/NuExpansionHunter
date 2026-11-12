@@ -128,6 +128,18 @@ The earlier V2 topology-corridor implementation regressed covered10k wall time b
 
 ## Reproduction and provenance
 
-Use the native harness README for compiler, Boost and architecture checks. It constructs a fair SIMD control, compares full outputs before timing, verifies actual AVX2 execution when requested, and runs serial paired probes. Native Intel/AMD performance is **not** included in this ARM report; translated timings must not be substituted for it.
+Use the native harness README for compiler, Boost and architecture checks. It constructs a fair SIMD control, compares full outputs before timing, verifies actual AVX2 execution when requested, and runs serial paired probes. The main body reports ARM64 measurements; completed native Intel/AMD AVX2 results are in the native CI appendix below. Translated timings must not be substituted for native measurements.
 
 The recorded source hashes and per-pair timings are in `results-arm64.json`. The unchanged SIMD header is `9f0b443bedda6fa778632002142f819b3d27f6b3b4de42c3c92ebca190add1bb`; the exact DP header is `59cac7722f2dbab69f081e5b9a2dcd6cb24416be40a0c2df68decc31eea723cd`; the mapped membership source is `b9152b5bd7217e3ea66475ba1f1b942b12009cdb63f53acc2abc6c58745f6f37`. Evidence paths in the JSON are relative to the budget-DP evidence bundle, with large canonical streams omitted from the compact repository summary.
+
+## Native AVX2 CI appendix
+
+[Native GitHub Actions run](https://github.com/BioCode-Commons/NuExpansionHunter/actions/runs/43328601873): AMD EPYC 7763 64-Core Processor, 4 logical CPUs, Ubuntu Linux x86-64, 3 compute workers + 1 preprocessing worker. Both variants contain the identical mapped `Graph::hasEdge` fix; this isolates the DP algorithm change.
+
+On covered10k streaming, median wall time is **13.304 → 6.583 s**; paired wall-time reduction is **50.49%** (95% bootstrap CI 50.32–50.59%; candidate/baseline ratio 0.4951, CI 0.4941–0.4968). Median CPU time is 39.761 → 19.662 s; paired CPU-time reduction is 50.55% (95% CI 50.48–50.72%). 9/9 measured pairs are faster; the warmup pair is excluded.
+
+Peak RSS medians are 549.42 → 547.69 MiB (delta -1.73 MiB); maxima are 549.67 → 547.79 MiB. Original no-growth RSS gate: **PASS** (median=True, maximum=True); no extra cache allowance. Wall/CPU performance gates: True/True.
+
+All nine measured pairs and the warmup have identical VCF/JSON bytes and complete BAM header/record multisets. Standalone correctness passes 2,663 graph checks, 9,380 pinned cases, 28 activation/fallback witnesses, 24×64 low-error cases and 3,077,207 insertion-oracle cases. Automatic and forced AVX2 execute 2,444,621 and 2,444,621 instrumented blocks.
+
+The uncompressed synthetic input hashes match the ARM experiment. Hardware, worker counts and system dependencies differ, so compare each candidate with its same-host control; do not compare Linux and ARM absolute times. Cache preparation, compilation and comparisons are outside the streaming process timings. This evidence applies to this synthetic workload, not general clinical or whole-genome throughput.
