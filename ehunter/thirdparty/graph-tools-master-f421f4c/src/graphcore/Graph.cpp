@@ -143,7 +143,11 @@ bool Graph::hasEdge(NodeId source_id, NodeId sink_id) const
     assertNodeExists(source_id);
     assertNodeExists(sink_id);
     if (mapped_.data)
-        return successors(source_id).count(sink_id) != 0;
+    {
+        const auto slice = mappedNode(source_id).successors;
+        const auto* ids = mapped_.array<NodeId>(slice);
+        return std::find(ids, ids + slice.count, sink_id) != ids + slice.count;
+    }
     return edge_labels_.find(NodeIdPair(source_id, sink_id)) != edge_labels_.end();
 }
 

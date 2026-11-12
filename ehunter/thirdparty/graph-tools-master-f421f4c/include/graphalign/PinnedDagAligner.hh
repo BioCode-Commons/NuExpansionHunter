@@ -27,6 +27,7 @@
 #include <boost/throw_exception.hpp>
 
 #include "graphalign/DagAlignerAffine.hh"
+#include "graphalign/dagAligner/PinnedBudgetAlignMatrix.hh"
 #include "graphalign/GraphAlignment.hh"
 #include "graphalign/Operation.hh"
 #include "graphalign/dagAligner/BaseMatchingPenaltyMatrix.hh"
@@ -71,7 +72,7 @@ class PinnedDagAligner
     typedef std::pair<int, int> Edge;
     typedef std::vector<Edge> Edges;
     typedef graphalign::dagAligner::Cigar Cigar;
-    BaseMatchingDagAligner<true, false> aligner_;
+    graphalign::dagAligner::Aligner<graphalign::dagAligner::PinnedBudgetAlignMatrix, false> aligner_;
 
     static void appendOperation(OperationType type, uint32_t length, std::list<Operation>& operations)
     {
@@ -191,7 +192,7 @@ class PinnedDagAligner
 public:
     explicit PinnedDagAligner(
         const int32_t matchScore, const int32_t mismatchScore, const int32_t gapOpenScore, const int32_t gapExtendScore)
-        : aligner_(matchScore, mismatchScore, gapOpenScore, gapExtendScore)
+        : aligner_(graphalign::dagAligner::BaseMatchingPenaltyMatrix(matchScore, mismatchScore), gapOpenScore, gapExtendScore)
     {
     }
 
