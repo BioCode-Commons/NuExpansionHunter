@@ -69,6 +69,7 @@ namespace dagAligner
         PaddedAlignMatrix<step> e_;
 
         std::vector<typename PenaltyMatrix::QueryChar> query_;
+        std::size_t actualQueryLength_ = 0;
         std::vector<typename PenaltyMatrix::TargetChar> target_;
         std::vector<Score> alignmentPenalties_[PenaltyMatrix::TARGET_CHAR_MAX_ + 1];
 
@@ -98,10 +99,14 @@ namespace dagAligner
                 throw std::logic_error("Empty target is not allowed.");
             }
 
-            // avoid "uninitialized read" complaints from valgrind
-            query_.resize((std::distance(queryBegin, queryEnd) + step - 1) / step * step);
-            query_.clear();
-            penaltyMatrix_.translateQuery(queryBegin, queryEnd, std::back_inserter(query_));
+            const std::size_t queryLength = std::distance(queryBegin, queryEnd);
+            // Keep the complete SIMD block inside the vector's size. First
+            // restore the previous logical size so resize preserves exactly
+            // the legacy padding values and capacity-growth history.
+            query_.resize(actualQueryLength_);
+            query_.resize((queryLength + step - 1) / step * step);
+            penaltyMatrix_.translateQuery(queryBegin, queryEnd, query_.begin());
+            actualQueryLength_ = queryLength;
             target_.clear();
             penaltyMatrix_.translateTarget(targetBegin, targetEnd, std::back_inserter(target_));
 
@@ -120,7 +125,7 @@ namespace dagAligner
         const_iterator alignEnd() const { return v_.end(); }
         int targetOffset(const_iterator cell) const { return std::distance(v_.cellOneOne(), cell) / v_.paddedRowLen(); }
         int queryOffset(const_iterator cell) const { return std::distance(v_.cellOneOne(), cell) % v_.paddedRowLen(); }
-        int queryLen() const { return query_.size(); }
+        int queryLen() const { return actualQueryLength_; }
 
         bool isInsertion(int q, int t) const
         {
@@ -171,7 +176,7 @@ namespace dagAligner
         // __attribute((noinline))
         void reset(const EdgeMap& edgeMap)
         {
-            const int qLen = query_.size();
+            const int qLen = actualQueryLength_;
             const int tLen = target_.size();
 
             // Only profiles referenced by this target can be read in fill().
@@ -269,7 +274,7 @@ namespace dagAligner
         // __attribute((noinline))
         void fill(const EdgeMap& edgeMap)
         {
-            const int qLen = query_.size();
+            const int qLen = actualQueryLength_;
             const int tLen = target_.size();
 
             for (int t = 0; t < tLen; ++t)

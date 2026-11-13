@@ -141,26 +141,23 @@ Alignment mergeAlignments(const Alignment& first_alignment, const Alignment& sec
         throw std::logic_error(msg.str());
     }
 
-    list<Operation> first_alignment_operations = first_alignment.operations();
-    list<Operation> second_alignment_operations = second_alignment.operations();
-
-    if (first_alignment_operations.back().type() == second_alignment_operations.front().type())
+    list<Operation> operations;
+    auto first_end = first_alignment.end();
+    auto second_begin = second_alignment.begin();
+    if (first_alignment.back().type() == second_alignment.front().type())
     {
-        const Operation last_operation_of_first_alignment = first_alignment_operations.back();
-        first_alignment_operations.pop_back();
-
-        const Operation first_operations_of_second_alignment = second_alignment_operations.front();
-        second_alignment_operations.pop_front();
-
-        uint32_t merged_operation_length
-            = last_operation_of_first_alignment.length() + first_operations_of_second_alignment.length();
-
-        first_alignment_operations.emplace_back(last_operation_of_first_alignment.type(), merged_operation_length);
+        --first_end;
+        operations.insert(operations.end(), first_alignment.begin(), first_end);
+        const uint32_t merged_length = first_end->length() + second_begin->length();
+        operations.emplace_back(first_end->type(), merged_length);
+        ++second_begin;
     }
-
-    first_alignment_operations.splice(first_alignment_operations.end(), second_alignment_operations);
-
-    return Alignment(first_alignment.referenceStart(), std::move(first_alignment_operations));
+    else
+    {
+        operations.insert(operations.end(), first_alignment.begin(), first_end);
+    }
+    operations.insert(operations.end(), second_begin, second_alignment.end());
+    return Alignment(first_alignment.referenceStart(), std::move(operations));
 }
 
 int32_t scoreAlignment(const Alignment& alignment, int32_t match_score, int32_t mismatch_score, int32_t gap_score)

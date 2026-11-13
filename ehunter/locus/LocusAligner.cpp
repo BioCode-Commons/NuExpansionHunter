@@ -90,6 +90,11 @@ LocusAligner::OptionalAlign LocusAligner::align(Read& read, graphtools::AlignerS
         return {};
     }
 
+    if (readAligns.size() == 1)
+    {
+        return std::move(readAligns.front());
+    }
+
     return computeCanonicalAlignment(readAligns);
 }
 

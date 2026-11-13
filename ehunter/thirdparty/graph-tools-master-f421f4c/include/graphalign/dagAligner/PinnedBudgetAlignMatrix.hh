@@ -31,6 +31,8 @@ public:
         uint64_t edgeRelaxations = 0, initializedCells = 0, insertionCells = 0;
         uint64_t metadataVisits = 0, exhaustedAttempts = 0;
         uint64_t ungappedAttempts = 0, linearUngappedAttempts = 0, linearSimdBlocks = 0;
+        uint64_t skippedProvenCost9 = 0, fusedUngappedRows = 0, fusedGappedRows = 0;
+        uint64_t adaptiveBudgetStarts = 0;
     };
     static Stats& stats()
     {
@@ -47,7 +49,8 @@ public:
     }
 
     template <typename QueryIt, typename TargetIt>
-    void init(QueryIt queryBegin, QueryIt queryEnd, TargetIt targetBegin, TargetIt targetEnd, const EdgeMap& edges)
+    void init(QueryIt queryBegin, QueryIt queryEnd, TargetIt targetBegin, TargetIt targetEnd,
+              const EdgeMap& edges, int minimumCost = 0, int preferredInitialBudget = 0)
     {
         // Preserve the original exceptions and state on empty-input failure.
         if (queryBegin == queryEnd || targetBegin == targetEnd)
@@ -78,7 +81,7 @@ public:
         // With at most one mismatch its cost is <=9, below every gap opening.
         // Keep just the mismatch position instead of allocating per-target rows
         // and cells, or translating an unused extension past the query length.
-        if (eligible && queryLength_ <= targetLength_ && edges.hasSingleLinearNode(targetLength_))
+        if (eligible && minimumCost <= 9 && queryLength_ <= targetLength_ && edges.hasSingleLinearNode(targetLength_))
         {
             query_.clear();
             target_.clear();
@@ -103,8 +106,21 @@ public:
             uint64_t spent = uint64_t(targetLength_) + edgeCount_;
             const uint64_t limit = uint64_t(queryLength_) * (uint64_t(targetLength_) + edgeCount_) / 2;
             int firstBudget = 9;
-            while (firstBudget < minimumEndpointCost_)
+            while (firstBudget < std::max(minimumEndpointCost_, minimumCost))
                 firstBudget *= 2;
+            if (minimumCost > 9 && preferredInitialBudget >= 36 && firstBudget < 36)
+            {
+                // Search a wider complete cost range; this is not a proof
+                // that smaller costs are absent. All optimal ties remain in
+                // the range, and the original work cap/dense fallback apply.
+                firstBudget = 36;
+#ifdef GRAPHTOOLS_BUDGET_DP_INSTRUMENT
+                ++stats().adaptiveBudgetStarts;
+#endif
+            }
+#ifdef GRAPHTOOLS_BUDGET_DP_INSTRUMENT
+            stats().skippedProvenCost9 += minimumCost > 9 && minimumEndpointCost_ <= 9;
+#endif
             if (spent < limit)
             {
                 query_.clear();
@@ -534,11 +550,48 @@ private:
             if (cells_.size() < usedCells)
                 cells_.resize(usedCells);
             Cell* const current = cells_.data() + row.offset;
-            std::fill(current, current + width, Cell { infinity(), infinity(), false });
 #ifdef GRAPHTOOLS_BUDGET_DP_INSTRUMENT
             stats().initializedCells += width;
             stats().bandCells += width;
 #endif
+#ifndef GRAPHTOOLS_FUSED_PREDECESSOR_DISABLE
+            const auto single = edges.prevNodesBegin(t);
+            if (single + 1 == edges.prevNodesEnd(t))
+            {
+                // One predecessor supplies every cell of this ungapped row.
+                // Fuse initialization, relaxation and support discovery while
+                // retaining the former work-budget charge exactly.
+                if (!charge(1 + uint64_t(width) * 2, spent, limit))
+                    return FillResult::Exhausted;
+                const int p = *single;
+                const Cell* const previous = p < 0 ? nullptr : cells_.data() + rows_[p].offset;
+#ifdef GRAPHTOOLS_BUDGET_DP_INSTRUMENT
+                ++stats().metadataVisits;
+                ++stats().fusedUngappedRows;
+                stats().edgeRelaxations += width;
+#endif
+                for (int i = begin; i < row.end; ++i)
+                {
+                    const Cost previousBest = p < 0 ? 0 : previous[i - 1 - rows_[p].begin].h;
+                    const int mismatch = penalty_.isMatch(query_[i - 1], target_[t]) ? 0 : 9;
+                    const Cost best = add(previousBest, mismatch);
+                    current[i - begin] = { best, infinity(), false };
+                    if (best != infinity())
+                    {
+                        if (row.supportBegin == row.supportEnd)
+                            row.supportBegin = i;
+                        row.supportEnd = i + 1;
+                        if (i == queryLength_)
+                        {
+                            endpoint = true;
+                            finiteEndpoints_.push_back(t);
+                        }
+                    }
+                }
+                continue;
+            }
+#endif
+            std::fill(current, current + width, Cell { infinity(), infinity(), false });
             for (auto p = edges.prevNodesBegin(t); p != edges.prevNodesEnd(t); ++p)
             {
                 const int predecessorBegin = *p == -1 ? 0 : rows_[*p].supportBegin;
@@ -641,11 +694,85 @@ private:
                 cells_.resize(usedCells);
             // resize may move storage: obtain all cell pointers only after it.
             Cell* const current = cells_.data() + row.offset;
-            std::fill(current, current + width, unreachable);
 #ifdef GRAPHTOOLS_BUDGET_DP_INSTRUMENT
             stats().initializedCells += width;
             stats().bandCells += width;
 #endif
+#ifndef GRAPHTOOLS_FUSED_PREDECESSOR_DISABLE
+            const auto single = edges.prevNodesBegin(t);
+            if (single + 1 == edges.prevNodesEnd(t) && width <= 64)
+            {
+                const int p = *single;
+                const int begin = std::max(1, row.begin);
+                const int predecessorBegin = p == -1 ? 0 : rows_[p].supportBegin;
+                const int predecessorEnd = p == -1 ? virtualEnd : rows_[p].supportEnd;
+                const int deletionBegin = std::max(begin, predecessorBegin);
+                const int deletionEnd = std::min(row.end, predecessorEnd);
+                const int matchBegin = std::max(begin, predecessorBegin + 1);
+                const int matchEnd = std::min(row.end, predecessorEnd + 1);
+                const int relaxations = std::max(0, deletionEnd - deletionBegin)
+                    + std::max(0, matchEnd - matchBegin);
+                const int insertionCells = row.end - begin;
+                // These are the same predecessor and insertion charges as the
+                // general path. Failure may occur earlier within this row, but
+                // both paths then discard it and initialize dense DP.
+                if (!charge(1 + uint64_t(relaxations) + insertionCells, spent, limit))
+                    return FillResult::Exhausted;
+                const Cell* const previous = p < 0 ? nullptr : cells_.data() + rows_[p].offset;
+                Cost previousInsertion = infinity();
+                if (row.begin == 0)
+                {
+                    current[0] = { Cost(10 * row.shortest), infinity(), false };
+                    previousInsertion = current[0].h;
+                    row.supportBegin = 0;
+                    row.supportEnd = 1;
+                }
+                Cost previousBest = previousInsertion;
+#ifdef GRAPHTOOLS_BUDGET_DP_INSTRUMENT
+                ++stats().metadataVisits;
+                ++stats().fusedGappedRows;
+                stats().edgeRelaxations += relaxations;
+                stats().insertionCells += insertionCells;
+#endif
+                for (int i = begin; i < row.end; ++i)
+                {
+                    Cost deletion = infinity(), match = infinity();
+                    if (i >= deletionBegin && i < deletionEnd)
+                    {
+                        if (p < 0)
+                            deletion = add(Cost(15 * i), 2);
+                        else
+                        {
+                            const Cell& source = previous[i - rows_[p].begin];
+                            deletion = std::min(add(source.e, 2), add(source.h, 10));
+                        }
+                    }
+                    if (i >= matchBegin && i < matchEnd)
+                    {
+                        const Cost source = p < 0 ? Cost(15 * (i - 1)) : previous[i - 1 - rows_[p].begin].h;
+                        match = add(source, penalty_.isMatch(query_[i - 1], target_[t]) ? 0 : 9);
+                    }
+                    const Cost insertion = std::min(add(previousInsertion, 7), add(previousBest, 15));
+                    const Cost best = std::min(match, std::min(deletion, insertion));
+                    current[i - row.begin] = { best, deletion, best != infinity() && best == insertion };
+                    previousInsertion = insertion;
+                    previousBest = best;
+                    if (best != infinity())
+                    {
+                        if (row.supportBegin == row.supportEnd)
+                            row.supportBegin = i;
+                        row.supportEnd = i + 1;
+                        if (i == queryLength_)
+                        {
+                            endpoint = true;
+                            finiteEndpoints_.push_back(t);
+                        }
+                    }
+                }
+                continue;
+            }
+#endif
+            std::fill(current, current + width, unreachable);
             if (row.begin == 0)
                 current[0].h = Cost(10 * row.shortest);
             const int begin = std::max(1, row.begin);

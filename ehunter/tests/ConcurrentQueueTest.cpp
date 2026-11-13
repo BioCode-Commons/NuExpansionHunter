@@ -138,6 +138,108 @@ HtsStreamingReadPairQueue::ReadPair streamingPair(const std::string& name)
         Read(ReadId(name, MateNumber::kFirstMate), "ACGT", false),
         Read(ReadId(name, MateNumber::kSecondMate), "TGCA", true) };
 }
+
+HtsStreamingReadPairQueue::ReadPair streamingPair150(const std::string& name)
+{
+    return { locus::RegionType::kTarget, AnalyzerInputType::kBothReads,
+        Read(ReadId(name, MateNumber::kFirstMate), std::string(150, 'A'), false),
+        Read(ReadId(name, MateNumber::kSecondMate), std::string(150, 'C'), true) };
+}
+}
+
+TEST(StreamingReadPairQueueTest, BoundedHelpRetainsActiveOwnershipAndAppendedPairOrder)
+{
+    using Result = HtsStreamingReadPairQueue::InsertResult;
+    HtsStreamingReadPairQueue queue(1, 2);
+    for (unsigned i = 0; i < 75; ++i)
+        ASSERT_EQ(i ? Result::Queued : Result::Activated,
+            queue.insertReadPair(0, streamingPair150(std::to_string(i))));
+    boost::optional<HtsStreamingReadPairQueue::ReadPair> pair;
+    std::vector<unsigned> observed;
+    const auto process = [&](HtsStreamingReadPairQueue::ReadPair& current) {
+        EXPECT_EQ(150u, current.read.sequence().size());
+        observed.push_back(std::stoul(current.read.fragmentId()));
+    };
+    EXPECT_TRUE(queue.processBatch(0, 32, pair, process));
+    EXPECT_FALSE(bool(pair));
+    ASSERT_EQ(32u, observed.size());
+    // The yielded locus remains active. Appending must neither schedule a
+    // second owner nor call the reader helper while its continuation is pending.
+    EXPECT_EQ(Result::Queued, queue.insertReadPair(0, streamingPair150("75"), [] {
+        ADD_FAILURE() << "An active locus must not request another helper";
+        return false;
+    }));
+    EXPECT_FALSE(queue.processBatch(0, 0, pair, process));
+    ASSERT_EQ(76u, observed.size());
+    for (unsigned i = 0; i < observed.size(); ++i)
+        EXPECT_EQ(i, observed[i]);
+    EXPECT_EQ(Result::Activated, queue.insertReadPair(1, streamingPair150("capacity-released")));
+}
+
+TEST(StreamingReadPairQueueTest, ExactHelpBudgetPublishesOneEmptyContinuationThatReleasesCapacity)
+{
+    using Result = HtsStreamingReadPairQueue::InsertResult;
+    HtsStreamingReadPairQueue queue(1, 2);
+    for (unsigned i = 0; i < 32; ++i)
+        queue.insertReadPair(0, streamingPair150(std::to_string(i)));
+    ctpl::thread_pool pool(0);
+    unsigned processed = 0, helped = 0, resumed = 0;
+    auto first = pool.push([&](int index) {
+        EXPECT_EQ(2, index); // Explicit reader slot, not the last worker slot.
+        boost::optional<HtsStreamingReadPairQueue::ReadPair> pair;
+        const bool continuation = queue.processBatch(0, 32, pair,
+            [&](HtsStreamingReadPairQueue::ReadPair&) { ++processed; });
+        ASSERT_TRUE(continuation);
+        ASSERT_FALSE(bool(pair));
+        pool.push([&](int worker) {
+            EXPECT_EQ(0, worker);
+            ++resumed;
+            boost::optional<HtsStreamingReadPairQueue::ReadPair> next;
+            EXPECT_FALSE(queue.processBatch(0, 0, next,
+                [&](HtsStreamingReadPairQueue::ReadPair&) { ADD_FAILURE() << "No pair should remain"; }));
+        });
+    });
+    auto reader = pool.pop();
+    ASSERT_TRUE(bool(reader));
+    reader(2);
+    first.get();
+    EXPECT_EQ(32u, processed);
+    EXPECT_EQ(Result::Activated, queue.insertReadPair(1, streamingPair150("next-locus"), [&] {
+        ++helped;
+        auto continuation = pool.pop();
+        EXPECT_TRUE(bool(continuation));
+        EXPECT_FALSE(bool(pool.pop())); // Exactly one continuation was published.
+        continuation(0);
+        return true;
+    }));
+    EXPECT_EQ(1u, helped);
+    EXPECT_EQ(1u, resumed);
+}
+
+TEST(StreamingReadPairQueueTest, BoundedHelpFailurePreservesCurrentPairAndDoesNotRequestContinuation)
+{
+    HtsStreamingReadPairQueue queue(1, 2);
+    for (unsigned i = 0; i < 40; ++i)
+        queue.insertReadPair(0, streamingPair150(std::to_string(i)));
+    boost::optional<HtsStreamingReadPairQueue::ReadPair> pair;
+    unsigned processed = 0;
+    bool continuation = false;
+    EXPECT_THROW(continuation = queue.processBatch(0, 32, pair,
+        [&](HtsStreamingReadPairQueue::ReadPair&) {
+            if (++processed == 7)
+                throw std::runtime_error("alignment failure");
+        }), std::runtime_error);
+    EXPECT_FALSE(continuation);
+    ASSERT_TRUE(bool(pair));
+    EXPECT_EQ("6", pair->read.fragmentId());
+    queue.cancel();
+    EXPECT_EQ(HtsStreamingReadPairQueue::InsertResult::Cancelled,
+        queue.insertReadPair(1, streamingPair150("cancelled")));
+    // Cancellation currently rejects activation but retains existing queues;
+    // preserve that established contract while checking the unconsumed prefix.
+    queue.getNextReadPair(0, pair);
+    ASSERT_TRUE(bool(pair));
+    EXPECT_EQ("7", pair->read.fragmentId());
 }
 
 TEST(StreamingReadPairQueueTest, ReaderExecutesOneQueuedTaskAndPreservesPerLocusOrder)

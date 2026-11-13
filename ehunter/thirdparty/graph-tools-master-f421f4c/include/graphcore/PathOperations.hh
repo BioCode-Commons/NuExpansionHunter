@@ -53,7 +53,7 @@ std::list<Path> extendPathEnd(const Path& path, int32_t extension_len);
  * @param qpos position where path starts in query
  * @return extended path
  */
-Path extendPathEndMatching(Path path, const std::string& query, size_t qpos);
+Path extendPathEndMatching(const Path& path, const std::string& query, size_t qpos);
 
 /**
  * Extend a path matching a query sequence to produce maximum exact + unique matches
@@ -65,7 +65,7 @@ Path extendPathEndMatching(Path path, const std::string& query, size_t qpos);
  * @param[out] qpos position where path starts in query -- updated as path is extended at start
  * @return extended path
  */
-Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in_query);
+Path extendPathStartMatching(const Path& path, const std::string& query, size_t& pos_in_query);
 
 /**
  * Extend a path matching a query sequence to produce maximum exact + unique matches
@@ -77,7 +77,7 @@ Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in
  * @param[out] qpos position where path starts in query -- updated as path is extended at start
  * @return extended path
  */
-Path extendPathMatching(Path path, const std::string& query, size_t& pos_in_query);
+Path extendPathMatching(const Path& path, const std::string& query, size_t& pos_in_query);
 
 /**
  * Splits sequence into segments corresponding to the path

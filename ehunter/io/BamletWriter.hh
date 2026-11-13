@@ -71,7 +71,7 @@ private:
 
     /// Thread safe
     void write(
-        const graphtools::ReferenceInterval& interval, const std::string& fragmentName, const std::string& query,
+        int32_t contigId, int64_t position, const std::string& fragmentName, const std::string& query,
         bool isFirstMate, bool isReversed, bool isMateReversed, const graphtools::GraphAlignment& alignment);
 
     /// Function executed by dedicated bam writer thread
@@ -80,6 +80,7 @@ private:
     std::unique_ptr<htsFile, decltype(&hts_close)> filePtr_;
     std::unique_ptr<bam_hdr_t, decltype(&bam_hdr_destroy)> bamHeader_;
     ReferenceContigInfo contigInfo_;
+    std::vector<int32_t> bamContigIds_;
 
     const RegionCatalog& catalog_;
 

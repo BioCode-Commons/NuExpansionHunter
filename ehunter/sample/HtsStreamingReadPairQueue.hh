@@ -22,6 +22,7 @@
 #pragma once
 
 #include <condition_variable>
+#include <cstddef>
 #include <functional>
 #include <mutex>
 #include <queue>
@@ -94,6 +95,32 @@ public:
     /// \param[out] readPair Next read pair enqueued for \p locusIndex, or none if the queue is empty
     ///
     void getNextReadPair(unsigned locusIndex, boost::optional<ReadPair>& readPair);
+
+    // Only the current task owner may consume a locus. A nonzero limit yields
+    // after that many pairs without deactivating the queue or peeking/popping
+    // an extra pair. The caller must publish exactly one continuation after
+    // this returns true, unless processing has been cancelled. A zero limit
+    // drains as before. An empty continuation performs the usual deactivation.
+    template <typename ProcessPair>
+    bool processBatch(unsigned locusIndex, std::size_t limit,
+        boost::optional<ReadPair>& readPair, ProcessPair&& processPair)
+    {
+        std::size_t processed = 0;
+        while (true)
+        {
+            getNextReadPair(locusIndex, readPair);
+            if (!readPair)
+                return false;
+            processPair(*readPair);
+            if (limit && ++processed == limit)
+            {
+                // Finish all access/destruction for this pair before its owner
+                // publishes a continuation that another thread may start.
+                readPair = boost::none;
+                return true;
+            }
+        }
+    }
 
 private:
     struct LocusAnalyzerQueue

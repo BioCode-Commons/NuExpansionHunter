@@ -63,37 +63,32 @@ bool checkIfLocallyPlacedReadPair(
 
 bool checkIfUpstreamAlignmentIsGood(NodeId nodeId, const GraphAlignment& alignment)
 {
-    const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
-
-    if (repeatNodeIndexes.empty())
-    {
-        return false;
-    }
-
-    const int firstRepeatNodeIndex = repeatNodeIndexes.front();
     int score = 0;
     LinearAlignmentParameters parameters;
-    for (int nodeIndex = 0; nodeIndex != firstRepeatNodeIndex; ++nodeIndex)
+    const int kScoreCutoff = parameters.matchScore * 8;
+    for (int nodeIndex = 0; nodeIndex != static_cast<int>(alignment.size()); ++nodeIndex)
     {
+        if (alignment.getNodeIdByIndex(nodeIndex) == nodeId)
+            return score >= kScoreCutoff;
         score += scoreAlignment(
             alignment[nodeIndex], parameters.matchScore, parameters.mismatchScore, parameters.gapOpenScore);
     }
-
-    const int kScoreCutoff = parameters.matchScore * 8;
-
-    return score >= kScoreCutoff;
+    return false;
 }
 
 bool checkIfDownstreamAlignmentIsGood(NodeId nodeId, const GraphAlignment& alignment)
 {
-    const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
-
-    if (repeatNodeIndexes.empty())
+    int lastRepeatNodeIndex = -1;
+    for (int nodeIndex = static_cast<int>(alignment.size()) - 1; nodeIndex >= 0; --nodeIndex)
     {
-        return false;
+        if (alignment.getNodeIdByIndex(nodeIndex) == nodeId)
+        {
+            lastRepeatNodeIndex = nodeIndex;
+            break;
+        }
     }
-
-    const int lastRepeatNodeIndex = repeatNodeIndexes.back();
+    if (lastRepeatNodeIndex == -1)
+        return false;
     int score = 0;
     LinearAlignmentParameters parameters;
     for (int nodeIndex = lastRepeatNodeIndex + 1; nodeIndex != static_cast<int>(alignment.size()); ++nodeIndex)

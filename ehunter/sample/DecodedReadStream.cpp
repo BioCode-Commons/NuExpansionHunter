@@ -117,6 +117,22 @@ DecodedStreamRecord* DecodedReadStream::decodeCurrent()
     return &*directRecord_;
 }
 
+const bam1_t* DecodedReadStream::nextUndecoded()
+{
+    if (!slots_.empty())
+        throw std::logic_error("Undecoded streaming requires synchronous read preprocessing");
+    directRecord_ = boost::none;
+    if (!seekSelected())
+        return nullptr;
+    const auto* bam = input_.currentAlignment();
+    // Routing does not inspect bases, but skipping an eager Read must not hide
+    // its validation errors. Delegate unusual invalid records to that decoder.
+    if (bam->core.l_qseq <= 0 || !*bam_get_qname(bam))
+        input_.decodeRead();
+    hasRecord_ = false;
+    return bam;
+}
+
 void DecodedReadStream::account(Slot& slot)
 {
     std::size_t bytes = sizeof(Slot) + slot.raw.capacity()

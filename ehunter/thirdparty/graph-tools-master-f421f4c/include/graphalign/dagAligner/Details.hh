@@ -66,7 +66,67 @@ namespace dagAligner
         OffsetEdges prevOffsets_;
         bool singleLinearNode_ = false;
 
+        // The normal unrolled DAG consists of nonempty node spans. Fill their
+        // interior offsets as contiguous ranges, rather than three push_backs
+        // per reference base. Keep the general constructor for other inputs.
+        bool initializeNodeSpans(
+            const std::vector<std::pair<int, int>>& edges, const std::vector<NodeId>& nodeIds)
+        {
+            const int length = edges.back().second;
+            if (length <= 0)
+                return false;
+            const size_t first = edges.front() == std::make_pair(-1, 0) ? 1 : 0;
+            size_t nodeCount = 1;
+            int previousTarget = 0;
+            for (size_t i = first; i + 1 < edges.size(); ++i)
+            {
+                const auto& edge = edges[i];
+                if (edge.second <= 0 || edge.second >= length || edge.second < previousTarget
+                    || edge.first < -1 || edge.first >= edge.second)
+                    return false;
+                if (edge.second != previousTarget)
+                    ++nodeCount;
+                previousTarget = edge.second;
+            }
+            if (nodeCount != nodeIds.size())
+                return false;
+
+            offsetNodeIds_.resize(length);
+            index_.resize(size_t(length) + 1);
+            prevOffsets_.resize(size_t(length) + (edges.size() - first - 1) - (nodeCount - 1));
+            prevOffsets_[0] = -1;
+            index_[0] = 0;
+            size_t nextPredecessor = 1, node = 0, edgeIndex = first;
+            int start = 0;
+            while (true)
+            {
+                const int end = edges[edgeIndex].second;
+                std::fill(offsetNodeIds_.begin() + start, offsetNodeIds_.begin() + end, nodeIds[node]);
+                std::iota(
+                    prevOffsets_.begin() + nextPredecessor,
+                    prevOffsets_.begin() + nextPredecessor + (end - start - 1), start);
+                std::iota(index_.begin() + start + 1, index_.begin() + end + 1, nextPredecessor);
+                nextPredecessor += end - start - 1;
+                if (end == length)
+                    return true;
+                do
+                {
+                    prevOffsets_[nextPredecessor++] = edges[edgeIndex++].first;
+                } while (edges[edgeIndex].second == end);
+                start = end;
+                ++node;
+            }
+        }
+
     public:
+        EdgeMap() = default;
+
+        size_t retainedCapacityBytes() const
+        {
+            return offsetNodeIds_.capacity() * sizeof(NodeId) + index_.capacity() * sizeof(std::size_t)
+                + prevOffsets_.capacity() * sizeof(int);
+        }
+
         EdgeMap(
             const OffsetNodeIds& offsetNodeIds, const std::vector<std::size_t>& index,
             const std::vector<int>& prevOffsets)
@@ -92,6 +152,15 @@ namespace dagAligner
          */
         EdgeMap(const std::vector<std::pair<int, int>>& edges, const std::vector<NodeId>& nodeIds)
         {
+            reset(edges, nodeIds);
+        }
+
+        void reset(const std::vector<std::pair<int, int>>& edges, const std::vector<NodeId>& nodeIds)
+        {
+            offsetNodeIds_.clear();
+            index_.clear();
+            prevOffsets_.clear();
+            singleLinearNode_ = false;
             typedef std::vector<std::pair<int, int>> Edges;
             if (edges.back().second != edges.back().first)
             {
@@ -112,6 +181,8 @@ namespace dagAligner
                 singleLinearNode_ = true;
                 return;
             }
+            if (initializeNodeSpans(edges, nodeIds))
+                return;
             // The closing marker already gives the target length. Reserve for
             // all per-base entries and the temporary closing edge, which is
             // removed below, rather than repeatedly growing three vectors.

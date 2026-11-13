@@ -138,6 +138,36 @@ TEST(ExtendingPathsMatching, TypicalPath_ExtendedWithinNode)
     }
 }
 
+TEST(ExtendingPathsMatching, ConstReferenceAndTemporarySourcesRemainEquivalent)
+{
+    Graph graph = makeStrGraph(string(30, 'G'), "CAG", string(30, 'T'));
+    string query(30, 'G');
+    for (int count = 0; count != 30; ++count)
+    {
+        query += "CAG";
+    }
+    query += string(30, 'T');
+
+    Path seed(&graph, 0, { 1 }, 3);
+    const Path original = seed;
+    size_t first_position = 30;
+    const Path first = extendPathMatching(seed, query, first_position);
+    ASSERT_EQ(original, seed);
+
+    size_t moved_position = 30;
+    const Path moved = extendPathMatching(std::move(seed), query, moved_position);
+    ASSERT_EQ(original, seed);
+    ASSERT_EQ(first, moved);
+    ASSERT_EQ(first_position, moved_position);
+
+    size_t temporary_position = 30;
+    const Path temporary = extendPathMatching(Path(&graph, 0, { 1 }, 3), query, temporary_position);
+    ASSERT_EQ(first, temporary);
+    ASSERT_EQ(first_position, temporary_position);
+    ASSERT_EQ(0u, first_position);
+    ASSERT_EQ(query, first.seq());
+}
+
 TEST(ExtendingPathsMatching, TypicalPath_ExtendedAcrossNodes)
 {
     Graph graph = makeDeletionGraph("AAACC", "TTGGG", "TTAAA");

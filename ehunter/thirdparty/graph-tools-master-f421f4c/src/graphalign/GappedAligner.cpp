@@ -200,6 +200,7 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
     }
 
     optional<GappedGraphAligner::AlignmentSeed> optional_seed;
+    size_t seed_length = 0;
 
     bool found_multipath_kmer = false;
     size_t kmer_start_position = 0;
@@ -220,13 +221,15 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
         {
             // This call updates kmer_start_position to the start of the extended path
             Path extended_path = extendPathMatching(paths[0], upperQuery, kmer_start_position);
+            const size_t extended_length = extended_path.length();
 
-            if (!optional_seed || extended_path.length() > optional_seed->path.length())
+            if (!optional_seed || extended_length > seed_length)
             {
                 optional_seed = AlignmentSeed(extended_path, kmer_start_position);
+                seed_length = extended_length;
             }
 
-            kmer_start_position += extended_path.length();
+            kmer_start_position += extended_length;
         }
         else
         {
@@ -257,16 +260,18 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
             {
                 size_t kmer_start_position_for_kmer_path = kmer_start_position;
                 Path extended_path = extendPathMatching(paths[path_index], upperQuery, kmer_start_position_for_kmer_path);
+                const size_t extended_length = extended_path.length();
 
-                if (longest_kmer_path_extension < extended_path.length())
+                if (longest_kmer_path_extension < extended_length)
                 {
-                    longest_kmer_path_extension = extended_path.length();
+                    longest_kmer_path_extension = extended_length;
                     kmer_start_position_for_longest_extension = kmer_start_position_for_kmer_path;
                 }
 
-                if (!optional_seed || extended_path.length() > optional_seed->path.length())
+                if (!optional_seed || extended_length > seed_length)
                 {
                     optional_seed = AlignmentSeed(extended_path, kmer_start_position_for_kmer_path);
+                    seed_length = extended_length;
                 }
             }
 
@@ -332,6 +337,7 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
     }
 
     // Merge alignments together
+    const size_t seed_length = seed_path.length();
     list<GraphAlignment> top_graph_alignments;
     for (PathAndAlignment& prefix_path_and_alignment : prefix_extensions)
     {
@@ -341,9 +347,9 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
 
         Alignment& prefix_alignment = prefix_path_and_alignment.second;
         // Preserve the CIGAR parser's range error for unusually long paths.
-        Alignment kmer_alignment = seed_path.length() <= static_cast<size_t>(std::numeric_limits<int>::max())
-            ? Alignment(prefix_alignment.referenceLength(), { Operation(OperationType::kMatch, seed_path.length()) })
-            : Alignment(prefix_alignment.referenceLength(), to_string(seed_path.length()) + "M");
+        Alignment kmer_alignment = seed_length <= static_cast<size_t>(std::numeric_limits<int>::max())
+            ? Alignment(prefix_alignment.referenceLength(), { Operation(OperationType::kMatch, seed_length) })
+            : Alignment(prefix_alignment.referenceLength(), to_string(seed_length) + "M");
         Alignment prefix_plus_kmer_alignment = mergeAlignments(prefix_alignment, kmer_alignment);
 
         for (PathAndAlignment& suffix_path_and_alignment : suffix_extensions)

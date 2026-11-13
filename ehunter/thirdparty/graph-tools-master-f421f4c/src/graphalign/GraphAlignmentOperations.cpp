@@ -21,6 +21,7 @@
 #include "graphalign/GraphAlignmentOperations.hh"
 
 #include <stdexcept>
+#include <limits>
 #include <utility>
 
 #include <boost/range/adaptor/reversed.hpp>
@@ -162,6 +163,69 @@ void splitNodeCigar(const string& node_cigar, string& cigar, NodeId& node_id)
     }
 }
 
+// Split a trimmed alignment in one forward pass. The original repeated split
+// rescans/recounts the entire remaining operation list at every node boundary.
+// Zero-reference operations at a boundary belong to the preceding node, just
+// as in Alignment::splitAtReferencePosition's <= comparison.
+static bool projectInOnePass(const Alignment& linear, const Path& path, vector<Alignment>& projected)
+{
+    if (path.numNodes() <= 1 || linear.operations().empty())
+        return false;
+    uint64_t referenceLength = 0;
+    for (const auto& operation : linear)
+        referenceLength += operation.referenceLength();
+    if (referenceLength > std::numeric_limits<uint32_t>::max() || referenceLength != path.length())
+        return false;
+    for (size_t node = 0; node != path.numNodes(); ++node)
+    {
+        // A zero-length interior overlap retains the legacy split exception.
+        if (path.getNodeOverlapLengthByIndex(node) == 0)
+            return false;
+    }
+
+    projected.reserve(path.numNodes());
+    auto operation = linear.begin();
+    uint32_t remaining = operation->length();
+    for (size_t node = 0; node != path.numNodes(); ++node)
+    {
+        size_t available = path.getNodeOverlapLengthByIndex(node);
+        list<Operation> pieces;
+        while (operation != linear.end())
+        {
+            const uint32_t referencePart = operation->referenceLength() ? remaining : 0;
+            if (referencePart <= available)
+            {
+                pieces.emplace_back(operation->type(), remaining);
+                available -= referencePart;
+                if (++operation != linear.end())
+                    remaining = operation->length();
+            }
+            else
+            {
+                if (available)
+                {
+                    pieces.emplace_back(operation->type(), static_cast<uint32_t>(available));
+                    remaining -= available;
+                    available = 0;
+                }
+                break;
+            }
+        }
+        if (available || pieces.empty())
+        {
+            projected.clear();
+            return false;
+        }
+        projected.emplace_back(0, std::move(pieces));
+    }
+    if (operation != linear.end())
+    {
+        projected.clear();
+        return false;
+    }
+    return true;
+}
+
 // Implementation note: Unless stated otherwise, all calculations are performed in path coordinates.
 GraphAlignment projectAlignmentOntoGraph(Alignment linear_alignment, Path path)
 {
@@ -171,6 +235,12 @@ GraphAlignment projectAlignmentOntoGraph(Alignment linear_alignment, Path path)
         linear_alignment.referenceStart(),
         path.length() - linear_alignment.referenceStart() - linear_alignment.referenceLength());
     linear_alignment.setReferenceStart(0);
+
+    if (projectInOnePass(linear_alignment, path, alignments))
+    {
+        alignments.front().setReferenceStart(path.startPosition());
+        return GraphAlignment(std::move(path), std::move(alignments));
+    }
 
     for (size_t node_index = 0; node_index != path.numNodes(); ++node_index)
     {

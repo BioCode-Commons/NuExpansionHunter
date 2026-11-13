@@ -72,12 +72,23 @@ class Graph
 public:
     explicit Graph(size_t num_nodes = 0, std::string const& id = "")
         : graphId_(id)
+        , alignmentRevision_(nextAlignmentRevision())
     {
         init(num_nodes);
     }
 
     virtual ~Graph() = default;
+    Graph(const Graph&) = default;
+    Graph& operator=(Graph other)
+    {
+        swap(other);
+        return *this;
+    }
     bool isMapped() const { return mapped_.data != nullptr; }
+    // Copies initially have identical sequences/topology and share a revision.
+    // Mutating either copy assigns a fresh revision before modifying its data.
+    // A cached preparation owns its data, so this ID need not retain the Graph.
+    uint64_t alignmentRevision() const { return alignmentRevision_; }
 
     size_t numNodes() const { return mapped_.data ? mappedGraph_->nodes.count : nodes_.size(); }
     size_t numEdges() const { return mapped_.data ? mappedGraph_->edges.count : edge_labels_.size(); }
@@ -108,6 +119,7 @@ public:
     void setGraphId(const std::string& id)
     {
         assertMutable();
+        alignmentRevision_ = nextAlignmentRevision();
         graphId_ = id;
     }
     CatalogRange<NodeId> successors(NodeId node_id) const;
@@ -116,6 +128,8 @@ public:
     static Graph mapped(MappedBytes bytes, Slice record);
 
 private:
+    static uint64_t nextAlignmentRevision();
+    void swap(Graph& other) noexcept;
     void init(size_t num_nodes);
     void assertNodeExists(NodeId node_id) const;
     void assertEdgeExists(NodeIdPair edge) const;
@@ -128,6 +142,7 @@ private:
     std::unordered_map<NodeIdPair, Labels> edge_labels_;
     AdjacencyList adjacency_list_;
     AdjacencyList reverse_adjacency_list_;
+    uint64_t alignmentRevision_;
 };
 
 class ReverseGraph

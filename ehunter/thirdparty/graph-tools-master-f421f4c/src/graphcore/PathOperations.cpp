@@ -112,7 +112,7 @@ list<Path> extendPath(const Path& path, int32_t start_extension_len, int32_t end
     return extended_paths;
 }
 
-Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
+Path extendPathEndMatching(const Path& path, const std::string& query, size_t qpos)
 {
     const Graph& graph = *path.graphRawPtr();
     size_t pos_in_query = qpos + path.length();
@@ -184,10 +184,10 @@ Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
             moved = true;
         }
     }
-    return Path { &graph, path.startPosition(), nodes, static_cast<int32_t>(pos_in_node) };
+    return Path { &graph, path.startPosition(), std::move(nodes), static_cast<int32_t>(pos_in_node) };
 }
 
-Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in_query)
+Path extendPathStartMatching(const Path& path, const std::string& query, size_t& pos_in_query)
 {
     const Graph& graph = *path.graphRawPtr();
     NodeId node_in_graph = path.nodeIds().front();
@@ -263,12 +263,12 @@ Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in
         }
     }
 
-    return Path { &graph, static_cast<int32_t>(pos_in_node), nodes, path.endPosition() };
+    return Path { &graph, static_cast<int32_t>(pos_in_node), std::move(nodes), path.endPosition() };
 }
 
-Path extendPathMatching(Path path, const std::string& query, size_t& pos_in_query)
+Path extendPathMatching(const Path& path, const std::string& query, size_t& pos_in_query)
 {
-    return extendPathStartMatching(extendPathEndMatching(std::move(path), query, pos_in_query), query, pos_in_query);
+    return extendPathStartMatching(extendPathEndMatching(path, query, pos_in_query), query, pos_in_query);
 }
 
 vector<string> splitSequenceByPath(const Path& path, const string& sequence)
@@ -512,7 +512,7 @@ Path mergePaths(Path const& p1, Path const& p2)
         end = p2.endPosition();
     }
     assert(start >= 0 && end >= 0);
-    return Path(p1.graphRawPtr(), start, nodes, end);
+    return Path(p1.graphRawPtr(), start, std::move(nodes), end);
 }
 
 /**
@@ -790,6 +790,6 @@ Path concatenatePaths(const Path& first_path, const Path& second_path)
         merged_node_ids.insert(merged_node_ids.end(), second_path.nodeIds().begin(), second_path.nodeIds().end());
     }
 
-    return Path(first_path.graphRawPtr(), first_path.startPosition(), merged_node_ids, second_path.endPosition());
+    return Path(first_path.graphRawPtr(), first_path.startPosition(), std::move(merged_node_ids), second_path.endPosition());
 }
 }

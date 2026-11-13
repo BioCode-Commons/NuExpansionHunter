@@ -1016,3 +1016,31 @@ TEST(AffineAlignmentMatrix, ReusedTargetAlphabetAndLengthsMatchScalarPenalties)
     checkReusedTargetPenaltyProfiles<true>();
     checkReusedTargetPenaltyProfiles<false>();
 }
+
+TEST(AffineAlignmentMatrix, PaddedQueryLifetimePreservesLogicalLengthAndEmptyInputState)
+{
+    AffineAlignMatrixVectorized<BaseMatchingPenaltyMatrix, true> matrix({ 6, -4 }, -8, -2);
+    const string target(180, 'A');
+    const EdgeMap edges({ { 180, 180 } }, { 0 });
+    for (int queryLength : { 150, 17, 1, 149, 16, 150 })
+    {
+        const string query(queryLength, 'A');
+        matrix.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        for (int stage = 0; stage != 3; ++stage)
+        {
+            if (stage == 1)
+                EXPECT_THROW(matrix.init(query.begin(), query.begin(), target.begin(), target.end(), edges),
+                             std::logic_error);
+            if (stage == 2)
+                EXPECT_THROW(matrix.init(query.begin(), query.end(), target.begin(), target.begin(), edges),
+                             std::logic_error);
+            EXPECT_EQ(queryLength, matrix.queryLen());
+            Score score = 0;
+            const auto best = matrix.nextBestAlign<false>(matrix.alignBegin(), score);
+            EXPECT_EQ(6 * queryLength, score);
+            EXPECT_EQ(queryLength - 1, matrix.queryOffset(best));
+            EXPECT_EQ(queryLength - 1, matrix.targetOffset(best));
+            EXPECT_TRUE(matrix.isMatch(queryLength - 1, queryLength - 1, queryLength - 2));
+        }
+    }
+}

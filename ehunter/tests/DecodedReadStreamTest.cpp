@@ -201,15 +201,27 @@ protected:
         return mask;
     }
 
-    StreamRun run(unsigned workers, const ehunter::GenomeMask& mask, bool catchError = false)
+    StreamRun run(unsigned workers, const ehunter::GenomeMask& mask, bool catchError = false, bool undecoded = false)
     {
         ehunter::htshelpers::HtsFileStreamer source(input_.string(), reference_.string(), 0);
         ehunter::DecodedReadStream stream(source, mask, workers);
         StreamRun result;
         try
         {
-            while (auto record = stream.next())
-                result.records.push_back(snapshot(*record));
+            if (undecoded)
+            {
+                while (const auto* raw = stream.nextUndecoded())
+                    result.records.push_back(snapshot({ raw->core.tid, raw->core.mtid,
+                        raw->core.pos, raw->core.mpos,
+                        ehunter::htshelpers::decodeReadParts(bam_get_qname(raw), raw->core.flag,
+                            raw->core.l_qseq, bam_get_seq(raw), bam_get_qual(raw)) }));
+                EXPECT_FALSE(stream.nextUndecoded());
+            }
+            else
+            {
+                while (auto record = stream.next())
+                    result.records.push_back(snapshot(*record));
+            }
             // Repeated EOF must not restart a batch or duplicate the final item.
             EXPECT_FALSE(stream.next());
             result.peakCache = stream.peakWorkerCacheBytes();
@@ -227,6 +239,51 @@ protected:
     boost::filesystem::path directory_, input_, reference_;
     std::ofstream output_;
 };
+
+TEST_F(DecodedReadStreamTest, UndecodedSelectionPreserves150bpRecordsAndFiltering)
+{
+    const std::string sequence = std::string(75, 'A') + std::string(75, 'N');
+    const std::string quality = std::string(75, '5') + std::string(75, '6');
+    for (unsigned index = 0; index < 64; ++index)
+    {
+        const auto flags = BAM_FPAIRED | ((index % 2) ? BAM_FREAD1 : BAM_FREAD2)
+            | ((index % 3) ? 0 : BAM_FREVERSE);
+        // Reverse positions, cross-contig mates and repeated names must retain
+        // exactly the same selected order and metadata for later pairing.
+        add("repeat-" + std::to_string(index % 5), flags, index % 2, 800 - index,
+            (index + 1) % 2, 900 - index, sequence, index % 2 ? quality : "*");
+        add("secondary", flags | BAM_FSECONDARY, 0, index, 0, 700, sequence);
+    }
+    add("unplaced", BAM_FPAIRED | BAM_FUNMAP, -1, 0, 0, 100, sequence);
+    add("after-stop", BAM_FPAIRED, 0, 100, 0, 200, sequence);
+    finish();
+    const auto expected = run(0, broadMask());
+    const auto actual = run(0, broadMask(), false, true);
+    EXPECT_EQ(actual.records, expected.records);
+    EXPECT_EQ(actual.records.size(), 64u);
+    EXPECT_EQ(actual.peakCache, 0u);
+}
+
+TEST_F(DecodedReadStreamTest, UndecodedSelectionPreservesEmptyQueryError)
+{
+    add("valid", BAM_FPAIRED, 0, 100, 0, 200, std::string(150, 'A'));
+    add("empty", BAM_FPAIRED, 0, 101, 0, 200, "*");
+    finish();
+    const auto expected = run(0, broadMask(), true);
+    const auto actual = run(0, broadMask(), true, true);
+    EXPECT_EQ(actual.records, expected.records);
+    EXPECT_FALSE(actual.error.empty());
+    EXPECT_EQ(actual.error, expected.error);
+}
+
+TEST_F(DecodedReadStreamTest, UndecodedSelectionRequiresSynchronousStream)
+{
+    add("valid", BAM_FPAIRED, 0, 100, 0, 200, std::string(150, 'A'));
+    finish();
+    const auto actual = run(1, broadMask(), true, true);
+    EXPECT_TRUE(actual.records.empty());
+    EXPECT_EQ(actual.error, "Undecoded streaming requires synchronous read preprocessing");
+}
 
 TEST_F(DecodedReadStreamTest, PreservesQualityThresholdAmbiguousBasesFlagsAndCoordinates)
 {
