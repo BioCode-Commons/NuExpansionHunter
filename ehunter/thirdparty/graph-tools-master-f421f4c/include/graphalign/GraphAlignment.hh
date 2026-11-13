@@ -46,9 +46,9 @@ public:
     typedef size_t size_type;
     typedef std::vector<Alignment> NodeAlignments;
     typedef NodeAlignments::const_iterator const_iterator;
-    GraphAlignment(const Path& path, const std::vector<Alignment>& alignments)
-        : path_(path)
-        , alignments_(alignments)
+    GraphAlignment(Path path, std::vector<Alignment> alignments)
+        : path_(std::move(path))
+        , alignments_(std::move(alignments))
     {
         assertValidity();
     }

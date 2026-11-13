@@ -28,6 +28,19 @@
 #include <string>
 #include <utility>
 
+#if defined(__aarch64__) && defined(__ARM_NEON)
+#include <arm_neon.h>
+#elif defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+#include <immintrin.h>
+#endif
+
+#if defined(EH_READ_DECODE_TEST_FORCE_SCALAR) && defined(EH_READ_DECODE_TEST_FORCE_AVX2)
+#error "Conflicting read decoder test dispatch overrides"
+#endif
+#if defined(EH_READ_DECODE_TEST_FORCE_AVX2) && !(defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__)))
+#error "The AVX2 read decoder test override requires an x86 compiler with target attributes"
+#endif
+
 #include "spdlog/spdlog.h"
 
 using std::pair;
@@ -110,6 +123,105 @@ public:
 
 static Cache_seq_nt16_str_lc seq_nt16_str_lc;
 
+namespace
+{
+#ifdef EH_READ_DECODE_TEST_INSTRUMENT_SIMD
+thread_local uint64_t decodedSimdBlocks = 0;
+#endif
+
+#if defined(__aarch64__) && defined(__ARM_NEON) && !defined(EH_READ_DECODE_TEST_FORCE_SCALAR)
+int32_t decodeReadNeonBlocks(int32_t length, const uint8_t* packed, const uint8_t* qualities, char* bases)
+{
+    const uint8x16_t alphabet = vld1q_u8(reinterpret_cast<const uint8_t*>(seq_nt16_str));
+    const uint8x16_t nibbleMask = vdupq_n_u8(15);
+    const uint8x16_t cutoff = vdupq_n_u8(20);
+    const uint8x16_t caseBit = vdupq_n_u8(0x20);
+    int32_t index = 0;
+    for (; index <= length - 32; index += 32)
+    {
+        const uint8x16_t encoded = vld1q_u8(packed + index / 2);
+        const uint8x16_t high = vshrq_n_u8(encoded, 4);
+        const uint8x16_t low = vandq_u8(encoded, nibbleMask);
+        const uint8x16_t first = vqtbl1q_u8(alphabet, vzip1q_u8(high, low));
+        const uint8x16_t second = vqtbl1q_u8(alphabet, vzip2q_u8(high, low));
+        // Every BAM symbol is an ASCII uppercase letter or '='. ORing the
+        // lowercase bit preserves '=' and exactly matches the scalar table.
+        const uint8x16_t firstCase = vandq_u8(vcleq_u8(vld1q_u8(qualities + index), cutoff), caseBit);
+        const uint8x16_t secondCase = vandq_u8(vcleq_u8(vld1q_u8(qualities + index + 16), cutoff), caseBit);
+        vst1q_u8(reinterpret_cast<uint8_t*>(bases + index), vorrq_u8(first, firstCase));
+        vst1q_u8(reinterpret_cast<uint8_t*>(bases + index + 16), vorrq_u8(second, secondCase));
+#ifdef EH_READ_DECODE_TEST_INSTRUMENT_SIMD
+        ++decodedSimdBlocks;
+#endif
+    }
+    return index;
+}
+#elif defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__)) && !defined(EH_READ_DECODE_TEST_FORCE_SCALAR)
+bool readDecodeAvx2Supported()
+{
+#ifdef EH_READ_DECODE_TEST_FORCE_AVX2
+    // Test-only override for an explicitly validated ISA/emulation target.
+    return true;
+#else
+    return __builtin_cpu_supports("avx2");
+#endif
+}
+
+// Only scalar arguments cross the baseline-ISA/AVX2 boundary. No global
+// -mavx2 flag or AVX2 instructions are required on unsupported x86 machines.
+int32_t __attribute__((target("avx2"), noinline)) decodeReadAvx2Blocks(
+    int32_t length, const uint8_t* packed, const uint8_t* qualities, char* bases)
+{
+    const __m128i alphabet128 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(seq_nt16_str));
+    const __m256i alphabet = _mm256_broadcastsi128_si256(alphabet128);
+    const __m128i nibbleMask = _mm_set1_epi8(15);
+    const __m256i cutoff = _mm256_set1_epi8(20);
+    const __m256i caseBit = _mm256_set1_epi8(0x20);
+    const __m256i zero = _mm256_setzero_si256();
+    int32_t index = 0;
+    for (; index <= length - 32; index += 32)
+    {
+        const __m128i encoded = _mm_loadu_si128(reinterpret_cast<const __m128i*>(packed + index / 2));
+        const __m128i high = _mm_and_si128(_mm_srli_epi16(encoded, 4), nibbleMask);
+        const __m128i low = _mm_and_si128(encoded, nibbleMask);
+        const __m128i first = _mm_unpacklo_epi8(high, low);
+        const __m128i second = _mm_unpackhi_epi8(high, low);
+        const __m256i nibbles = _mm256_inserti128_si256(_mm256_castsi128_si256(first), second, 1);
+        const __m256i decoded = _mm256_shuffle_epi8(alphabet, nibbles);
+        const __m256i quality = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(qualities + index));
+        // Saturating unsigned subtraction handles all qualities 0..255,
+        // including the BAM absent-quality value 255, without signed compares.
+        const __m256i lower = _mm256_cmpeq_epi8(_mm256_subs_epu8(quality, cutoff), zero);
+        _mm256_storeu_si256(reinterpret_cast<__m256i*>(bases + index),
+            _mm256_or_si256(decoded, _mm256_and_si256(lower, caseBit)));
+#ifdef EH_READ_DECODE_TEST_INSTRUMENT_SIMD
+        ++decodedSimdBlocks;
+#endif
+    }
+    return index;
+}
+#endif
+}
+
+#ifdef EH_READ_DECODE_TEST_INSTRUMENT_SIMD
+namespace detail
+{
+uint64_t readDecodeSimdBlocksForTesting() { return decodedSimdBlocks; }
+bool readDecodeSimdSupportedForTesting()
+{
+#if defined(EH_READ_DECODE_TEST_FORCE_SCALAR)
+    return false;
+#elif defined(__aarch64__) && defined(__ARM_NEON)
+    return true;
+#elif defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+    return readDecodeAvx2Supported();
+#else
+    return false;
+#endif
+}
+}
+#endif
+
 Read decodeRead(bam1_t* htsAlignPtr)
 {
     return decodeReadParts(bam_get_qname(htsAlignPtr), htsAlignPtr->core.flag, htsAlignPtr->core.l_qseq,
@@ -133,10 +245,20 @@ Read decodeReadParts(const char* qname, uint32_t samFlag, int32_t readLength,
 
         bases.resize(readLength);
 
-        // Each BAM byte encodes two bases. Decode both nibbles together so the
+        int32_t index = 0;
+        if (readLength >= 32)
+        {
+#if defined(__aarch64__) && defined(__ARM_NEON) && !defined(EH_READ_DECODE_TEST_FORCE_SCALAR)
+            index = decodeReadNeonBlocks(readLength, htsSeqPtr, htsQualPtr, &bases[0]);
+#elif defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__)) && !defined(EH_READ_DECODE_TEST_FORCE_SCALAR)
+            if (readDecodeAvx2Supported())
+                index = decodeReadAvx2Blocks(readLength, htsSeqPtr, htsQualPtr, &bases[0]);
+#endif
+        }
+        // Complete vector blocks never read beyond the actual BAM arrays.
+        // Each remaining BAM byte encodes two bases. Decode both nibbles so the
         // hot loop does not reload the byte or compute a variable shift for
         // each base. Quality casing remains independent for the two bases.
-        int32_t index = 0;
         for (; index < readLength - 1; index += 2)
         {
             const uint8_t packed = htsSeqPtr[index / 2];

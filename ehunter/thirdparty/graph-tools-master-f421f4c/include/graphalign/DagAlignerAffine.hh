@@ -155,7 +155,7 @@ namespace dagAligner
 
             backtrackPath<false>(edgeMap, start, firstNodeId, q, t, ret);
             alignMatrix_.template nextBestAlign<localAlign>(bestCell + 1, secondBestScore);
-            return ret.front();
+            return std::move(ret.front());
         }
 
     private:
@@ -312,7 +312,7 @@ namespace dagAligner
             {
                 return false;
             }
-            cigars.push_back(ret);
+            cigars.push_back(std::move(ret));
             return true;
         }
 

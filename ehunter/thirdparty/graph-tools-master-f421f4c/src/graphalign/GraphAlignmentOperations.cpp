@@ -21,6 +21,7 @@
 #include "graphalign/GraphAlignmentOperations.hh"
 
 #include <stdexcept>
+#include <utility>
 
 #include <boost/range/adaptor/reversed.hpp>
 
@@ -131,13 +132,13 @@ GraphAlignment decodeGraphAlignment(int32_t first_node_start, const string& grap
         node_ids.push_back(node_id);
 
         Alignment alignment(ref_pos, cigar);
-        alignments.push_back(alignment);
+        alignments.push_back(std::move(alignment));
     }
 
     // Convert to 0-based coordinates
     int32_t last_node_end = alignments.back().referenceStart() + alignments.back().referenceLength();
-    Path path(graph_ptr, first_node_start, node_ids, last_node_end);
-    return GraphAlignment(path, alignments);
+    Path path(graph_ptr, first_node_start, std::move(node_ids), last_node_end);
+    return GraphAlignment(std::move(path), std::move(alignments));
 }
 
 void splitNodeCigar(const string& node_cigar, string& cigar, NodeId& node_id)
@@ -180,14 +181,14 @@ GraphAlignment projectAlignmentOntoGraph(Alignment linear_alignment, Path path)
 
         if (linear_alignment_last_position <= last_position_of_path_on_this_node)
         {
-            alignments.push_back(linear_alignment);
+            alignments.push_back(std::move(linear_alignment));
             break;
         }
         else
         {
             Alignment suffix = linear_alignment.splitAtReferencePosition(last_position_of_path_on_this_node);
-            alignments.push_back(linear_alignment);
-            linear_alignment = suffix;
+            alignments.push_back(std::move(linear_alignment));
+            linear_alignment = std::move(suffix);
             linear_alignment.setReferenceStart(0);
         }
     }
@@ -195,7 +196,7 @@ GraphAlignment projectAlignmentOntoGraph(Alignment linear_alignment, Path path)
     Alignment& first_alignment = alignments.front();
     first_alignment.setReferenceStart(path.startPosition());
 
-    return GraphAlignment(path, alignments);
+    return GraphAlignment(std::move(path), std::move(alignments));
 }
 
 list<string> getQuerySequencesForEachNode(const GraphAlignment& graph_alignment, const string& query)

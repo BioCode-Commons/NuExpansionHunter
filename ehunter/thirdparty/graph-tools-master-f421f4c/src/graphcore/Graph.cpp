@@ -84,6 +84,17 @@ TextView Graph::nodeSeq(const NodeId node_id) const
     return mapped_.data ? mapped_.text(mappedNode(node_id).sequence) : TextView(nodes_[node_id].sequence);
 }
 
+size_t Graph::nodeSeqLength(const NodeId node_id) const
+{
+    assertNodeExists(node_id);
+    if (!mapped_.data)
+        return nodes_[node_id].sequence.size();
+    const auto sequence = mappedNode(node_id).sequence;
+    // Preserve the same mapped bounds checks as nodeSeq().
+    mapped_.array<char>(sequence);
+    return sequence.count;
+}
+
 CatalogRange<TextView> Graph::nodeSeqExpansion(NodeId node_id) const
 {
     assertNodeExists(node_id);

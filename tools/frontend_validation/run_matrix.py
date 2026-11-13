@@ -48,11 +48,13 @@ def source_record(path):
             'tracked_diff_returncode': diff['returncode']}
 
 
-def summary(pairs):
+def summary(pairs, max_rss_ratio=1.05):
     out = {'pairs': len(pairs), 'all_outputs_identical': all(p['outputs_identical'] for p in pairs)}
     for metric, getter in (
         ('wall', lambda r: r['wall_seconds']),
         ('read_processing', lambda r: r['phases_seconds']['read_processing_seconds']),
+        ('read_and_output', lambda r: r['phases_seconds']['read_processing_seconds']
+                                    + r['phases_seconds']['output_seconds']),
         ('cpu', lambda r: r['user_seconds'] + r['system_seconds']),
         ('rss', lambda r: r['peak_rss_bytes'])
     ):
@@ -73,8 +75,16 @@ def summary(pairs):
         keys = set().union(*(p[side]['phases_seconds'] for p in pairs))
         out['phase_median_seconds'][side] = {key: statistics.median(
             p[side]['phases_seconds'][key] for p in pairs if key in p[side]['phases_seconds']) for key in sorted(keys)}
-    out['interpretation'] = ('Descriptive paired observations; bootstrap intervals with few pairs are not '
-                             'a hardware-general speed guarantee. No automatic acceptance decision.')
+    out['interpretation'] = ('Descriptive paired speed observations; bootstrap intervals with few pairs are not '
+                             'a hardware-general speed guarantee. The RAM gate applies only to these runs.')
+    rss = out['rss']
+    out['ram_gate'] = {
+        'maximum_allowed_ratio': max_rss_ratio,
+        'median_rss_ratio': rss['candidate_median'] / rss['baseline_median'],
+        'maximum_rss_ratio': rss['candidate_max'] / rss['baseline_max'],
+        'passed': (rss['candidate_median'] <= max_rss_ratio * rss['baseline_median']
+                   and rss['candidate_max'] <= max_rss_ratio * rss['baseline_max']),
+        'scope': 'Observed process peak RSS across paired runs; not a bound for other workloads.'}
     return out
 
 
@@ -95,7 +105,37 @@ def main():
     parser.add_argument('--baseline-cache', type=Path)
     parser.add_argument('--candidate-cache', type=Path)
     parser.add_argument('--provenance-file', type=Path, action='append', default=[])
+    parser.add_argument('--cpu-list', help='Linux CPU IDs (comma-separated); pin this harness and all children to distinct physical cores')
+    parser.add_argument('--max-rss-ratio', type=float, default=1.05,
+                        help='RAM gate for both median and maximum process peak RSS (default 1.05)')
     args = parser.parse_args()
+    if not 1 <= args.max_rss_ratio < float('inf'):
+        parser.error('--max-rss-ratio must be finite and at least 1')
+    affinity = None
+    if args.cpu_list is not None:
+        if not sys.platform.startswith('linux') or not hasattr(os, 'sched_setaffinity'):
+            parser.error('--cpu-list requires Linux; worker counts alone do not enforce a CPU limit')
+        try:
+            cpus = [int(cpu) for cpu in args.cpu_list.split(',')]
+            if not cpus or len(cpus) != len(set(cpus)):
+                raise ValueError('CPU IDs must be nonempty and unique')
+            available = os.sched_getaffinity(0)
+            if not set(cpus) <= available:
+                raise ValueError('Requested CPUs are outside the current allowed affinity')
+            topology = []
+            for cpu in cpus:
+                directory = Path(f'/sys/devices/system/cpu/cpu{cpu}/topology')
+                topology.append((int((directory/'physical_package_id').read_text()),
+                                 int((directory/'core_id').read_text())))
+            if len(set(topology)) != len(cpus):
+                raise ValueError('CPU list includes SMT siblings; select distinct physical cores')
+            os.sched_setaffinity(0, cpus)
+            if os.sched_getaffinity(0) != set(cpus):
+                raise ValueError('CPU affinity verification failed')
+            affinity = {'cpu_ids': cpus, 'package_core_ids': topology,
+                        'physical_cores': len(cpus), 'inherited_by_all_children': True}
+        except (OSError, ValueError) as error:
+            parser.error(str(error))
     if min(args.threads + [args.pairs]) < 1 or min(args.preprocess + [args.decode, args.encode]) < 0:
         parser.error('Invalid worker/pair counts')
     supplied_caches = {'baseline': args.baseline_cache, 'candidate': args.candidate_cache}
@@ -124,9 +164,12 @@ def main():
     environment = {'platform': platform.platform(), 'machine': platform.machine(),
                    'python': sys.version, 'logical_cpus': os.cpu_count(),
                    'thread_scope': 'Compute worker counts; no physical-core simulation or CPU affinity applied.'}
+    environment['cpu_affinity'] = affinity
+    if affinity is not None:
+        environment['thread_scope'] = 'All subprocess threads restricted to the recorded distinct physical cores.'
     if sys.platform == 'darwin':
         environment['cpu'] = capture(['/usr/sbin/sysctl', 'hw.physicalcpu', 'hw.logicalcpu', 'machdep.cpu.brand_string'])
-    result = {'scope': 'Local synthetic streaming measurements only; not real WGS or native 16/32-core server throughput.',
+    result = {'scope': 'Synthetic streaming measurements only; not real WGS. See recorded thread budget and CPU affinity.',
               'environment': environment,
               'parameters': {k: [str(v) for v in val] if isinstance(val, list) else str(val) if isinstance(val, Path) else val
                              for k, val in vars(args).items()},
@@ -149,6 +192,9 @@ def main():
         telemetry = re.findall(r'Read preprocessing workers=(\d+) peak_worker_cache_bytes=(\d+) synchronous_large_records=(\d+)', log)
         if telemetry:
             record['preprocessing'] = dict(zip(('workers', 'peak_worker_cache_bytes', 'synchronous_large_records'), map(int, telemetry[-1])))
+        routing = re.findall(r'Deferred decoding selected_records=(\d+) routed_pairs=(\d+) skipped_pairs=(\d+)', log)
+        if routing:
+            record['deferred_decoding'] = dict(zip(('selected_records', 'routed_pairs', 'skipped_pairs'), map(int, routing[-1])))
         return record
 
     for inputs_dir in inputs:
@@ -225,7 +271,7 @@ def main():
                         'outputs_identical': record['outputs_identical']}), flush=True)
                     if not record['outputs_identical']:
                         raise RuntimeError('Output mismatch; all evidence retained in ' + str(root/'results.json'))
-                config['summary'] = summary(config['pairs'])
+                config['summary'] = summary(config['pairs'], args.max_rss_ratio)
                 save()
                 print(json.dumps({'fixture': fixture, 'threads': threads, 'preprocess': preprocess,
                                   'summary': config['summary']}), flush=True)

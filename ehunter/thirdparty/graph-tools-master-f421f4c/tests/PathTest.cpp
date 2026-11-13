@@ -117,6 +117,26 @@ TEST(GettingPathsequence, TypicalPathOnStrGraph_sequenceReturned)
     EXPECT_EQ("TTATAT", path.seq());
 }
 
+TEST(GettingPathBoundsOnNodeByIndex, LengthQueriesTrackMutableGraphAndRetainValidation)
+{
+    Graph graph = makeStrGraph("AAAA", "CG", "TTTT");
+    Path path(&graph, 1, { 0, 1, 1, 2 }, 3);
+    EXPECT_EQ(path.length(), 10u);
+    graph.setNodeSeq(1, "CGTGA");
+    EXPECT_EQ(path.getEndPositionOnNodeByIndex(1), 5);
+    EXPECT_EQ(path.getNodeOverlapLengthByIndex(2), 5u);
+    EXPECT_EQ(path.length(), 16u);
+    EXPECT_EQ(path.getDistanceFromPathStart(2, 1), 14);
+    path.removeEndNode();
+    EXPECT_EQ(path.endPosition(), 5);
+    EXPECT_EQ(path.length(), 13u);
+
+    // Length access must still validate endpoints after external graph edits.
+    graph.setNodeSeq(1, "C");
+    EXPECT_THROW(path.shiftEndAlongNode(0), std::logic_error);
+    EXPECT_THROW(Path(&graph, 2, { 1 }, 2), std::logic_error);
+}
+
 TEST(CheckingIfPathOverlapsNode, TypicalPath_OverlapChecked)
 {
     Graph graph = makeStrGraph("TTT", "AT", "CCCCC");

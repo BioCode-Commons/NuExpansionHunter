@@ -340,7 +340,7 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
 
             suffix_alignment.setReferenceStart(prefix_plus_seed_length);
             Alignment full_alignment = mergeAlignments(prefix_plus_kmer_alignment, suffix_alignment);
-            top_paths_and_alignments.push_back(make_pair(full_path, full_alignment));
+            top_paths_and_alignments.emplace_back(std::move(full_path), std::move(full_alignment));
         }
     }
 
@@ -349,7 +349,7 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
     {
         Path& path = path_and_alignment.first;
         Alignment& alignment = path_and_alignment.second;
-        top_graph_alignments.push_back(projectAlignmentOntoGraph(alignment, path));
+        top_graph_alignments.push_back(projectAlignmentOntoGraph(std::move(alignment), std::move(path)));
     }
 
     top_graph_alignments.sort();

@@ -96,7 +96,7 @@ class PinnedDagAligner
             if (Cigar::NODE_START == op.code_)
             {
                 if (path.lastNodeId() != op.value_
-                    || std::size_t(path.endPosition()) == graph.nodeSeq(op.value_).length())
+                    || std::size_t(path.endPosition()) == graph.nodeSeqLength(op.value_))
                 {
                     path.extendEndToNode(op.value_);
                 }
@@ -145,7 +145,7 @@ class PinnedDagAligner
 
     typedef int MappedId;
 
-    void unmapNodeIds(const std::map<MappedId, NodeId>& originalIds, graphalign::dagAligner::Cigar& cigar)
+    void unmapNodeIds(const std::vector<NodeId>& originalIds, graphalign::dagAligner::Cigar& cigar)
     {
         using namespace graphalign::dagAligner;
         for (Cigar::Operation& op : cigar)
@@ -163,7 +163,7 @@ class PinnedDagAligner
      */
     template <typename PathT>
     void fixFirstNodeExpansion(
-        const std::vector<MappedId>& nodeIds, const std::map<MappedId, NodeId>& originalIds, const PathT& seedPath,
+        const std::vector<MappedId>& nodeIds, const std::vector<NodeId>& originalIds, const PathT& seedPath,
         graphalign::dagAligner::Cigar& cigar)
     {
         using namespace graphalign::dagAligner;
@@ -171,7 +171,7 @@ class PinnedDagAligner
         if (seedPath.lastNodeId() != originalIds.at(cigar.firstNode()) || MappedId(cigar.firstNode()) != nodeIds[0])
         {
             const int skipLen
-                = seedPath.graphRawPtr()->nodeSeq(seedPath.lastNodeId()).length() - seedPath.endPosition();
+                = seedPath.graphRawPtr()->nodeSeqLength(seedPath.lastNodeId()) - seedPath.endPosition();
             if (0 > skipLen)
             {
                 throw std::logic_error("invalid distance to skip");
@@ -206,7 +206,7 @@ public:
 
         // when repeat expansions are unrolled each copy gets a unique id, so, all
         // ids have to be remapped
-        std::map<MappedId, NodeId> originalIds;
+        std::vector<NodeId> originalIds;
 
         bfsDiscoverEdges(
             *seedPath.graphRawPtr(), seedPath.nodeIds().back(), seedPath.endPosition(), extensionLen, nodeIds, edges,
@@ -235,7 +235,7 @@ public:
                 std::list<Operation> operations;
                 parseGraphCigar(*seedPath.graphRawPtr(), cigar, path, operations);
 
-                ret.push_back(PathAndAlignment(path, Alignment(seedPath.seq().length(), operations)));
+                ret.push_back(PathAndAlignment(std::move(path), Alignment(seedPath.length(), std::move(operations))));
             }
         }
 
@@ -252,7 +252,7 @@ public:
 
         // when repeat expansions are unrolled each copy gets a unique id, so, all
         // ids have to be remapped
-        std::map<MappedId, NodeId> originalIds;
+        std::vector<NodeId> originalIds;
 
         ReverseGraph rg(*seedPath.graphRawPtr());
         bfsDiscoverEdges(
@@ -288,7 +288,7 @@ public:
 
                 // reversed alignments always start at the beginning of the path because
                 // the seed path gets start-extended to incorporate them
-                ret.push_back(PathAndAlignment(path, Alignment(0, operations)));
+                ret.push_back(PathAndAlignment(std::move(path), Alignment(0, std::move(operations))));
             }
         }
 
@@ -302,7 +302,7 @@ private:
     {
         std::map<NodeId, int> nodeStartSeqOffset;
 
-        if (graph.nodeSeq(startNodeId).length() == startNodeOffset)
+        if (graph.nodeSeqLength(startNodeId) == startNodeOffset)
         {
             // flag empty start node in a special way
             nodeStartSeqOffset[startNodeId] = -1;
@@ -323,15 +323,15 @@ private:
             const NodeId currentNodeId = shouldVisit.front();
             shouldVisit.pop_front();
 
-            const auto currentNodeSeq = graph.nodeSeq(currentNodeId);
+            const auto currentNodeSeqLength = graph.nodeSeqLength(currentNodeId);
             const int currentNodeSeqOffset = nodeStartSeqOffset[currentNodeId];
 
             // avoid dealing with individual node startNodeOffset (only start node has it)
             // by pretending the sequence starts at the start node start
-            if (seqLen + startNodeOffset - std::max(0, currentNodeSeqOffset) > currentNodeSeq.length())
+            if (seqLen + startNodeOffset - std::max(0, currentNodeSeqOffset) > currentNodeSeqLength)
             {
                 const int successorSeqOffset
-                    = -1 == currentNodeSeqOffset ? 0 : currentNodeSeqOffset + currentNodeSeq.length();
+                    = -1 == currentNodeSeqOffset ? 0 : currentNodeSeqOffset + currentNodeSeqLength;
                 // sequence does not terminate at this node, enqueue successors
                 const auto successors = graph.successors(currentNodeId);
                 for (const NodeId successorId : successors)
@@ -361,7 +361,7 @@ private:
     template <typename GraphT>
     static IdEdges unrollRepeats(
         const GraphT& graph, const std::size_t seqLen, const std::map<NodeId, int>& nodeStartSeqOffset,
-        std::map<MappedId, NodeId>& originalIds, std::multimap<NodeId, MappedId>& mappedIds)
+        std::vector<NodeId>& originalIds, std::multimap<NodeId, MappedId>& mappedIds)
     {
         IdEdges idEdges;
         for (const auto& nodeIdOffset : nodeStartSeqOffset)
@@ -374,7 +374,7 @@ private:
             const auto successors = graph.successors(nodeIdOffset.first);
             if (successors.end() != successors.find(nodeIdOffset.first))
             {
-                const std::size_t nodeSeqLen = graph.nodeSeq(nodeIdOffset.first).length();
+                const std::size_t nodeSeqLen = graph.nodeSeqLength(nodeIdOffset.first);
                 // don't forget empty repeat start node has special sequence offset -1
                 for (std::size_t lenLeft = seqLen - std::max(0, nodeIdOffset.second); lenLeft;)
                 {
@@ -382,7 +382,7 @@ private:
                     IdEdge edge(mappedIds.size(), mappedIds.size() + 1);
                     idEdges.push_back(edge);
                     mappedIds.emplace(nodeIdOffset.first, originalIds.size());
-                    originalIds.emplace(originalIds.size(), nodeIdOffset.first);
+                    originalIds.push_back(nodeIdOffset.first);
                     lenLeft -= std::min(lenLeft, nodeSeqLen);
                 }
 
@@ -392,7 +392,7 @@ private:
             else
             {
                 mappedIds.emplace(nodeIdOffset.first, originalIds.size());
-                originalIds.emplace(originalIds.size(), nodeIdOffset.first);
+                originalIds.push_back(nodeIdOffset.first);
             }
         }
 
@@ -449,7 +449,7 @@ private:
      */
     template <typename GraphT>
     static void linkPredecessors(
-        const GraphT& graph, const std::map<MappedId, NodeId>& originalIds,
+        const GraphT& graph, const std::vector<NodeId>& originalIds,
         const std::multimap<NodeId, MappedId>& mappedIds, IdEdges& idEdges)
     {
         for (MappedId mappedId = 0; MappedId(mappedIds.size()) != mappedId;)
@@ -492,7 +492,7 @@ private:
         }
     }
 
-    static std::vector<std::size_t> indexEdges(const IdEdges& idEdges, const std::map<MappedId, NodeId>& originalIds)
+    static std::vector<std::size_t> indexEdges(const IdEdges& idEdges, const std::vector<NodeId>& originalIds)
     {
         std::vector<std::size_t> index;
         index.reserve(idEdges.size() + 1);
@@ -515,7 +515,7 @@ private:
                 ++index.back();
             }
             // add nodes without predecessors to index
-            while (lastId != MappedId(originalIds.rbegin()->first))
+            while (lastId != MappedId((originalIds.size() - 1)))
             {
                 index.push_back(index.back());
                 ++lastId;
@@ -528,7 +528,7 @@ private:
     template <typename GraphT>
     static std::string buildTargetSequence(
         const GraphT& graph, const std::size_t startNodeOffset, const std::vector<MappedId>& nodeIds,
-        const std::map<MappedId, NodeId>& originalIds, const std::map<NodeId, int>& nodeStartSeqOffset,
+        const std::vector<NodeId>& originalIds, const std::map<NodeId, int>& nodeStartSeqOffset,
         const std::vector<std::size_t>& idEdgesIndex, const IdEdges& idEdges, std::vector<Edge>& edges)
     {
         std::string target;
@@ -576,8 +576,19 @@ private:
     static void bfsDiscoverEdges(
         const GraphT& graph, const NodeId startNodeId, const std::size_t startNodeOffset, const std::size_t seqLen,
         std::vector<MappedId>& nodeIds, std::vector<Edge>& edges, std::string& target,
-        std::map<MappedId, NodeId>& originalIds)
+        std::vector<NodeId>& originalIds)
     {
+        const auto startNodeLength = graph.nodeSeqLength(startNodeId);
+        if (seqLen && startNodeOffset < startNodeLength && seqLen <= startNodeLength - startNodeOffset)
+        {
+            // Extraction cannot leave this node, so the general BFS/unrolling
+            // produces exactly one mapped node and no edges. Keep its complete
+            // remaining sequence: truncating it to seqLen would change DP.
+            nodeIds.assign(1, 0);
+            originalIds.assign(1, startNodeId);
+            target = graph.nodeSeq(startNodeId).substr(startNodeOffset);
+            return;
+        }
         // length of shortest path to the first node character
         const std::map<NodeId, int> nodeStartSeqOffset = extractSubgraph(graph, startNodeId, startNodeOffset, seqLen);
 

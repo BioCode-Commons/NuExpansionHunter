@@ -84,6 +84,8 @@ public:
     TextView nodeName(NodeId node_id) const;
     void setNodeName(NodeId node_id, const std::string& node_name);
     TextView nodeSeq(NodeId node_id) const;
+    // Length-only queries do not need to materialize reversed sequence text.
+    size_t nodeSeqLength(NodeId node_id) const;
     void setNodeSeq(NodeId node_id, const std::string& sequence);
     CatalogRange<TextView> nodeSeqExpansion(NodeId node_id) const;
     void addEdge(NodeId source_node_id, NodeId sink_node_id);
@@ -147,6 +149,7 @@ public:
         std::reverse(ret.begin(), ret.end());
         return ret;
     }
+    size_t nodeSeqLength(NodeId nodeId) const { return graph_.nodeSeqLength(nodeId); }
     bool hasEdge(NodeId sourceNodeId, NodeId sinkNodeId) const { return graph_.hasEdge(sourceNodeId, sinkNodeId); }
 
     SortedLabels allLabels() const { return graph_.allLabels(); }

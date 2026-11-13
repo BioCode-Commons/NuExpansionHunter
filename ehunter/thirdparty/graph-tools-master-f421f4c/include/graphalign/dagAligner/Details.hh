@@ -35,6 +35,7 @@
 #define BOOST_RESULT_OF_USE_DECLTYPE
 
 #include <boost/range/adaptor/transformed.hpp>
+#include <numeric>
 
 namespace graphalign
 {
@@ -63,6 +64,7 @@ namespace dagAligner
         std::vector<std::size_t> index_;
 
         OffsetEdges prevOffsets_;
+        bool singleLinearNode_ = false;
 
     public:
         EdgeMap(
@@ -95,6 +97,30 @@ namespace dagAligner
             {
                 throw std::invalid_argument(
                     "last pair of offsets must point to itself and last character in the graph");
+            }
+            if (edges.size() == 1 && nodeIds.size() == 1 && edges.back().second > 0)
+            {
+                const auto length = std::size_t(edges.back().second);
+                // Same offsets as the general constructor, with no graph
+                // junctions or temporary closing entry. These contiguous
+                // fills are also suitable for compiler vectorization.
+                offsetNodeIds_.assign(length, nodeIds.front());
+                index_.resize(length + 1);
+                std::iota(index_.begin(), index_.end(), std::size_t(0));
+                prevOffsets_.resize(length);
+                std::iota(prevOffsets_.begin(), prevOffsets_.end(), -1);
+                singleLinearNode_ = true;
+                return;
+            }
+            // The closing marker already gives the target length. Reserve for
+            // all per-base entries and the temporary closing edge, which is
+            // removed below, rather than repeatedly growing three vectors.
+            if (edges.back().second >= 0)
+            {
+                const auto length = std::size_t(edges.back().second);
+                offsetNodeIds_.reserve(length);
+                index_.reserve(length + 2);
+                prevOffsets_.reserve(length + edges.size() + 1);
             }
             std::vector<NodeId>::const_iterator nodeIdIt = nodeIds.begin();
 
@@ -164,6 +190,10 @@ namespace dagAligner
         }
 
         std::size_t getNodeId(std::size_t t) const { return offsetNodeIds_.at(t); }
+        bool hasSingleLinearNode(std::size_t length) const
+        {
+            return singleLinearNode_ && offsetNodeIds_.size() == length;
+        }
 
         friend std::ostream& operator<<(std::ostream& os, const EdgeMap& edgeMap)
         {
