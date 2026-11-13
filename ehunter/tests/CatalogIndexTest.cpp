@@ -14,6 +14,7 @@
 #include <fstream>
 #include <functional>
 #include <map>
+#include <random>
 #include <sstream>
 #include <utility>
 #include <unistd.h>
@@ -50,6 +51,19 @@ std::map<std::string, std::vector<graphtools::Path>> enumerate(const graphtools:
                     expected[sequence].push_back(path);
             }
     return expected;
+}
+
+void expectSameBundles(
+    const std::vector<ehunter::AnalyzerBundle>& expected, const std::vector<ehunter::AnalyzerBundle>& observed)
+{
+    ASSERT_EQ(expected.size(), observed.size());
+    for (size_t i = 0; i < expected.size(); ++i)
+    {
+        SCOPED_TRACE(i);
+        EXPECT_EQ(expected[i].locusIndex, observed[i].locusIndex);
+        EXPECT_EQ(expected[i].regionType, observed[i].regionType);
+        EXPECT_EQ(expected[i].inputType, observed[i].inputType);
+    }
 }
 }
 
@@ -476,6 +490,60 @@ TEST(CatalogCoordinateSweep, PreservesRemoteMatesOfftargetsDuplicatesAndOrder)
     ASSERT_EQ(expected.size(), observed.size());
     for (size_t i = 0; i < expected.size(); ++i)
         EXPECT_EQ(expected[i].locusIndex, observed[i].locusIndex);
+
+    // Random read lengths and remote mate coordinates exercise both advancing
+    // sweeps and their backward-query fallback, using the unchanged query as oracle.
+    std::mt19937 random(41723);
+    for (int round = 0; round < 4; ++round)
+    {
+        AnalyzerFinder streaming(analyzers), mappedStreaming(mappedAnalyzers, &mapped);
+        for (int position = 0; position < 5500; position += 3)
+        {
+            SCOPED_TRACE(position);
+            const int contig = int(random() % 3);
+            const int start = position % 2 ? int(random() % (position + 1)) : position;
+            const int end = start + random() % 180;
+            const int mateContig = int(random() % 5) - 1;
+            const int mateStart = random() % 5500;
+            const int mateEnd = mateStart + random() % 180;
+            const auto legacy = finder.query(contig, start, end, mateContig, mateStart, mateEnd);
+            expectSameBundles(legacy, streaming.queryStreaming(contig, start, end, mateContig, mateStart, mateEnd));
+            expectSameBundles(
+                legacy, mappedStreaming.queryStreaming(contig, start, end, mateContig, mateStart, mateEnd));
+        }
+    }
+}
+
+TEST(CatalogCoordinateSweep, EmptyAndSingletonCoalescingMatchesLegacyQueries)
+{
+    using namespace ehunter;
+    HeuristicParameters params(1000, 20, true, graphtools::AlignerType::DAG_ALIGNER, 2, 1, 1, 2, 1);
+    auto writer = std::make_shared<graphtools::BlankAlignmentWriter>();
+    std::vector<std::unique_ptr<locus::LocusAnalyzer>> analyzers;
+    for (int contig = 0; contig < 2; ++contig)
+    {
+        LocusSpecification spec(
+            std::to_string(contig), ChromType::kAutosome, { GenomicRegion(contig, 100, 200) },
+            graphtools::makeDeletionGraph("ACGT", "C", "ACGT"), {}, GenotyperParameters());
+        spec.setOfftargetReadExtractionRegions(
+            { GenomicRegion(contig, 300, 400), GenomicRegion(contig, 2000, 2100) });
+        analyzers.emplace_back(new locus::LocusAnalyzer(spec, params, writer));
+    }
+    AnalyzerFinder legacy(analyzers), streaming(analyzers);
+    const std::vector<int> positions { 0, 99, 100, 150, 200, 250, 300, 350, 400, 1000, 2000, 2050, 2200 };
+    for (int contig = -1; contig < 3; ++contig)
+        for (int start : positions)
+            for (int mateContig = -1; mateContig < 3; ++mateContig)
+                for (int mateStart : positions)
+                    for (int length : { 0, 20, 120 })
+                    {
+                        SCOPED_TRACE(start);
+                        SCOPED_TRACE(mateStart);
+                        expectSameBundles(
+                            legacy.query(contig, start, start + length, mateContig, mateStart, mateStart + length),
+                            streaming.queryStreaming(
+                                contig, start, start + length, mateContig, mateStart, mateStart + length));
+                    }
 }
 
 TEST(PreparedCatalog, WholeCatalogRoundTripAndIndependentHandleLifetime)

@@ -1,6 +1,7 @@
 #include "alignment/OrientationPredictor.hh"
 
 #include <algorithm>
+#include <limits>
 #include <random>
 
 #include "gtest/gtest.h"
@@ -108,6 +109,79 @@ TEST(OrientationPrediction, ReverseAdapterPreservesAmbiguityCaseAndInvalidWindow
                 std::string query = "ctgCTGctgCTGctgCTGctg";
                 query[8] = static_cast<char>(byte);
                 EXPECT_EQ(exhaustivePrediction(query, index, minimum), predictor.predict(query));
+            }
+        }
+    }
+}
+
+TEST(OrientationPrediction, BoundedScansPreserveLateHitsAndStrandTies)
+{
+    const auto graph = graphtools::makeStrGraph("AAAAAA", "CAG", "AAAAAA");
+    const graphtools::KmerIndex index(graph, 3, true);
+    for (int minimum : { -1, 0, 1, 2, 3, 4, 50, std::numeric_limits<int>::max() })
+    {
+        const OrientationPredictor predictor(&graph, 3, minimum);
+        // Mix both strand-specific motifs with invalid windows. In particular,
+        // forward may stop below threshold while reverse still passes, or both
+        // strands may pass with equal counts and must retain the forward tie.
+        for (int forwardRepeats = 0; forwardRepeats <= 5; ++forwardRepeats)
+        {
+            for (int reverseRepeats = 0; reverseRepeats <= 5; ++reverseRepeats)
+            {
+                for (size_t padding : { 0u, 1u, 2u, 3u, 17u, 150u })
+                {
+                    std::string query(padding, 'N');
+                    for (int i = 0; i < forwardRepeats; ++i)
+                        query += "cag";
+                    query += 'N';
+                    for (int i = 0; i < reverseRepeats; ++i)
+                        query += "CTG";
+                    query += std::string(padding, 'N');
+                    EXPECT_EQ(exhaustivePrediction(query, index, minimum), predictor.predict(query))
+                        << "minimum=" << minimum << " query=" << query;
+                }
+            }
+        }
+    }
+}
+
+TEST(OrientationPrediction, BoundedScansMatchExhaustiveRandomizedCatalogs)
+{
+    std::mt19937 random(921632);
+    const std::string alphabet = "ACGTacgtNRYry";
+    for (int graphNumber = 0; graphNumber < 5; ++graphNumber)
+    {
+        std::string left(40, 'A'), motif(1 + graphNumber, 'A'), right(40, 'A');
+        for (auto sequence : { &left, &motif, &right })
+            for (char& base : *sequence)
+                base = "ACGT"[random() % 4];
+        const auto graph = graphtools::makeStrGraph(left, motif, right);
+        for (int k = 1; k <= 16; ++k)
+        {
+            const graphtools::KmerIndex index(graph, k, true);
+            for (int minimum : { -1, 0, 1, 2, 3, 5, 20 })
+            {
+                const OrientationPredictor predictor(&graph, k, minimum);
+                for (int trial = 0; trial < 30; ++trial)
+                {
+                    std::string query(random() % 200, 'A');
+                    for (char& base : query)
+                        base = alphabet[random() % alphabet.size()];
+                    // Half the reads contain genuine matching substrings, in
+                    // either orientation and potentially near the bound.
+                    if (trial % 2 == 0)
+                    {
+                        std::string matching = left;
+                        for (int repeat = 0; repeat < trial; ++repeat)
+                            matching += motif;
+                        matching += right;
+                        if (trial % 4 == 0)
+                            matching = graphtools::reverseComplement(matching);
+                        query.insert(query.empty() ? 0 : random() % query.size(), matching);
+                    }
+                    EXPECT_EQ(exhaustivePrediction(query, index, minimum), predictor.predict(query))
+                        << "graph=" << graphNumber << " k=" << k << " minimum=" << minimum << " query=" << query;
+                }
             }
         }
     }

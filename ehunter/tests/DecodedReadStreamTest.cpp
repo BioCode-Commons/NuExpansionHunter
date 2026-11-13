@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include <cstdint>
+#include <cctype>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -9,9 +10,43 @@
 #include <boost/filesystem.hpp>
 
 #include "sample/DecodedReadStream.hh"
+#include "core/HtsHelpers.hh"
 
 namespace
 {
+TEST(HtsReadParts, MatchesScalarDecoderForAllPackedBasesAndQualityBoundaries)
+{
+    // Exercise all 16 BAM symbols, both nibbles, odd lengths, and the inclusive
+    // quality cutoff (including absent BAM qualities, represented as 255).
+    const std::vector<uint8_t> qualities = { 0, 19, 20, 21, 40, 255 };
+    for (unsigned packed = 0; packed != 256; ++packed)
+    {
+        for (const auto firstQuality : qualities)
+        {
+            for (const auto secondQuality : qualities)
+            {
+                const uint8_t sequence[] = { static_cast<uint8_t>(packed), static_cast<uint8_t>(255 - packed) };
+                const uint8_t quality[] = { firstQuality, secondQuality, firstQuality };
+                for (int length = 1; length <= 3; ++length)
+                {
+                    std::string expected;
+                    for (int base = 0; base < length; ++base)
+                    {
+                        const char value = seq_nt16_str[bam_seqi(sequence, base)];
+                        expected += quality[base] <= 20 ? static_cast<char>(std::tolower(value)) : value;
+                    }
+                    const auto read = ehunter::htshelpers::decodeReadParts(
+                        "packed-bases", BAM_FPAIRED | BAM_FREAD1 | BAM_FREVERSE, length, sequence, quality);
+                    ASSERT_EQ(read.sequence(), expected);
+                    ASSERT_EQ(read.fragmentId(), "packed-bases");
+                    ASSERT_TRUE(read.isFirstMate());
+                    ASSERT_TRUE(read.isReversed());
+                }
+            }
+        }
+    }
+}
+
 struct RecordSnapshot
 {
     int32_t contig, mateContig;

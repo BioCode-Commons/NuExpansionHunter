@@ -39,10 +39,25 @@ using std::vector;
 namespace ehunter
 {
 
-template <bool reverseComplement = false>
-static int countNonoverlappingKmerMatches(const string& query, const KmerIndex& kmerIndex)
+// A failing scan may return a partial count below minimumMatches. A passing
+// forward scan remains exact because its count determines which strand wins.
+template <bool reverseComplement = false, bool stopAtThreshold = false>
+static int scanNonoverlappingKmerMatches(const string& query, const KmerIndex& kmerIndex, int minimumMatches)
 {
     const std::size_t kmerLength = kmerIndex.kmerLength();
+    // At position p, at most floor((length - p) / k) further nonoverlapping
+    // matches can fit. Update the equivalent position bound only on a hit,
+    // avoiding a division or extra threshold check at every rejected k-mer.
+    size_t lastPossibleStart = query.length();
+    if (kmerLength > 0)
+    {
+        const size_t requiredMatches = static_cast<size_t>(std::max(minimumMatches, 1));
+        if (requiredMatches > query.length() / kmerLength)
+        {
+            return 0;
+        }
+        lastPossibleStart -= requiredMatches * kmerLength;
+    }
     int matchCount = 0;
     size_t position = 0;
     size_t scanned = 0;
@@ -50,7 +65,7 @@ static int countNonoverlappingKmerMatches(const string& query, const KmerIndex& 
     uint32_t key = 0;
     // KmerIndex uses at most 32 bits; widening the mask shift also covers k=16.
     const uint32_t mask = static_cast<uint32_t>((uint64_t(1) << (2 * kmerLength)) - 1);
-    while (position + kmerLength <= query.length())
+    while (position <= lastPossibleStart)
     {
         // Keep the scan inside the current window, including when the window is empty.
         scanned = std::max(scanned, position);
@@ -92,6 +107,14 @@ static int countNonoverlappingKmerMatches(const string& query, const KmerIndex& 
         {
             ++matchCount;
             position += kmerLength;
+            if (matchCount < minimumMatches)
+            {
+                lastPossibleStart += kmerLength;
+            }
+            else if (stopAtThreshold)
+            {
+                return matchCount;
+            }
         }
         else
         {
@@ -103,7 +126,7 @@ static int countNonoverlappingKmerMatches(const string& query, const KmerIndex& 
 
 OrientationPrediction OrientationPredictor::predict(const std::string& query) const
 {
-    const int numForwardMatches = countNonoverlappingKmerMatches(query, kmerIndex_);
+    const int numForwardMatches = scanNonoverlappingKmerMatches(query, kmerIndex_, minKmerMatchesToPass_);
     // Neither orientation can contain more than floor(query length / k)
     // nonoverlapping matches. Forward wins ties, so a passing forward score
     // at that upper bound cannot be improved by scanning the reverse strand.
@@ -112,23 +135,17 @@ OrientationPrediction OrientationPredictor::predict(const std::string& query) co
     {
         return OrientationPrediction::kAlignsInOriginalOrientation;
     }
-    const int numReverseComplementMatches = countNonoverlappingKmerMatches<true>(query, kmerIndex_);
-
-    const int maxMatches = std::max(numForwardMatches, numReverseComplementMatches);
-
-    if (maxMatches < minKmerMatchesToPass_)
-    {
-        return OrientationPrediction::kDoesNotAlign;
-    }
-
-    if (numForwardMatches >= numReverseComplementMatches)
-    {
-        return OrientationPrediction::kAlignsInOriginalOrientation;
-    }
-    else
+    const bool forwardPasses = numForwardMatches >= minKmerMatchesToPass_;
+    // Passing forward counts are exact. A failed forward scan need not be:
+    // reverse only has to pass the threshold in that case. Forward wins ties.
+    const int reverseMatchesToWin = forwardPasses ? numForwardMatches + 1 : minKmerMatchesToPass_;
+    const int numReverseComplementMatches
+        = scanNonoverlappingKmerMatches<true, true>(query, kmerIndex_, reverseMatchesToWin);
+    if (numReverseComplementMatches >= reverseMatchesToWin)
     {
         return OrientationPrediction::kAlignsInReverseComplementOrientation;
     }
+    return forwardPasses ? OrientationPrediction::kAlignsInOriginalOrientation : OrientationPrediction::kDoesNotAlign;
 }
 
 std::ostream& operator<<(std::ostream& out, OrientationPrediction orientationPrediction)

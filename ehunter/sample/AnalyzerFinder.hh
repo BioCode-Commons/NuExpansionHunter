@@ -102,6 +102,7 @@ private:
         std::vector<SweepInterval> intervals;
         graphtools::CatalogRange<PreparedInterval> prepared;
         std::vector<std::size_t> active;
+        std::vector<std::size_t> matching;
         std::size_t next = 0;
         int64_t position = -1;
         size_t size() const { return prepared.empty() ? intervals.size() : prepared.size(); }

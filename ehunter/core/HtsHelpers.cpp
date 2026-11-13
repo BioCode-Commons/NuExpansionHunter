@@ -133,10 +133,22 @@ Read decodeReadParts(const char* qname, uint32_t samFlag, int32_t readLength,
 
         bases.resize(readLength);
 
-        for (int32_t index = 0; index < readLength; ++index)
+        // Each BAM byte encodes two bases. Decode both nibbles together so the
+        // hot loop does not reload the byte or compute a variable shift for
+        // each base. Quality casing remains independent for the two bases.
+        int32_t index = 0;
+        for (; index < readLength - 1; index += 2)
+        {
+            const uint8_t packed = htsSeqPtr[index / 2];
+            const char* first((htsQualPtr[index] <= lowBaseQualityCutoff) ? seq_nt16_str_lc.data : seq_nt16_str);
+            const char* second((htsQualPtr[index + 1] <= lowBaseQualityCutoff) ? seq_nt16_str_lc.data : seq_nt16_str);
+            bases[index] = first[packed >> 4];
+            bases[index + 1] = second[packed & 15];
+        }
+        if (index < readLength)
         {
             const char* converter((htsQualPtr[index] <= lowBaseQualityCutoff) ? seq_nt16_str_lc.data : seq_nt16_str);
-            bases[index] = converter[bam_seqi(htsSeqPtr, index)];
+            bases[index] = converter[htsSeqPtr[index / 2] >> 4];
         }
     }
 
