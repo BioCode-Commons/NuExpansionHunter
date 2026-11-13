@@ -1,0 +1,48 @@
+NuExpansionHunter: further streaming read-processing optimization (2026-11-13)
+
+This round speeds up the complete read-processing phase by 1.37-1.62x on the five synthetic 150 bp / 10% target fixtures, relative to PR #10 commit 66200f6. It does not establish a uniform additional 1.5x: the variable-quality and indel cases fall short, and near10 is just below 1.5x (1.498877x). Every measured pair and excluded warmup meets the output-equivalence policy. One measured-pair RAM peak exceeds the original +5% gate and was explicitly accepted by the user; the raw failure remains in benchmark-results.json.
+
+Baseline: 66200f627c7d7380c146babf8b6ed79b97ccf408 (codex/dp-readprocessing, PR #10).
+Candidate branch: Jiapeng-Happy-Friday, based on that commit. These are additional gains over the prior PR, not gains against d59e5f6. Do not multiply results from separate benchmark sessions to claim a directly measured total speedup.
+Baseline binary SHA256: 701193eff924a0d25059ccf878df2fcde1179317bfce5da71e329bc274090ec4
+Candidate binary SHA256: 98bcc7ec94333b21c56b65419f72de2086e119a4033c588f59345aabc7fc361b
+
+Measurement
+Native macOS arm64, AppleClang 21, Release, same dependencies and zlib HTSlib backend for both binaries. Two compute workers + input reader + asynchronous BAM writer: four active processing threads; macOS physical-core affinity was not applied. This is not strict four-physical-core Linux/x86 acceptance.
+--analysis-mode streaming --threads 2 --read-decode-threads 0 --decode-threads 0 --encode-threads 0 --region-extension-length 1000. Legacy default BAM queue remains unbounded (--bamlet-queue-mb 0).
+The read_processing timer includes reading, filtering, pairing, dispatch, graph alignment, all DP and pool.stop(true) worker drain. It excludes loci preprocessing, subsequent genotyping and final output drain. Read+output is reported separately to detect work shifted beyond the main timer. Peak RSS is for the entire child process, including preprocessing.
+Each fixture has one excluded warmup pair, then nine alternating AB/BA pairs. Runs are serial, with no overlapping builds, data generation or other benchmarks. Preparation, comparison and hashing are outside timing; cache loading stays in the whole-process measurement. No OS page-cache clearing. Speedup is the inverse median of paired candidate/baseline ratios, not necessarily the ratio of separately reported median times. Intervals are descriptive paired bootstrap 95% intervals, not hardware-general guarantees.
+
+Fixture | baseline read seconds (median) | candidate read seconds (median) | paired speedup [95%] | read+output speedup | max process RSS MiB (baseline -> candidate)
+10% targets, mixed background, variable qualities | 0.999444 | 0.705515 | 1.406x [1.288, 1.488] | 1.401x | 72.547 -> 72.422
+10% targets, mixed background, fixed-pattern qualities | 1.028013 | 0.636212 | 1.620x [1.606, 1.658] | 1.613x | 73.391 -> 71.891
+10% targets, background outside coarse mask | 1.024282 | 0.654327 | 1.573x [1.534, 1.578] | 1.565x | 72.219 -> 72.766
+10% targets, background passes coarse mask but misses exact regions | 1.038374 | 0.700283 | 1.499x [1.452, 1.506] | 1.491x | 72.109 -> 79.953
+10% targets, additional substitutions and indels | 1.665214 | 1.301333 | 1.367x [1.190, 1.408] | 1.361x | 72.500 -> 73.062
+100% target diagnostic (not primary acceptance set) | 2.888739 | 1.928067 | 1.374x [1.122, 1.600] | 1.368x | 82.891 -> 81.484
+
+RAM
+All six fixtures pass the original median-RSS +5% gate. Five of six pass its max-RSS gate. near10 pair 3 has candidate 79.953125 MiB versus paired baseline 71.765625 MiB (+8.1875 MiB); the fixture's baseline maximum is 72.109375 MiB, so max-v-max increases 10.8776%. The other eight candidate runs are 71.734-72.344 MiB, with candidate median 71.844 MiB. The user explicitly accepted this isolated approximately 8 MiB increase. No failed run was dropped and the original false RAM-gate value was preserved. The predeclared excluded warmup for variable qualities also reached 81.890625 MiB versus baseline 73.96875 MiB (+7.921875 MiB); all six warmup measurements are retained in the JSON and none enters the nine-pair statistics. The user acceptance above refers to the near10 measured-pair exception. The cause is not established: transient BAM-queue backlog, allocator retention or scheduling are possibilities, not measured conclusions. Read-decode workers and their worker cache remain zero, active locus queue capacity remains threadCount+5, and no additional mate-read cache was introduced.
+
+Implementation
+1. Reader-assisted dispatch. While blocked on active-locus capacity, the existing input thread can pop and execute a queued locus task. It uses one fixed private alignment slot, allocated lazily; there is no additional thread. One task owns each locus and read-pair FIFO order is preserved. Queue capacity, cancellation, lock ordering and worker exception propagation are covered by regression tests.
+2. Equivalent simple-alignment shortcut. Under the original default scoring and bounded single-node conditions, a full-query diagonal with at most one mismatch is the unique optimum. Construct the same Path/Alignment directly, avoiding target-string/EdgeMap/matrix/generic traceback/CIGAR parsing. Preserve asymmetric IUPAC encoding, score narrowing/bounds, suffix behavior and the legacy outer-mismatch softclip representation. All other inputs take the existing DP path.
+3. Sparse DP endpoint index. Record every finite full-query endpoint in target order, including suboptimal endpoints. nextBestAlign searches only those entries, preserving strict tie comparison, ordered traceback, second-best selection, negative-start virtual rows, budget retries and empty-input failure state. This uses a few KiB per eligible aligner, not a read cache.
+4. Graph and alignment allocation reductions. Represent consecutive repeat copies by ordered integer ranges instead of one multimap node per copy; recognize terminal-node extraction without BFS; directly construct simple operations and project alignments without an intermediate result list. Generation order and final sorting/deduplication remain unchanged.
+5. Front-end and BAM serialization work. Inline genome-mask queries, memoize repeated read/mate mask-bin lookups only within one seek (mask mutations between next() calls remain visible), resolve the locale facet once per read while preserving scalar uppercase semantics, pack BAM bases and qualities directly, reserve auxiliary-tag space once and avoid temporary subpath lists. Complete fields, tags and duplicate counts remain equal.
+This round adds no new AVX2/NEON kernel. The prior PR's SIMD paths remain; these new gains must not be attributed to a measured SIMD improvement. The small-graph BFS-array and libdeflate experiments were not retained.
+
+Output and validation
+VCF and JSON are compared byte-for-byte. BAM comparison checks the complete header plus an externally sorted multiset of complete raw record bytes, retaining every field, tag and duplicate count. Only record order and compressed representation may differ. Actual bytes are compared, not just checksums.
+- 54 measured baseline/candidate pairs plus six excluded warmup pairs: all output checks pass.
+- 9,380 pinned + 2,692 ungapped/boundary + 2,426 wrapper cases: all 14,498 full ordered-output comparisons match the PR baseline. This covers path, CIGAR and score, not just final genotype.
+- Additional all-150-bp endpoint/state probe: all 7,900 output lines / 141,708 bytes match; covers ties, suboptimal endpoints, retries, dense/compact transitions and failed-empty lifecycle.
+- Targeted ASan+UBSan: 2,520 cases, all seven probe-required candidate GraphTools source files instrumented, no candidate diagnostics, 2,263,278 output bytes identical to the unsanitized Release baseline. SANITIZER_ONLY excludes the two-error, gap and short-query dense-fallback witnesses; those paths are not sanitizer-covered by this run. A previously known dense short-query overread also occurs in the baseline. The full Release differential retains these excluded cases; this is not a claim that the whole program is sanitizer-clean.
+- Native unit tests: all 30 GraphTools test executables pass; EH 159/160 pass. The sole failure, PreparedCatalog.WholeCatalogRoundTripAndIndependentHandleLifetime (JSON edge-label ordering), is also present in PR baseline logs and is unrelated to these modifications.
+- Bundled official example: eight cached/uncached and thread/decode configurations have identical outputs. These are correctness tests; worker-count-four variants are not part of the four-active-thread performance claim.
+
+Inputs and limits
+Five primary fixtures each have 1,000,000 150 bp reads, 1,000 loci, exactly 100,000 target reads and 900,000 background reads. They exercise outside-mask background, coarse-mask passes that miss exact regions, mixed background, variable/missing qualities and extra substitutions/indels. The target-only diagnostic has 200,000 reads. No 250 bp or longer-read performance result is used in this report. Inputs are synthetic reference-allele diagnostics, not real WGS or expanded-allele/diploid truth; performance on another machine or workload is unmeasured.
+
+Evidence
+benchmark-results.json records individual measured and warmup paired times, peak RSS, exact-output comparison results, binary/input hashes, summary statistics and the accepted RAM exception. Verification probes and verify.py are in this directory. The complete local timing logs and stdout differential evidence are also retained in the supplied validation-evidence.zip. See reproduce.txt for commands. No change to loci preprocessing is credited toward these results.

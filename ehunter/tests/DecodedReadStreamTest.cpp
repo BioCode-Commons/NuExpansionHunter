@@ -335,6 +335,101 @@ TEST_F(DecodedReadStreamTest, EmptyAndFullyFilteredStreamsFinish)
         EXPECT_TRUE(run(workers, broadMask()).records.empty());
 }
 
+TEST_F(DecodedReadStreamTest, MaskSelectionPreservesBinBoundariesUnsortedReadsAndRemoteMates)
+{
+    ehunter::GenomeMask mask;
+    mask.addRegion(0, 1024, 1024);
+    mask.addRegion(1, 3072, 3072);
+    const auto flags = BAM_FPAIRED | BAM_FREAD1;
+    add("outside-first", flags, 0, 1023, 1, 2047, "ACGT");
+    add("outside-same-bins", flags, 0, 1022, 1, 2046, "ACGT");
+    add("negative-mate", flags, 0, 1000, -1, -1, "ACGT");
+    add("boundary-left", flags, 0, 1024, 1, 2047, "ACGT");
+    add("boundary-right", flags, 0, 2047, 1, 2047, "ACGT");
+    add("past-boundary", flags, 0, 2048, 1, 2047, "ACGT");
+    add("remote-selected", flags, 0, 100, 1, 3072, "ACGT");
+    add("far-remote-selected", flags, 1, 5000, 0, 1024, "ACGT");
+    add("after-bin", flags, 1, 4096, 0, 0, "ACGT");
+    add("remote-outside-boundary", flags, 1, 3071, 0, 0, "ACGT");
+    add("later-unsorted-selected", flags, 0, 1024, -1, -1, "ACGT");
+    finish();
+    const std::vector<RecordSnapshot> expected = {
+        { 0, 1, 1024, 2047, "boundary-left", "ACGT", true, false },
+        { 0, 1, 2047, 2047, "boundary-right", "ACGT", true, false },
+        { 0, 1, 100, 3072, "remote-selected", "ACGT", true, false },
+        { 1, 0, 5000, 1024, "far-remote-selected", "ACGT", true, false },
+        { 0, -1, 1024, -1, "later-unsorted-selected", "ACGT", true, false }
+    };
+    for (const unsigned workers : { 0u, 1u, 2u, 4u })
+    {
+        SCOPED_TRACE(workers);
+        EXPECT_EQ(run(workers, mask).records, expected);
+    }
+}
+
+TEST_F(DecodedReadStreamTest, SynchronousSelectionObservesMaskChangesBetweenNextCalls)
+{
+    ehunter::GenomeMask mask;
+    mask.addRegion(0, 0, 0);
+    add("first-via-mate", BAM_FPAIRED | BAM_FREAD1, 0, 2048, 0, 0, "ACGT");
+    add("newly-covered", BAM_FPAIRED | BAM_FREAD2, 0, 2049, 0, 4096, "TGCA");
+    finish();
+    ehunter::htshelpers::HtsFileStreamer source(input_.string(), reference_.string(), 0);
+    ehunter::DecodedReadStream stream(source, mask, 0);
+    const auto* first = stream.next();
+    ASSERT_NE(first, nullptr);
+    EXPECT_EQ(first->read.fragmentId(), "first-via-mate");
+    mask.addRegion(0, 2048, 2048);
+    const auto* second = stream.next();
+    ASSERT_NE(second, nullptr);
+    EXPECT_EQ(second->read.fragmentId(), "newly-covered");
+    EXPECT_FALSE(stream.next());
+}
+
+TEST_F(DecodedReadStreamTest, SelectedReadShortCircuitsInvalidPreparedMateMask)
+{
+    graphtools::BlobBuilder builder;
+    std::vector<ehunter::PreparedContigIntervals> roots(2);
+    roots[0].mask = builder.append(uint64_t(1));
+    roots[1].mask = { 4096, 1 }; // Invalid only if this mate's mask is queried.
+    const auto rootsSlice = builder.append(roots);
+    ehunter::GenomeMask mask;
+    mask.usePrepared({ builder.bytes.data(), builder.bytes.size() }, rootsSlice);
+    add("unpaired-read-selected", 0, 0, 0, 1, 0, "ACGT");
+    add("paired-read-selected", BAM_FPAIRED | BAM_FREAD1, 0, 1, 1, 0, "ACGT");
+    finish();
+    for (const unsigned workers : { 0u, 1u, 2u })
+    {
+        SCOPED_TRACE(workers);
+        const auto actual = run(workers, mask, true);
+        ASSERT_TRUE(actual.error.empty());
+        ASSERT_EQ(actual.records.size(), 1u);
+        EXPECT_EQ(actual.records.front().name, "paired-read-selected");
+    }
+}
+
+TEST_F(DecodedReadStreamTest, InvalidMateMaskStillFailsBeforeUnpairedFiltering)
+{
+    graphtools::BlobBuilder builder;
+    std::vector<ehunter::PreparedContigIntervals> roots(2);
+    roots[0].mask = builder.append(uint64_t(1));
+    roots[1].mask = { 4096, 1 };
+    const auto rootsSlice = builder.append(roots);
+    ehunter::GenomeMask mask;
+    mask.usePrepared({ builder.bytes.data(), builder.bytes.size() }, rootsSlice);
+    add("valid-prefix", BAM_FPAIRED | BAM_FREAD1, 0, 1, 0, 0, "ACGT");
+    add("unpaired-with-bad-mate-mask", 0, 0, 2048, 1, 0, "ACGT");
+    finish();
+    for (const unsigned workers : { 0u, 1u, 2u })
+    {
+        SCOPED_TRACE(workers);
+        const auto actual = run(workers, mask, true);
+        ASSERT_EQ(actual.records.size(), 1u);
+        EXPECT_EQ(actual.records.front().name, "valid-prefix");
+        EXPECT_EQ(actual.error, "Invalid mapped array range or alignment");
+    }
+}
+
 TEST_F(DecodedReadStreamTest, LargeRecordFallbackDrainsEarlierBatchesAndResumes)
 {
     // Both a first-record and a mid-stream fallback exercise empty/nonempty rings.

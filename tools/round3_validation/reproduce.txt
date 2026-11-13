@@ -1,0 +1,66 @@
+Baseline: 66200f627c7d7380c146babf8b6ed79b97ccf408 (PR #10).
+Candidate: Jiapeng-Happy-Friday. This directory documents only the additional round.
+
+Build both checkouts in separate Release build directories with the same compiler,
+flags, dependencies and HTSlib compression backend. The measured binaries used
+AppleClang 21, arm64, C++11, BUILD_TESTS=ON and zlib HTSlib. No libdeflate change,
+new architecture requirement or new SIMD compile flag is part of this round.
+The supplied local evidence archive includes the exact build-app.sh command and
+CMake/link/dependency provenance. Use the repository's build instructions to set
+up dependencies on another machine.
+
+Full ordered-output differential against the already built matching libraries:
+  python3 tools/round3_validation/verify.py \
+    --baseline-source /path/pr-baseline --candidate-source /path/candidate \
+    --baseline-build /path/baseline-build --candidate-build /path/candidate-build \
+    --extra-include /path/dependencies/include --compiler clang++ \
+    --out /new/verification-results
+
+The runner compiles the identical four probe sources against the separate headers
+and GraphTools libraries. It retains complete stdout/stderr, source/library/binary
+hashes and exact commands, and compares actual output bytes. See its docstring for
+probe coverage and the endpoint flag-digest limitation. This is not a sanitizer run.
+
+Pipeline benchmark with the five existing 150 bp / 10%-target fixtures:
+  python3 tools/frontend_validation/run_matrix.py \
+    --baseline /path/baseline-build/ExpansionHunter \
+    --candidate /path/candidate-build/ExpansionHunter \
+    --baseline-source /path/pr-baseline --candidate-source /path/candidate \
+    --input /path/fixture-mixed10-variable --input /path/fixture-mixed10 \
+    --input /path/fixture-outside10 --input /path/fixture-near10 \
+    --input /path/fixture-mixed10-indels \
+    --out /new/benchmark-results --threads 2 --preprocess 0 --decode 0 --encode 0 \
+    --pairs 9 --max-rss-ratio 1.05
+
+The measured run also included --input /path/fixture-target1000 as a separate
+150 bp target-only diagnostic. It is not a 10%-target acceptance fixture.
+Input directories each contain reads.bam, reference.fa, reference.fa.fai,
+catalog.json and manifest.json. Exact input hashes are in benchmark-results.json.
+The main synthetic inputs and the indel inputs were supplied previously as
+synthetic-10pct-inputs.tar.gz and hard10-inputs.tar.gz. The first four fixture
+families can also be generated with tools/frontend_validation/generate_fixture.py;
+the extra-indel transformations and exact counts are described in report.txt and
+the hard-input manifest. The full local raw measurements remain in the supplied
+benchmark-results.json/validation-evidence.zip deliverables.
+
+One excluded warmup pair is followed by nine alternating AB/BA pairs. Do not run
+builds, generation or another benchmark concurrently. Loci preparation and exact
+output comparison happen outside the read-processing timer. The timer includes
+all DP and pool.stop(true); read+output is also recorded. The existing harness
+reports a failed RAM gate in its JSON without changing the process exit status:
+inspect every summary.ram_gate.passed, not just the command's exit code.
+
+On Linux, add --cpu-list C0,C1,C2,C3 with four allowed distinct physical-core IDs;
+the harness checks topology and inherited affinity. The reported macOS run has
+four active threads (two workers, reader, writer), without physical-core pinning.
+
+Acceptance: exact VCF/JSON bytes; exact BAM header and raw record-byte multiset,
+including all tags/fields and duplicate counts, ignoring record/compression order.
+Peak RSS is measured for the whole child process. The original +5% median/max
+checks are retained. The user accepted one approximately 8 MiB near10 peak in this
+run; do not silently treat that as a universal exemption for other results.
+
+Known baseline issues remain visible: the PreparedCatalog edge-label-order unit
+test failure and the old dense short-query sanitizer overread. See report.txt for
+the targeted sanitizer boundary and exact pass counts. Benchmark gains and output
+checks do not establish correctness or speed on every unmeasured workload.

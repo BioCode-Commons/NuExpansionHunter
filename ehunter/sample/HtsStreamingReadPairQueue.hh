@@ -22,6 +22,7 @@
 #pragma once
 
 #include <condition_variable>
+#include <functional>
 #include <mutex>
 #include <queue>
 
@@ -44,6 +45,9 @@ namespace ehunter
 class HtsStreamingReadPairQueue
 {
 public:
+    using WaitHelper = std::function<bool()>;
+    enum class InsertResult { Activated, Queued, Cancelled };
+
     /// \param[in] maxActiveLocusAnalyzerQueues The max number of non-empty LocusAnalyzer queues to store before
     /// blocking additional input
     ///
@@ -72,9 +76,18 @@ public:
     /// If \p locusIndex corresponds to an inactive queue, this will block until the queue can be activated without
     /// exceeding maxActiveLocusAnalyzerQueues.
     ///
-    /// \return True if the locusAnalyzer at \p locusIndex was marked as inactive before this method call
+    /// \return Activated if a new processing task is needed, Queued if an
+    /// existing task owns the queue, or Cancelled if the pair was not inserted.
     ///
-    bool insertReadPair(unsigned locusIndex, ReadPair readPair);
+    // The single input producer may execute one pending locus job while waiting
+    // for capacity. The helper runs with neither queue mutex held and returns
+    // whether it executed a job. It must not insert another read pair.
+    InsertResult insertReadPair(unsigned locusIndex, ReadPair readPair, const WaitHelper& waitHelper = WaitHelper());
+
+    // Wake a producer waiting for capacity after a processing failure. No more
+    // inactive queues are activated; the caller retains and rethrows the error
+    // after joining its workers.
+    void cancel();
 
     /// \brief Retrieve a read pair from the \p locusIndex queue
     ///
@@ -96,6 +109,7 @@ private:
 
     const unsigned maxActiveLocusAnalyzerQueues_;
     unsigned activeLocusAnalyzerQueues_;
+    bool cancelled_ = false;
     std::vector<LocusAnalyzerQueue> queues_;
 
     /// Global mutex/cv are used to enforce the max active LocusAnalyzerQueue limit

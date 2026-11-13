@@ -59,12 +59,37 @@ bool DecodedReadStream::seekSelected()
         return true;
     if (finished_)
         return false;
+    // A run of rejected records often stays in the same two mask bins. Keep
+    // these tiny memos only during this seek: the caller can change the mask
+    // between next() calls, and such changes must be observed immediately.
+    struct BinResult
+    {
+        int32_t contig = -1;
+        uint64_t bin = 0;
+        bool result = false;
+        bool valid = false;
+    };
+    BinResult readBin, mateBin;
+    const auto queryBin = [&](BinResult& cached, int32_t contig, int64_t position) {
+        if (contig < 0 || position < 0)
+            return false;
+        const auto bin = GenomeMask::binIndex(static_cast<uint64_t>(position));
+        if (!cached.valid || cached.contig != contig || cached.bin != bin)
+        {
+            const bool result = mask_.query(contig, position);
+            cached.contig = contig;
+            cached.bin = bin;
+            cached.result = result;
+            cached.valid = true;
+        }
+        return cached.result;
+    };
     try
     {
         while (input_.trySeekingToNextPrimaryAlignment() && input_.isStreamingAlignedReads())
         {
-            if ((mask_.query(input_.currentReadContigId(), input_.currentReadPosition())
-                || mask_.query(input_.currentMateContigId(), input_.currentMatePosition()))
+            if ((queryBin(readBin, input_.currentReadContigId(), input_.currentReadPosition())
+                || queryBin(mateBin, input_.currentMateContigId(), input_.currentMatePosition()))
                 && input_.currentIsPaired())
             {
                 hasRecord_ = true;

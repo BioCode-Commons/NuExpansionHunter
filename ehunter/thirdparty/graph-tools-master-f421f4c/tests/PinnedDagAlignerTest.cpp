@@ -114,6 +114,95 @@ TEST(SingleNodeExtension, PreservesRepeatBoundaryCrossing)
     EXPECT_EQ("6M", reverse.front().second.generateCigar());
 }
 
+TEST(SingleNodeExtension, PreservesOperationsAndReferenceStartInBothDirections)
+{
+    Graph graph(3);
+    graph.setNodeSeq(0, "AAAAAAAA");
+    const string nodeSequence = "ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGTACGT";
+    graph.setNodeSeq(1, nodeSequence);
+    graph.setNodeSeq(2, "CCCCCCCC");
+    graph.addEdge(0, 1);
+    graph.addEdge(1, 1);
+    graph.addEdge(1, 2);
+    PinnedDagAligner aligner(5, -4, -8, -2);
+    const Path forwardSeed(&graph, 2, { 0, 1 }, 4);
+    const Path reverseSeed(&graph, 60, { 1, 2 }, 5);
+
+    for (const int mismatch : { -1, 0, 15, 31 })
+    {
+        string forwardQuery = nodeSequence.substr(4, 32);
+        string reverseQuery = nodeSequence.substr(28, 32);
+        string cigar = "32M";
+        if (mismatch >= 0)
+        {
+            // An unrecognized byte is a mismatch, including on signed-char
+            // platforms. Endpoint mismatches must not produce zero-length M.
+            forwardQuery[mismatch] = reverseQuery[mismatch] = static_cast<char>(0xff);
+            cigar = mismatch ? std::to_string(mismatch) + "M" : "";
+            cigar += "1X";
+            if (mismatch != 31)
+                cigar += std::to_string(31 - mismatch) + "M";
+        }
+        int score = INT32_MIN;
+        // The query can consume more than the extraction distance: the entire
+        // last node remains part of the discovered graph in both directions.
+        const auto forward = aligner.prefixAlign(forwardSeed, forwardQuery, 1, score);
+        ASSERT_EQ(1u, forward.size());
+        EXPECT_EQ(mismatch < 0 ? 160 : 151, score);
+        EXPECT_EQ(Path(&graph, 2, { 0, 1 }, mismatch == 31 ? 35 : 36), forward.front().first);
+        EXPECT_EQ(10u, forward.front().second.referenceStart());
+        EXPECT_EQ(mismatch == 31 ? "31M1S" : cigar, forward.front().second.generateCigar());
+
+        const auto reverse = aligner.suffixAlign(reverseSeed, reverseQuery, 1, score);
+        ASSERT_EQ(1u, reverse.size());
+        EXPECT_EQ(mismatch < 0 ? 160 : 151, score);
+        EXPECT_EQ(Path(&graph, mismatch == 0 ? 29 : 28, { 1, 2 }, 5), reverse.front().first);
+        EXPECT_EQ(0u, reverse.front().second.referenceStart());
+        EXPECT_EQ(mismatch == 0 ? "1S31M" : cigar, reverse.front().second.generateCigar());
+    }
+}
+
+TEST(SingleNodeExtension, NonDefaultGapCostsKeepOptimalGappedAlignment)
+{
+    Graph graph(1);
+    string target(64, 'A');
+    target[16] = 'C';
+    graph.setNodeSeq(0, target);
+    PinnedDagAligner aligner(5, -4, -1, -1);
+    int score = INT32_MIN;
+    const auto result = aligner.prefixAlign(Path(&graph, 0, { 0 }, 0), string(32, 'A'), 32, score);
+    ASSERT_FALSE(result.empty());
+    EXPECT_EQ(158, score);
+    EXPECT_EQ("16M1D16M", result.front().second.generateCigar());
+}
+
+TEST(SingleNodeExtension, TerminalNodesAllowDiscoveryPastTheirEnds)
+{
+    Graph graph(2);
+    graph.setNodeSeq(0, string(64, 'A'));
+    graph.setNodeSeq(1, string(64, 'C'));
+    graph.addEdge(0, 1);
+    PinnedDagAligner aligner(5, -4, -8, -2);
+    int score = INT32_MIN;
+    string forwardQuery(32, 'C');
+    forwardQuery[0] = 'A';
+    const auto forward = aligner.prefixAlign(Path(&graph, 5, { 0, 1 }, 32), forwardQuery, 200, score);
+    ASSERT_EQ(1u, forward.size());
+    EXPECT_EQ(151, score);
+    EXPECT_EQ(Path(&graph, 5, { 0, 1 }, 64), forward.front().first);
+    EXPECT_EQ(91u, forward.front().second.referenceStart());
+    EXPECT_EQ("1X31M", forward.front().second.generateCigar());
+
+    string reverseQuery(32, 'A');
+    reverseQuery[31] = 'C';
+    const auto reverse = aligner.suffixAlign(Path(&graph, 32, { 0, 1 }, 5), reverseQuery, 200, score);
+    ASSERT_EQ(1u, reverse.size());
+    EXPECT_EQ(151, score);
+    EXPECT_EQ(Path(&graph, 0, { 0, 1 }, 5), reverse.front().first);
+    EXPECT_EQ(0u, reverse.front().second.referenceStart());
+    EXPECT_EQ("31M1X", reverse.front().second.generateCigar());
+}
+
 TEST(EdgeMapLinearMetadata, OptionalRootEdgeHasIdenticalConnectivity)
 {
     for (const int length : { 1, 2, 15, 16, 17, 31, 32, 33, 150, 1000 })

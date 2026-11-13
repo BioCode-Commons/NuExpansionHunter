@@ -23,9 +23,6 @@
 #include "io/BamletWriter.hh"
 
 #include <cstring>
-#include <vector>
-
-#include <boost/algorithm/string/join.hpp>
 
 // cppcheck-suppress missingInclude
 #include "htslib/bgzf.h"
@@ -39,7 +36,6 @@ using graphtools::GraphReferenceMapping;
 using graphtools::ReferenceInterval;
 using std::string;
 using std::to_string;
-using std::vector;
 
 namespace ehunter
 {
@@ -72,10 +68,6 @@ static void validateMapping(const ReferenceContigInfo& contigInfo, const LocusSp
         (void)mapping;
     }
 }
-
-// Set a base in the bit-backed read sequence representation of a BAM record. (4 bits per base).
-// Sets position i to base c in sequence s.
-#define bam1_seq_seti(s, i, c) ((s)[(i) >> 1] = ((s)[(i) >> 1] & 0xf << (((i) & 1) << 2)) | (c) << ((~(i) & 1) << 2))
 
 BamletWriter::BamletWriter(
     const string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
@@ -147,25 +139,54 @@ void BamletWriter::writeHeader()
     }
 }
 
+// generateSubpathForEachNode used to allocate a list and a node vector for every
+// node, solely to obtain its start position. Check the same per-node bounds
+// without constructing those Paths. Invalid inputs retain the original Path
+// constructor's exception behavior through the slow fallback below.
+static bool nodeSubpathsAreValid(const graphtools::Path& path)
+{
+    try
+    {
+        for (std::size_t index = 0; index < path.numNodes(); ++index)
+        {
+            const int32_t start = path.getStartPositionOnNodeByIndex(index);
+            const int32_t end = path.getEndPositionOnNodeByIndex(index);
+            const auto length = path.graphRawPtr()->nodeSeqLength(path.getNodeIdByIndex(index));
+            if (start < 0 || end < 0 || static_cast<unsigned>(start) > length
+                || static_cast<unsigned>(end) > length || start > end)
+                return false;
+        }
+        return true;
+    }
+    catch (const std::exception&)
+    {
+        return false;
+    }
+}
+
 void BamletWriter::write(
     graphtools::TextView locusId, const string& fragmentName, const string& query, bool isFirstMate, bool isReversed,
     bool isMateReversed, const GraphAlignment& alignment)
 {
     const auto locusIndex = catalog_.findLocusIndex(locusId);
+    const auto& path = alignment.path();
+    if (!nodeSubpathsAreValid(path))
+        (void)graphtools::generateSubpathForEachNode(path);
     boost::optional<ReferenceInterval> optionalReferenceInterval;
-    for (const auto& nodePath : graphtools::generateSubpathForEachNode(alignment.path()))
+    for (std::size_t index = 0; index < path.numNodes(); ++index)
     {
-        const auto node = nodePath.nodeIds().front();
+        const auto node = path.getNodeIdByIndex(index);
         if (node >= catalog_.nodeCount(locusIndex))
             throw std::logic_error("Invalid node " + std::to_string(node));
         const auto region = catalog_.referenceRegion(locusIndex, node);
         if (region)
         {
-            if (nodePath.startPosition() >= region->length())
+            const auto start = path.getStartPositionOnNodeByIndex(index);
+            if (start >= region->length())
                 throw std::logic_error("Cannot map position outside node");
             optionalReferenceInterval.emplace(
-                contigInfo_.getContigName(region->contigIndex()), region->start() + nodePath.startPosition(),
-                region->start() + nodePath.startPosition());
+                contigInfo_.getContigName(region->contigIndex()), region->start() + start,
+                region->start() + start);
         }
         if (optionalReferenceInterval)
             break;
@@ -185,30 +206,15 @@ void BamletWriter::write(
 // TODO: Consider moving to graph tools
 static string summarizeAlignment(const GraphAlignment& alignment)
 {
-    const vector<string> customTagComponents
-        = { alignment.path().graphRawPtr()->graphId(), to_string(alignment.path().startPosition()),
-            alignment.generateCigar() };
-
-    return boost::algorithm::join(customTagComponents, ",");
+    string encoding = alignment.path().graphRawPtr()->graphId();
+    encoding += ',';
+    encoding += to_string(alignment.path().startPosition());
+    encoding += ',';
+    encoding += alignment.generateCigar();
+    return encoding;
 }
 
 static const string graphAlignmentBamTag = "XG";
-
-static vector<int> extractQualityScores(const string& query)
-{
-    const int kLowQualityScore = 0;
-    const int kHighQualityScore = 40;
-
-    vector<int> qualities;
-    qualities.resize(query.length());
-
-    for (int index = 0; index != static_cast<int>(query.size()); ++index)
-    {
-        qualities[index] = isupper(query[index]) ? kHighQualityScore : kLowQualityScore;
-    }
-
-    return qualities;
-}
 
 void BamletWriter::write(
     const ReferenceInterval& interval, const string& fragmentName, const string& query, bool isFirstMate,
@@ -247,7 +253,7 @@ void BamletWriter::write(
 
     htsAlignmentPtr->core.flag += isFirstMate ? BAM_FREAD1 : BAM_FREAD2;
 
-    const vector<int> qualities = extractQualityScores(query);
+    const string alignmentEncoding = summarizeAlignment(alignment);
 
     htsAlignmentPtr->core.l_qname = fragmentName.length() + 1; // +1 includes the tailing '\0'
     htsAlignmentPtr->core.l_qseq = query.length();
@@ -256,7 +262,9 @@ void BamletWriter::write(
     //`q->data` structure: qname-cigar-seq-qual-aux
     int seqQualLength = (int)(1.5 * query.length() + (query.length() % 2 != 0));
     htsAlignmentPtr->l_data = htsAlignmentPtr->core.l_qname + seqQualLength;
-    htsAlignmentPtr->m_data = htsAlignmentPtr->l_data;
+    // Include XG's two-byte name, type byte and terminating NUL in the first
+    // allocation. bam_aux_append still owns tag serialization and l_data.
+    htsAlignmentPtr->m_data = htsAlignmentPtr->l_data + 3 + alignmentEncoding.length() + 1;
     kroundup32(htsAlignmentPtr->m_data);
     auto* data = static_cast<uint8_t*>(realloc(htsAlignmentPtr->data, htsAlignmentPtr->m_data));
     if (!data)
@@ -264,29 +272,29 @@ void BamletWriter::write(
     htsAlignmentPtr->data = data;
     memcpy(htsAlignmentPtr->data, fragmentName.c_str(), htsAlignmentPtr->core.l_qname); // first set qname
 
-    uint8_t* htsSequencePtr = bam_get_seq(htsAlignmentPtr);
-    // Initialize both packed bases, including the unused nibble of an odd-length read.
-    std::memset(htsSequencePtr, 0, (htsAlignmentPtr->core.l_qseq + 1) / 2);
-    for (int index = 0; index < htsAlignmentPtr->core.l_qseq; ++index)
+    uint8_t* const htsSequencePtr = bam_get_seq(htsAlignmentPtr);
+    uint8_t* const htsQualityPtr = bam_get_qual(htsAlignmentPtr);
+    std::size_t index = 0;
+    // Write each packed byte once and derive qualities directly, without an
+    // intermediate vector<int>. Retain HTSlib's complete nucleotide mapping
+    // and the original isupper-based quality rule (including non-ACGT bases).
+    for (; index + 1 < query.length(); index += 2)
     {
-        bam1_seq_seti(htsSequencePtr, index, seq_nt16_table[(unsigned char)query[index]]);
+        const auto first = static_cast<unsigned char>(query[index]);
+        const auto second = static_cast<unsigned char>(query[index + 1]);
+        htsSequencePtr[index / 2] = (seq_nt16_table[first] << 4) | seq_nt16_table[second];
+        htsQualityPtr[index] = isupper(query[index]) ? 40 : 0;
+        htsQualityPtr[index + 1] = isupper(query[index + 1]) ? 40 : 0;
+    }
+    if (index < query.length())
+    {
+        htsSequencePtr[index / 2] = seq_nt16_table[static_cast<unsigned char>(query[index])] << 4;
+        htsQualityPtr[index] = isupper(query[index]) ? 40 : 0;
     }
 
-    htsSequencePtr = bam_get_qual(htsAlignmentPtr);
-    if (!qualities.empty() && qualities.size() != query.length())
-    {
-        throw std::logic_error("Mismatched sequence and quality lengths");
-    }
-
-    for (unsigned index = 0; index < query.length(); ++index)
-    {
-        htsSequencePtr[index] = qualities.empty() ? 0xFF : qualities[index];
-    }
-
-    string alignmentEncoding = summarizeAlignment(alignment);
     const int appendResult = bam_aux_append(
         htsAlignmentPtr, graphAlignmentBamTag.c_str(), 'Z', alignmentEncoding.length() + 1,
-        reinterpret_cast<uint8_t*>(&alignmentEncoding[0]));
+        reinterpret_cast<const uint8_t*>(alignmentEncoding.c_str()));
     if (appendResult != 0)
         throw std::runtime_error("Cannot append graph alignment BAM tag");
 

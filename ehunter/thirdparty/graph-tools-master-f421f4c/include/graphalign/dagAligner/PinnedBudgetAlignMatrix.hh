@@ -55,6 +55,8 @@ public:
             dense_.init(queryBegin, queryEnd, targetBegin, targetEnd, edges);
             return;
         }
+        // Empty-input failure above must preserve the previous matrix state.
+        finiteEndpoints_.clear();
         queryLength_ = std::distance(queryBegin, queryEnd);
         targetLength_ = std::distance(targetBegin, targetEnd);
         sparse_ = false;
@@ -170,8 +172,24 @@ public:
         }
         Cost best = infinity();
         int result = alignEnd();
-        for (int t = start; t < targetLength_; ++t)
+        // Keep the virtual-row behavior for callers supplying a position
+        // before alignBegin(), while normal traceback starts at zero.
+        for (int t = start; t < 0; ++t)
         {
+            const Cost cost = h(queryLength_, t);
+            if (cost < best)
+            {
+                best = cost;
+                result = t;
+            }
+        }
+        // The successful sparse fill records every finite full-query endpoint
+        // in increasing target order. Retain all of them, including suboptimal
+        // costs, so nextBestAlign(start) and second-best scores stay unchanged.
+        for (auto endpoint = std::lower_bound(finiteEndpoints_.begin(), finiteEndpoints_.end(), start);
+             endpoint != finiteEndpoints_.end(); ++endpoint)
+        {
+            const int t = *endpoint;
             const Cost cost = h(queryLength_, t);
             if (cost < best)
             {
@@ -253,6 +271,7 @@ private:
     uint64_t edgeCount_ = 0;
     std::vector<Row> rows_;
     std::vector<Cell> cells_;
+    std::vector<int> finiteEndpoints_;
     std::vector<PenaltyMatrix::QueryChar> query_;
     std::vector<PenaltyMatrix::TargetChar> target_;
 
@@ -465,6 +484,7 @@ private:
         stats().initializedCells += queryLength_;
         stats().bandCells += queryLength_;
 #endif
+        finiteEndpoints_.push_back(queryLength_ - 1);
         return FillResult::Found;
     }
 
@@ -547,7 +567,11 @@ private:
                     if (row.supportBegin == row.supportEnd)
                         row.supportBegin = i;
                     row.supportEnd = i + 1;
-                    endpoint = endpoint || i == queryLength_;
+                    if (i == queryLength_)
+                    {
+                        endpoint = true;
+                        finiteEndpoints_.push_back(t);
+                    }
                 }
         }
         return endpoint ? FillResult::Found : FillResult::Missing;
@@ -555,6 +579,9 @@ private:
     FillResult fill(int budget, const EdgeMap& edges, uint64_t& spent, uint64_t limit)
     {
         budget_ = budget;
+        // A failed or exhausted attempt must not leak endpoints into the next
+        // budget. Dense and compact modes do not consult this cache.
+        finiteEndpoints_.clear();
         if (budget == 9)
             return fillUngapped(edges, spent, limit);
         std::size_t usedCells = 0;
@@ -698,7 +725,11 @@ private:
                     if (row.supportBegin == row.supportEnd)
                         row.supportBegin = i;
                     row.supportEnd = i + 1;
-                    endpoint = endpoint || i == queryLength_;
+                    if (i == queryLength_)
+                    {
+                        endpoint = true;
+                        finiteEndpoints_.push_back(t);
+                    }
                 }
             }
         }

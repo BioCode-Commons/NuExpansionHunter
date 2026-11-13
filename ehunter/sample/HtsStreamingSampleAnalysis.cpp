@@ -106,8 +106,9 @@ void processLocusAnalyzerQueue(
     }
     catch (const std::exception& e)
     {
-        locusAnalyzerThreadSharedData.isWorkerThreadException.store(true);
         locusAnalyzerThreadData.threadExceptionPtr = std::current_exception();
+        locusAnalyzerThreadSharedData.isWorkerThreadException.store(true);
+        locusAnalyzerThreadSharedData.readPairQueue.cancel();
 
         std::ostringstream oss;
         oss << "Exception caught in thread " << threadIndex << " while processing read pair queue for locus: `"
@@ -122,8 +123,9 @@ void processLocusAnalyzerQueue(
     }
     catch (...)
     {
-        locusAnalyzerThreadSharedData.isWorkerThreadException.store(true);
         locusAnalyzerThreadData.threadExceptionPtr = std::current_exception();
+        locusAnalyzerThreadSharedData.isWorkerThreadException.store(true);
+        locusAnalyzerThreadSharedData.readPairQueue.cancel();
 
         std::ostringstream oss;
         oss << "Exception caught in thread " << threadIndex << " while processing read pair queue for locus: `"
@@ -219,7 +221,14 @@ SampleFindings htsStreamingSampleAnalysis(
     const unsigned maxActiveLocusAnalyzerQueues(threadCount + 5);
     const unsigned locusAnalyzerCount(regionCatalog.size());
     LocusAnalyzerThreadSharedData locusAnalyzerThreadSharedData(maxActiveLocusAnalyzerQueues, locusAnalyzerCount);
-    std::vector<LocusAnalyzerThreadLocalData> locusAnalyzerThreadLocalDataPool(threadCount);
+#ifndef EH_READER_HELPER_DISABLE
+    const int processingSlotCount = threadCount + 1;
+#else
+    const int processingSlotCount = threadCount;
+#endif
+    // Fix the storage before workers start. The reader's additional slot is
+    // never shared with a worker and its aligner is allocated only if needed.
+    std::vector<LocusAnalyzerThreadLocalData> locusAnalyzerThreadLocalDataPool(processingSlotCount);
     for (int threadIndex(0); threadIndex < threadCount; ++threadIndex)
     {
         auto& locusAnalyzerThreadData(locusAnalyzerThreadLocalDataPool[threadIndex]);
@@ -227,10 +236,30 @@ SampleFindings htsStreamingSampleAnalysis(
             new graphtools::AlignerSelector(heuristicParams.alignerType()));
     }
     ctpl::thread_pool pool(threadCount);
+    std::size_t assistedLocusJobs = 0; // Accessed only by the input reader.
+    HtsStreamingReadPairQueue::WaitHelper waitHelper;
+#ifndef EH_READER_HELPER_DISABLE
+    waitHelper = [&]() {
+        if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
+            return false;
+        // pop() removes a single pending task atomically, using the same FIFO
+        // queue as the workers. A locus still has exactly one task owner.
+        auto pending = pool.pop();
+        if (!pending)
+            return false;
+        auto& readerData = locusAnalyzerThreadLocalDataPool[threadCount];
+        if (!readerData.alignerSelectorPtr)
+            readerData.alignerSelectorPtr.reset(new graphtools::AlignerSelector(heuristicParams.alignerType()));
+        pending(threadCount);
+        ++assistedLocusJobs;
+        // The packaged task captures exceptions; processLocusAnalyzerQueue
+        // records the exception and cancels capacity waits before rethrowing.
+        return true;
+    };
+#endif
 
     spdlog::info("Initializing all loci");
     const auto indexStart = std::chrono::steady_clock::now();
-    graphtools::AlignerSelector alignerSelector(heuristicParams.alignerType());
     locusAnalyzerThreadSharedData.locusAnalyzers
         = initializeLocusAnalyzers(regionCatalog, heuristicParams, bamletWriter, threadCount);
     GenomeQueryCollection genomeQuery(locusAnalyzerThreadSharedData.locusAnalyzers, &regionCatalog);
@@ -280,7 +309,13 @@ SampleFindings htsStreamingSampleAnalysis(
                 auto& bundle(analyzerBundles[bundleIndex]);
                 auto sendReadPair = [&](HtsStreamingReadPairQueue::ReadPair readPair)
                 {
-                    if (locusAnalyzerThreadSharedData.readPairQueue.insertReadPair(bundle.locusIndex, std::move(readPair)))
+                    if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
+                        return;
+                    const auto insertion = locusAnalyzerThreadSharedData.readPairQueue.insertReadPair(
+                        bundle.locusIndex, std::move(readPair), waitHelper);
+                    if (insertion == HtsStreamingReadPairQueue::InsertResult::Cancelled)
+                        return;
+                    if (insertion == HtsStreamingReadPairQueue::InsertResult::Activated)
                     {
                         pool.push(
                             processLocusAnalyzerQueue, std::ref(locusAnalyzerThreadSharedData),
@@ -306,11 +341,12 @@ SampleFindings htsStreamingSampleAnalysis(
     spdlog::info(
         "Phase read_processing_seconds={}",
         std::chrono::duration<double>(std::chrono::steady_clock::now() - readsStart).count());
+    spdlog::info("Streaming reader assisted_locus_jobs={}", assistedLocusJobs);
 
     // Rethrow exceptions from the pool in thread order:
     if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
     {
-        for (int threadIndex(0); threadIndex < threadCount; ++threadIndex)
+        for (int threadIndex(0); threadIndex < processingSlotCount; ++threadIndex)
         {
             const LocusAnalyzerThreadLocalData& locusAnalyzerThreadData(locusAnalyzerThreadLocalDataPool[threadIndex]);
             if (locusAnalyzerThreadData.threadExceptionPtr)

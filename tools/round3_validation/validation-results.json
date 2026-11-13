@@ -1,0 +1,56 @@
+{
+  "release_differential": [
+    {
+      "probe": "pinned-probe",
+      "full_stdout_identical": true,
+      "output_bytes": 14409902,
+      "summary": {
+        "cases": 9380,
+        "words": 5012760,
+        "checksum": 9899332190433420579
+      }
+    },
+    {
+      "probe": "ungapped-probe",
+      "full_stdout_identical": true,
+      "output_bytes": 2381629,
+      "summary": {
+        "cases": 2692,
+        "words": 772272,
+        "checksum": 2748693631943289781
+      }
+    },
+    {
+      "probe": "pinned-wrapper-probe",
+      "full_stdout_identical": true,
+      "output_bytes": 3842443,
+      "summary": {
+        "cases": 2426
+      }
+    }
+  ],
+  "endpoint_state": {
+    "full_stdout_identical": true,
+    "lines": 7900,
+    "bytes": 141708,
+    "stdout_sha256": "6a9cd338f4a96236f863f454ddba04e5d2f8574d747d31fe7ba7aea3b6bacb1d"
+  },
+  "targeted_sanitizer": {
+    "cases": 2520,
+    "full_stdout_identical": true,
+    "bytes": 2263278,
+    "candidate_stderr_empty": true,
+    "scope": "Seven probe-required candidate GraphTools sources instrumented; baseline is unsanitized Release. SANITIZER_ONLY excludes two-error, gap and short-query dense-fallback witnesses. Full Release differential retains those cases; not whole-program sanitizer coverage."
+  },
+  "unit_tests": {
+    "graphtools_test_executables_passed": 30,
+    "eh_passed": 159,
+    "eh_total": 160,
+    "existing_baseline_failure": "PreparedCatalog.WholeCatalogRoundTripAndIndependentHandleLifetime: JSON edge-label ordering"
+  },
+  "official_example": {
+    "configurations": 8,
+    "all_outputs_identical": true
+  },
+  "source_diff_and_binary_hashes_match_benchmark": true
+}

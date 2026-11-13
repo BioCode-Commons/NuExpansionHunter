@@ -73,6 +73,84 @@ class PinnedDagAligner
     typedef std::vector<Edge> Edges;
     typedef graphalign::dagAligner::Cigar Cigar;
     graphalign::dagAligner::Aligner<graphalign::dagAligner::PinnedBudgetAlignMatrix, false> aligner_;
+    const bool defaultScores_;
+
+    bool trySingleNodeAlignment(
+        const Path& seedPath, const std::string& queryPiece, size_t extensionLen, bool extendEnd,
+        std::list<PathAndAlignment>& result, int& score) const
+    {
+#ifdef GRAPHTOOLS_BUDGET_DP_DISABLE
+        return false;
+#else
+        const size_t queryLength = queryPiece.size();
+        if (!defaultScores_ || queryLength < 16 || !extensionLen)
+            return false;
+
+        const Graph& graph = *seedPath.graphRawPtr();
+        const NodeId nodeId = extendEnd ? seedPath.lastNodeId() : seedPath.firstNodeId();
+        const size_t nodeLength = graph.nodeSeqLength(nodeId);
+        const size_t boundary = extendEnd ? seedPath.endPosition() : seedPath.startPosition();
+        if (boundary > nodeLength)
+            return false;
+        const size_t targetLength = extendEnd ? nodeLength - boundary : boundary;
+
+        // These are exactly the single-node discovery and compact-matrix
+        // guards. In particular, the score bound uses the entire remaining
+        // node, not just the part consumed by the query.
+        if (queryLength > targetLength || targetLength < 8
+            || queryLength >= 32768 || targetLength >= 32768
+            || 15 * queryLength + 10 * targetLength + 10 >= 32768)
+            return false;
+        if (extensionLen > targetLength
+            && !(extendEnd ? graph.successors(nodeId) : graph.predecessors(nodeId)).empty())
+            return false;
+
+        const auto nodeSequence = graph.nodeSeq(nodeId);
+        const size_t targetStart = extendEnd ? boundary : boundary - queryLength;
+        size_t mismatch = queryLength;
+        for (size_t i = 0; i != queryLength; ++i)
+        {
+            // Use the same asymmetric reference/query encodings as the DP.
+            // Comparing both sequences forward also handles suffix alignment:
+            // reversing both preserves matches, and the returned operations
+            // must ultimately be in this original query order.
+            const auto q = codes::kQueryBaseEncodingTable[static_cast<unsigned char>(queryPiece[i])];
+            const auto t = codes::kReferenceBaseEncodingTable[static_cast<unsigned char>(nodeSequence[targetStart + i])];
+            if (!codes::kReferenceQueryCodeMatchLookupTable[t][q])
+            {
+                if (mismatch != queryLength)
+                    return false;
+                mismatch = i;
+            }
+        }
+
+        // Cost <=9 is below the cost of every gap opening, so the full-query
+        // diagonal is the unique optimum. Construct its final representation
+        // directly instead of building EdgeMap, Cigar and traceback objects.
+        // Legacy traceback represents an outer-end mismatch as a softclip,
+        // retaining its mismatch score but not consuming that reference base.
+        const bool softclip = extendEnd ? mismatch + 1 == queryLength : mismatch == 0;
+        std::list<Operation> operations;
+        if (mismatch)
+            operations.emplace_back(OperationType::kMatch, mismatch);
+        if (mismatch != queryLength)
+        {
+            operations.emplace_back(softclip ? OperationType::kSoftclip : OperationType::kMismatch, 1);
+            if (mismatch + 1 != queryLength)
+                operations.emplace_back(OperationType::kMatch, queryLength - mismatch - 1);
+        }
+        Path path = seedPath;
+        const size_t referenceLength = queryLength - (softclip ? 1 : 0);
+        if (extendEnd)
+            path.shiftEndAlongNode(referenceLength);
+        else
+            path.shiftStartAlongNode(referenceLength);
+        result.emplace_back(
+            std::move(path), Alignment(extendEnd ? seedPath.length() : 0, std::move(operations)));
+        score = 5 * queryLength - (mismatch != queryLength ? 9 : 0);
+        return true;
+#endif
+    }
 
     static void appendOperation(OperationType type, uint32_t length, std::list<Operation>& operations)
     {
@@ -193,6 +271,9 @@ public:
     explicit PinnedDagAligner(
         const int32_t matchScore, const int32_t mismatchScore, const int32_t gapOpenScore, const int32_t gapExtendScore)
         : aligner_(graphalign::dagAligner::BaseMatchingPenaltyMatrix(matchScore, mismatchScore), gapOpenScore, gapExtendScore)
+        , defaultScores_(
+              graphalign::dagAligner::Score(matchScore) == 5 && graphalign::dagAligner::Score(mismatchScore) == -4
+              && graphalign::dagAligner::Score(gapOpenScore) == -8 && graphalign::dagAligner::Score(gapExtendScore) == -2)
     {
     }
 
@@ -200,6 +281,9 @@ public:
     prefixAlign(const Path& seedPath, const std::string& queryPiece, size_t extensionLen, int& score)
     {
         using namespace graphalign::dagAligner;
+        std::list<PathAndAlignment> ret;
+        if (trySingleNodeAlignment(seedPath, queryPiece, extensionLen, true, ret, score))
+            return ret;
         std::vector<MappedId> nodeIds;
         Edges edges;
         std::string target;
@@ -213,7 +297,6 @@ public:
             target, originalIds);
         edges.push_back(Edge(target.length(), target.length()));
 
-        std::list<PathAndAlignment> ret;
         if (!target.empty())
         {
             const EdgeMap alignerEdges(edges, nodeIds);
@@ -246,6 +329,9 @@ public:
     suffixAlign(const Path& seedPath, std::string queryPiece, size_t extensionLen, int& score)
     {
         using namespace graphalign::dagAligner;
+        std::list<PathAndAlignment> ret;
+        if (trySingleNodeAlignment(seedPath, queryPiece, extensionLen, false, ret, score))
+            return ret;
         std::vector<MappedId> nodeIds;
         Edges edges;
         std::string target;
@@ -261,7 +347,6 @@ public:
             ConstReversePath(seedPath).endPosition(), extensionLen, nodeIds, edges, target, originalIds);
         edges.push_back(Edge(target.length(), target.length()));
 
-        std::list<PathAndAlignment> ret;
         if (!target.empty())
         {
             const EdgeMap alignerEdges(edges, nodeIds);
@@ -353,6 +438,13 @@ private:
     typedef std::pair<MappedId, MappedId> IdEdge;
     typedef std::vector<IdEdge> IdEdges;
 
+    struct MappedNodeRange
+    {
+        NodeId originalId;
+        MappedId begin, end;
+    };
+    typedef std::vector<MappedNodeRange> MappedNodeRanges;
+
     /**
      * \brief expands repeats up to remainder of sequnce length
      * \return pairs of mapped node ids indicating an edge between them.
@@ -361,9 +453,10 @@ private:
     template <typename GraphT>
     static IdEdges unrollRepeats(
         const GraphT& graph, const std::size_t seqLen, const std::map<NodeId, int>& nodeStartSeqOffset,
-        std::vector<NodeId>& originalIds, std::multimap<NodeId, MappedId>& mappedIds)
+        std::vector<NodeId>& originalIds, MappedNodeRanges& mappedRanges)
     {
         IdEdges idEdges;
+        mappedRanges.reserve(nodeStartSeqOffset.size());
         for (const auto& nodeIdOffset : nodeStartSeqOffset)
         {
             if (int(seqLen) <= nodeIdOffset.second)
@@ -371,6 +464,7 @@ private:
                 throw std::logic_error("node should not be in the subgraph");
             }
 
+            const MappedId firstMappedId = originalIds.size();
             const auto successors = graph.successors(nodeIdOffset.first);
             if (successors.end() != successors.find(nodeIdOffset.first))
             {
@@ -379,9 +473,8 @@ private:
                 for (std::size_t lenLeft = seqLen - std::max(0, nodeIdOffset.second); lenLeft;)
                 {
                     // chain unrolled repeat nodes together
-                    IdEdge edge(mappedIds.size(), mappedIds.size() + 1);
+                    IdEdge edge(originalIds.size(), originalIds.size() + 1);
                     idEdges.push_back(edge);
-                    mappedIds.emplace(nodeIdOffset.first, originalIds.size());
                     originalIds.push_back(nodeIdOffset.first);
                     lenLeft -= std::min(lenLeft, nodeSeqLen);
                 }
@@ -391,12 +484,14 @@ private:
             }
             else
             {
-                mappedIds.emplace(nodeIdOffset.first, originalIds.size());
                 originalIds.push_back(nodeIdOffset.first);
             }
+            // All copies of each original node are generated consecutively,
+            // and original nodes are visited in ascending NodeId order.
+            mappedRanges.push_back({ nodeIdOffset.first, firstMappedId, MappedId(originalIds.size()) });
         }
 
-        linkPredecessors(graph, originalIds, mappedIds, idEdges);
+        linkPredecessors(graph, mappedRanges, idEdges);
 
         // group edges by successor node
         std::sort(
@@ -449,45 +544,30 @@ private:
      */
     template <typename GraphT>
     static void linkPredecessors(
-        const GraphT& graph, const std::vector<NodeId>& originalIds,
-        const std::multimap<NodeId, MappedId>& mappedIds, IdEdges& idEdges)
+        const GraphT& graph, const MappedNodeRanges& mappedRanges, IdEdges& idEdges)
     {
-        for (MappedId mappedId = 0; MappedId(mappedIds.size()) != mappedId;)
+        for (const MappedNodeRange& range : mappedRanges)
         {
-            const NodeId originalId = originalIds.at(mappedId);
-
-            bool selfRepeat = false;
-            for (const NodeId& predecessorId : graph.predecessors(originalId))
+            // Only the first expansion receives external predecessor edges;
+            // repeat-to-repeat edges were already added by unrollRepeats.
+            for (const NodeId& predecessorId : graph.predecessors(range.originalId))
             {
-                if (predecessorId != originalId)
+                if (predecessorId != range.originalId)
                 {
-                    auto mappedPredIds = mappedIds.equal_range(predecessorId);
+                    const auto predecessor = std::lower_bound(
+                        mappedRanges.begin(), mappedRanges.end(), predecessorId,
+                        [](const MappedNodeRange& entry, NodeId id) { return entry.originalId < id; });
+                    if (predecessor == mappedRanges.end() || predecessor->originalId != predecessorId)
+                        continue;
 
-                    // other nodes, insert edges for each predecessor instance
-                    // empty ranges indicate predecessors that are not part of subgraph
-                    while (mappedPredIds.second != mappedPredIds.first)
+                    // The integer range has the same order as equal_range in
+                    // the former multimap, without allocating a tree node for
+                    // every unrolled repeat copy.
+                    for (MappedId mappedPredId = predecessor->begin; mappedPredId != predecessor->end; ++mappedPredId)
                     {
-                        IdEdge edge(mappedPredIds.first->second, mappedId);
-                        idEdges.push_back(edge);
-                        ++mappedPredIds.first;
+                        idEdges.emplace_back(mappedPredId, range.begin);
                     }
                 }
-                else
-                {
-                    selfRepeat = true;
-                }
-            }
-
-            if (selfRepeat)
-            {
-                // skip all instances of self repeat so that only first node gets edges
-                // from predecessors
-                auto mappedIdsRange = mappedIds.equal_range(originalId);
-                mappedId += std::distance(mappedIdsRange.first, mappedIdsRange.second);
-            }
-            else
-            {
-                ++mappedId;
             }
         }
     }
@@ -579,11 +659,13 @@ private:
         std::vector<NodeId>& originalIds)
     {
         const auto startNodeLength = graph.nodeSeqLength(startNodeId);
-        if (seqLen && startNodeOffset < startNodeLength && seqLen <= startNodeLength - startNodeOffset)
+        if (seqLen && startNodeOffset < startNodeLength
+            && (seqLen <= startNodeLength - startNodeOffset || graph.successors(startNodeId).empty()))
         {
             // Extraction cannot leave this node, so the general BFS/unrolling
-            // produces exactly one mapped node and no edges. Keep its complete
-            // remaining sequence: truncating it to seqLen would change DP.
+            // produces exactly one mapped node and no edges. This also holds
+            // past a terminal node's end. Keep its complete remaining sequence:
+            // truncating it to seqLen would change DP.
             nodeIds.assign(1, 0);
             originalIds.assign(1, startNodeId);
             target = graph.nodeSeq(startNodeId).substr(startNodeOffset);
@@ -594,20 +676,20 @@ private:
 
         // Repeat expansions need to be unrolled, so we create unique id for each unrolled instance and map
         // them to original ids
-        std::multimap<NodeId, MappedId> mappedIds;
+        MappedNodeRanges mappedRanges;
         const IdEdges idEdges
-            = unrollRepeats(graph, startNodeOffset + seqLen, nodeStartSeqOffset, originalIds, mappedIds);
+            = unrollRepeats(graph, startNodeOffset + seqLen, nodeStartSeqOffset, originalIds, mappedRanges);
 
         // index the edge array so that for each mappedId there is a pair of entries index[mappedId],
         // index[mappedId+1] which contains offsets of all predecessor edges in the idEdges;
         const std::vector<std::size_t> idEdgesIndex = indexEdges(idEdges, originalIds);
 
         nodeIds = extractOrderedNodeIds(idEdges, idEdgesIndex);
-        if (nodeIds.size() != mappedIds.size())
+        if (nodeIds.size() != originalIds.size())
         {
             throw std::logic_error(
                 "Invalid number of nodeIds entries " + std::to_string(nodeIds.size()) + " expected "
-                + std::to_string(mappedIds.size()));
+                + std::to_string(originalIds.size()));
         }
 
         if (originalIds.at(nodeIds.at(0)) != startNodeId)

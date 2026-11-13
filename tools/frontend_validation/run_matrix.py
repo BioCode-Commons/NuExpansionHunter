@@ -195,6 +195,9 @@ def main():
         routing = re.findall(r'Deferred decoding selected_records=(\d+) routed_pairs=(\d+) skipped_pairs=(\d+)', log)
         if routing:
             record['deferred_decoding'] = dict(zip(('selected_records', 'routed_pairs', 'skipped_pairs'), map(int, routing[-1])))
+        assistance = re.findall(r'Streaming reader assisted_locus_jobs=(\d+)', log)
+        if assistance:
+            record['reader_assisted_locus_jobs'] = int(assistance[-1])
         return record
 
     for inputs_dir in inputs:
