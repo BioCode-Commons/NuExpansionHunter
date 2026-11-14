@@ -220,6 +220,9 @@ void analyzeLocus(
             auto& locusAnalyzer(*locusAnalyzers[locusIndex]);
             locusId = locusAnalyzer.locusId();
             sampleFindings[locusIndex] = locusAnalyzer.analyze(sampleSex, boost::none);
+            // Findings own their values. Reads have finished, so this locus's
+            // indexes and evidence need not overlap results for later loci.
+            locusAnalyzers[locusIndex].reset();
         }
     }
     catch (const std::exception& e)
@@ -413,6 +416,13 @@ SampleFindings htsStreamingSampleAnalysis(
             }
         }
     }
+
+    // No more reads or alignments are produced after the workers have joined.
+    // Release unmatched mates and retained per-thread DP scratch before
+    // genotype findings are allocated, rather than overlapping both phases.
+    ReadCatalog().swap(unpairedReads);
+    for (auto& threadData : locusAnalyzerThreadLocalDataPool)
+        threadData.alignerSelectorPtr.reset();
 
     spdlog::info("Analyzing read evidence");
     const auto genotypeStart = std::chrono::steady_clock::now();

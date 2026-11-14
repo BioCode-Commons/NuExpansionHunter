@@ -1,0 +1,32 @@
+Running main() from ../googletest/src/gtest_main.cc
+Note: Google Test filter = StreamingReadPairQueueTest.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from StreamingReadPairQueueTest
+[ RUN      ] StreamingReadPairQueueTest.BoundedHelpRetainsActiveOwnershipAndAppendedPairOrder
+[       OK ] StreamingReadPairQueueTest.BoundedHelpRetainsActiveOwnershipAndAppendedPairOrder (1 ms)
+[ RUN      ] StreamingReadPairQueueTest.ExactHelpBudgetPublishesOneEmptyContinuationThatReleasesCapacity
+[       OK ] StreamingReadPairQueueTest.ExactHelpBudgetPublishesOneEmptyContinuationThatReleasesCapacity (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.BoundedHelpFailurePreservesCurrentPairAndDoesNotRequestContinuation
+[       OK ] StreamingReadPairQueueTest.BoundedHelpFailurePreservesCurrentPairAndDoesNotRequestContinuation (1 ms)
+[ RUN      ] StreamingReadPairQueueTest.ReaderExecutesOneQueuedTaskAndPreservesPerLocusOrder
+[       OK ] StreamingReadPairQueueTest.ReaderExecutesOneQueuedTaskAndPreservesPerLocusOrder (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.ActiveQueueAppendDoesNotRunHelper
+[       OK ] StreamingReadPairQueueTest.ActiveQueueAppendDoesNotRunHelper (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.RechecksCapacityAfterHelperFindsNoPendingTask
+[       OK ] StreamingReadPairQueueTest.RechecksCapacityAfterHelperFindsNoPendingTask (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.CancellationWakesCapacityWaitWithoutLosingQueuedPairs
+[       OK ] StreamingReadPairQueueTest.CancellationWakesCapacityWaitWithoutLosingQueuedPairs (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.CapturedHelperFailureCancelsWaitAndRemainsObservable
+[       OK ] StreamingReadPairQueueTest.CapturedHelperFailureCancelsWaitAndRemainsObservable (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.CollidingLocusCanDrainDuringCapacityWait
+[       OK ] StreamingReadPairQueueTest.CollidingLocusCanDrainDuringCapacityWait (56 ms)
+[ RUN      ] StreamingReadPairQueueTest.ReaderHelpCanDrainCollidingLocus
+[       OK ] StreamingReadPairQueueTest.ReaderHelpCanDrainCollidingLocus (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.CollidingLociRetainOrderThroughConcurrentReactivation
+[       OK ] StreamingReadPairQueueTest.CollidingLociRetainOrderThroughConcurrentReactivation (71 ms)
+[----------] 11 tests from StreamingReadPairQueueTest (129 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (129 ms total)
+[  PASSED  ] 11 tests.

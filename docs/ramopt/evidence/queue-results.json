@@ -1,0 +1,1692 @@
+{
+  "scope": "Isolated production streaming queue; not WGS end-to-end. Alternating serial processes, one excluded warmup pair, no cache clearing or affinity.",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "cases": {
+    "idle-5577376": {
+      "arguments": [
+        "idle",
+        "5577376",
+        "0",
+        "4"
+      ],
+      "summary": {
+        "wall_seconds": {
+          "baseline_median": 0.08410962500000019,
+          "candidate_median": 0.006070416000000023,
+          "paired_ratio": 0.06837048026283485,
+          "paired_ratio_bootstrap95": [
+            0.06349157011426891,
+            0.07359438666114727
+          ],
+          "candidate_lower_pairs": 9
+        },
+        "peak_rss_bytes": {
+          "baseline_median": 715325440,
+          "candidate_median": 46301184,
+          "paired_ratio": 0.06472743930371049,
+          "paired_ratio_bootstrap95": [
+            0.06472743930371049,
+            0.06472743930371049
+          ],
+          "candidate_lower_pairs": 9
+        }
+      },
+      "runs": [
+        {
+          "pair": -1,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.305557042,
+            "user_seconds": 0.007157999999999999,
+            "system_seconds": 0.010808,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "fcc86f5546e11a27b88985e23b5573374fc0c0c2dadc56d94f41a7058b370313",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376--1-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376--1-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00760829,
+              "processing_seconds": 2.08e-07,
+              "checksum": 0
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.37157604200000005,
+            "user_seconds": 0.064723,
+            "system_seconds": 0.092211,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "ca82d8f965240d0fc93005d4969ca221348fe683e896f726e46b29f50cda9180",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376--1-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376--1-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0943342,
+              "processing_seconds": 4.2e-08,
+              "checksum": 0
+            }
+          }
+        },
+        {
+          "pair": 0,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.0836578750000001,
+            "user_seconds": 0.042407,
+            "system_seconds": 0.036981,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "c3736d103ac22f217736ca24bb21c2f07134064987962958d9a91f29006e952e",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-0-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-0-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0426448,
+              "processing_seconds": 8.4e-08,
+              "checksum": 0
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.006156749999999933,
+            "user_seconds": 0.0030399999999999997,
+            "system_seconds": 0.002313,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "1d4bf612fa6fdf411726047e6b66c2791a55ae263d780f19c2ae216cbbf8ebdf",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-0-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-0-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00207254,
+              "processing_seconds": 2.08e-07,
+              "checksum": 0
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.006148375000000095,
+            "user_seconds": 0.0027919999999999998,
+            "system_seconds": 0.002577,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "2b1a594934299ef030fa013ae0191c2bb31cf078703afa7b4cdba11f860b9f51",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-1-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-1-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00241754,
+              "processing_seconds": 0,
+              "checksum": 0
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.08859683299999999,
+            "user_seconds": 0.044583,
+            "system_seconds": 0.038297,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "6a90e631738bacaada6a8c0b6716ce3220db07609c42a10f18b19d35e8746e8f",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-1-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-1-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0455425,
+              "processing_seconds": 4.1e-08,
+              "checksum": 0
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.08393120799999998,
+            "user_seconds": 0.042605,
+            "system_seconds": 0.034444999999999996,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "6cf483589b3f305b9b7598f84d19cf877d16e88ce0e34979a2306df1cb41d194",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-2-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-2-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0456085,
+              "processing_seconds": 0,
+              "checksum": 0
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.005738416999999885,
+            "user_seconds": 0.002715,
+            "system_seconds": 0.002147,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "40013d5a46f9b1e1ec6f829b5770cd2269569085dfac1776a8e88ca1e686c6ba",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-2-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-2-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00201367,
+              "processing_seconds": 4.2e-08,
+              "checksum": 0
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.005589459000000074,
+            "user_seconds": 0.00277,
+            "system_seconds": 0.0020959999999999998,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "9da704939df1c972cc26929c1fbe4bd68d584c28df6616e5bd60ad9f1b22452f",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-3-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-3-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00201587,
+              "processing_seconds": 8.3e-08,
+              "checksum": 0
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.10031612499999998,
+            "user_seconds": 0.049046,
+            "system_seconds": 0.04518,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "2e0b928ecee8bc4556a5911f61576f7ccd9bbc0a38aee87241ad894da13975fc",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-3-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-3-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0459632,
+              "processing_seconds": 4.1e-08,
+              "checksum": 0
+            }
+          }
+        },
+        {
+          "pair": 4,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.08310195799999986,
+            "user_seconds": 0.043087,
+            "system_seconds": 0.032532,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "5a0c0b59c23d9bf5a39fe31f731f8c2f9970516ddae7e4d4cebd0edcaf7e24b2",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-4-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-4-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0432172,
+              "processing_seconds": 4.2e-08,
+              "checksum": 0
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.007244458999999814,
+            "user_seconds": 0.003348,
+            "system_seconds": 0.002956,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "ce70917528fe66012ff5cee0b18f3852be31b2f94b7476d6398a731db535fb79",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-4-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-4-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00231392,
+              "processing_seconds": 0,
+              "checksum": 0
+            }
+          }
+        },
+        {
+          "pair": 5,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.006070416000000023,
+            "user_seconds": 0.002888,
+            "system_seconds": 0.002346,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "474ca3c1fd48326d5a27cd0f13589029a188b1e012b070ca2ad0fd639dd1d22d",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-5-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-5-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00217858,
+              "processing_seconds": 2.08e-07,
+              "checksum": 0
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.08410962500000019,
+            "user_seconds": 0.043265,
+            "system_seconds": 0.036042,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "255d26ece513ec4b29cf45d3d894b5e947f6854d5f4daaa5aabd7479a7b63843",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-5-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-5-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0451955,
+              "processing_seconds": 4.1e-08,
+              "checksum": 0
+            }
+          }
+        },
+        {
+          "pair": 6,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.08392291699999999,
+            "user_seconds": 0.042954,
+            "system_seconds": 0.038407,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "91eb41edc518726a4a9dfcca8add66d33a14713c8f3d96f396db1068dfbfcecf",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-6-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-6-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0453966,
+              "processing_seconds": 0,
+              "checksum": 0
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.005710708999999925,
+            "user_seconds": 0.002682,
+            "system_seconds": 0.002169,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "f0a56df849d1df8ce4e43a3f02cc2932ee82ff3299466b2e69db918a72d63eee",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-6-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-6-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00207017,
+              "processing_seconds": 2.08e-07,
+              "checksum": 0
+            }
+          }
+        },
+        {
+          "pair": 7,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.005574417000000054,
+            "user_seconds": 0.002692,
+            "system_seconds": 0.002085,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "10ee133b730a6da60da5e4469aa182e8f7ac645046b93f8a2fa2fbd84ce9de06",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-7-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-7-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00207604,
+              "processing_seconds": 4.2e-08,
+              "checksum": 0
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.08779775000000001,
+            "user_seconds": 0.045415,
+            "system_seconds": 0.039705,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "f763726e1e079a7dd569b0b385ac6c03a582b4d5d28f0bd5d0426264e971edfe",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-7-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-7-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0461148,
+              "processing_seconds": 1.25e-07,
+              "checksum": 0
+            }
+          }
+        },
+        {
+          "pair": 8,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.09208812500000008,
+            "user_seconds": 0.046924,
+            "system_seconds": 0.039193,
+            "peak_rss_bytes": 715325440,
+            "wait_status": 0,
+            "stdout_sha256": "4b724059edf6cb21cd246591dfe11d5a7a025034b9deec202c000de986a08f56",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-8-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-8-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 0.0445364,
+              "processing_seconds": 1.67e-07,
+              "checksum": 0
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "idle",
+              "5577376",
+              "0",
+              "4"
+            ],
+            "wall_seconds": 0.006150958000000095,
+            "user_seconds": 0.002836,
+            "system_seconds": 0.002461,
+            "peak_rss_bytes": 46301184,
+            "wait_status": 0,
+            "stdout_sha256": "4dc7bfa5d2499fbf0adb5a776adeb33dc8cacafcda0d195440dd25432df11bf2",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-8-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/idle-5577376-8-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 0.00231808,
+              "processing_seconds": 4.2e-08,
+              "checksum": 0
+            }
+          }
+        }
+      ]
+    },
+    "serial-million": {
+      "arguments": [
+        "serial",
+        "10000",
+        "1000000",
+        "4"
+      ],
+      "summary": {
+        "wall_seconds": {
+          "baseline_median": 0.13355954199999998,
+          "candidate_median": 0.09737191700000025,
+          "paired_ratio": 0.7290331909592439,
+          "paired_ratio_bootstrap95": [
+            0.7079925286647066,
+            0.7410577448670818
+          ],
+          "candidate_lower_pairs": 9
+        },
+        "peak_rss_bytes": {
+          "baseline_median": 2752512,
+          "candidate_median": 1802240,
+          "paired_ratio": 0.6547619047619048,
+          "paired_ratio_bootstrap95": [
+            0.6488095238095238,
+            0.6547619047619048
+          ],
+          "candidate_lower_pairs": 9
+        }
+      },
+      "runs": [
+        {
+          "pair": -1,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09851420799999988,
+            "user_seconds": 0.097145,
+            "system_seconds": 0.000685,
+            "peak_rss_bytes": 1802240,
+            "wait_status": 0,
+            "stdout_sha256": "4fa6644b775721a5456f935d07c08c1202633a19a120bbdbba5a473cfa0339fe",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million--1-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million--1-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.2958e-05,
+              "processing_seconds": 0.096517,
+              "checksum": 499999500000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.13703991599999998,
+            "user_seconds": 0.13577899999999998,
+            "system_seconds": 0.000655,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "823c066baf58dbf40efde80c06717c80fafc53a7ac048bc80cb0ce662a103a7b",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million--1-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million--1-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.2625e-05,
+              "processing_seconds": 0.135154,
+              "checksum": 499999500000
+            }
+          }
+        },
+        {
+          "pair": 0,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.1328605829999998,
+            "user_seconds": 0.13167199999999998,
+            "system_seconds": 0.000605,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "4b086c25ebbbb482740a1abba766493e9ef55579734a9d79282b905587630ac0",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-0-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-0-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 8.2834e-05,
+              "processing_seconds": 0.131139,
+              "checksum": 499999500000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09737191700000025,
+            "user_seconds": 0.09626499999999999,
+            "system_seconds": 0.0005369999999999999,
+            "peak_rss_bytes": 1802240,
+            "wait_status": 0,
+            "stdout_sha256": "09ce0fa86660238a475c30a3121ca16e49cc0a13c6a60cc79299b4ca4af1215b",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-0-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-0-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.2167e-05,
+              "processing_seconds": 0.0957766,
+              "checksum": 499999500000
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09607820899999986,
+            "user_seconds": 0.09504399999999999,
+            "system_seconds": 0.00048499999999999997,
+            "peak_rss_bytes": 1785856,
+            "wait_status": 0,
+            "stdout_sha256": "caab28957a325dae8d899cd15642d1261d962a2265052e165d36d17c1cc6dd05",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-1-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-1-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.1416e-05,
+              "processing_seconds": 0.0945476,
+              "checksum": 499999500000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.12919300000000034,
+            "user_seconds": 0.127963,
+            "system_seconds": 0.000585,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "4d72f0beb5a44679eadb4647cd29effe464484eeabf10b4259c6e983a85b5df6",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-1-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-1-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.4167e-05,
+              "processing_seconds": 0.127497,
+              "checksum": 499999500000
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.13336491599999967,
+            "user_seconds": 0.132018,
+            "system_seconds": 0.0006619999999999999,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "da3fd2a66e1fe9ed361d4e60c6cbe5ffbe58690273ddc89633964ff9bef62340",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-2-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-2-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.8375e-05,
+              "processing_seconds": 0.13144,
+              "checksum": 499999500000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09739566599999971,
+            "user_seconds": 0.09614199999999999,
+            "system_seconds": 0.000615,
+            "peak_rss_bytes": 1802240,
+            "wait_status": 0,
+            "stdout_sha256": "ec9212694ac040b8d9aea76eee26def9677bcf065315c78812169121f9bab47f",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-2-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-2-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.1541e-05,
+              "processing_seconds": 0.0955735,
+              "checksum": 499999500000
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09737200000000001,
+            "user_seconds": 0.09615399999999999,
+            "system_seconds": 0.000553,
+            "peak_rss_bytes": 1785856,
+            "wait_status": 0,
+            "stdout_sha256": "131a422cfe19b6373ce5af007e004b37e9e4ab5062b43a1979a26499b305ce5e",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-3-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-3-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.0042e-05,
+              "processing_seconds": 0.0956555,
+              "checksum": 499999500000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.14640208300000035,
+            "user_seconds": 0.145032,
+            "system_seconds": 0.000708,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "ed028a3a1ea1656d79b921273f3dc10a152002c05549e004f811c41af9bf592e",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-3-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-3-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.6625e-05,
+              "processing_seconds": 0.144476,
+              "checksum": 499999500000
+            }
+          }
+        },
+        {
+          "pair": 4,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.13410229100000004,
+            "user_seconds": 0.132634,
+            "system_seconds": 0.0008619999999999999,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "1a92af6aaa33faba985243f00d33e4dc2278886e25dbc0cc1f0c8fc57d489db7",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-4-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-4-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 8.5209e-05,
+              "processing_seconds": 0.132229,
+              "checksum": 499999500000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09635770800000021,
+            "user_seconds": 0.095259,
+            "system_seconds": 0.0005279999999999999,
+            "peak_rss_bytes": 1785856,
+            "wait_status": 0,
+            "stdout_sha256": "9cbdd4b34185851d2a1d24c33332a1b04511008f9e8adac17a23f6e383a7ef0d",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-4-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-4-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.05e-05,
+              "processing_seconds": 0.0946928,
+              "checksum": 499999500000
+            }
+          }
+        },
+        {
+          "pair": 5,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09537712499999973,
+            "user_seconds": 0.094328,
+            "system_seconds": 0.000498,
+            "peak_rss_bytes": 1802240,
+            "wait_status": 0,
+            "stdout_sha256": "50d8d4eff070d5dfa08fc4a415ad56beae523aad8501f32a9995eec814660ada",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-5-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-5-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.1458e-05,
+              "processing_seconds": 0.0938109,
+              "checksum": 499999500000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.1347148749999998,
+            "user_seconds": 0.133454,
+            "system_seconds": 0.0006259999999999999,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "6fb9ee1de99cd08df724ff002e645fbf3918dcf1ca0b1a51241b9b1e3da0898f",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-5-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-5-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.0709e-05,
+              "processing_seconds": 0.132969,
+              "checksum": 499999500000
+            }
+          }
+        },
+        {
+          "pair": 6,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.1348560000000001,
+            "user_seconds": 0.133582,
+            "system_seconds": 0.000607,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "1fb89bd950e71ab46956258de765b45b6f9fbd03808978b8a5530042fde150f0",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-6-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-6-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 9.05e-05,
+              "processing_seconds": 0.132997,
+              "checksum": 499999500000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09831449999999986,
+            "user_seconds": 0.097158,
+            "system_seconds": 0.000565,
+            "peak_rss_bytes": 1802240,
+            "wait_status": 0,
+            "stdout_sha256": "5094903170911b2be7a8311b037bd6f5ec923006baead466b130766dd8e28d47",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-6-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-6-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.2166e-05,
+              "processing_seconds": 0.0966195,
+              "checksum": 499999500000
+            }
+          }
+        },
+        {
+          "pair": 7,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09897533300000028,
+            "user_seconds": 0.09783599999999999,
+            "system_seconds": 0.000514,
+            "peak_rss_bytes": 1802240,
+            "wait_status": 0,
+            "stdout_sha256": "e4232f5ac732651ec8605b552369f62a8ffc8d0e7769ddc3350529d30535f6f6",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-7-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-7-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.1125e-05,
+              "processing_seconds": 0.0973689,
+              "checksum": 499999500000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.13355954199999998,
+            "user_seconds": 0.13225599999999998,
+            "system_seconds": 0.000652,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "721b7beb01d0cbc774696eee8abe84ec17238ec63802ddc1b147e7e5384ca6c9",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-7-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-7-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.0542e-05,
+              "processing_seconds": 0.131738,
+              "checksum": 499999500000
+            }
+          }
+        },
+        {
+          "pair": 8,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.13261787499999977,
+            "user_seconds": 0.13125,
+            "system_seconds": 0.0006439999999999999,
+            "peak_rss_bytes": 2752512,
+            "wait_status": 0,
+            "stdout_sha256": "f62842b8a6913afcc7a8bc42cd6c34c7b1e921aba2fb4449ef860b51a3c7cc5c",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-8-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-8-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.95e-05,
+              "processing_seconds": 0.130671,
+              "checksum": 499999500000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "serial",
+              "10000",
+              "1000000",
+              "4"
+            ],
+            "wall_seconds": 0.09548387500000022,
+            "user_seconds": 0.094251,
+            "system_seconds": 0.000607,
+            "peak_rss_bytes": 1802240,
+            "wait_status": 0,
+            "stdout_sha256": "631f34699b6f698f3b9013be209491c26cd0806355fdc10a25df4d4c04cf694b",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-8-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/serial-million-8-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.0416e-05,
+              "processing_seconds": 0.0936856,
+              "checksum": 499999500000
+            }
+          }
+        }
+      ]
+    },
+    "parallel-200k": {
+      "arguments": [
+        "parallel",
+        "10000",
+        "200000",
+        "4"
+      ],
+      "summary": {
+        "wall_seconds": {
+          "baseline_median": 0.3463052919999994,
+          "candidate_median": 0.3144420419999996,
+          "paired_ratio": 0.9138660535832818,
+          "paired_ratio_bootstrap95": [
+            0.8829419870069785,
+            0.9243964033036707
+          ],
+          "candidate_lower_pairs": 9
+        },
+        "peak_rss_bytes": {
+          "baseline_median": 2998272,
+          "candidate_median": 2031616,
+          "paired_ratio": 0.6775956284153005,
+          "paired_ratio_bootstrap95": [
+            0.6666666666666666,
+            0.6956521739130435
+          ],
+          "candidate_lower_pairs": 9
+        }
+      },
+      "runs": [
+        {
+          "pair": -1,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3163036659999996,
+            "user_seconds": 0.239148,
+            "system_seconds": 0.608077,
+            "peak_rss_bytes": 1998848,
+            "wait_status": 0,
+            "stdout_sha256": "bf34ce28c39516807062342a60d22b2a06046f08e4317150fb024e59043f05d3",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k--1-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k--1-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.9542e-05,
+              "processing_seconds": 0.314378,
+              "checksum": 19999900000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.35072345800000004,
+            "user_seconds": 0.26497499999999996,
+            "system_seconds": 0.6542319999999999,
+            "peak_rss_bytes": 3014656,
+            "wait_status": 0,
+            "stdout_sha256": "f149ddd0d6ab3775bcf2d7d39a545a0e4564880f8d9bb16010d2a4c76271f1c5",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k--1-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k--1-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 8.4125e-05,
+              "processing_seconds": 0.348613,
+              "checksum": 19999900000
+            }
+          }
+        },
+        {
+          "pair": 0,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.34785537499999997,
+            "user_seconds": 0.264049,
+            "system_seconds": 0.651955,
+            "peak_rss_bytes": 2998272,
+            "wait_status": 0,
+            "stdout_sha256": "416874bcb553edf23ca7b6b25fd5660d16f51af50baefb72b2bd9d85c95f0aeb",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-0-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-0-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 8.4959e-05,
+              "processing_seconds": 0.345677,
+              "checksum": 19999900000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3196002910000004,
+            "user_seconds": 0.248419,
+            "system_seconds": 0.606907,
+            "peak_rss_bytes": 2031616,
+            "wait_status": 0,
+            "stdout_sha256": "da086bd4537ea39d166858f06297f64abb0b27f3f06bf4bdfc8cba59f5ee1a19",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-0-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-0-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.1416e-05,
+              "processing_seconds": 0.317624,
+              "checksum": 19999900000
+            }
+          }
+        },
+        {
+          "pair": 1,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3136133750000001,
+            "user_seconds": 0.240947,
+            "system_seconds": 0.6028169999999999,
+            "peak_rss_bytes": 2080768,
+            "wait_status": 0,
+            "stdout_sha256": "56a0d17e34f935701c85c26fd2760e8135ad59c06a22ca6ed7aa8e915109afe5",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-1-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-1-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.2917e-05,
+              "processing_seconds": 0.311569,
+              "checksum": 19999900000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.34712095800000053,
+            "user_seconds": 0.266404,
+            "system_seconds": 0.651117,
+            "peak_rss_bytes": 2949120,
+            "wait_status": 0,
+            "stdout_sha256": "aaf99bec5e742495824ff55aa88812eab7fa8cf14e9ba850e72a8cff5659aac9",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-1-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-1-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 8.4209e-05,
+              "processing_seconds": 0.345113,
+              "checksum": 19999900000
+            }
+          }
+        },
+        {
+          "pair": 2,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3463052919999994,
+            "user_seconds": 0.263756,
+            "system_seconds": 0.6508499999999999,
+            "peak_rss_bytes": 3014656,
+            "wait_status": 0,
+            "stdout_sha256": "64ecd89c2d75f5f9bfd1fb7696e3fe75e7f5b8e65f706c5f5a24794875939b78",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-2-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-2-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 9.2416e-05,
+              "processing_seconds": 0.344308,
+              "checksum": 19999900000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3268550000000001,
+            "user_seconds": 0.24566,
+            "system_seconds": 0.62188,
+            "peak_rss_bytes": 2097152,
+            "wait_status": 0,
+            "stdout_sha256": "607893d01f1c5801c27521673e0cd74c6d4b4c7b13ea973ffa5697a3c654d286",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-2-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-2-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.1875e-05,
+              "processing_seconds": 0.324814,
+              "checksum": 19999900000
+            }
+          }
+        },
+        {
+          "pair": 3,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3144420419999996,
+            "user_seconds": 0.239445,
+            "system_seconds": 0.602876,
+            "peak_rss_bytes": 1998848,
+            "wait_status": 0,
+            "stdout_sha256": "5ce4623388bc57c521a241cec5b535c428fd1f8e0a5bbb37a73c465f971d8f61",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-3-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-3-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.2209e-05,
+              "processing_seconds": 0.31246,
+              "checksum": 19999900000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.34407891700000004,
+            "user_seconds": 0.264013,
+            "system_seconds": 0.643276,
+            "peak_rss_bytes": 2998272,
+            "wait_status": 0,
+            "stdout_sha256": "0a87b1f827c290231f378b8a20a8a39edb32cb885e3688770f48412574fb0e59",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-3-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-3-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.5166e-05,
+              "processing_seconds": 0.342084,
+              "checksum": 19999900000
+            }
+          }
+        },
+        {
+          "pair": 4,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.34529795799999974,
+            "user_seconds": 0.261005,
+            "system_seconds": 0.652376,
+            "peak_rss_bytes": 2998272,
+            "wait_status": 0,
+            "stdout_sha256": "47aeb75df77f4ba3771e947eb3f97604c4aa22160620fd18a2f6473fa69098e4",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-4-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-4-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.2875e-05,
+              "processing_seconds": 0.34325,
+              "checksum": 19999900000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3116262090000008,
+            "user_seconds": 0.238331,
+            "system_seconds": 0.60299,
+            "peak_rss_bytes": 2048000,
+            "wait_status": 0,
+            "stdout_sha256": "ffc0c9dd80f7d397f4f66f44539623328bc232982769ffaba7e28b9baa2df479",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-4-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-4-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.0834e-05,
+              "processing_seconds": 0.309665,
+              "checksum": 19999900000
+            }
+          }
+        },
+        {
+          "pair": 5,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3111406249999984,
+            "user_seconds": 0.23545,
+            "system_seconds": 0.6022029999999999,
+            "peak_rss_bytes": 1998848,
+            "wait_status": 0,
+            "stdout_sha256": "cafaa8ae569015e828b60bd17ef8b57683cb29cba6bc677b550789494b8ae84f",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-5-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-5-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.1708e-05,
+              "processing_seconds": 0.309091,
+              "checksum": 19999900000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3611842910000007,
+            "user_seconds": 0.25843099999999997,
+            "system_seconds": 0.6972039999999999,
+            "peak_rss_bytes": 2998272,
+            "wait_status": 0,
+            "stdout_sha256": "d9647ec442e3c1c239101be43ef95f4993cf01a1919809fcaf74de971930b11b",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-5-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-5-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 8.4125e-05,
+              "processing_seconds": 0.359072,
+              "checksum": 19999900000
+            }
+          }
+        },
+        {
+          "pair": 6,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.34493454200000073,
+            "user_seconds": 0.259511,
+            "system_seconds": 0.654293,
+            "peak_rss_bytes": 2998272,
+            "wait_status": 0,
+            "stdout_sha256": "ba5cfe337c637d94333737ae66888d3d1703e70091689b1743f6f0fa08bde325",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-6-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-6-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.65e-05,
+              "processing_seconds": 0.342877,
+              "checksum": 19999900000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3188562499999996,
+            "user_seconds": 0.242757,
+            "system_seconds": 0.601976,
+            "peak_rss_bytes": 1998848,
+            "wait_status": 0,
+            "stdout_sha256": "37e42d5c80961a37cab24731f8ca6fcf332bc0a56395195d0256956dce910d67",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-6-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-6-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.25e-05,
+              "processing_seconds": 0.316599,
+              "checksum": 19999900000
+            }
+          }
+        },
+        {
+          "pair": 7,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3167600000000004,
+            "user_seconds": 0.241579,
+            "system_seconds": 0.606521,
+            "peak_rss_bytes": 2048000,
+            "wait_status": 0,
+            "stdout_sha256": "495e2b64ddbcd6cd6edc9cd4e56659664f8d705ff067b5cac3df7d57e1b031f9",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-7-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-7-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.2667e-05,
+              "processing_seconds": 0.314719,
+              "checksum": 19999900000
+            }
+          },
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.358755167,
+            "user_seconds": 0.25873399999999996,
+            "system_seconds": 0.690983,
+            "peak_rss_bytes": 2998272,
+            "wait_status": 0,
+            "stdout_sha256": "51750adee6b50c372a947fb04a00f4d001feb9149a4a6857777ca17283f9c7dc",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-7-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-7-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.325e-05,
+              "processing_seconds": 0.356666,
+              "checksum": 19999900000
+            }
+          }
+        },
+        {
+          "pair": 8,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "baseline": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/baseline",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3428239580000003,
+            "user_seconds": 0.264637,
+            "system_seconds": 0.634224,
+            "peak_rss_bytes": 3031040,
+            "wait_status": 0,
+            "stdout_sha256": "82329cbd4c73747e4df7c8c40c4ef0df4cba82be0cd16bed4fe2f2f3ffed0039",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-8-baseline.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-8-baseline.stderr",
+            "binary_sha256": "79d90c07cebae5c91b0e99c0ee46548d02202b32804265b38611f76c108a3e6d",
+            "probe": {
+              "construction_seconds": 7.7584e-05,
+              "processing_seconds": 0.340701,
+              "checksum": 19999900000
+            }
+          },
+          "candidate": {
+            "command": [
+              "<WORKSPACE>/work/memory-queue-build/candidate",
+              "parallel",
+              "10000",
+              "200000",
+              "4"
+            ],
+            "wall_seconds": 0.3133021249999999,
+            "user_seconds": 0.23929999999999998,
+            "system_seconds": 0.596544,
+            "peak_rss_bytes": 2015232,
+            "wait_status": 0,
+            "stdout_sha256": "574c93e6fef6f7f1816b2c9c922ce2a34a556daf8fd074908707723551c5392b",
+            "stdout_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-8-candidate.stdout",
+            "stderr_path": "<WORKSPACE>/work/memory-queue-build/results/parallel-200k-8-candidate.stderr",
+            "binary_sha256": "7cede2b8aa2e4bd6c10a686ce54016fac7d99b3310b0011e3a1be62fbc2c09f2",
+            "probe": {
+              "construction_seconds": 2.1084e-05,
+              "processing_seconds": 0.311273,
+              "checksum": 19999900000
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -104,7 +104,7 @@ ExpansionHunter \
 
 Preparation exits before processing reads. Then add `--catalog-cache results/catalog.ki` to each sample's usual command. Keep the reference and catalog arguments: the program checks them against the cache. Use a new cache filename when rebuilding; preparation does not overwrite an existing file. Without `--catalog-cache`, the usual command still builds catalog data in memory.
 
-The compressed index layout uses archive format version 3. Caches prepared with
+The compressed index layout uses archive format version 4. Caches prepared with
 earlier versions are rejected and must be rebuilt with this executable, using a
 new cache filename and the same preparation command above.
 
@@ -239,7 +239,7 @@ NuExpansionHunter retains EH's genotyping model and reduces repeated catalog con
 
 ### Jiapeng optimization
 
-The current implementation adds a compact representation for the static repeat indexes. The 10-mer and 14-mer data use structure-of-arrays storage for keys, payloads, and counts; buckets use 16-bit entries when the key range permits and widen to 32-bit entries otherwise. Single-node paths use implicit counts, while count materialization and path views stay lazy. These changes reduce the catalog archive and keep lookup results, path multiplicities, and duplicate evidence exact.
+The static repeat indexes use exact prefix buckets for eligible graphs. A 10-mer membership entry stores its remaining key bits in two bytes; a 14-mer alignment entry packs the remaining key bits and a compact node/position code into four bytes. Larger or highly skewed indexes retain the existing hash-table representation. All paths, path order, multiplicities and duplicate evidence are preserved.
 
 JSON output is written one locus at a time instead of retaining the complete result DOM. Decode and encode pools control HTS/BAM compression work, and the optional BAM queue limit provides backpressure. Streaming sequence preprocessing can also use an ordered, bounded worker pool via `--read-decode-threads`; its default is zero. Input access and read-pair dispatch remain on the caller thread. See [DecodedReadStream](ehunter/sample/DecodedReadStream.hh).
 
@@ -251,19 +251,26 @@ The archive can be reused across samples with the same catalog, reference, conti
 
 ### Compact, exact k-mer lookup
 
-The 10-mer orientation index stores membership keys only. The 14-mer alignment index stores path coordinates and node IDs in flat arrays, with short single-node paths packed into two 16-bit fields. Rolling two-bit encoding avoids re-encoding overlapping read substrings, and path views construct only the requested paths. All matching paths and their multiplicities are retained. See [KmerIndex.cpp](ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/KmerIndex.cpp).
+The 10-mer orientation index stores membership keys only. The 14-mer alignment index packs eligible keys and single-node path coordinates together and stores complete complex paths in flat arrays. Rolling two-bit encoding avoids re-encoding overlapping read substrings, and path views construct only the requested paths. All matching paths and their multiplicities are retained. See [KmerIndex.cpp](ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/KmerIndex.cpp).
 
-Entries eligible for packed single-node paths occupy 8 bytes instead of 12: their path count is implicit,
-while complex entries retain explicit 32-bit counts in a separate array. Keys
-and path payloads are stored separately so hash probes only read keys. Hash
-buckets use 16-bit entry numbers for indexes with at most 65,535 distinct keys,
-and retain 32-bit numbers for larger indexes. Keys and path offsets keep their
-full width, and path order and duplicates are preserved. This layout applies to
-both in-memory indexes and mapped archives, without decompressing archive blocks.
-The reduction depends on each graph's keys and paths and does not set a limit on
-total sample RAM.
+A 16-bit directory supplies a shared key prefix: nine bits for membership
+indexes and ten bits for alignment indexes. Lookup
+compares all remaining key bits exactly, using bounded SIMD scans on ARM64 or
+SSE2 and a scalar fallback. No approximate membership filter is used. Complex
+paths keep their complete ordered path lists. Indexes with large graphs, many
+entries or skewed buckets fall back to full-width hashing when packing is not
+appropriate. This applies to both owned indexes and mapped archives.
+
+Archive version 4 stores a fixed graph-identity checksum in each index record
+instead of duplicating the graph's sequences. Older caches must be rebuilt.
+Streaming queue metadata uses one pointer per locus, bounded shared mutexes,
+and a pool of active queues. Unmatched mates and worker scratch are released
+before genotyping, and each analyzer is released once its owned findings have
+been produced. These changes target memory that grows with catalog size.
 
 The [branch validation report](docs/Jiapeng_optimization_report.md) records output comparisons, archive sizes and local timings.
+The [streaming memory validation tools](tools/memory_validation/README.txt) reproduce catalog-size, sorted-input stress, and genotype-positive comparisons of process peak RSS and complete runtime.
+The [Jiapeng-RAMOPT results](docs/ramopt/README.md) include all 53 measured configurations, complete output comparisons, and the scope of the memory and runtime findings.
 
 ### Coordinate-ordered interval lookup
 
@@ -271,7 +278,7 @@ A sweep advances through sorted extraction intervals as reads move along the gen
 
 ### Smaller alignment state and fewer read copies
 
-The affine-gap aligner reuses temporary score rows and stores insertion traceback decisions as one bit per cell, preserving the original scores and traceback. Streaming queues are allocated on activation and released when empty; recovered mates transfer their sequence buffers instead of copying them. See [alignment storage](ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrixVectorized.hh) and [streaming collection](ehunter/sample/HtsStreamingSampleAnalysis.cpp).
+The affine-gap aligner reuses temporary score rows and stores insertion traceback decisions as one bit per cell, preserving the original scores and traceback. Streaming queues are allocated on activation and recycled through a bounded pool when empty; recovered mates transfer their sequence buffers instead of copying them. See [alignment storage](ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrixVectorized.hh) and [streaming collection](ehunter/sample/HtsStreamingSampleAnalysis.cpp).
 
 ### Batched mate retrieval and parallel BAM output
 

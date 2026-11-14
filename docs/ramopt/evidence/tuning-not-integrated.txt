@@ -1,0 +1,61 @@
+Decision: retain v1, which has completed whole-application validation, and do not integrate any isolated tuning variant in this round.
+
+Scope: all tuning code, build artifacts and evidence remain under work/index-tuning.
+Product KmerIndex.cpp / KmerIndex.hh unchanged: True.
+The original v1, extreme-test and application performance evidence is retained in full.
+The final acceptance scope is sorted BAM + streaming + prepared cache.
+
+Prepared and screened variants: frozen, count16, count32, prefix2, prefix3, combined2, combined3, entrylite, combined3lite.
+count16 caches a uint16 count in existing PathView padding, using the 65535 sentinel to fall back to the full 32-bit count; the object remains 16 bytes.
+count32 caches the complete 32-bit count; prefix2/3 combine prefix-directory loads and use fixed-width scalar comparisons for small buckets; entrylite removes unused key loads and forces inlining.
+
+Correctness: all 9 isolated versions pass the 18 extreme profiles, complete output/path audits for 32 mixed loci, and API comparisons.
+API comparisons cover >65535 paths, default/missing/membership-only/out-of-range behavior and exception text; all match original exactly.
+v1 also passes 18/18 extreme ASan/UBSan profiles, with complete stdout matching the earlier audit. Only KmerIndex.cpp and the probe are instrumented; supporting libraries use Release builds, and LeakSanitizer is disabled.
+
+Reasons for not integrating:
+1. prefix2/3 and their combinations substantially hurt prefix hits and ordinary mixed path queries; they were not pursued further.
+2. count32 improves some fallback cases but hurts ordinary mixed path queries; it was not pursued further.
+3. count16 passes the final fresh three-way comparison and improves some fallback cases, but adds no memory benefit and does not eliminate the single-index hot-hit tradeoff.
+4. count16 is approximately equal to v1 for ordinary rolling path retrieval. Replacing v1 for a local improvement would invalidate the applicability of evidence from the 44 whole-application configurations already completed at the time of this decision. No additional tuning or integration is included in this round.
+
+Final count16 validation: 31 cases (23 extreme + 8 mixed), with alternating original/frozen/count16 order for each case, 1 warmup and 5 measured rounds; the fastest sample is calibrated to approximately 0.15 seconds.
+All timed stdout checksums match. The following values are medians of per-round ratios, not ratios of marginal median times; >1 means slower.
+In these microbenchmarks, shuffled refers only to key-query order, not unsorted BAM. These are cache-hot local queries and cannot replace complete streaming acceptance with sorted BAM.
+
+case | frozen/original | count16/original | count16/frozen
+extreme start2047-hit | 1.109923 | 1.096930 | 0.992681
+extreme start2047-miss | 0.900978 | 0.892692 | 0.982562
+extreme start2047-paths | 0.940890 | 0.986323 | 1.038336
+extreme start2048-hit | 0.997484 | 1.017267 | 1.023404
+extreme start2048-miss | 1.050442 | 1.048362 | 1.006720
+extreme start2048-paths | 1.091298 | 1.051619 | 0.983228
+extreme node3-hit | 1.150414 | 1.159711 | 1.008126
+extreme node3-miss | 0.925903 | 0.915532 | 0.993969
+extreme node3-paths | 0.876671 | 0.885759 | 1.013209
+extreme node4-hit | 1.001686 | 1.011018 | 1.010521
+extreme node4-miss | 1.044883 | 1.040990 | 0.998178
+extreme node4-paths | 1.045844 | 1.011236 | 0.966909
+extreme dense14-hit | 0.997748 | 1.003966 | 1.007760
+extreme dense14-miss | 0.992982 | 0.989576 | 0.997485
+extreme dense14-paths | 1.086954 | 1.005286 | 0.908024
+extreme skew14-hit | 0.985612 | 0.999164 | 1.011220
+extreme skew14-miss | 1.065175 | 1.064189 | 1.007528
+extreme skew14-paths | 1.103792 | 1.063013 | 0.947556
+extreme entries65536-hit | 0.945765 | 0.967036 | 1.022491
+extreme entries65536-paths | 1.088180 | 1.051144 | 0.959840
+extreme complex14-hit | 1.090680 | 1.087685 | 0.984745
+extreme complex14-miss | 0.853788 | 0.842923 | 0.992503
+extreme complex14-paths | 0.997247 | 0.999708 | 1.003806
+mixed 10-hit-shuffled | 0.781205 | 0.766066 | 0.971305
+mixed 10-miss-shuffled | 0.253491 | 0.254943 | 1.007935
+mixed 14-hit-shuffled | 0.833292 | 0.828933 | 1.013121
+mixed 14-miss-shuffled | 0.390981 | 0.379714 | 0.982838
+mixed 14-paths-shuffled | 1.018799 | 0.991767 | 0.959836
+mixed 10-hit-rolling | 0.746707 | 0.741887 | 0.985255
+mixed 14-hit-rolling | 0.833454 | 0.838164 | 0.994209
+mixed 14-paths-rolling | 1.009329 | 1.006548 | 1.004968
+
+Evidence: manifest.json, checks.json, screen.json, count16-paired.json.
+v1 extreme sanitizers: work/index-memory-extremes/sanitizer-results.json and sanitized-*.log.
+Rebuild/rerun: build.py, check.py, screen.py, compare_count16.py. Do not mistake these isolated candidates for the final product version.

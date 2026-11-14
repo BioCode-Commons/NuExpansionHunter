@@ -356,6 +356,109 @@ TEST(CompactCatalogIndex, MappedCopyAndMoveKeepArchiveAlive)
     EXPECT_EQ(expected.encode(), assigned.encode());
 }
 
+namespace
+{
+std::string randomReference(size_t length, uint32_t seed)
+{
+    std::string sequence(length, 'A');
+    for (auto& base : sequence)
+    {
+        seed ^= seed << 13;
+        seed ^= seed >> 17;
+        seed ^= seed << 5;
+        base = "ACGT"[seed & 3];
+    }
+    return sequence;
+}
+
+bool usesPrefixIndex(const graphtools::KmerIndex& index)
+{
+    std::ostringstream stream;
+    index.writeRecord(stream);
+    const auto record = stream.str();
+    uint64_t identitySize;
+    std::memcpy(&identitySize, record.data() + 24, sizeof(identitySize));
+    uint32_t buckets;
+    std::memcpy(&buckets, record.data() + 24 + 16 + identitySize + 4, sizeof(buckets));
+    return buckets == 0;
+}
+}
+
+TEST(CompactCatalogIndex, PrefixBucketsPreserveAllKeysOrderedPathsAndArchiveLifetime)
+{
+    auto left = randomReference(1000, 7813), right = randomReference(1000, 5627);
+    // Include expanded bases, a repeated k-mer, and paths crossing a loop.
+    left[150] = 'N';
+    right.replace(170, 16, left.substr(500, 16));
+    const auto graph = graphtools::makeStrGraph(left, "CAG", right);
+    for (int k : { 10, 14 })
+    {
+        const bool memberOnly = k == 10;
+        const auto expected = enumerate(graph, k);
+        const graphtools::KmerIndex original(graph, k, memberOnly);
+        ASSERT_TRUE(usesPrefixIndex(original));
+        auto retained = [&]() {
+            ArchiveFile file;
+            graphtools::KmerIndex::prepareArchive(file.path, 1, [&](std::ostream& out, uint64_t) {
+                original.writeRecord(out);
+            });
+            auto archive = std::make_shared<graphtools::KmerIndexArchive>(file.path);
+            graphtools::KmerIndex mapped(graph, k, memberOnly, archive, 0);
+            graphtools::KmerIndex copy(mapped);
+            archive.reset();
+            return copy;
+        }();
+        graphtools::KmerIndex moved(std::move(retained));
+        EXPECT_EQ(original.encode(), moved.encode());
+        EXPECT_EQ(original.kmers(), moved.kmers());
+        const graphtools::TwoBitKmerEncoder encoder(k);
+        for (const auto& item : expected)
+        {
+            const auto key = encoder.encode(item.first);
+            ASSERT_TRUE(original.containsEncodedKmer(key));
+            ASSERT_TRUE(moved.containsEncodedKmer(key));
+            if (!memberOnly)
+            {
+                ASSERT_EQ(item.second, original.getPaths(item.first));
+                ASSERT_EQ(item.second, moved.getPaths(item.first));
+                const auto view = moved.findEncodedPaths(key);
+                ASSERT_EQ(item.second.size(), view.size());
+                for (size_t i = 0; i < view.size(); ++i)
+                    ASSERT_EQ(item.second[i], view[i]);
+            }
+        }
+        uint32_t random = 817239;
+        for (int trial = 0; trial < 100000; ++trial)
+        {
+            random ^= random << 13;
+            random ^= random >> 17;
+            random ^= random << 5;
+            const auto key = random & ((uint32_t(1) << (2 * k)) - 1);
+            const bool present = expected.count(encoder.decode(key));
+            ASSERT_EQ(present, original.containsEncodedKmer(key));
+            ASSERT_EQ(present, moved.containsEncodedKmer(key));
+        }
+        EXPECT_FALSE(original.containsEncodedKmer(0xffffffffU));
+    }
+}
+
+TEST(CompactCatalogIndex, PrefixPackingFallbackPreservesLongAndSkewedGraphs)
+{
+    for (bool longGraph : { false, true })
+    {
+        auto sequence = randomReference(longGraph ? 20000 : 1500, 71673);
+        if (!longGraph)
+            for (size_t i = 0; i + 16 < sequence.size(); i += 16)
+                sequence.replace(i, 6, "AAAAAA");
+        graphtools::Graph graph(1);
+        graph.setNodeSeq(0, sequence);
+        const graphtools::KmerIndex index(graph, 14);
+        ASSERT_FALSE(usesPrefixIndex(index));
+        for (const auto& item : enumerate(graph, 14))
+            ASSERT_EQ(item.second, index.getPaths(item.first));
+    }
+}
+
 TEST(CompactCatalogIndex, PreviousArchiveVersionIsRejected)
 {
     const auto graph = graphtools::makeDeletionGraph("ACGT", "A", "TGCA");
@@ -364,7 +467,7 @@ TEST(CompactCatalogIndex, PreviousArchiveVersionIsRejected)
         graphtools::KmerIndex(graph, 4).writeRecord(out);
     });
     std::fstream oldFormat(file.path, std::ios::in | std::ios::out | std::ios::binary);
-    const uint64_t previousMagic = 0x0000000245484b49ULL;
+    const uint64_t previousMagic = 0x0000000345484b49ULL;
     oldFormat.write(reinterpret_cast<const char*>(&previousMagic), sizeof(previousMagic));
     oldFormat.close();
     EXPECT_THROW(graphtools::KmerIndexArchive(file.path), std::runtime_error);

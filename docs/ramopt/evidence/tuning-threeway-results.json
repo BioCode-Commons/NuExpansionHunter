@@ -1,0 +1,6214 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "pairs": 5,
+  "warmup_pairs": 1,
+  "target_seconds": 0.15,
+  "binaries": {
+    "original": {
+      "extreme": {
+        "path": "<WORKSPACE>/work/index-memory-extremes/baseline-probe",
+        "sha256": "8c19660a52bf72cd50d010c22e50dbd5f9aeebd285cfb4a712e32cc3107068a4"
+      },
+      "mixed": {
+        "path": "<WORKSPACE>/work/index-memory-validation/baseline-probe",
+        "sha256": "78ede677d1f7025ec0b85a9ffadc0f69beaee82cea3fd9d9f4e7f5c4e76d0ffd"
+      }
+    },
+    "frozen": {
+      "extreme": {
+        "path": "<WORKSPACE>/work/index-tuning/frozen/extreme",
+        "sha256": "4b14753d96d7e7fbbc0eca56b0e9d84253106ed4c68fb3489ecd177a3ae98179"
+      },
+      "mixed": {
+        "path": "<WORKSPACE>/work/index-tuning/frozen/mixed",
+        "sha256": "b7a1c45c07c3b10a296efeaaefba04414c1776397bba30eaabc7a834f34f8812"
+      }
+    },
+    "count16": {
+      "extreme": {
+        "path": "<WORKSPACE>/work/index-tuning/count16/extreme",
+        "sha256": "56ea024cc246e5e89bd340e64b078c571ff71a009f15686fb3e7d47ca573b65d"
+      },
+      "mixed": {
+        "path": "<WORKSPACE>/work/index-tuning/count16/mixed",
+        "sha256": "5ea09724c74dfba03bfe911bad2ac3fb7fa066bcf62aaf73b0c862a6931fc37c"
+      }
+    }
+  },
+  "cases": [
+    {
+      "kind": "extreme",
+      "name": "start2047-hit",
+      "loops": 35147,
+      "calibration": {
+        "original": {
+          "seconds": 0.000426791,
+          "record_bytes": 26721,
+          "prefix": 0,
+          "queries_per_round": 2048,
+          "stdout": "204800 14696008812746457937"
+        },
+        "frozen": {
+          "seconds": 0.000502709,
+          "record_bytes": 10338,
+          "prefix": 1,
+          "queries_per_round": 2048,
+          "stdout": "204800 14696008812746457937"
+        },
+        "count16": {
+          "seconds": 0.000492667,
+          "record_bytes": 10338,
+          "prefix": 1,
+          "queries_per_round": 2048,
+          "stdout": "204800 14696008812746457937"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.149162,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "frozen": {
+            "seconds": 0.161647,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "count16": {
+            "seconds": 0.157074,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.158346,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "frozen": {
+            "seconds": 0.161223,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "original": {
+            "seconds": 0.144619,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.144785,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "frozen": {
+            "seconds": 0.15999,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "count16": {
+            "seconds": 0.158819,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.160423,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "frozen": {
+            "seconds": 0.160062,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "original": {
+            "seconds": 0.14421,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.145055,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "frozen": {
+            "seconds": 0.159924,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "count16": {
+            "seconds": 0.159445,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.160476,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "frozen": {
+            "seconds": 0.165778,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          },
+          "original": {
+            "seconds": 0.14678,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "71981056 14705742556175029830"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.109923028916164,
+        "count16": 1.096929930586732
+      },
+      "count16_to_frozen": 0.9926807925495343
+    },
+    {
+      "kind": "extreme",
+      "name": "start2047-miss",
+      "loops": 30096,
+      "calibration": {
+        "original": {
+          "seconds": 0.000576583,
+          "record_bytes": 26721,
+          "prefix": 0,
+          "queries_per_round": 2048,
+          "stdout": "0 14696009094105500837"
+        },
+        "frozen": {
+          "seconds": 0.000501166,
+          "record_bytes": 10338,
+          "prefix": 1,
+          "queries_per_round": 2048,
+          "stdout": "0 14696009094105500837"
+        },
+        "count16": {
+          "seconds": 0.000498416,
+          "record_bytes": 10338,
+          "prefix": 1,
+          "queries_per_round": 2048,
+          "stdout": "0 14696009094105500837"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.166316,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "frozen": {
+            "seconds": 0.147144,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "count16": {
+            "seconds": 0.146691,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.14701,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "frozen": {
+            "seconds": 0.149619,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "original": {
+            "seconds": 0.164108,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.163418,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "frozen": {
+            "seconds": 0.146863,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "count16": {
+            "seconds": 0.145882,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.146988,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "frozen": {
+            "seconds": 0.147445,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "original": {
+            "seconds": 0.16365,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.166345,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "frozen": {
+            "seconds": 0.150167,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "count16": {
+            "seconds": 0.145447,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.145975,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "frozen": {
+            "seconds": 0.155129,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          },
+          "original": {
+            "seconds": 0.202597,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "0 14704424399568587045"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.9009776963030859,
+        "count16": 0.8926923594708049
+      },
+      "count16_to_frozen": 0.9825623750994192
+    },
+    {
+      "kind": "extreme",
+      "name": "start2047-paths",
+      "loops": 2564,
+      "calibration": {
+        "original": {
+          "seconds": 0.00637917,
+          "record_bytes": 26721,
+          "prefix": 0,
+          "queries_per_round": 2048,
+          "stdout": "204800 14695981039768953637"
+        },
+        "frozen": {
+          "seconds": 0.00585062,
+          "record_bytes": 10338,
+          "prefix": 1,
+          "queries_per_round": 2048,
+          "stdout": "204800 14695981039768953637"
+        },
+        "count16": {
+          "seconds": 0.00599179,
+          "record_bytes": 10338,
+          "prefix": 1,
+          "queries_per_round": 2048,
+          "stdout": "204800 14695981039768953637"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.163004,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "frozen": {
+            "seconds": 0.154691,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "count16": {
+            "seconds": 0.156736,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.166367,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "frozen": {
+            "seconds": 0.15108,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "original": {
+            "seconds": 0.160658,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.159464,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "frozen": {
+            "seconds": 0.151476,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "count16": {
+            "seconds": 0.157283,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.153962,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "frozen": {
+            "seconds": 0.156215,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "original": {
+            "seconds": 0.159342,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.162478,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "frozen": {
+            "seconds": 0.152874,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "count16": {
+            "seconds": 0.163639,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.156606,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "frozen": {
+            "seconds": 0.153719,
+            "record_bytes": 10338,
+            "prefix": 1,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          },
+          "original": {
+            "seconds": 0.167384,
+            "record_bytes": 26721,
+            "prefix": 0,
+            "queries_per_round": 2048,
+            "stdout": "5251072 14695981050174366501"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.9408904590159899,
+        "count16": 0.9863229318216025
+      },
+      "count16_to_frozen": 1.0383361060498033
+    },
+    {
+      "kind": "extreme",
+      "name": "start2048-hit",
+      "loops": 34918,
+      "calibration": {
+        "original": {
+          "seconds": 0.000435292,
+          "record_bytes": 26730,
+          "prefix": 0,
+          "queries_per_round": 2049,
+          "stdout": "204900 14696008817472755337"
+        },
+        "frozen": {
+          "seconds": 0.000439458,
+          "record_bytes": 24664,
+          "prefix": 0,
+          "queries_per_round": 2049,
+          "stdout": "204900 14696008817472755337"
+        },
+        "count16": {
+          "seconds": 0.000429583,
+          "record_bytes": 24664,
+          "prefix": 0,
+          "queries_per_round": 2049,
+          "stdout": "204900 14696008817472755337"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.143368,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "frozen": {
+            "seconds": 0.141837,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "count16": {
+            "seconds": 0.147968,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.146223,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "frozen": {
+            "seconds": 0.142879,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "original": {
+            "seconds": 0.143741,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.144159,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "frozen": {
+            "seconds": 0.14449,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "count16": {
+            "seconds": 0.143644,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.14718,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "frozen": {
+            "seconds": 0.144025,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "original": {
+            "seconds": 0.145378,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.142753,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "frozen": {
+            "seconds": 0.1427,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "count16": {
+            "seconds": 0.149706,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.148685,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "frozen": {
+            "seconds": 0.142346,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          },
+          "original": {
+            "seconds": 0.142705,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "71546982 14705680605418009611"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.9974843208016537,
+        "count16": 1.0172671680313896
+      },
+      "count16_to_frozen": 1.023404419123874
+    },
+    {
+      "kind": "extreme",
+      "name": "start2048-miss",
+      "loops": 26363,
+      "calibration": {
+        "original": {
+          "seconds": 0.000569,
+          "record_bytes": 26730,
+          "prefix": 0,
+          "queries_per_round": 2049,
+          "stdout": "0 14696009118450498637"
+        },
+        "frozen": {
+          "seconds": 0.000597333,
+          "record_bytes": 24664,
+          "prefix": 0,
+          "queries_per_round": 2049,
+          "stdout": "0 14696009118450498637"
+        },
+        "count16": {
+          "seconds": 0.000594125,
+          "record_bytes": 24664,
+          "prefix": 0,
+          "queries_per_round": 2049,
+          "stdout": "0 14696009118450498637"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.14458,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "frozen": {
+            "seconds": 0.150931,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "count16": {
+            "seconds": 0.150404,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.150193,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "frozen": {
+            "seconds": 0.149735,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "original": {
+            "seconds": 0.143932,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.14381,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "frozen": {
+            "seconds": 0.151064,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "count16": {
+            "seconds": 0.150765,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.152063,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "frozen": {
+            "seconds": 0.151048,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "original": {
+            "seconds": 0.142671,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.144578,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "frozen": {
+            "seconds": 0.149753,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "count16": {
+            "seconds": 0.151366,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.154956,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "frozen": {
+            "seconds": 0.150922,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          },
+          "original": {
+            "seconds": 0.143569,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "0 14703383533492680675"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.0504415548292887,
+        "count16": 1.0483624226409847
+      },
+      "count16_to_frozen": 1.006719718235263
+    },
+    {
+      "kind": "extreme",
+      "name": "start2048-paths",
+      "loops": 2373,
+      "calibration": {
+        "original": {
+          "seconds": 0.0063235,
+          "record_bytes": 26730,
+          "prefix": 0,
+          "queries_per_round": 2049,
+          "stdout": "204900 14695981039769364737"
+        },
+        "frozen": {
+          "seconds": 0.00724796,
+          "record_bytes": 24664,
+          "prefix": 0,
+          "queries_per_round": 2049,
+          "stdout": "204900 14695981039769364737"
+        },
+        "count16": {
+          "seconds": 0.00660779,
+          "record_bytes": 24664,
+          "prefix": 0,
+          "queries_per_round": 2049,
+          "stdout": "204900 14695981039769364737"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.148399,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "frozen": {
+            "seconds": 0.162725,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "count16": {
+            "seconds": 0.155735,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.170942,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "frozen": {
+            "seconds": 0.16725,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "original": {
+            "seconds": 0.150618,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.149922,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "frozen": {
+            "seconds": 0.162235,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "count16": {
+            "seconds": 0.156091,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.155361,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "frozen": {
+            "seconds": 0.164883,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "original": {
+            "seconds": 0.147735,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.153926,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "frozen": {
+            "seconds": 0.162277,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "count16": {
+            "seconds": 0.159699,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.158696,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "frozen": {
+            "seconds": 0.161403,
+            "record_bytes": 24664,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          },
+          "original": {
+            "seconds": 0.1479,
+            "record_bytes": 26730,
+            "prefix": 0,
+            "queries_per_round": 2049,
+            "stdout": "4862277 14695981049377533488"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.0912981744421906,
+        "count16": 1.05161945375165
+      },
+      "count16_to_frozen": 0.9832283166979549
+    },
+    {
+      "kind": "extreme",
+      "name": "node3-hit",
+      "loops": 69862,
+      "calibration": {
+        "original": {
+          "seconds": 0.000214709,
+          "record_bytes": 13130,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "98700 14695994235236380337"
+        },
+        "frozen": {
+          "seconds": 0.000234,
+          "record_bytes": 6094,
+          "prefix": 1,
+          "queries_per_round": 987,
+          "stdout": "98700 14695994235236380337"
+        },
+        "count16": {
+          "seconds": 0.000236625,
+          "record_bytes": 6094,
+          "prefix": 1,
+          "queries_per_round": 987,
+          "stdout": "98700 14695994235236380337"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.138176,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "frozen": {
+            "seconds": 0.158013,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "count16": {
+            "seconds": 0.159675,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.161433,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "frozen": {
+            "seconds": 0.159499,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "original": {
+            "seconds": 0.138066,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.141836,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "frozen": {
+            "seconds": 0.160287,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "count16": {
+            "seconds": 0.161024,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.160389,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "frozen": {
+            "seconds": 0.158825,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "original": {
+            "seconds": 0.138059,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.137148,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "frozen": {
+            "seconds": 0.158085,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "count16": {
+            "seconds": 0.159052,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.159177,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "frozen": {
+            "seconds": 0.157894,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          },
+          "original": {
+            "seconds": 0.137324,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "68953794 14705199951825846503"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.1504139534546824,
+        "count16": 1.1597106775162598
+      },
+      "count16_to_frozen": 1.0081257045866214
+    },
+    {
+      "kind": "extreme",
+      "name": "node3-miss",
+      "loops": 59851,
+      "calibration": {
+        "original": {
+          "seconds": 0.000285666,
+          "record_bytes": 13130,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "0 14695994605095461937"
+        },
+        "frozen": {
+          "seconds": 0.000250625,
+          "record_bytes": 6094,
+          "prefix": 1,
+          "queries_per_round": 987,
+          "stdout": "0 14695994605095461937"
+        },
+        "count16": {
+          "seconds": 0.000255292,
+          "record_bytes": 6094,
+          "prefix": 1,
+          "queries_per_round": 987,
+          "stdout": "0 14695994605095461937"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.158785,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "frozen": {
+            "seconds": 0.148165,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "count16": {
+            "seconds": 0.143981,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.145457,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "frozen": {
+            "seconds": 0.147695,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "original": {
+            "seconds": 0.159261,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.159478,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "frozen": {
+            "seconds": 0.146074,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "count16": {
+            "seconds": 0.145193,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.149688,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "frozen": {
+            "seconds": 0.145601,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "original": {
+            "seconds": 0.157253,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.157666,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "frozen": {
+            "seconds": 0.144192,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "count16": {
+            "seconds": 0.146786,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.14498,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "frozen": {
+            "seconds": 0.146731,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          },
+          "original": {
+            "seconds": 0.158356,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14704100275664475246"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.925902844460837,
+        "count16": 0.9155320922478466
+      },
+      "count16_to_frozen": 0.9939688103290112
+    },
+    {
+      "kind": "extreme",
+      "name": "node3-paths",
+      "loops": 5058,
+      "calibration": {
+        "original": {
+          "seconds": 0.00306367,
+          "record_bytes": 13130,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "98700 14695981039445454737"
+        },
+        "frozen": {
+          "seconds": 0.00300108,
+          "record_bytes": 6094,
+          "prefix": 1,
+          "queries_per_round": 987,
+          "stdout": "98700 14695981039445454737"
+        },
+        "count16": {
+          "seconds": 0.00296567,
+          "record_bytes": 6094,
+          "prefix": 1,
+          "queries_per_round": 987,
+          "stdout": "98700 14695981039445454737"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.154053,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "frozen": {
+            "seconds": 0.135302,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "count16": {
+            "seconds": 0.134737,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.136154,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "frozen": {
+            "seconds": 0.135335,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "original": {
+            "seconds": 0.154778,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.151521,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "frozen": {
+            "seconds": 0.132834,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "count16": {
+            "seconds": 0.140687,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.13622,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "frozen": {
+            "seconds": 0.137882,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "original": {
+            "seconds": 0.153789,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.218248,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "frozen": {
+            "seconds": 0.132284,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "count16": {
+            "seconds": 0.137774,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.135851,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "frozen": {
+            "seconds": 0.13408,
+            "record_bytes": 6094,
+            "prefix": 1,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          },
+          "original": {
+            "seconds": 0.152928,
+            "record_bytes": 13130,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4992246 14695981044343894283"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.8766705605163642,
+        "count16": 0.8857590594906007
+      },
+      "count16_to_frozen": 1.0132085322195703
+    },
+    {
+      "kind": "extreme",
+      "name": "node4-hit",
+      "loops": 74581,
+      "calibration": {
+        "original": {
+          "seconds": 0.000205792,
+          "record_bytes": 13148,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "98700 14695994235236380337"
+        },
+        "frozen": {
+          "seconds": 0.000207375,
+          "record_bytes": 12072,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "98700 14695994235236380337"
+        },
+        "count16": {
+          "seconds": 0.000201125,
+          "record_bytes": 12072,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "98700 14695994235236380337"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.14807,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "frozen": {
+            "seconds": 0.146953,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "count16": {
+            "seconds": 0.14928,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.147272,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "frozen": {
+            "seconds": 0.147075,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "original": {
+            "seconds": 0.145667,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.147093,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "frozen": {
+            "seconds": 0.147341,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "count16": {
+            "seconds": 0.14916,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.148209,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "frozen": {
+            "seconds": 0.146666,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "original": {
+            "seconds": 0.145702,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.147177,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "frozen": {
+            "seconds": 0.146256,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "count16": {
+            "seconds": 0.148178,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.146396,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "frozen": {
+            "seconds": 0.148012,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          },
+          "original": {
+            "seconds": 0.149686,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "73611447 14705822665861936220"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.001686008171701,
+        "count16": 1.011018281422697
+      },
+      "count16_to_frozen": 1.01052050236592
+    },
+    {
+      "kind": "extreme",
+      "name": "node4-miss",
+      "loops": 53828,
+      "calibration": {
+        "original": {
+          "seconds": 0.000278666,
+          "record_bytes": 13148,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "0 14695994605095461937"
+        },
+        "frozen": {
+          "seconds": 0.000290292,
+          "record_bytes": 12072,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "0 14695994605095461937"
+        },
+        "count16": {
+          "seconds": 0.000297958,
+          "record_bytes": 12072,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "0 14695994605095461937"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.142784,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "frozen": {
+            "seconds": 0.149465,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "count16": {
+            "seconds": 0.147579,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.148987,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "frozen": {
+            "seconds": 0.148668,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "original": {
+            "seconds": 0.14187,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.143724,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "frozen": {
+            "seconds": 0.148342,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "count16": {
+            "seconds": 0.147855,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.147702,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "frozen": {
+            "seconds": 0.147614,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "original": {
+            "seconds": 0.141955,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.141859,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "frozen": {
+            "seconds": 0.148226,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "count16": {
+            "seconds": 0.147956,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.14783,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "frozen": {
+            "seconds": 0.148843,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          },
+          "original": {
+            "seconds": 0.142009,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "0 14703283210613895889"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.0448825946890925,
+        "count16": 1.0409903597659302
+      },
+      "count16_to_frozen": 0.9981784572207305
+    },
+    {
+      "kind": "extreme",
+      "name": "node4-paths",
+      "loops": 5011,
+      "calibration": {
+        "original": {
+          "seconds": 0.00299392,
+          "record_bytes": 13148,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "98700 14695981039445454737"
+        },
+        "frozen": {
+          "seconds": 0.00342942,
+          "record_bytes": 12072,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "98700 14695981039445454737"
+        },
+        "count16": {
+          "seconds": 0.00340408,
+          "record_bytes": 12072,
+          "prefix": 0,
+          "queries_per_round": 987,
+          "stdout": "98700 14695981039445454737"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.154345,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "frozen": {
+            "seconds": 0.176321,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "count16": {
+            "seconds": 0.162853,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.163063,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "frozen": {
+            "seconds": 0.165674,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "original": {
+            "seconds": 0.162992,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.154977,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "frozen": {
+            "seconds": 0.169057,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "count16": {
+            "seconds": 0.159131,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.159833,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "frozen": {
+            "seconds": 0.165303,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "original": {
+            "seconds": 0.158057,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.151786,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "frozen": {
+            "seconds": 0.16778,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "count16": {
+            "seconds": 0.160349,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.163307,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "frozen": {
+            "seconds": 0.166832,
+            "record_bytes": 12072,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          },
+          "original": {
+            "seconds": 0.168959,
+            "record_bytes": 13148,
+            "prefix": 0,
+            "queries_per_round": 987,
+            "stdout": "4945857 14695981044297458894"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.0458442207558034,
+        "count16": 1.0112364526721374
+      },
+      "count16_to_frozen": 0.9669092514957381
+    },
+    {
+      "kind": "extreme",
+      "name": "dense14-hit",
+      "loops": 35971224,
+      "calibration": {
+        "original": {
+          "seconds": 4.58e-07,
+          "record_bytes": 46589,
+          "prefix": 0,
+          "queries_per_round": 1,
+          "stdout": "100 14695981039346656037"
+        },
+        "frozen": {
+          "seconds": 4.17e-07,
+          "record_bytes": 44536,
+          "prefix": 0,
+          "queries_per_round": 1,
+          "stdout": "100 14695981039346656037"
+        },
+        "count16": {
+          "seconds": 4.17e-07,
+          "record_bytes": 44536,
+          "prefix": 0,
+          "queries_per_round": 1,
+          "stdout": "100 14695981039346656037"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.064586,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "frozen": {
+            "seconds": 0.0624581,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "count16": {
+            "seconds": 0.0625395,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.0654441,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "frozen": {
+            "seconds": 0.0625051,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "original": {
+            "seconds": 0.0625976,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.0638513,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "frozen": {
+            "seconds": 0.0628263,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "count16": {
+            "seconds": 0.0627892,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.0638474,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "frozen": {
+            "seconds": 0.0625171,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "original": {
+            "seconds": 0.0635952,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.0647611,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "frozen": {
+            "seconds": 0.0687775,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "count16": {
+            "seconds": 0.0636444,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.0631914,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "frozen": {
+            "seconds": 0.0627048,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          },
+          "original": {
+            "seconds": 0.0628463,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "35971224 14695981039346656037"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.9977484752483442,
+        "count16": 1.003965708103756
+      },
+      "count16_to_frozen": 1.0077601714701265
+    },
+    {
+      "kind": "extreme",
+      "name": "dense14-miss",
+      "loops": 60000000,
+      "calibration": {
+        "original": {
+          "seconds": 2.92e-07,
+          "record_bytes": 46589,
+          "prefix": 0,
+          "queries_per_round": 1,
+          "stdout": "0 14695981061368244737"
+        },
+        "frozen": {
+          "seconds": 2.5e-07,
+          "record_bytes": 44536,
+          "prefix": 0,
+          "queries_per_round": 1,
+          "stdout": "0 14695981061368244737"
+        },
+        "count16": {
+          "seconds": 2.91e-07,
+          "record_bytes": 44536,
+          "prefix": 0,
+          "queries_per_round": 1,
+          "stdout": "0 14695981061368244737"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.119663,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "frozen": {
+            "seconds": 0.119308,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "count16": {
+            "seconds": 0.119174,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.119725,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "frozen": {
+            "seconds": 0.120266,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "original": {
+            "seconds": 0.121116,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.121355,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "frozen": {
+            "seconds": 0.120085,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "count16": {
+            "seconds": 0.12009,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.120714,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "frozen": {
+            "seconds": 0.121466,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "original": {
+            "seconds": 0.119828,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.121868,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "frozen": {
+            "seconds": 0.120066,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "count16": {
+            "seconds": 0.119764,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.120737,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "frozen": {
+            "seconds": 0.119841,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          },
+          "original": {
+            "seconds": 0.120012,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "0 14709193992566656037"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.9929819346741966,
+        "count16": 0.9895760372460961
+      },
+      "count16_to_frozen": 0.9974847167391268
+    },
+    {
+      "kind": "extreme",
+      "name": "dense14-paths",
+      "loops": 3829462,
+      "calibration": {
+        "original": {
+          "seconds": 3.917e-06,
+          "record_bytes": 46589,
+          "prefix": 0,
+          "queries_per_round": 1,
+          "stdout": "209200 14695981039346657537"
+        },
+        "frozen": {
+          "seconds": 4.792e-06,
+          "record_bytes": 44536,
+          "prefix": 0,
+          "queries_per_round": 1,
+          "stdout": "209200 14695981039346657537"
+        },
+        "count16": {
+          "seconds": 4.167e-06,
+          "record_bytes": 44536,
+          "prefix": 0,
+          "queries_per_round": 1,
+          "stdout": "209200 14695981039346657537"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.123987,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "frozen": {
+            "seconds": 0.142572,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "count16": {
+            "seconds": 0.122687,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.120568,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "frozen": {
+            "seconds": 0.14143,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "original": {
+            "seconds": 0.119934,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.127013,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "frozen": {
+            "seconds": 0.134187,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "count16": {
+            "seconds": 0.121845,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.129495,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "frozen": {
+            "seconds": 0.135221,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "original": {
+            "seconds": 0.122401,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.124576,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "frozen": {
+            "seconds": 0.133324,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "count16": {
+            "seconds": 0.118039,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.196151,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "frozen": {
+            "seconds": 0.136391,
+            "record_bytes": 44536,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          },
+          "original": {
+            "seconds": 0.12548,
+            "record_bytes": 46589,
+            "prefix": 0,
+            "queries_per_round": 1,
+            "stdout": "8011234504 14695981039404097967"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.086954096270322,
+        "count16": 1.0052862407657546
+      },
+      "count16_to_frozen": 0.9080238771266963
+    },
+    {
+      "kind": "extreme",
+      "name": "skew14-hit",
+      "loops": 39947,
+      "calibration": {
+        "original": {
+          "seconds": 0.000381292,
+          "record_bytes": 24372,
+          "prefix": 0,
+          "queries_per_round": 1787,
+          "stdout": "178700 14695996074877241537"
+        },
+        "frozen": {
+          "seconds": 0.000376791,
+          "record_bytes": 22568,
+          "prefix": 0,
+          "queries_per_round": 1787,
+          "stdout": "178700 14695996074877241537"
+        },
+        "count16": {
+          "seconds": 0.0003755,
+          "record_bytes": 22568,
+          "prefix": 0,
+          "queries_per_round": 1787,
+          "stdout": "178700 14695996074877241537"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.144713,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "frozen": {
+            "seconds": 0.144065,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "count16": {
+            "seconds": 0.17277,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.144653,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "frozen": {
+            "seconds": 0.142691,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "original": {
+            "seconds": 0.144774,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.147646,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "frozen": {
+            "seconds": 0.144808,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "count16": {
+            "seconds": 0.142911,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.142675,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "frozen": {
+            "seconds": 0.141092,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "original": {
+            "seconds": 0.142316,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.143579,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "frozen": {
+            "seconds": 0.140947,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "count16": {
+            "seconds": 0.143164,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.143338,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "frozen": {
+            "seconds": 0.143882,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          },
+          "original": {
+            "seconds": 0.142971,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "71385289 14701987282749645722"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.985612057413624,
+        "count16": 0.9991642145689142
+      },
+      "count16_to_frozen": 1.0112196297451308
+    },
+    {
+      "kind": "extreme",
+      "name": "skew14-miss",
+      "loops": 30749,
+      "calibration": {
+        "original": {
+          "seconds": 0.000522917,
+          "record_bytes": 24372,
+          "prefix": 0,
+          "queries_per_round": 1787,
+          "stdout": "0 14696005435057522137"
+        },
+        "frozen": {
+          "seconds": 0.000493667,
+          "record_bytes": 22568,
+          "prefix": 0,
+          "queries_per_round": 1787,
+          "stdout": "0 14696005435057522137"
+        },
+        "count16": {
+          "seconds": 0.000487833,
+          "record_bytes": 22568,
+          "prefix": 0,
+          "queries_per_round": 1787,
+          "stdout": "0 14696005435057522137"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.135369,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "frozen": {
+            "seconds": 0.143876,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "count16": {
+            "seconds": 0.142525,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.145401,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "frozen": {
+            "seconds": 0.14344,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "original": {
+            "seconds": 0.135499,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.141574,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "frozen": {
+            "seconds": 0.143191,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "count16": {
+            "seconds": 0.144269,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.143324,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "frozen": {
+            "seconds": 0.147078,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "original": {
+            "seconds": 0.135956,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.135334,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "frozen": {
+            "seconds": 0.144977,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "count16": {
+            "seconds": 0.144021,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.149839,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "frozen": {
+            "seconds": 0.143445,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          },
+          "original": {
+            "seconds": 0.134668,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "0 14703482476480873126"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.0651750972762644,
+        "count16": 1.0641893389687735
+      },
+      "count16_to_frozen": 1.0075284061149095
+    },
+    {
+      "kind": "extreme",
+      "name": "skew14-paths",
+      "loops": 2781,
+      "calibration": {
+        "original": {
+          "seconds": 0.00539483,
+          "record_bytes": 24372,
+          "prefix": 0,
+          "queries_per_round": 1787,
+          "stdout": "178700 14695981039668494737"
+        },
+        "frozen": {
+          "seconds": 0.00592225,
+          "record_bytes": 22568,
+          "prefix": 0,
+          "queries_per_round": 1787,
+          "stdout": "178700 14695981039668494737"
+        },
+        "count16": {
+          "seconds": 0.00575846,
+          "record_bytes": 22568,
+          "prefix": 0,
+          "queries_per_round": 1787,
+          "stdout": "178700 14695981039668494737"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.150891,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "frozen": {
+            "seconds": 0.165841,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "count16": {
+            "seconds": 0.157615,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.158669,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "frozen": {
+            "seconds": 0.167704,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "original": {
+            "seconds": 0.152693,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.150477,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "frozen": {
+            "seconds": 0.234102,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "count16": {
+            "seconds": 0.159959,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.16037,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "frozen": {
+            "seconds": 0.165868,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "original": {
+            "seconds": 0.150271,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.156526,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "frozen": {
+            "seconds": 0.162076,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "count16": {
+            "seconds": 0.162158,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.157751,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "frozen": {
+            "seconds": 0.166482,
+            "record_bytes": 22568,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          },
+          "original": {
+            "seconds": 0.147992,
+            "record_bytes": 24372,
+            "prefix": 0,
+            "queries_per_round": 1787,
+            "stdout": "4969647 14695981048296990284"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.103792481583273,
+        "count16": 1.0630129521455105
+      },
+      "count16_to_frozen": 0.9475558919282566
+    },
+    {
+      "kind": "extreme",
+      "name": "entries65536-hit",
+      "loops": 18180,
+      "calibration": {
+        "original": {
+          "seconds": 0.000909708,
+          "record_bytes": 1114203,
+          "prefix": 0,
+          "queries_per_round": 4096,
+          "stdout": "409600 14695981052790225937"
+        },
+        "frozen": {
+          "seconds": 0.000825083,
+          "record_bytes": 1048656,
+          "prefix": 0,
+          "queries_per_round": 4096,
+          "stdout": "409600 14695981052790225937"
+        },
+        "count16": {
+          "seconds": 0.000863917,
+          "record_bytes": 1048656,
+          "prefix": 0,
+          "queries_per_round": 4096,
+          "stdout": "409600 14695981052790225937"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.14511,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "frozen": {
+            "seconds": 0.140237,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "count16": {
+            "seconds": 0.148485,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.152274,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "frozen": {
+            "seconds": 0.148388,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "original": {
+            "seconds": 0.151102,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.190171,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "frozen": {
+            "seconds": 0.148019,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "count16": {
+            "seconds": 0.161386,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.149801,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "frozen": {
+            "seconds": 0.148648,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "original": {
+            "seconds": 0.148561,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.156688,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "frozen": {
+            "seconds": 0.14819,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "count16": {
+            "seconds": 0.151523,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.146615,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "frozen": {
+            "seconds": 0.15016,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          },
+          "original": {
+            "seconds": 0.181835,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "74465280 14695983483387663857"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.9457648320228734,
+        "count16": 0.9670364035535587
+      },
+      "count16_to_frozen": 1.022491396180579
+    },
+    {
+      "kind": "extreme",
+      "name": "entries65536-paths",
+      "loops": 992,
+      "calibration": {
+        "original": {
+          "seconds": 0.0151296,
+          "record_bytes": 1114203,
+          "prefix": 0,
+          "queries_per_round": 4096,
+          "stdout": "409600 14695981066274397237"
+        },
+        "frozen": {
+          "seconds": 0.0152025,
+          "record_bytes": 1048656,
+          "prefix": 0,
+          "queries_per_round": 4096,
+          "stdout": "409600 14695981066274397237"
+        },
+        "count16": {
+          "seconds": 0.0153012,
+          "record_bytes": 1048656,
+          "prefix": 0,
+          "queries_per_round": 4096,
+          "stdout": "409600 14695981066274397237"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.149833,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "frozen": {
+            "seconds": 0.148488,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "count16": {
+            "seconds": 0.147799,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.151501,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "frozen": {
+            "seconds": 0.156089,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "original": {
+            "seconds": 0.140484,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.139,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "frozen": {
+            "seconds": 0.150429,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "count16": {
+            "seconds": 0.146109,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.148779,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "frozen": {
+            "seconds": 0.155004,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "original": {
+            "seconds": 0.140092,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.144334,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "frozen": {
+            "seconds": 0.155866,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "count16": {
+            "seconds": 0.145523,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.146841,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "frozen": {
+            "seconds": 0.153935,
+            "record_bytes": 1048656,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          },
+          "original": {
+            "seconds": 0.141461,
+            "record_bytes": 1114203,
+            "prefix": 0,
+            "queries_per_round": 4096,
+            "stdout": "4063232 14695981306469848741"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.08817978099971,
+        "count16": 1.0511438848920862
+      },
+      "count16_to_frozen": 0.959839746071069
+    },
+    {
+      "kind": "extreme",
+      "name": "complex14-hit",
+      "loops": 30828,
+      "calibration": {
+        "original": {
+          "seconds": 0.000486583,
+          "record_bytes": 34540,
+          "prefix": 0,
+          "queries_per_round": 2167,
+          "stdout": "216700 14696008999397173137"
+        },
+        "frozen": {
+          "seconds": 0.000537416,
+          "record_bytes": 18270,
+          "prefix": 1,
+          "queries_per_round": 2167,
+          "stdout": "216700 14696008999397173137"
+        },
+        "count16": {
+          "seconds": 0.000511708,
+          "record_bytes": 18270,
+          "prefix": 1,
+          "queries_per_round": 2167,
+          "stdout": "216700 14696008999397173137"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.140728,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "frozen": {
+            "seconds": 0.155783,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "count16": {
+            "seconds": 0.14925,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.152358,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "frozen": {
+            "seconds": 0.152465,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "original": {
+            "seconds": 0.139789,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.139363,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "frozen": {
+            "seconds": 0.157037,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "count16": {
+            "seconds": 0.152828,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.150274,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "frozen": {
+            "seconds": 0.152602,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "original": {
+            "seconds": 0.144445,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.141335,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "frozen": {
+            "seconds": 0.155513,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "count16": {
+            "seconds": 0.153728,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.150426,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "frozen": {
+            "seconds": 0.154002,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          },
+          "original": {
+            "seconds": 0.142959,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "66804276 14704600563720067625"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.0906795241399538,
+        "count16": 1.0876852867301094
+      },
+      "count16_to_frozen": 0.9847446298213653
+    },
+    {
+      "kind": "extreme",
+      "name": "complex14-miss",
+      "loops": 27381,
+      "calibration": {
+        "original": {
+          "seconds": 0.000648416,
+          "record_bytes": 34540,
+          "prefix": 0,
+          "queries_per_round": 2167,
+          "stdout": "0 14696010763205367537"
+        },
+        "frozen": {
+          "seconds": 0.000581041,
+          "record_bytes": 18270,
+          "prefix": 1,
+          "queries_per_round": 2167,
+          "stdout": "0 14696010763205367537"
+        },
+        "count16": {
+          "seconds": 0.000547833,
+          "record_bytes": 18270,
+          "prefix": 1,
+          "queries_per_round": 2167,
+          "stdout": "0 14696010763205367537"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.169239,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "frozen": {
+            "seconds": 0.142789,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "count16": {
+            "seconds": 0.141115,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.142561,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "frozen": {
+            "seconds": 0.14335,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "original": {
+            "seconds": 0.166788,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.168112,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "frozen": {
+            "seconds": 0.142594,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "count16": {
+            "seconds": 0.141525,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.142299,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "frozen": {
+            "seconds": 0.142022,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "original": {
+            "seconds": 0.16649,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.166689,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "frozen": {
+            "seconds": 0.142317,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "count16": {
+            "seconds": 0.140506,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.140436,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "frozen": {
+            "seconds": 0.146111,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          },
+          "original": {
+            "seconds": 0.167009,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "0 14704119729100451852"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.8537875924626099,
+        "count16": 0.8429230483115262
+      },
+      "count16_to_frozen": 0.9925031908775966
+    },
+    {
+      "kind": "extreme",
+      "name": "complex14-paths",
+      "loops": 1949,
+      "calibration": {
+        "original": {
+          "seconds": 0.00788671,
+          "record_bytes": 34540,
+          "prefix": 0,
+          "queries_per_round": 2167,
+          "stdout": "217200 14695981039559224137"
+        },
+        "frozen": {
+          "seconds": 0.0077,
+          "record_bytes": 18270,
+          "prefix": 1,
+          "queries_per_round": 2167,
+          "stdout": "217200 14695981039559224137"
+        },
+        "count16": {
+          "seconds": 0.00812158,
+          "record_bytes": 18270,
+          "prefix": 1,
+          "queries_per_round": 2167,
+          "stdout": "217200 14695981039559224137"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.148133,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "frozen": {
+            "seconds": 0.149027,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "count16": {
+            "seconds": 0.146571,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.148328,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "frozen": {
+            "seconds": 0.162122,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "original": {
+            "seconds": 0.155077,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.147363,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "frozen": {
+            "seconds": 0.147153,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "count16": {
+            "seconds": 0.147713,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.147374,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "frozen": {
+            "seconds": 0.149963,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "original": {
+            "seconds": 0.150377,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.147633,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "frozen": {
+            "seconds": 0.145586,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "count16": {
+            "seconds": 0.150268,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.14728,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "frozen": {
+            "seconds": 0.146082,
+            "record_bytes": 18270,
+            "prefix": 1,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          },
+          "original": {
+            "seconds": 0.147323,
+            "record_bytes": 34540,
+            "prefix": 0,
+            "queries_per_round": 2167,
+            "stdout": "4233228 14695981043489608306"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.9972469194092182,
+        "count16": 0.9997081243254616
+      },
+      "count16_to_frozen": 1.0038055629175076
+    },
+    {
+      "kind": "mixed",
+      "name": "10-hit-shuffled",
+      "loops": 592,
+      "calibration": {
+        "original": {
+          "seconds": 0.0333835,
+          "record_bytes": 608716,
+          "stdout": "6777600 14695984559075715937"
+        },
+        "frozen": {
+          "seconds": 0.0263917,
+          "record_bytes": 182702,
+          "stdout": "6777600 14695984559075715937"
+        },
+        "count16": {
+          "seconds": 0.0253555,
+          "record_bytes": 182702,
+          "stdout": "6777600 14695984559075715937"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.189956,
+            "record_bytes": 608716,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "frozen": {
+            "seconds": 0.145622,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "count16": {
+            "seconds": 0.142228,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.143034,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "frozen": {
+            "seconds": 0.148174,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "original": {
+            "seconds": 0.190092,
+            "record_bytes": 608716,
+            "stdout": "40123392 14696001876142690645"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.186147,
+            "record_bytes": 608716,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "frozen": {
+            "seconds": 0.145419,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "count16": {
+            "seconds": 0.145347,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.14618,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "frozen": {
+            "seconds": 0.15419,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "original": {
+            "seconds": 0.190819,
+            "record_bytes": 608716,
+            "stdout": "40123392 14696001876142690645"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.189002,
+            "record_bytes": 608716,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "frozen": {
+            "seconds": 0.148389,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "count16": {
+            "seconds": 0.145006,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.140305,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "frozen": {
+            "seconds": 0.14445,
+            "record_bytes": 182702,
+            "stdout": "40123392 14696001876142690645"
+          },
+          "original": {
+            "seconds": 0.185569,
+            "record_bytes": 608716,
+            "stdout": "40123392 14696001876142690645"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.7812051765540137,
+        "count16": 0.7660662722265603
+      },
+      "count16_to_frozen": 0.9713049498096228
+    },
+    {
+      "kind": "mixed",
+      "name": "10-miss-shuffled",
+      "loops": 1052,
+      "calibration": {
+        "original": {
+          "seconds": 0.0586102,
+          "record_bytes": 608716,
+          "stdout": "15200 14695984582470156537"
+        },
+        "frozen": {
+          "seconds": 0.0142719,
+          "record_bytes": 182702,
+          "stdout": "15200 14695984582470156537"
+        },
+        "count16": {
+          "seconds": 0.0143332,
+          "record_bytes": 182702,
+          "stdout": "15200 14695984582470156537"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.594041,
+            "record_bytes": 608716,
+            "stdout": "159904 14696018313005881297"
+          },
+          "frozen": {
+            "seconds": 0.148788,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          },
+          "count16": {
+            "seconds": 0.150625,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.149826,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          },
+          "frozen": {
+            "seconds": 0.148973,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          },
+          "original": {
+            "seconds": 0.587685,
+            "record_bytes": 608716,
+            "stdout": "159904 14696018313005881297"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.597105,
+            "record_bytes": 608716,
+            "stdout": "159904 14696018313005881297"
+          },
+          "frozen": {
+            "seconds": 0.149077,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          },
+          "count16": {
+            "seconds": 0.15026,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.1523,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          },
+          "frozen": {
+            "seconds": 0.149189,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          },
+          "original": {
+            "seconds": 0.585325,
+            "record_bytes": 608716,
+            "stdout": "159904 14696018313005881297"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.605344,
+            "record_bytes": 608716,
+            "stdout": "159904 14696018313005881297"
+          },
+          "frozen": {
+            "seconds": 0.14866,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          },
+          "count16": {
+            "seconds": 0.149983,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.150481,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          },
+          "frozen": {
+            "seconds": 0.149794,
+            "record_bytes": 182702,
+            "stdout": "159904 14696018313005881297"
+          },
+          "original": {
+            "seconds": 0.589777,
+            "record_bytes": 608716,
+            "stdout": "159904 14696018313005881297"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.2534912410560079,
+        "count16": 0.2549426988948161
+      },
+      "count16_to_frozen": 1.0079354964213125
+    },
+    {
+      "kind": "mixed",
+      "name": "14-hit-shuffled",
+      "loops": 537,
+      "calibration": {
+        "original": {
+          "seconds": 0.0343789,
+          "record_bytes": 974804,
+          "stdout": "6857600 14696892480066052637"
+        },
+        "frozen": {
+          "seconds": 0.0279501,
+          "record_bytes": 492748,
+          "stdout": "6857600 14696892480066052637"
+        },
+        "count16": {
+          "seconds": 0.0283329,
+          "record_bytes": 492748,
+          "stdout": "6857600 14696892480066052637"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.18061,
+            "record_bytes": 974804,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "frozen": {
+            "seconds": 0.150102,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "count16": {
+            "seconds": 0.154976,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.150871,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "frozen": {
+            "seconds": 0.15267,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "original": {
+            "seconds": 0.183213,
+            "record_bytes": 974804,
+            "stdout": "36825312 14700875476009815779"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.184764,
+            "record_bytes": 974804,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "frozen": {
+            "seconds": 0.150435,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "count16": {
+            "seconds": 0.153157,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.152423,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "frozen": {
+            "seconds": 0.148421,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "original": {
+            "seconds": 0.228075,
+            "record_bytes": 974804,
+            "stdout": "36825312 14700875476009815779"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.173677,
+            "record_bytes": 974804,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "frozen": {
+            "seconds": 0.148941,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "count16": {
+            "seconds": 0.150626,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.154503,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "frozen": {
+            "seconds": 0.152502,
+            "record_bytes": 492748,
+            "stdout": "36825312 14700875476009815779"
+          },
+          "original": {
+            "seconds": 0.178502,
+            "record_bytes": 974804,
+            "stdout": "36825312 14700875476009815779"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.8332923973735489,
+        "count16": 0.8289331255006386
+      },
+      "count16_to_frozen": 1.0131211393948931
+    },
+    {
+      "kind": "mixed",
+      "name": "14-miss-shuffled",
+      "loops": 680,
+      "calibration": {
+        "original": {
+          "seconds": 0.0615148,
+          "record_bytes": 974804,
+          "stdout": "0 14696901086577017037"
+        },
+        "frozen": {
+          "seconds": 0.0240053,
+          "record_bytes": 492748,
+          "stdout": "0 14696901086577017037"
+        },
+        "count16": {
+          "seconds": 0.0220765,
+          "record_bytes": 492748,
+          "stdout": "0 14696901086577017037"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.400837,
+            "record_bytes": 974804,
+            "stdout": "0 14702237360513110837"
+          },
+          "frozen": {
+            "seconds": 0.147885,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          },
+          "count16": {
+            "seconds": 0.148693,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.148711,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          },
+          "frozen": {
+            "seconds": 0.151503,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          },
+          "original": {
+            "seconds": 0.406301,
+            "record_bytes": 974804,
+            "stdout": "0 14702237360513110837"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.390987,
+            "record_bytes": 974804,
+            "stdout": "0 14702237360513110837"
+          },
+          "frozen": {
+            "seconds": 0.153115,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          },
+          "count16": {
+            "seconds": 0.150534,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.158411,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          },
+          "frozen": {
+            "seconds": 0.157977,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          },
+          "original": {
+            "seconds": 0.403949,
+            "record_bytes": 974804,
+            "stdout": "0 14702237360513110837"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.403123,
+            "record_bytes": 974804,
+            "stdout": "0 14702237360513110837"
+          },
+          "frozen": {
+            "seconds": 0.150621,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          },
+          "count16": {
+            "seconds": 0.148036,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.151021,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          },
+          "frozen": {
+            "seconds": 0.155502,
+            "record_bytes": 492748,
+            "stdout": "0 14702237360513110837"
+          },
+          "original": {
+            "seconds": 0.397723,
+            "record_bytes": 974804,
+            "stdout": "0 14702237360513110837"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.3909806573922051,
+        "count16": 0.3797140220706371
+      },
+      "count16_to_frozen": 0.9828377185120268
+    },
+    {
+      "kind": "mixed",
+      "name": "14-paths-shuffled",
+      "loops": 100,
+      "calibration": {
+        "original": {
+          "seconds": 0.223072,
+          "record_bytes": 974804,
+          "stdout": "6876200 14695981048174751337"
+        },
+        "frozen": {
+          "seconds": 0.227599,
+          "record_bytes": 492748,
+          "stdout": "6876200 14695981048174751337"
+        },
+        "count16": {
+          "seconds": 0.227031,
+          "record_bytes": 492748,
+          "stdout": "6876200 14695981048174751337"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.231354,
+            "record_bytes": 974804,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "frozen": {
+            "seconds": 0.225229,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "count16": {
+            "seconds": 0.218242,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.217424,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "frozen": {
+            "seconds": 0.226522,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "original": {
+            "seconds": 0.219229,
+            "record_bytes": 974804,
+            "stdout": "6876200 14695981048174751337"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.226626,
+            "record_bytes": 974804,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "frozen": {
+            "seconds": 0.229684,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "count16": {
+            "seconds": 0.212344,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.214744,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "frozen": {
+            "seconds": 0.226957,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "original": {
+            "seconds": 0.219584,
+            "record_bytes": 974804,
+            "stdout": "6876200 14695981048174751337"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.223231,
+            "record_bytes": 974804,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "frozen": {
+            "seconds": 0.226398,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "count16": {
+            "seconds": 0.223313,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.223314,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "frozen": {
+            "seconds": 0.22626,
+            "record_bytes": 492748,
+            "stdout": "6876200 14695981048174751337"
+          },
+          "original": {
+            "seconds": 0.222085,
+            "record_bytes": 974804,
+            "stdout": "6876200 14695981048174751337"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.0187991084494674,
+        "count16": 0.991766600221686
+      },
+      "count16_to_frozen": 0.9598361307069512
+    },
+    {
+      "kind": "mixed",
+      "name": "10-hit-rolling",
+      "loops": 661,
+      "calibration": {
+        "original": {
+          "seconds": 0.0330415,
+          "record_bytes": 608716,
+          "stdout": "6645400 14695984491015832537"
+        },
+        "frozen": {
+          "seconds": 0.0235024,
+          "record_bytes": 182702,
+          "stdout": "6645400 14695984491015832537"
+        },
+        "count16": {
+          "seconds": 0.0227212,
+          "record_bytes": 182702,
+          "stdout": "6645400 14695984491015832537"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.201304,
+            "record_bytes": 608716,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "frozen": {
+            "seconds": 0.150206,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "count16": {
+            "seconds": 0.148467,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.148718,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "frozen": {
+            "seconds": 0.151321,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "original": {
+            "seconds": 0.197997,
+            "record_bytes": 608716,
+            "stdout": "43926094 14696003854879912702"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.194787,
+            "record_bytes": 608716,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "frozen": {
+            "seconds": 0.150496,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "count16": {
+            "seconds": 0.148277,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.148333,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "frozen": {
+            "seconds": 0.152049,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "original": {
+            "seconds": 0.205913,
+            "record_bytes": 608716,
+            "stdout": "43926094 14696003854879912702"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.200811,
+            "record_bytes": 608716,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "frozen": {
+            "seconds": 0.149947,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "count16": {
+            "seconds": 0.148979,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.149986,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "frozen": {
+            "seconds": 0.150584,
+            "record_bytes": 182702,
+            "stdout": "43926094 14696003854879912702"
+          },
+          "original": {
+            "seconds": 0.209635,
+            "record_bytes": 608716,
+            "stdout": "43926094 14696003854879912702"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.7467071026985573,
+        "count16": 0.7418866496357271
+      },
+      "count16_to_frozen": 0.9852554220710185
+    },
+    {
+      "kind": "mixed",
+      "name": "14-hit-rolling",
+      "loops": 569,
+      "calibration": {
+        "original": {
+          "seconds": 0.0343935,
+          "record_bytes": 974804,
+          "stdout": "6617000 14696861261458324537"
+        },
+        "frozen": {
+          "seconds": 0.0268953,
+          "record_bytes": 492748,
+          "stdout": "6617000 14696861261458324537"
+        },
+        "count16": {
+          "seconds": 0.0263687,
+          "record_bytes": 492748,
+          "stdout": "6617000 14696861261458324537"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.192429,
+            "record_bytes": 974804,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "frozen": {
+            "seconds": 0.145311,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "count16": {
+            "seconds": 0.14611,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.151375,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "frozen": {
+            "seconds": 0.143539,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "original": {
+            "seconds": 0.178606,
+            "record_bytes": 974804,
+            "stdout": "37650730 14700989503162049802"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.173688,
+            "record_bytes": 974804,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "frozen": {
+            "seconds": 0.146427,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "count16": {
+            "seconds": 0.145579,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.14685,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "frozen": {
+            "seconds": 0.144922,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "original": {
+            "seconds": 0.257748,
+            "record_bytes": 974804,
+            "stdout": "37650730 14700989503162049802"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.17308,
+            "record_bytes": 974804,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "frozen": {
+            "seconds": 0.147027,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "count16": {
+            "seconds": 0.146147,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.146856,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "frozen": {
+            "seconds": 0.153438,
+            "record_bytes": 492748,
+            "stdout": "37650730 14700989503162049802"
+          },
+          "original": {
+            "seconds": 0.184099,
+            "record_bytes": 974804,
+            "stdout": "37650730 14700989503162049802"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 0.8334537395640388,
+        "count16": 0.8381638340011974
+      },
+      "count16_to_frozen": 0.9942087183374649
+    },
+    {
+      "kind": "mixed",
+      "name": "14-paths-rolling",
+      "loops": 100,
+      "calibration": {
+        "original": {
+          "seconds": 0.201183,
+          "record_bytes": 974804,
+          "stdout": "6635200 14695981047966069437"
+        },
+        "frozen": {
+          "seconds": 0.202365,
+          "record_bytes": 492748,
+          "stdout": "6635200 14695981047966069437"
+        },
+        "count16": {
+          "seconds": 0.199242,
+          "record_bytes": 492748,
+          "stdout": "6635200 14695981047966069437"
+        }
+      },
+      "rounds": [
+        {
+          "warmup": true,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.209374,
+            "record_bytes": 974804,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "frozen": {
+            "seconds": 0.201605,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "count16": {
+            "seconds": 0.197465,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.202294,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "frozen": {
+            "seconds": 0.201294,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "original": {
+            "seconds": 0.200978,
+            "record_bytes": 974804,
+            "stdout": "6635200 14695981047966069437"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.200361,
+            "record_bytes": 974804,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "frozen": {
+            "seconds": 0.199811,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "count16": {
+            "seconds": 0.201764,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.190594,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "frozen": {
+            "seconds": 0.204846,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "original": {
+            "seconds": 0.201612,
+            "record_bytes": 974804,
+            "stdout": "6635200 14695981047966069437"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "original",
+            "frozen",
+            "count16"
+          ],
+          "original": {
+            "seconds": 0.201835,
+            "record_bytes": 974804,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "frozen": {
+            "seconds": 0.20833,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "count16": {
+            "seconds": 0.209521,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          }
+        },
+        {
+          "warmup": false,
+          "execution_order": [
+            "count16",
+            "frozen",
+            "original"
+          ],
+          "count16": {
+            "seconds": 0.191601,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "frozen": {
+            "seconds": 0.203835,
+            "record_bytes": 492748,
+            "stdout": "6635200 14695981047966069437"
+          },
+          "original": {
+            "seconds": 0.201951,
+            "record_bytes": 974804,
+            "stdout": "6635200 14695981047966069437"
+          }
+        }
+      ],
+      "ratios_to_original": {
+        "original": 1.0,
+        "frozen": 1.009328995647459,
+        "count16": 1.0065479803759616
+      },
+      "count16_to_frozen": 1.0049678579590053
+    }
+  ]
+}
