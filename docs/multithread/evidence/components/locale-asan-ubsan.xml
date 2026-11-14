@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="6" failures="0" disabled="0" errors="0" time="0.001" timestamp="2026-11-14T10:38:22" name="AllTests">
+  <testsuite name="SeedUppercase" tests="6" failures="0" disabled="0" errors="0" time="0.001" timestamp="2026-11-14T10:38:22">
+    <testcase name="PreservesSingleCharacterLocaleSemantics" status="run" result="completed" time="0" timestamp="2026-11-14T10:38:22" classname="SeedUppercase" />
+    <testcase name="UncachedSelectorObservesGlobalChangesAfterConstruction" status="run" result="completed" time="0" timestamp="2026-11-14T10:38:22" classname="SeedUppercase" />
+    <testcase name="SnapshotRetainsCapturedCustomGlobalBehavior" status="run" result="completed" time="0" timestamp="2026-11-14T10:38:22" classname="SeedUppercase" />
+    <testcase name="SnapshotOwnsFacetAcrossCallerLifetimeAndSelectorCopyMove" status="run" result="completed" time="0" timestamp="2026-11-14T10:38:22" classname="SeedUppercase" />
+    <testcase name="SnapshotPreservesScalarRatherThanRangeFacetSemantics" status="run" result="completed" time="0.001" timestamp="2026-11-14T10:38:22" classname="SeedUppercase" />
+    <testcase name="ClearingSnapshotRestoresFreshGlobalLookup" status="run" result="completed" time="0" timestamp="2026-11-14T10:38:22" classname="SeedUppercase" />
+  </testsuite>
+</testsuites>

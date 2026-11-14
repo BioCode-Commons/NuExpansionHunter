@@ -1,0 +1,27 @@
+{
+  "vcf_identical": true,
+  "json_identical": true,
+  "bam": {
+    "header_identical": true,
+    "record_counts": [
+      1098,
+      1098
+    ],
+    "record_multiset_identical": true,
+    "first_sorted_record_mismatch": null,
+    "canonical_diagnostic_sha256": [
+      "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+      "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+    ],
+    "compressed_bytes_identical": true,
+    "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+  },
+  "outputs_identical_under_user_policy": true,
+  "_publication": {
+    "source_file": "<WORKSPACE>/work/parallel-redesign/seeking-v5/comparison.json",
+    "original_file_sha256": "aaed87e8cedff170f229447eb7c6f13a0c0aa599e747492300eee4df9691e8ba",
+    "original_file_bytes": 649,
+    "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+    "scope": "RAMOPT versus v5 seeking-mode compatibility smoke; not a v6 measurement or seeking performance campaign."
+  }
+}

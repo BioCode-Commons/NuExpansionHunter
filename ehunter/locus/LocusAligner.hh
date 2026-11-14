@@ -54,6 +54,15 @@ public:
     ///
     AlignedPair align(Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector);
 
+    // Computes the same pair result without writing output. Concurrent calls
+    // require distinct mutable reads and independently constructed selectors.
+    // Returned alignments borrow the graph supplied to this aligner.
+    AlignedPair alignMates(Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector) const;
+
+    // Emit a result with the reads in their post-alignment orientation. The
+    // caller must honor the writer's lifetime and serialization contract.
+    void writeAlignedPair(const Read& read, const Read* mate, const AlignedPair& alignedPair) const;
+
 private:
     OptionalAlign align(Read& read, graphtools::AlignerSelector& alignerSelector) const;
 

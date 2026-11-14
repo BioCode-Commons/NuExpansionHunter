@@ -1,0 +1,2433 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T20:13:52.097396+00:00",
+  "complete": true,
+  "baseline_comparison_label": "RAMOPT b00650d",
+  "expected_baseline_source_commit": "b00650d",
+  "parameters": {
+    "baseline": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+    "candidate": "<WORKSPACE>/work/parallel-redesign/prototype6",
+    "reads": "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+    "reference": "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+    "variant_catalog": "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+    "out": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001",
+    "baseline_cache": null,
+    "candidate_cache": null,
+    "baseline_source": null,
+    "candidate_source": null,
+    "baseline_label": "RAMOPT b00650d",
+    "threads": [
+      1,
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0,
+    "cpu_list": null,
+    "discard_equal_output": true,
+    "compare_chunk_mib": 512
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+        "--reads",
+        "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+        "--reference",
+        "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:13:52.121880+00:00",
+      "wall_seconds": 0.053983875000000014,
+      "user_seconds": 0.015162,
+      "system_seconds": 0.013163,
+      "peak_rss_bytes": 12681216,
+      "wait_status": 0,
+      "stdout_sha256": "d2e8375c40d0c2517b06e3288b84c2c8524b3cea64c98fda3b4c95f17843f762",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.000477958
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:13:52.370271+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog",
+        "bytes": 39882,
+        "sha256": "16b6bb6f0127653d64b1f639f02388908ebb3444bd904f9db8f6876830b20268"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/parallel-redesign/prototype6",
+        "--reads",
+        "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+        "--reference",
+        "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:13:52.372412+00:00",
+      "wall_seconds": 0.024530834,
+      "user_seconds": 0.015068999999999999,
+      "system_seconds": 0.0072,
+      "peak_rss_bytes": 12697600,
+      "wait_status": 0,
+      "stdout_sha256": "9d601ada29f08ba0fed69f4c4283e1380dd3c8df48bf0ede80f99989275e0dfa",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.000527041
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:13:52.591795+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog",
+        "bytes": 39882,
+        "sha256": "d93f6bc17a30a26a6b63009336b20a04cab6753df3dce63e15eccd63f67fd784"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:52.594730+00:00",
+          "wall_seconds": 0.07725341700000002,
+          "user_seconds": 0.161823,
+          "system_seconds": 0.010171999999999999,
+          "peak_rss_bytes": 23871488,
+          "wait_status": 0,
+          "stdout_sha256": "df3a098ceed5ee7dd91d80495c8bb4769f8b9ae5d063168d13f3a74321c7aaae",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000142333,
+            "catalog_index_seconds": 0.000304416,
+            "read_processing_seconds": 0.024008208,
+            "genotyping_seconds": 0.000249875,
+            "output_seconds": 0.01579125
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 699.0,
+            "assignments": 699.0,
+            "chunks": 11.0,
+            "peak_active_chunks": 11.0,
+            "peak_charged_cache_bytes": 4273064.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.13310171,
+            "reduction_worker_seconds": 0.002424667,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 86.0,
+            "peak_raw_bytes": 19952.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 1098.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.075e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:52.867262+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/candidate/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/candidate/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:52.870229+00:00",
+          "wall_seconds": 0.15638475,
+          "user_seconds": 0.130409,
+          "system_seconds": 0.009663999999999999,
+          "peak_rss_bytes": 17055744,
+          "wait_status": 0,
+          "stdout_sha256": "ddd866d1591d8e3d0212c4e3fbe97ce36b03f78e9e71aa4219d051232a3b314b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000143292,
+            "catalog_index_seconds": 0.000296458,
+            "read_processing_seconds": 0.103465584,
+            "genotyping_seconds": 0.000300459,
+            "output_seconds": 0.015555917
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:53.236316+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/baseline/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/baseline/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            1098,
+            1098
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:53.253688+00:00",
+          "wall_seconds": 0.11702379200000002,
+          "user_seconds": 0.138492,
+          "system_seconds": 0.008919999999999999,
+          "peak_rss_bytes": 18874368,
+          "wait_status": 0,
+          "stdout_sha256": "6670e226c71d482e2da0d4715108c1211c16dac806a62849bf1728294effc072",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.0001895,
+            "catalog_index_seconds": 0.000233334,
+            "read_processing_seconds": 0.064028833,
+            "genotyping_seconds": 0.000249459,
+            "output_seconds": 0.015693
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 699.0,
+            "assignments": 699.0,
+            "chunks": 11.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1565176.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.10638129,
+            "reduction_worker_seconds": 0.002176166,
+            "publisher_assisted_chunks": 4.0
+          },
+          "pending_mates": {
+            "peak_reads": 86.0,
+            "peak_raw_bytes": 19952.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 1098.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.6917e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:53.578674+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/candidate/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/candidate/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/candidate/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:53.582296+00:00",
+          "wall_seconds": 0.150913,
+          "user_seconds": 0.124404,
+          "system_seconds": 0.009061,
+          "peak_rss_bytes": 17088512,
+          "wait_status": 0,
+          "stdout_sha256": "49223686283539bdf0a3823cff9da0ab6fec554714205e3d3b5f8d6cef159f81",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000222583,
+            "catalog_index_seconds": 0.000234584,
+            "read_processing_seconds": 0.097758791,
+            "genotyping_seconds": 0.000248958,
+            "output_seconds": 0.01555175
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:53.939906+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/baseline/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/baseline/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/warmup/t1/baseline/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            1098,
+            1098
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      },
+      "cross_configuration_comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            1098,
+            1098
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:53.976705+00:00",
+          "wall_seconds": 0.151493833,
+          "user_seconds": 0.12456199999999999,
+          "system_seconds": 0.009269,
+          "peak_rss_bytes": 17072128,
+          "wait_status": 0,
+          "stdout_sha256": "18b77bae7b41023ad411e06bd5b18eed92e50deb109fe1532c1c7614ecff91ac",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000157292,
+            "catalog_index_seconds": 0.000263666,
+            "read_processing_seconds": 0.098148042,
+            "genotyping_seconds": 0.000236625,
+            "output_seconds": 0.015508292
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:54.323818+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/baseline/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/baseline/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/baseline/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:54.327325+00:00",
+          "wall_seconds": 0.11161929100000004,
+          "user_seconds": 0.126749,
+          "system_seconds": 0.007625,
+          "peak_rss_bytes": 18792448,
+          "wait_status": 0,
+          "stdout_sha256": "f08d974348b552711f9ff4f20d8df1183f9e90d97c691e1e5144619a3108ca0b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000145542,
+            "catalog_index_seconds": 0.000262084,
+            "read_processing_seconds": 0.058856666,
+            "genotyping_seconds": 0.00023625,
+            "output_seconds": 0.015572459
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 699.0,
+            "assignments": 699.0,
+            "chunks": 11.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1565176.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.098056292,
+            "reduction_worker_seconds": 0.001954167,
+            "publisher_assisted_chunks": 4.0
+          },
+          "pending_mates": {
+            "peak_reads": 86.0,
+            "peak_raw_bytes": 19952.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 1098.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.8166e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:54.633113+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/candidate/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/candidate/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t1/candidate/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            1098,
+            1098
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:54.674268+00:00",
+          "wall_seconds": 0.15042720799999998,
+          "user_seconds": 0.124426,
+          "system_seconds": 0.009021999999999999,
+          "peak_rss_bytes": 17121280,
+          "wait_status": 0,
+          "stdout_sha256": "ea3e582948181dde7398be5329096bb37adc5b697c9f2a672509c812d8ee336f",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000155959,
+            "catalog_index_seconds": 0.000278666,
+            "read_processing_seconds": 0.0979245,
+            "genotyping_seconds": 0.000286458,
+            "output_seconds": 0.015492792
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:55.019714+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/baseline/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/baseline/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:55.024120+00:00",
+          "wall_seconds": 0.07345041700000002,
+          "user_seconds": 0.14735099999999998,
+          "system_seconds": 0.008779,
+          "peak_rss_bytes": 24117248,
+          "wait_status": 0,
+          "stdout_sha256": "f2f0f8ef7c8a0f4f3392d70213bffef4a565ca9fcbab2a311e332c1b4630d014",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000149291,
+            "catalog_index_seconds": 0.000307625,
+            "read_processing_seconds": 0.021611,
+            "genotyping_seconds": 0.000222291,
+            "output_seconds": 0.015960417
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 699.0,
+            "assignments": 699.0,
+            "chunks": 11.0,
+            "peak_active_chunks": 11.0,
+            "peak_charged_cache_bytes": 4273064.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.121665625,
+            "reduction_worker_seconds": 0.001997749,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 86.0,
+            "peak_raw_bytes": 19952.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 1098.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.5792e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:55.291624+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/candidate/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/candidate/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            1098,
+            1098
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:55.354179+00:00",
+          "wall_seconds": 0.07401116599999999,
+          "user_seconds": 0.14654,
+          "system_seconds": 0.00847,
+          "peak_rss_bytes": 23756800,
+          "wait_status": 0,
+          "stdout_sha256": "bac4a8991f9e411bb67d857dbc0fc72c54fcf25b59980e31c4831224230c1b85",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000190875,
+            "catalog_index_seconds": 0.000290791,
+            "read_processing_seconds": 0.021354417,
+            "genotyping_seconds": 0.000227333,
+            "output_seconds": 0.015573042
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 699.0,
+            "assignments": 699.0,
+            "chunks": 11.0,
+            "peak_active_chunks": 11.0,
+            "peak_charged_cache_bytes": 4273064.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.11853925,
+            "reduction_worker_seconds": 0.002093458,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 86.0,
+            "peak_raw_bytes": 19952.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 1098.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.9459e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:55.622715+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/candidate/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/candidate/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/candidate/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:55.627901+00:00",
+          "wall_seconds": 0.1512605,
+          "user_seconds": 0.12497399999999999,
+          "system_seconds": 0.008983,
+          "peak_rss_bytes": 17235968,
+          "wait_status": 0,
+          "stdout_sha256": "8d070eff5377cb3193b9ebd76901ea9b2aef6ca271cc36e4224f2f4d38099830",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000150625,
+            "catalog_index_seconds": 0.000265292,
+            "read_processing_seconds": 0.0985515,
+            "genotyping_seconds": 0.000294792,
+            "output_seconds": 0.01558725
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:55.973994+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/baseline/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/baseline/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t8/baseline/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            1098,
+            1098
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:56.044796+00:00",
+          "wall_seconds": 0.110800375,
+          "user_seconds": 0.126339,
+          "system_seconds": 0.007318,
+          "peak_rss_bytes": 18857984,
+          "wait_status": 0,
+          "stdout_sha256": "4f9a2449029c3fe146ec5666b62c924cddd42dd676b3ff85e81be381e72ae9ba",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000154167,
+            "catalog_index_seconds": 0.000255416,
+            "read_processing_seconds": 0.058380042,
+            "genotyping_seconds": 0.000218667,
+            "output_seconds": 0.015902334
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 699.0,
+            "assignments": 699.0,
+            "chunks": 11.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1565176.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.097753333,
+            "reduction_worker_seconds": 0.001954083,
+            "publisher_assisted_chunks": 4.0
+          },
+          "pending_mates": {
+            "peak_reads": 86.0,
+            "peak_raw_bytes": 19952.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 1098.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.6541e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:56.350821+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/candidate/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/candidate/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/candidate/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:56.357025+00:00",
+          "wall_seconds": 0.15043762500000002,
+          "user_seconds": 0.124747,
+          "system_seconds": 0.00831,
+          "peak_rss_bytes": 17137664,
+          "wait_status": 0,
+          "stdout_sha256": "745f6dc1822ce11dc3a72604d77dcb9edc63daf94bb3b0bc5210648b2a45d434",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000148834,
+            "catalog_index_seconds": 0.000237541,
+            "read_processing_seconds": 0.098367833,
+            "genotyping_seconds": 0.000235583,
+            "output_seconds": 0.015511958
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:56.701717+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/baseline/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/baseline/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-01/t1/baseline/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            1098,
+            1098
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:56.779068+00:00",
+          "wall_seconds": 0.152098833,
+          "user_seconds": 0.12483799999999999,
+          "system_seconds": 0.0104,
+          "peak_rss_bytes": 17203200,
+          "wait_status": 0,
+          "stdout_sha256": "a3300675d3f97543e7eb8d7b51865be94b8ced771381e63207cd31c2bbc5c49f",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.00017275,
+            "catalog_index_seconds": 0.000274709,
+            "read_processing_seconds": 0.098553833,
+            "genotyping_seconds": 0.000259708,
+            "output_seconds": 0.015383208
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:57.127483+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/baseline/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/baseline/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/baseline/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:57.134162+00:00",
+          "wall_seconds": 0.07528691700000001,
+          "user_seconds": 0.153545,
+          "system_seconds": 0.009800999999999999,
+          "peak_rss_bytes": 24002560,
+          "wait_status": 0,
+          "stdout_sha256": "07e1a3d69cd9fb53470313859cfa471cf9e149aa8b2e27bc41f248b114a721a2",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000162708,
+            "catalog_index_seconds": 0.000288333,
+            "read_processing_seconds": 0.021314958,
+            "genotyping_seconds": 0.0002525,
+            "output_seconds": 0.016963833
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 699.0,
+            "assignments": 699.0,
+            "chunks": 11.0,
+            "peak_active_chunks": 11.0,
+            "peak_charged_cache_bytes": 4273064.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.13027275,
+            "reduction_worker_seconds": 0.002991916,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 86.0,
+            "peak_raw_bytes": 19952.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 1098.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.7708e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:57.404660+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/candidate/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/candidate/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t8/candidate/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            1098,
+            1098
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:57.491386+00:00",
+          "wall_seconds": 0.14750354200000002,
+          "user_seconds": 0.124473,
+          "system_seconds": 0.008783,
+          "peak_rss_bytes": 17022976,
+          "wait_status": 0,
+          "stdout_sha256": "3eb8cef2197c7ade8671dc78a90b45a9bd0488de37d51e08b56d56b42d705944",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000158917,
+            "catalog_index_seconds": 0.000234916,
+            "read_processing_seconds": 0.098085959,
+            "genotyping_seconds": 0.000272375,
+            "output_seconds": 0.012245625
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:57.834563+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/baseline/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/baseline/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/baseline/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+            "--reference",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:57.841310+00:00",
+          "wall_seconds": 0.10824925000000002,
+          "user_seconds": 0.127195,
+          "system_seconds": 0.0072499999999999995,
+          "peak_rss_bytes": 18628608,
+          "wait_status": 0,
+          "stdout_sha256": "4050b8b78251662fba5f27b1367eaeae969397ffad2739e44106f27ed8b8262e",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.000154417,
+            "catalog_index_seconds": 0.000235792,
+            "read_processing_seconds": 0.059006416,
+            "genotyping_seconds": 0.000214667,
+            "output_seconds": 0.012043208
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 699.0,
+            "assignments": 699.0,
+            "chunks": 11.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1565176.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.098453792,
+            "reduction_worker_seconds": 0.001946917,
+            "publisher_assisted_chunks": 4.0
+          },
+          "pending_mates": {
+            "peak_reads": 86.0,
+            "peak_raw_bytes": 19952.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 1098.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.6458e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:58.146216+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/candidate/result.vcf",
+              "bytes": 2272,
+              "sha256": "f459c39dbf288fac5450f32db0a21db1bf1031eeaa60b1464d8d1302a7693e67",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/candidate/result.json",
+              "bytes": 1372,
+              "sha256": "9cbf1caf2f55fd1f27b373ffd2c6167dbfd1cd38f95f8fae279a509329333ec0",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/repository-example/attempt-001/round-02/t1/candidate/result_realigned.bam",
+              "bytes": 63856,
+              "sha256": "1cb05f3ef0175a224fff3b2ddd901795d431c7d474197b680b0f5a6b840a5dfb",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            1098,
+            1098
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef",
+            "499ae1199a7d4d84438ec70b092eb8ae25448761f88d659d70212f5433f15eef"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+      "bytes": 2046800,
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam",
+      "bytes": 158779,
+      "sha256": "b7d18464c06daff9078c14a149551463c7c8a47844d3462154f8f51e20ef3cc5"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa",
+      "bytes": 4016,
+      "sha256": "c912c2aa0987117d8fa612c0748c44cba570da97189c2b8a9929381086f5d7ea"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.json",
+      "bytes": 277,
+      "sha256": "b65b49bf98b14d0abfb11382444e43d64ea38faa70a9bf585b7675bd4445343f"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/example/input/reference.fa.fai",
+      "bytes": 22,
+      "sha256": "e45d0d7aebfcd6fd638ee0b2d4a9f730ce8abd28ce6bd13b8bf762f77d43df13"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/example/input/variants.bam.bai",
+      "bytes": 96,
+      "sha256": "1fb6325de9b13329d7b57f8b36fdb66c3ad4227e79186a80d295d7d08f93d559"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29361,
+      "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 11663,
+      "sha256": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      1,
+      8
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      1
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "1": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 0.15043762500000002,
+            "candidate_median": 0.110800375,
+            "baseline_max": 0.151493833,
+            "candidate_max": 0.11161929100000004,
+            "paired_deltas": [
+              -0.03987454199999996,
+              -0.03963725000000001,
+              -0.039254291999999996
+            ],
+            "paired_ratios": [
+              0.7367909887130524,
+              0.7365203684915924,
+              0.7338755973737906
+            ],
+            "paired_median_ratio": 0.7365203684915924,
+            "paired_ratio_bootstrap_95": [
+              0.7338755973737906,
+              0.7367909887130524
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 0.13325599999999999,
+            "candidate_median": 0.134374,
+            "baseline_max": 0.13383099999999998,
+            "candidate_max": 0.134445,
+            "paired_deltas": [
+              0.0005430000000000157,
+              0.0005999999999999894,
+              0.0011890000000000234
+            ],
+            "paired_ratios": [
+              1.0040573559190322,
+              1.0045093456187948,
+              1.008922675151588
+            ],
+            "paired_median_ratio": 1.0045093456187948,
+            "paired_ratio_bootstrap_95": [
+              1.0040573559190322,
+              1.008922675151588
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 17072128,
+            "candidate_median": 18792448,
+            "baseline_max": 17137664,
+            "candidate_max": 18857984,
+            "paired_deltas": [
+              1720320,
+              1720320,
+              1605632
+            ],
+            "paired_ratios": [
+              1.100767754318618,
+              1.1003824091778203,
+              1.0943214629451397
+            ],
+            "paired_median_ratio": 1.1003824091778203,
+            "paired_ratio_bootstrap_95": [
+              1.0943214629451397,
+              1.100767754318618
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.000157292,
+            "candidate_median": 0.000154167,
+            "baseline_max": 0.000158917,
+            "candidate_max": 0.000154417,
+            "paired_deltas": [
+              -1.1750000000000015e-05,
+              5.332999999999998e-06,
+              -4.500000000000001e-06
+            ],
+            "paired_ratios": [
+              0.9252981715535437,
+              1.0358318663746187,
+              0.971683331550432
+            ],
+            "paired_median_ratio": 0.971683331550432,
+            "paired_ratio_bootstrap_95": [
+              0.9252981715535437,
+              1.0358318663746187
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.000237541,
+            "candidate_median": 0.000255416,
+            "baseline_max": 0.000263666,
+            "candidate_max": 0.000262084,
+            "paired_deltas": [
+              -1.5820000000000265e-06,
+              1.7875000000000014e-05,
+              8.759999999999964e-07
+            ],
+            "paired_ratios": [
+              0.9939999848292915,
+              1.075250167339533,
+              1.003728992490933
+            ],
+            "paired_median_ratio": 1.003728992490933,
+            "paired_ratio_bootstrap_95": [
+              0.9939999848292915,
+              1.075250167339533
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.000236625,
+            "candidate_median": 0.000218667,
+            "baseline_max": 0.000272375,
+            "candidate_max": 0.00023625,
+            "paired_deltas": [
+              -3.7499999999999556e-07,
+              -1.6916000000000012e-05,
+              -5.7707999999999983e-05
+            ],
+            "paired_ratios": [
+              0.9984152139461173,
+              0.9281951583942813,
+              0.7881303350160624
+            ],
+            "paired_median_ratio": 0.9281951583942813,
+            "paired_ratio_bootstrap_95": [
+              0.7881303350160624,
+              0.9984152139461173
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.015508292,
+            "candidate_median": 0.015572459,
+            "baseline_max": 0.015511958,
+            "candidate_max": 0.015902334,
+            "paired_deltas": [
+              6.416700000000039e-05,
+              0.0003903760000000013,
+              -0.00020241699999999987
+            ],
+            "paired_ratios": [
+              1.004137592972843,
+              1.0251661331212991,
+              0.9834702597866585
+            ],
+            "paired_median_ratio": 1.004137592972843,
+            "paired_ratio_bootstrap_95": [
+              0.9834702597866585,
+              1.0251661331212991
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 0.098148042,
+            "candidate_median": 0.058856666,
+            "baseline_max": 0.098367833,
+            "candidate_max": 0.059006416,
+            "paired_deltas": [
+              -0.039291376,
+              -0.039987791,
+              -0.039079543
+            ],
+            "paired_ratios": [
+              0.5996723398720476,
+              0.5934871209371868,
+              0.6015786214620178
+            ],
+            "paired_median_ratio": 0.5996723398720476,
+            "paired_ratio_bootstrap_95": [
+              0.5934871209371868,
+              0.6015786214620178
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 20000000,
+          "paired_actual_delta_bytes": [
+            1720320,
+            1720320,
+            1605632
+          ],
+          "difference_of_medians_bytes": 1720320,
+          "difference_of_maxima_bytes": 1720320,
+          "median_paired_delta_bytes": 1720320,
+          "largest_paired_delta_bytes": 1720320,
+          "paired_candidate_limits_bytes": [
+            37072128,
+            37137664,
+            37022976
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      },
+      "8": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 0.1512605,
+            "candidate_median": 0.07401116599999999,
+            "baseline_max": 0.152098833,
+            "candidate_max": 0.07528691700000001,
+            "paired_deltas": [
+              -0.07697679099999996,
+              -0.077249334,
+              -0.07681191599999998
+            ],
+            "paired_ratios": [
+              0.4882788025953392,
+              0.4892960554804459,
+              0.4949868155793149
+            ],
+            "paired_median_ratio": 0.4892960554804459,
+            "paired_ratio_bootstrap_95": [
+              0.4882788025953392,
+              0.4949868155793149
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 0.133957,
+            "candidate_median": 0.15613,
+            "baseline_max": 0.135238,
+            "candidate_max": 0.163346,
+            "paired_deltas": [
+              0.022682000000000008,
+              0.021053000000000016,
+              0.028107999999999994
+            ],
+            "paired_ratios": [
+              1.1699688268089443,
+              1.1571623730002913,
+              1.2078409914373178
+            ],
+            "paired_median_ratio": 1.1699688268089443,
+            "paired_ratio_bootstrap_95": [
+              1.1571623730002913,
+              1.2078409914373178
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 17203200,
+            "candidate_median": 24002560,
+            "baseline_max": 17235968,
+            "candidate_max": 24117248,
+            "paired_deltas": [
+              6995968,
+              6520832,
+              6799360
+            ],
+            "paired_ratios": [
+              1.4086124401913875,
+              1.3783269961977187,
+              1.3952380952380952
+            ],
+            "paired_median_ratio": 1.3952380952380952,
+            "paired_ratio_bootstrap_95": [
+              1.3783269961977187,
+              1.4086124401913875
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.000155959,
+            "candidate_median": 0.000162708,
+            "baseline_max": 0.00017275,
+            "candidate_max": 0.000190875,
+            "paired_deltas": [
+              -6.668000000000011e-06,
+              4.025e-05,
+              -1.004200000000001e-05
+            ],
+            "paired_ratios": [
+              0.9572451734109605,
+              1.267219917012448,
+              0.9418697539797395
+            ],
+            "paired_median_ratio": 0.9572451734109605,
+            "paired_ratio_bootstrap_95": [
+              0.9418697539797395,
+              1.267219917012448
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.000274709,
+            "candidate_median": 0.000290791,
+            "baseline_max": 0.000278666,
+            "candidate_max": 0.000307625,
+            "paired_deltas": [
+              2.8959000000000005e-05,
+              2.5499000000000008e-05,
+              1.3624000000000004e-05
+            ],
+            "paired_ratios": [
+              1.1039201050720218,
+              1.0961167317521825,
+              1.0495942979662116
+            ],
+            "paired_median_ratio": 1.0961167317521825,
+            "paired_ratio_bootstrap_95": [
+              1.0495942979662116,
+              1.1039201050720218
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.000286458,
+            "candidate_median": 0.000227333,
+            "baseline_max": 0.000294792,
+            "candidate_max": 0.0002525,
+            "paired_deltas": [
+              -6.416700000000001e-05,
+              -6.745899999999999e-05,
+              -7.207999999999976e-06
+            ],
+            "paired_ratios": [
+              0.7759985757074335,
+              0.7711640750088198,
+              0.972245752922513
+            ],
+            "paired_median_ratio": 0.7759985757074335,
+            "paired_ratio_bootstrap_95": [
+              0.7711640750088198,
+              0.972245752922513
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.015492792,
+            "candidate_median": 0.015960417,
+            "baseline_max": 0.01558725,
+            "candidate_max": 0.016963833,
+            "paired_deltas": [
+              0.000467625000000001,
+              -1.4207999999999929e-05,
+              0.0015806250000000004
+            ],
+            "paired_ratios": [
+              1.030183391089224,
+              0.9990884857816484,
+              1.102750024572248
+            ],
+            "paired_median_ratio": 1.030183391089224,
+            "paired_ratio_bootstrap_95": [
+              0.9990884857816484,
+              1.102750024572248
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 0.0985515,
+            "candidate_median": 0.021354417,
+            "baseline_max": 0.098553833,
+            "candidate_max": 0.021611,
+            "paired_deltas": [
+              -0.0763135,
+              -0.077197083,
+              -0.077238875
+            ],
+            "paired_ratios": [
+              0.2206904298719932,
+              0.21668282065721983,
+              0.21627731110163925
+            ],
+            "paired_median_ratio": 0.21668282065721983,
+            "paired_ratio_bootstrap_95": [
+              0.21627731110163925,
+              0.2206904298719932
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            6995968,
+            6520832,
+            6799360
+          ],
+          "difference_of_medians_bytes": 6799360,
+          "difference_of_maxima_bytes": 6881280,
+          "median_paired_delta_bytes": 6799360,
+          "largest_paired_delta_bytes": 6995968,
+          "paired_candidate_limits_bytes": [
+            177121280,
+            177235968,
+            177203200
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0070906388158185,
+            0.9945598817933302,
+            0.969787467074123
+          ],
+          "median_wall_speedup": 0.9945598817933302,
+          "median_compute_scaling_efficiency": 0.12431998522416628,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.5196549666967856,
+            1.497076468164277,
+            1.4378228557293693
+          ],
+          "median_wall_speedup": 1.497076468164277,
+          "median_compute_scaling_efficiency": 0.18713455852053462,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": true,
+    "all_observed_peak_rss_within_allowance": true,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T20:13:58.224963+00:00"
+}

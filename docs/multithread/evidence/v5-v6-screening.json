@@ -1,0 +1,900 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T19:14:27.407944+00:00",
+  "complete": true,
+  "baseline_comparison_label": "Prototype5 before immediate item release",
+  "expected_baseline_source_commit": null,
+  "parameters": {
+    "baseline": "work/parallel-redesign/prototype5",
+    "candidate": "work/parallel-redesign/prototype6",
+    "reads": "work/fixtures/genotyped100k/reads.bam",
+    "reference": "work/fixtures/genotyped100k/reference.fa",
+    "variant_catalog": "work/fixtures/genotyped100k/catalog.json",
+    "out": "work/parallel-redesign/item-release-ablation-v6",
+    "baseline_cache": null,
+    "candidate_cache": null,
+    "baseline_source": null,
+    "candidate_source": null,
+    "baseline_label": "Prototype5 before immediate item release",
+    "threads": [
+      8
+    ],
+    "pairs": 1,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20,
+    "cpu_list": null,
+    "discard_equal_output": false,
+    "compare_chunk_mib": 512
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/parallel-redesign/prototype5",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/genotyped100k/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/baseline/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/baseline.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T19:14:27.726670+00:00",
+      "wall_seconds": 104.640114875,
+      "user_seconds": 100.02287,
+      "system_seconds": 3.331102,
+      "peak_rss_bytes": 1879654400,
+      "wait_status": 0,
+      "stdout_sha256": "14da4db97074f0a22e5227b068d36ea6164430d440ee2b1bb4897f6d29dac8aa",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/baseline/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/baseline/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 10.181714458
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T19:16:12.487654+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/baseline.catalog",
+        "bytes": 2284218916,
+        "sha256": "9d1a0509a63017adbe1939f0a22a146ea3d7ee0d3842ac2d759e68f20694f134"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/parallel-redesign/prototype6",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/genotyped100k/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T19:16:13.413002+00:00",
+      "wall_seconds": 105.636488292,
+      "user_seconds": 100.543805,
+      "system_seconds": 3.4069409999999998,
+      "peak_rss_bytes": 1892646912,
+      "wait_status": 0,
+      "stdout_sha256": "8ad76764c5b5bf07bf5a645744d233ec73edb1185336aab410a888634e8dc58a",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 10.226023833
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T19:17:59.197969+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog",
+        "bytes": 2284218916,
+        "sha256": "0f8089710cfb2c5add4ad59863e9f3632baed2a4eb3ebba33c4427f38bc810f2"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T19:18:00.132994+00:00",
+          "wall_seconds": 70.748930333,
+          "user_seconds": 582.957528,
+          "system_seconds": 9.142668,
+          "peak_rss_bytes": 3721773056,
+          "wait_status": 0,
+          "stdout_sha256": "18f8d251cf77c4bc627f8e3b4c00fa1382cddc8e0419442f8d0879d27efb3a67",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 2.622712291,
+            "catalog_index_seconds": 3.07959875,
+            "read_processing_seconds": 61.204240458,
+            "genotyping_seconds": 2.295858417,
+            "output_seconds": 1.470007834
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 10000000.0,
+            "assignments": 10000000.0,
+            "chunks": 201035.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19814208.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 468.99614292,
+            "reduction_worker_seconds": 71.231390328,
+            "publisher_assisted_chunks": 18417.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 20000000.0,
+            "peak_resident_bytes": 8388576.0,
+            "submit_wait_seconds": 5.464044203000002,
+            "drain_seconds": 2.4583e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T19:19:11.033258+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/candidate/result.vcf",
+              "bytes": 19947707,
+              "sha256": "ee69a9809ea4e6f56a9e777dd01c7a16e01077073c1c57fa45118b70d36c59dc"
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/candidate/result.json",
+              "bytes": 65246105,
+              "sha256": "1b2fe065ac3d9a0e38f28fe0cc0bf207221b6c5cf0bbb730dfad342e46ca5e34"
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 307541268,
+              "sha256": "36203a40fc7297370c32108880b9f0715ca389883591038e6844aa0cacb834bf"
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype5",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T19:19:11.194777+00:00",
+          "wall_seconds": 99.999969875,
+          "user_seconds": 814.879121,
+          "system_seconds": 12.778653,
+          "peak_rss_bytes": 3948134400,
+          "wait_status": 0,
+          "stdout_sha256": "cc5c50069cca4644a561fb3ed34995eae0cf51f5afeb3ea5295b9ee3747e22a0",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.276277625,
+            "catalog_index_seconds": 3.128428416,
+            "read_processing_seconds": 89.264807,
+            "genotyping_seconds": 2.52084675,
+            "output_seconds": 1.713467209
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 10000000.0,
+            "assignments": 10000000.0,
+            "chunks": 201035.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19814208.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 664.571120972,
+            "reduction_worker_seconds": 123.365386749,
+            "publisher_assisted_chunks": 19005.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 20000000.0,
+            "peak_resident_bytes": 8388576.0,
+            "submit_wait_seconds": 29.021266334000032,
+            "drain_seconds": 2.5958e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T19:20:51.349457+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/baseline/result.vcf",
+              "bytes": 19947707,
+              "sha256": "ee69a9809ea4e6f56a9e777dd01c7a16e01077073c1c57fa45118b70d36c59dc"
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/baseline/result.json",
+              "bytes": 65246105,
+              "sha256": "1b2fe065ac3d9a0e38f28fe0cc0bf207221b6c5cf0bbb730dfad342e46ca5e34"
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 307393141,
+              "sha256": "6a4ef33008cdc3702903dfbc25f9997a58acc727decc4c813432f787d1897f89"
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            20000000,
+            20000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "8f0f2f72a26ca0c63a7858b352d50c12a1ec0b5e628c1094f33458be599999ae",
+            "8f0f2f72a26ca0c63a7858b352d50c12a1ec0b5e628c1094f33458be599999ae"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype5",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T19:22:54.559863+00:00",
+          "wall_seconds": 106.841754041,
+          "user_seconds": 766.511581,
+          "system_seconds": 16.591874,
+          "peak_rss_bytes": 3175235584,
+          "wait_status": 0,
+          "stdout_sha256": "bc4f5bdc748dcd1479fb49ffd79d097e4a3aee815de9c15aa88957bae7387982",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.963736666,
+            "catalog_index_seconds": 5.245342916,
+            "read_processing_seconds": 93.441149542,
+            "genotyping_seconds": 2.495937125,
+            "output_seconds": 1.572753458
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 10000000.0,
+            "assignments": 10000000.0,
+            "chunks": 201035.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19814208.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 628.600541814,
+            "reduction_worker_seconds": 193.948067489,
+            "publisher_assisted_chunks": 19134.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 20000000.0,
+            "peak_resident_bytes": 8388576.0,
+            "submit_wait_seconds": 88.85462608399918,
+            "drain_seconds": 2.5208e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T19:24:41.732244+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/baseline/result.vcf",
+              "bytes": 19947707,
+              "sha256": "ee69a9809ea4e6f56a9e777dd01c7a16e01077073c1c57fa45118b70d36c59dc"
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/baseline/result.json",
+              "bytes": 65246105,
+              "sha256": "1b2fe065ac3d9a0e38f28fe0cc0bf207221b6c5cf0bbb730dfad342e46ca5e34"
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 307655333,
+              "sha256": "2089ea840c104278a5f761f3f5c00d946b93d530ee6f2a767b68002665595553"
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T19:24:41.895149+00:00",
+          "wall_seconds": 93.291023125,
+          "user_seconds": 771.821226,
+          "system_seconds": 12.488978,
+          "peak_rss_bytes": 3863150592,
+          "wait_status": 0,
+          "stdout_sha256": "08ce56e5a6bf23850047c37147b17b493064fdc7999712bbb4ac4a7bd431b558",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.431144459,
+            "catalog_index_seconds": 4.06420275,
+            "read_processing_seconds": 82.010055167,
+            "genotyping_seconds": 2.204386833,
+            "output_seconds": 1.479798417
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 10000000.0,
+            "assignments": 10000000.0,
+            "chunks": 201035.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19480896.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 625.977911209,
+            "reduction_worker_seconds": 98.946920731,
+            "publisher_assisted_chunks": 19239.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 20000000.0,
+            "peak_resident_bytes": 8388576.0,
+            "submit_wait_seconds": 11.277033734000014,
+            "drain_seconds": 2.4042e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T19:26:15.346118+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/candidate/result.vcf",
+              "bytes": 19947707,
+              "sha256": "ee69a9809ea4e6f56a9e777dd01c7a16e01077073c1c57fa45118b70d36c59dc"
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/candidate/result.json",
+              "bytes": 65246105,
+              "sha256": "1b2fe065ac3d9a0e38f28fe0cc0bf207221b6c5cf0bbb730dfad342e46ca5e34"
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 307339881,
+              "sha256": "83cc1542a1d13eda4537b0ad928afc2df097e53531b2a1d4295e61ef75f964d7"
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            20000000,
+            20000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "8f0f2f72a26ca0c63a7858b352d50c12a1ec0b5e628c1094f33458be599999ae",
+            "8f0f2f72a26ca0c63a7858b352d50c12a1ec0b5e628c1094f33458be599999ae"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype5",
+      "bytes": 2061472,
+      "sha256": "f304d6f09e2d4b4a9b50541b551abae4307641bcb597b0a6507c65700b18b6b9"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped100k/reads.bam",
+      "bytes": 243173465,
+      "sha256": "dc9a5a39aa279e3ad3dc44379e941bdffbe0503a5395af286adebee14202ff1d"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+      "bytes": 416427700,
+      "sha256": "7b9c315b256b14ae81e0bf3b61340eee03f15fbf39f45238a1ac963533296847"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+      "bytes": 12046003,
+      "sha256": "a7de145c2fbb2a9ada60de937c2d1a1ddd7d332b16d773993b3d91b5f533eb3b"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa.fai",
+      "bytes": 3267,
+      "sha256": "13ee895e3ca8ceab8ab4eaa5039aeb2a320632d00c142693b20e0677f2286552"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped100k/reads.bam.bai",
+      "bytes": 804816,
+      "sha256": "85959af10fee4775cdad658e43a5505d17589a64eebd14a7840fba6a8b05c666"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29361,
+      "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 11663,
+      "sha256": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      8
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "8": {
+        "verified_pairs": 1,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 106.841754041,
+            "candidate_median": 93.291023125,
+            "baseline_max": 106.841754041,
+            "candidate_max": 93.291023125,
+            "paired_deltas": [
+              -13.550730916000006
+            ],
+            "paired_ratios": [
+              0.8731700818876488
+            ],
+            "paired_median_ratio": 0.8731700818876488,
+            "paired_ratio_bootstrap_95": [
+              0.8731700818876488,
+              0.8731700818876488
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 783.1034549999999,
+            "candidate_median": 784.310204,
+            "baseline_max": 783.1034549999999,
+            "candidate_max": 784.310204,
+            "paired_deltas": [
+              1.206749000000059
+            ],
+            "paired_ratios": [
+              1.0015409828577504
+            ],
+            "paired_median_ratio": 1.0015409828577504,
+            "paired_ratio_bootstrap_95": [
+              1.0015409828577504,
+              1.0015409828577504
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 3175235584,
+            "candidate_median": 3863150592,
+            "baseline_max": 3175235584,
+            "candidate_max": 3863150592,
+            "paired_deltas": [
+              687915008
+            ],
+            "paired_ratios": [
+              1.2166500688850934
+            ],
+            "paired_median_ratio": 1.2166500688850934,
+            "paired_ratio_bootstrap_95": [
+              1.2166500688850934,
+              1.2166500688850934
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 3.963736666,
+            "candidate_median": 3.431144459,
+            "baseline_max": 3.963736666,
+            "candidate_max": 3.431144459,
+            "paired_deltas": [
+              -0.532592207
+            ],
+            "paired_ratios": [
+              0.865633806713637
+            ],
+            "paired_median_ratio": 0.865633806713637,
+            "paired_ratio_bootstrap_95": [
+              0.865633806713637,
+              0.865633806713637
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 5.245342916,
+            "candidate_median": 4.06420275,
+            "baseline_max": 5.245342916,
+            "candidate_max": 4.06420275,
+            "paired_deltas": [
+              -1.1811401660000005
+            ],
+            "paired_ratios": [
+              0.7748211728165304
+            ],
+            "paired_median_ratio": 0.7748211728165304,
+            "paired_ratio_bootstrap_95": [
+              0.7748211728165304,
+              0.7748211728165304
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 2.495937125,
+            "candidate_median": 2.204386833,
+            "baseline_max": 2.495937125,
+            "candidate_max": 2.204386833,
+            "paired_deltas": [
+              -0.29155029200000016
+            ],
+            "paired_ratios": [
+              0.8831900495089594
+            ],
+            "paired_median_ratio": 0.8831900495089594,
+            "paired_ratio_bootstrap_95": [
+              0.8831900495089594,
+              0.8831900495089594
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 1.572753458,
+            "candidate_median": 1.479798417,
+            "baseline_max": 1.572753458,
+            "candidate_max": 1.479798417,
+            "paired_deltas": [
+              -0.09295504099999996
+            ],
+            "paired_ratios": [
+              0.9408966227178374
+            ],
+            "paired_median_ratio": 0.9408966227178374,
+            "paired_ratio_bootstrap_95": [
+              0.9408966227178374,
+              0.9408966227178374
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 93.441149542,
+            "candidate_median": 82.010055167,
+            "baseline_max": 93.441149542,
+            "candidate_max": 82.010055167,
+            "paired_deltas": [
+              -11.431094375
+            ],
+            "paired_ratios": [
+              0.877665306655266
+            ],
+            "paired_median_ratio": 0.877665306655266,
+            "paired_ratio_bootstrap_95": [
+              0.877665306655266,
+              0.877665306655266
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            687915008
+          ],
+          "difference_of_medians_bytes": 687915008,
+          "difference_of_maxima_bytes": 687915008,
+          "median_paired_delta_bytes": 687915008,
+          "largest_paired_delta_bytes": 687915008,
+          "paired_candidate_limits_bytes": [
+            3335235584
+          ],
+          "all_pairs_within_allowance": false,
+          "median_within_allowance": false,
+          "maximum_within_allowance": false
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "8": {
+          "reference_compute_workers": 8,
+          "same_round_pairs": 1,
+          "wall_speedup_by_round": [
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "8": {
+          "reference_compute_workers": 8,
+          "same_round_pairs": 1,
+          "wall_speedup_by_round": [
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": true,
+    "all_observed_peak_rss_within_allowance": false,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T19:28:08.490049+00:00",
+  "_publication": {
+    "source_file": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/results.json",
+    "original_file_sha256": "0cb60e3f12eefdde3ff1bf3e5239f7adbf60d5f65479cd0f3a37d79cc9bebb76",
+    "original_file_bytes": 40667,
+    "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+    "scope": "One formal pair plus one warmup, v5 versus v6. Baseline differs from RAMOPT; not final v6 acceptance."
+  }
+}

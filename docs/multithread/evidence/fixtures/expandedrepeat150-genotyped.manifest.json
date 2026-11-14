@@ -1,0 +1,117 @@
+{
+  "scope": "Synthetic streaming input extremes; not representative WGS or a guaranteed alignment fast-path/fallback witness",
+  "fixture_kind": "expandedrepeat150",
+  "loci": 200,
+  "covered_loci": 200,
+  "contigs": 1,
+  "read_length": 150,
+  "read_records": 105600,
+  "target_read_records": 105600,
+  "target_read_fraction": 1.0,
+  "reference_bases": 819200,
+  "reference_repeat_count": 10,
+  "sample_repeat_count": 80,
+  "reference_repeat_allele_only": false,
+  "coordinate_sorted": true,
+  "required_region_extension_length": 1000,
+  "details": "150bp reads from one 80-CAG haplotype versus reference10; both mates cross inserted repeat copies and retain a flank anchor. Plus 8 exact 150bp calibration pairs per locus, both reads wholly on the left flank, supplying a 300bp fragment-length observation.",
+  "counts": {
+    "expanded_haplotype_reads": 102400,
+    "missing_quality_reads": 0,
+    "records": 105600,
+    "calibration_reads": 3200
+  },
+  "pair_layout": "Flags99/147; SAM SEQ stored in reference-aligned orientation for both mates; TLEN uses reference-consuming CIGAR spans.",
+  "expectations": {
+    "all_input_fields_valid": true,
+    "all_pairs_complete": true,
+    "catalog_reference_agree": true,
+    "same_input_for_both_binaries": true,
+    "output_comparison": "Exact VCF/JSON and BAM complete-header/full-record multiset, preserving duplicate multiplicity; only BAM record order may differ",
+    "genotype_truth_asserted": false,
+    "observed_output_checks_required": {
+      "minimum_coverage": 10,
+      "positive_fragment_length": true,
+      "called_repeat_genotype_at_every_locus": true,
+      "check_with": "tools/memory_validation/validate_genotype_outputs.py"
+    }
+  },
+  "limitations": [
+    "Read acceptance, genotyping and specific DP-path activation must be observed, not assumed.",
+    "Mismatch/IUPAC cases model read errors and uncertain base calls; no diploid genotype truth is asserted.",
+    "Expanded-repeat SAM alignments project one explicit haplotype; repeat mapping is intrinsically nonunique."
+  ],
+  "parameters": {
+    "out": "../fixtures/genotyped-read-extremes",
+    "only": "expandedrepeat150",
+    "loci": 200,
+    "pairs_per_locus": 256,
+    "calibration_pairs_per_locus": 8,
+    "expanded_copies": 80,
+    "seed": "nueh-memory-read-extremes-v1",
+    "sam_to_bam": "../sam_to_bam",
+    "sam_only": false
+  },
+  "generator_sha256": "0a0efe7136b8a9051fc367f386eeb2e86faa640d46588c730a9e4c437565215d",
+  "base_generator_sha256": "110dd38fdf768a00c70f6aeb3934f5b917d675487c1fd6745c2daba2887202ef",
+  "generation_command": [
+    "<APPLE_COMMAND_LINE_TOOLS>/usr/bin/python3",
+    "<WORKSPACE>/work/NuExpansionHunter/tools/memory_validation/generate_read_extremes.py",
+    "--out",
+    "../fixtures/genotyped-read-extremes",
+    "--only",
+    "expandedrepeat150",
+    "--loci",
+    "200",
+    "--pairs-per-locus",
+    "256",
+    "--calibration-pairs-per-locus",
+    "8",
+    "--sam-to-bam",
+    "../sam_to_bam"
+  ],
+  "conversion_command": [
+    "<WORKSPACE>/work/sam_to_bam",
+    "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150/reads.sam",
+    "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150/reads.bam"
+  ],
+  "files": {
+    "bam-conversion.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "catalog.json": {
+      "bytes": 29951,
+      "sha256": "c2f42dee2925e4fa4871003d5dd636f011d09a4db2272e85b579cb7d6c083f16"
+    },
+    "independent-validation.json": {
+      "bytes": 461,
+      "sha256": "326ef8c225e65cabc66e27431eda35ed4e9336f924521072b67defbe4eb991fe"
+    },
+    "reads.bam": {
+      "bytes": 825856,
+      "sha256": "6c5c3ee9f4a1b06011c36a87d1f2fb01c065de358b8cc62da9fe07e6d5e8cd42"
+    },
+    "reads.bam.bai": {
+      "bytes": 1664,
+      "sha256": "c618d48ba85c74b3ace12a6965eeb7c9c748950b690e02ebd5c0a05e74759246"
+    },
+    "reads.sam": {
+      "bytes": 39993363,
+      "sha256": "9c5c522ea00487bd6067393859b11b964c7ca443c93df9e929e8eb9621eacbad"
+    },
+    "reference.fa": {
+      "bytes": 832866,
+      "sha256": "23f1d1d69bf21293f16066a2a7159fb765ad1f13afce9c5f1ae268d190625dec"
+    },
+    "reference.fa.fai": {
+      "bytes": 27,
+      "sha256": "22c9f0f685bf7c67170905f4c70b27d058d9ac1e26d8a00eee7d8f7214a43dbd"
+    }
+  },
+  "relocation_after_generation": {
+    "from": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150",
+    "to": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped",
+    "records_and_reference_unchanged": true
+  }
+}

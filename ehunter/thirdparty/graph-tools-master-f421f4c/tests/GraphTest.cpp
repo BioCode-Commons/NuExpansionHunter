@@ -205,3 +205,117 @@ TEST(GettingNodeNeighbors, NeighborsOfNonexistingNode_ExceptionRaised)
     EXPECT_ANY_THROW(graph.successors(4));
     EXPECT_ANY_THROW(graph.predecessors(-1));
 }
+
+TEST(GettingNodeNeighbors, BorrowedRangesPreserveOwnedMappedAndReverseTraversal)
+{
+    Graph graph(4);
+    for (NodeId node = 0; node < graph.numNodes(); ++node)
+        graph.setNodeSeq(node, "ACG");
+    graph.addEdge(0, 0);
+    graph.addEdge(0, 1);
+    graph.addEdge(0, 3);
+    graph.addEdge(1, 3);
+    graph.addEdge(3, 3);
+    BlobBuilder blob;
+    const auto record = graph.freeze(blob);
+    Graph mapped = Graph::mapped(MappedBytes(blob.bytes.data(), blob.bytes.size()), record);
+
+    for (const Graph* current : { &graph, &mapped })
+    {
+        ReverseGraph reverse(*current);
+        for (NodeId node = 0; node < current->numNodes(); ++node)
+        {
+            EXPECT_EQ(current->successors(node), current->successorsBorrowed(node));
+            EXPECT_EQ(current->predecessors(node), current->predecessorsBorrowed(node));
+            EXPECT_EQ(reverse.successors(node), reverse.successorsBorrowed(node));
+            EXPECT_EQ(reverse.predecessors(node), reverse.predecessorsBorrowed(node));
+            EXPECT_EQ(current->predecessorsBorrowed(node), reverse.successorsBorrowed(node));
+            EXPECT_EQ(current->successorsBorrowed(node), reverse.predecessorsBorrowed(node));
+            const auto borrowed = current->successorsBorrowed(node);
+            vector<NodeId> reversed(borrowed.rbegin(), borrowed.rend());
+            vector<NodeId> expected = current->successors(node);
+            std::reverse(expected.begin(), expected.end());
+            EXPECT_EQ(expected, reversed);
+        }
+        EXPECT_THROW(current->successorsBorrowed(4), std::logic_error);
+        EXPECT_THROW(current->predecessorsBorrowed(-1), std::logic_error);
+        EXPECT_THROW(reverse.successorsBorrowed(4), std::logic_error);
+        EXPECT_THROW(reverse.predecessorsBorrowed(-1), std::logic_error);
+    }
+
+    const auto nodes = MappedBytes(blob.bytes.data(), blob.bytes.size()).array<MappedGraph>(record)->nodes;
+    auto corrupt = MappedBytes(blob.bytes.data(), blob.bytes.size()).array<MappedNode>(nodes)[0];
+    corrupt.successors = { blob.bytes.size(), 1 };
+    corrupt.predecessors = { blob.bytes.size(), 1 };
+    blob.replace(nodes.offset, corrupt);
+    EXPECT_THROW(mapped.successors(0), std::runtime_error);
+    EXPECT_THROW(mapped.successorsBorrowed(0), std::runtime_error);
+    EXPECT_THROW(mapped.predecessors(0), std::runtime_error);
+    EXPECT_THROW(mapped.predecessorsBorrowed(0), std::runtime_error);
+}
+
+TEST(GettingNodeNeighbors, BorrowedRangesAndIteratorsDoNotRetainMappedOwner)
+{
+    Graph graph(3);
+    graph.addEdge(0, 1);
+    graph.addEdge(0, 2);
+    graph.addEdge(1, 2);
+    auto owner = std::make_shared<BlobBuilder>();
+    const auto record = graph.freeze(*owner);
+    Graph mapped = Graph::mapped(MappedBytes(owner->bytes.data(), owner->bytes.size(), owner), record);
+    const auto retained = owner.use_count();
+
+    const auto successors = mapped.successorsBorrowed(0);
+    const auto predecessors = mapped.predecessorsBorrowed(2);
+    const auto copied = successors;
+    auto first = copied.begin();
+    const auto end = copied.end();
+    const auto beforeIncrement = first++;
+    const auto found = predecessors.find(1);
+    const auto reversed = ReverseGraph(mapped).successorsBorrowed(2);
+    const auto reverseFirst = reversed.begin();
+    EXPECT_EQ(retained, owner.use_count());
+    EXPECT_EQ(1u, *beforeIncrement);
+    EXPECT_EQ(2u, *first);
+    EXPECT_NE(first, end);
+    EXPECT_EQ(1u, *found);
+    EXPECT_EQ(0u, *reverseFirst);
+
+    const auto owning = mapped.successors(0);
+    EXPECT_EQ(retained + 1, owner.use_count());
+    const auto owningFirst = owning.begin();
+    const auto owningEnd = owning.end();
+    EXPECT_EQ(retained + 3, owner.use_count());
+    EXPECT_NE(owningFirst, owningEnd);
+}
+
+TEST(GettingNodeNeighbors, OwningMappedRangesAndIteratorsOutliveGraph)
+{
+    CatalogRange<NodeId> successors, predecessors;
+    std::weak_ptr<BlobBuilder> lifetime;
+    {
+        Graph graph(3);
+        graph.addEdge(0, 1);
+        graph.addEdge(0, 2);
+        graph.addEdge(1, 2);
+        auto owner = std::make_shared<BlobBuilder>();
+        lifetime = owner;
+        const auto record = graph.freeze(*owner);
+        Graph mapped = Graph::mapped(MappedBytes(owner->bytes.data(), owner->bytes.size(), owner), record);
+        successors = mapped.successors(0);
+        predecessors = ReverseGraph(mapped).successors(2);
+    }
+    ASSERT_FALSE(lifetime.expired());
+    EXPECT_EQ((vector<NodeId> { 1, 2 }), vector<NodeId>(successors));
+    EXPECT_EQ((vector<NodeId> { 0, 1 }), vector<NodeId>(predecessors));
+    {
+        const auto firstSuccessor = successors.begin(), endSuccessor = successors.end();
+        const auto firstPredecessor = predecessors.begin(), endPredecessor = predecessors.end();
+        successors = CatalogRange<NodeId>();
+        predecessors = CatalogRange<NodeId>();
+        ASSERT_FALSE(lifetime.expired());
+        EXPECT_EQ((vector<NodeId> { 1, 2 }), vector<NodeId>(firstSuccessor, endSuccessor));
+        EXPECT_EQ((vector<NodeId> { 0, 1 }), vector<NodeId>(firstPredecessor, endPredecessor));
+    }
+    EXPECT_TRUE(lifetime.expired());
+}

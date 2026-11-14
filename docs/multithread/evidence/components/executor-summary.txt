@@ -1,0 +1,8 @@
+# Publication evidence copy
+# Original file: <WORKSPACE>/work/executor-assistance-validation/sanitizer-summary.txt
+# Original SHA-256: 6672e11701d23856516f7654651e75ed50df2738d6bc7b71eaf78ce4706d3ecc
+# Redaction: Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.
+# Scope: Existing compile/run status summary for the executor component sanitizer runs.
+# Original log follows.
+{'sanitizer': 'asan-ubsan', 'compile_exit': 0, 'repetitions': 20, 'test_exit': 0}
+{'sanitizer': 'tsan', 'compile_exit': 0, 'repetitions': 20, 'test_exit': 0}

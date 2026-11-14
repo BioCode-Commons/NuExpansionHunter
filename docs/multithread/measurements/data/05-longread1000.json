@@ -1,0 +1,255 @@
+{
+  "label": "longread1000",
+  "display_label": "longread1000",
+  "source_result_filename": "longread1000.json",
+  "result_snapshot_sha256": "456b8abe8e21b6d711ca66d8423b1d950195a29c8390fdae30a8b808f7e665bf",
+  "run_status": "complete",
+  "declared_complete": true,
+  "fixture": {
+    "records": 25600,
+    "loci": 200,
+    "scope": "Synthetic streaming input extremes; not representative WGS or a guaranteed alignment fast-path/fallback witness",
+    "count_provenance": "Fixture manifest; records supplied with --records; loci supplied with --loci"
+  },
+  "rows": [
+    {
+      "threads": 1,
+      "state": "Complete",
+      "requested_pairs": 3,
+      "measured_pairs": 3,
+      "exact_verified_pairs": 3,
+      "warmup_pairs": 1,
+      "warmup_verified": true,
+      "missing_measured_rounds": [],
+      "duplicate_rounds": [],
+      "issues": [],
+      "outputs_mismatch": false,
+      "wall_seconds": {
+        "pairs": 3,
+        "baseline_median": 0.79051725,
+        "candidate_median": 0.7349401249999999,
+        "baseline_max": 0.799309417,
+        "candidate_max": 0.8042082499999998,
+        "paired_ratios": [
+          1.0061288318338426,
+          0.7980047772518563,
+          1.034023310433155
+        ],
+        "paired_median_ratio": 1.0061288318338426,
+        "paired_deltas": [
+          0.004898832999999825,
+          -0.159680708,
+          0.024182332999999945
+        ],
+        "paired_median_delta": 0.004898832999999825,
+        "largest_paired_delta": 0.024182332999999945
+      },
+      "wall_ratio_bootstrap_95": [
+        0.7980047772518563,
+        1.034023310433155
+      ],
+      "peak_rss_bytes": {
+        "pairs": 3,
+        "baseline_median": 25427968,
+        "candidate_median": 27279360,
+        "baseline_max": 25509888,
+        "candidate_max": 27295744,
+        "paired_ratios": [
+          1.071520618556701,
+          1.0735009671179885,
+          1.0700064226075787
+        ],
+        "paired_median_ratio": 1.071520618556701,
+        "paired_deltas": [
+          1818624,
+          1867776,
+          1785856
+        ],
+        "paired_median_delta": 1818624,
+        "largest_paired_delta": 1867776
+      },
+      "allowed_extra_bytes": 20000000,
+      "extra_decimal_mb_per_worker": 20.0,
+      "observed_memory_within_allowance": true,
+      "cpu_seconds": {
+        "pairs": 3,
+        "baseline_median": 2.092707,
+        "candidate_median": 1.7490430000000001,
+        "baseline_max": 2.111247,
+        "candidate_max": 1.9130989999999999,
+        "paired_ratios": [
+          0.9061464622566662,
+          0.7164892170762559,
+          0.9369756092334561
+        ],
+        "paired_median_ratio": 0.9061464622566662,
+        "paired_deltas": [
+          -0.1981480000000002,
+          -0.5933049999999997,
+          -0.11764699999999984
+        ],
+        "paired_median_delta": -0.1981480000000002,
+        "largest_paired_delta": -0.11764699999999984
+      },
+      "read_processing_seconds": {
+        "pairs": 3,
+        "baseline_median": 0.6820445,
+        "candidate_median": 0.625398917,
+        "baseline_max": 0.690513083,
+        "candidate_max": 0.68621875,
+        "paired_ratios": [
+          0.9937809534595016,
+          0.7863722000543952,
+          1.0301781441852842
+        ],
+        "paired_median_ratio": 0.9937809534595016,
+        "paired_deltas": [
+          -0.004294333000000039,
+          -0.14570366600000006,
+          0.018320500000000073
+        ],
+        "paired_median_delta": -0.004294333000000039,
+        "largest_paired_delta": 0.018320500000000073
+      }
+    },
+    {
+      "threads": 8,
+      "state": "Complete",
+      "requested_pairs": 3,
+      "measured_pairs": 3,
+      "exact_verified_pairs": 3,
+      "warmup_pairs": 1,
+      "warmup_verified": true,
+      "missing_measured_rounds": [],
+      "duplicate_rounds": [],
+      "issues": [],
+      "outputs_mismatch": false,
+      "wall_seconds": {
+        "pairs": 3,
+        "baseline_median": 0.9103209170000001,
+        "candidate_median": 0.45386366699999997,
+        "baseline_max": 0.9616075000000001,
+        "candidate_max": 0.515461292,
+        "paired_ratios": [
+          0.510212849647156,
+          0.4639387691963716,
+          0.5662412918058873
+        ],
+        "paired_median_ratio": 0.510212849647156,
+        "paired_deltas": [
+          -0.43569383300000014,
+          -0.5154805000000001,
+          -0.39485962500000005
+        ],
+        "paired_median_delta": -0.43569383300000014,
+        "largest_paired_delta": -0.39485962500000005
+      },
+      "wall_ratio_bootstrap_95": [
+        0.4639387691963716,
+        0.5662412918058873
+      ],
+      "peak_rss_bytes": {
+        "pairs": 3,
+        "baseline_median": 64503808,
+        "candidate_median": 46612480,
+        "baseline_max": 64634880,
+        "candidate_max": 46809088,
+        "paired_ratios": [
+          0.7226314452628905,
+          0.7236641221374046,
+          0.7242078580481622
+        ],
+        "paired_median_ratio": 0.7236641221374046,
+        "paired_deltas": [
+          -17891328,
+          -17793024,
+          -17825792
+        ],
+        "paired_median_delta": -17825792,
+        "largest_paired_delta": -17793024
+      },
+      "allowed_extra_bytes": 160000000,
+      "extra_decimal_mb_per_worker": 20.0,
+      "observed_memory_within_allowance": true,
+      "cpu_seconds": {
+        "pairs": 3,
+        "baseline_median": 3.4786289999999997,
+        "candidate_median": 2.009423,
+        "baseline_max": 3.907123,
+        "candidate_max": 2.333511,
+        "paired_ratios": [
+          0.5789456336190744,
+          0.5142973487141306,
+          0.6708134152851598
+        ],
+        "paired_median_ratio": 0.5789456336190744,
+        "paired_deltas": [
+          -1.4562620000000006,
+          -1.8977,
+          -1.1451179999999996
+        ],
+        "paired_median_delta": -1.4562620000000006,
+        "largest_paired_delta": -1.1451179999999996
+      },
+      "read_processing_seconds": {
+        "pairs": 3,
+        "baseline_median": 0.334404375,
+        "candidate_median": 0.327128083,
+        "baseline_max": 0.351834625,
+        "candidate_max": 0.370048333,
+        "paired_ratios": [
+          0.981924552002815,
+          0.9248719025309121,
+          1.1065893889695673
+        ],
+        "paired_median_ratio": 0.981924552002815,
+        "paired_deltas": [
+          -0.006021834000000004,
+          -0.026432665999999994,
+          0.03564395800000003
+        ],
+        "paired_median_delta": -0.006021834000000004,
+        "largest_paired_delta": 0.03564395800000003
+      }
+    }
+  ],
+  "sources": {
+    "baseline": {
+      "head": null,
+      "dirty": null,
+      "tracked_diff_sha256": null
+    },
+    "candidate": {
+      "head": null,
+      "dirty": null,
+      "tracked_diff_sha256": null
+    }
+  },
+  "settings": {
+    "threads": [
+      1,
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0
+  },
+  "binaries": {
+    "baseline": {
+      "filename": "ExpansionHunter",
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b",
+      "bytes": 2046800
+    },
+    "candidate": {
+      "filename": "prototype6",
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b",
+      "bytes": 2061472
+    }
+  },
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "compact_link": "data/05-longread1000.json",
+  "raw_link": "data/05-longread1000.raw.json",
+  "manifest_link": "data/05-longread1000.manifest.json"
+}

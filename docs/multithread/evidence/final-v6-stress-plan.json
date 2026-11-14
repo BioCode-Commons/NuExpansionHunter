@@ -1,0 +1,361 @@
+{
+  "schema_version": 1,
+  "workspace_root": "<WORKSPACE>",
+  "candidate_publication_branch": "Jiapeng-multithread",
+  "baseline_revision": "b00650d (frozen RAMOPT v1)",
+  "runner": {
+    "path": "work/NuExpansionHunter/tools/parallel_validation/run.py",
+    "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+  },
+  "binaries": {
+    "baseline": {
+      "path": "work/frozen-v1/ExpansionHunter",
+      "bytes": 2046800,
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b"
+    },
+    "candidate": {
+      "path": "work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "output_root": "work/parallel-redesign/final-campaign-v6",
+  "policy": {
+    "pairs": 3,
+    "warmup_pairs_per_configuration": 1,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20,
+    "compare_chunk_mib": 512,
+    "discard_equal_output": true,
+    "cpu_list": null,
+    "cache_mode": "prepared; separate matching archives per binary",
+    "input_order": "coordinate sorted only",
+    "performance_flags": "record only; do not stop for observed slowdown or memory allowance exceedance",
+    "failure_policy": "stop on application, harness, provenance or complete-output mismatch; explicit retry uses a fresh attempt",
+    "resumption": "completed cases skipped only after metadata/equality validation; failed/interrupted attempts retained",
+    "compare_memory_scope": "512 MiB comparator chunks per side outside application timing/RSS; not an application cache allocation"
+  },
+  "prerequisites": [
+    {
+      "results_json": "work/parallel-redesign/primary100k-v6/results.json",
+      "required": "complete before stress campaign starts; root confirms owned jobs stopped; no concurrent builds/generation/benchmarks"
+    }
+  ],
+  "counts": {
+    "cases": 13,
+    "thread_configurations": 26,
+    "measured_pairs": 78,
+    "warmup_pairs": 26,
+    "analysis_processes_including_warmup": 208,
+    "new_cache_preparation_processes": 24,
+    "total_application_processes_expected": 232
+  },
+  "notes": [
+    "Frozen prototype6 versus unchanged RAMOPT v1 b00650d; publication branch Jiapeng-multithread.",
+    "Primary100k-v6 is deliberately omitted: root runs its 3 measured pairs plus warmup separately and combines it in the final report.",
+    "This plan was prepared from JSON metadata only; cache files and large inputs were not rehashed while a benchmark was active.",
+    "Genotyped10k fixed and auto I/O each prepare their own fresh version-matching archives.",
+    "Mixed100k manifest now exists. Its reference/catalog SHA metadata matches genotyped100k; use ORIGINAL genotyped100k reference/catalog paths with mixed reads.",
+    "Mixed cache baseline comes from primary100k-v4 frozen-v1 preparation; candidate comes from the completed prototype6 isolation experiment.",
+    "Process scan is unavailable in this sandbox. Default driver stops; root may explicitly pass --allow-unavailable-process-scan after confirming owned jobs closed. This does not establish machine exclusivity or stable OS memory pressure.",
+    "All remaining fixtures are synthetic diagnostics except the repository example; this is not real WGS."
+  ],
+  "cases": [
+    {
+      "id": "genotyped10k-fixed",
+      "fixture_id": "genotyped10k",
+      "inputs": {
+        "reads": "work/fixtures/genotyped10k/reads.bam",
+        "reference": "work/fixtures/genotyped10k/reference.fa",
+        "variant_catalog": "work/fixtures/genotyped10k/catalog.json"
+      },
+      "manifest": "work/fixtures/genotyped10k/manifest.json",
+      "manifest_sha256": "9d3a85d9ca3058af084ef235b56d5babd9c42d53db3f181f4bd089c22312d7ed",
+      "loci": 10000,
+      "read_records": 2000000,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        4,
+        8
+      ],
+      "scope": "Synthetic, independent loci and distinct deterministic flanks; not a WGS performance claim",
+      "cache_note": "Prepare fresh matching baseline and candidate caches for this runner case."
+    },
+    {
+      "id": "genotyped10k-auto-io",
+      "fixture_id": "genotyped10k",
+      "inputs": {
+        "reads": "work/fixtures/genotyped10k/reads.bam",
+        "reference": "work/fixtures/genotyped10k/reference.fa",
+        "variant_catalog": "work/fixtures/genotyped10k/catalog.json"
+      },
+      "manifest": "work/fixtures/genotyped10k/manifest.json",
+      "manifest_sha256": "9d3a85d9ca3058af084ef235b56d5babd9c42d53db3f181f4bd089c22312d7ed",
+      "loci": 10000,
+      "read_records": 2000000,
+      "coordinate_sorted": true,
+      "threads": [
+        8
+      ],
+      "scope": "Synthetic, independent loci and distinct deterministic flanks; not a WGS performance claim",
+      "decode": "auto",
+      "encode": "auto",
+      "cache_note": "Prepare fresh matching baseline and candidate caches for this runner case."
+    },
+    {
+      "id": "repository-example",
+      "fixture_id": "repository-example",
+      "threads": [
+        1,
+        8
+      ],
+      "inputs": {
+        "reads": "work/NuExpansionHunter/example/input/variants.bam",
+        "reference": "work/NuExpansionHunter/example/input/reference.fa",
+        "variant_catalog": "work/NuExpansionHunter/example/input/variants.json"
+      },
+      "manifest": null,
+      "loci": 1,
+      "read_records": null,
+      "coordinate_sorted": true,
+      "sort_evidence": "Existing repository BAM header @HD VN:1.3 SO:coordinate; no regeneration or full input scan performed while primary benchmark was active.",
+      "scope": "Existing repository example; small compatibility diagnostic."
+    },
+    {
+      "id": "longread1000",
+      "fixture_id": "read-extremes/longread1000",
+      "inputs": {
+        "reads": "work/fixtures/read-extremes/longread1000/reads.bam",
+        "reference": "work/fixtures/read-extremes/longread1000/reference.fa",
+        "variant_catalog": "work/fixtures/read-extremes/longread1000/catalog.json"
+      },
+      "manifest": "work/fixtures/read-extremes/longread1000/manifest.json",
+      "manifest_sha256": "428b29ca1c224327f11267ab05492e821e24eb5763b261b94a7358b1e1053d4b",
+      "loci": 200,
+      "read_records": 25600,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        8
+      ],
+      "scope": "Synthetic streaming input extremes; not representative WGS or a guaranteed alignment fast-path/fallback witness"
+    },
+    {
+      "id": "higherror-indels150",
+      "fixture_id": "read-extremes/higherror-indels150",
+      "inputs": {
+        "reads": "work/fixtures/read-extremes/higherror-indels150/reads.bam",
+        "reference": "work/fixtures/read-extremes/higherror-indels150/reference.fa",
+        "variant_catalog": "work/fixtures/read-extremes/higherror-indels150/catalog.json"
+      },
+      "manifest": "work/fixtures/read-extremes/higherror-indels150/manifest.json",
+      "manifest_sha256": "617e8e81b44e8c84d1b41471335bff5fb8f7aa0e1d45904828b5e0d0aed796e2",
+      "loci": 200,
+      "read_records": 25600,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        8
+      ],
+      "scope": "Synthetic streaming input extremes; not representative WGS or a guaranteed alignment fast-path/fallback witness"
+    },
+    {
+      "id": "iupac-missingquality150",
+      "fixture_id": "read-extremes/iupac-missingquality150",
+      "inputs": {
+        "reads": "work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+        "reference": "work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+        "variant_catalog": "work/fixtures/read-extremes/iupac-missingquality150/catalog.json"
+      },
+      "manifest": "work/fixtures/read-extremes/iupac-missingquality150/manifest.json",
+      "manifest_sha256": "51a9e06dc1f94b80cb304609429f3bd99b4b3c030708dbd7ac11bc4bca38c1c4",
+      "loci": 200,
+      "read_records": 25600,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        8
+      ],
+      "scope": "Synthetic streaming input extremes; not representative WGS or a guaranteed alignment fast-path/fallback witness"
+    },
+    {
+      "id": "expandedrepeat150-genotyped",
+      "fixture_id": "genotyped-read-extremes/expandedrepeat150-genotyped",
+      "inputs": {
+        "reads": "work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+        "reference": "work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+        "variant_catalog": "work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json"
+      },
+      "manifest": "work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/manifest.json",
+      "manifest_sha256": "689e3e4773c4a25867ff8eb15c700945608aa2d49aebbf4b1495b195887335d8",
+      "loci": 200,
+      "read_records": 105600,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        8
+      ],
+      "scope": "Synthetic streaming input extremes; not representative WGS or a guaranteed alignment fast-path/fallback witness"
+    },
+    {
+      "id": "dense-fanout-large",
+      "fixture_id": "stream-confirm/dense-fanout-large",
+      "inputs": {
+        "reads": "work/fixtures/stream-confirm/dense-fanout-large/reads.bam",
+        "reference": "work/fixtures/stream-confirm/dense-fanout-large/reference.fa",
+        "variant_catalog": "work/fixtures/stream-confirm/dense-fanout-large/catalog.json"
+      },
+      "manifest": "work/fixtures/stream-confirm/dense-fanout-large/manifest.json",
+      "manifest_sha256": "a57df225458ffd0c9a0916e354f45003bb2926ed8017d6150422bdc3c736ca81",
+      "loci": 24,
+      "read_records": 50000,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        8
+      ],
+      "scope": "Bounded synthetic streaming extreme diagnostics; not real WGS or genotype truth."
+    },
+    {
+      "id": "hot-locus",
+      "fixture_id": "stream-extremes/hot-locus",
+      "inputs": {
+        "reads": "work/fixtures/stream-extremes/hot-locus/reads.bam",
+        "reference": "work/fixtures/stream-extremes/hot-locus/reference.fa",
+        "variant_catalog": "work/fixtures/stream-extremes/hot-locus/catalog.json"
+      },
+      "manifest": "work/fixtures/stream-extremes/hot-locus/manifest.json",
+      "manifest_sha256": "9bd15b5f9ce126ddd92b46526537ec5ef1a6a9f39ffa18460392304bb939f687",
+      "loci": 128,
+      "read_records": 40000,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        8
+      ],
+      "scope": "Bounded synthetic streaming extreme diagnostics; not real WGS or genotype truth."
+    },
+    {
+      "id": "empty-input",
+      "fixture_id": "stream-extremes/empty-input",
+      "inputs": {
+        "reads": "work/fixtures/stream-extremes/empty-input/reads.bam",
+        "reference": "work/fixtures/stream-extremes/empty-input/reference.fa",
+        "variant_catalog": "work/fixtures/stream-extremes/empty-input/catalog.json"
+      },
+      "manifest": "work/fixtures/stream-extremes/empty-input/manifest.json",
+      "manifest_sha256": "cb7ab0ac1a6d337196ab157672146e47fe2d3321abb2f2e38588fb8db8c70179",
+      "loci": 128,
+      "read_records": 0,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        8
+      ],
+      "scope": "Bounded synthetic streaming extreme diagnostics; not real WGS or genotype truth."
+    },
+    {
+      "id": "pending-million-missing-mates",
+      "fixture_id": "pending-million/missing-mates",
+      "inputs": {
+        "reads": "work/fixtures/pending-million/missing-mates/reads.bam",
+        "reference": "work/fixtures/pending-million/missing-mates/reference.fa",
+        "variant_catalog": "work/fixtures/pending-million/missing-mates/catalog.json"
+      },
+      "manifest": "work/fixtures/pending-million/missing-mates/manifest.json",
+      "manifest_sha256": "e65ba889435a3e57d5430f200630f370f39cbf825550a34ca49b9e0dc0e3da1e",
+      "loci": 128,
+      "read_records": 2097152,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        8
+      ],
+      "scope": "Bounded synthetic streaming extreme diagnostics; not real WGS or genotype truth."
+    },
+    {
+      "id": "pending-large-far-apart",
+      "fixture_id": "pending-large/far-apart",
+      "inputs": {
+        "reads": "work/fixtures/pending-large/far-apart/reads.bam",
+        "reference": "work/fixtures/pending-large/far-apart/reference.fa",
+        "variant_catalog": "work/fixtures/pending-large/far-apart/catalog.json"
+      },
+      "manifest": "work/fixtures/pending-large/far-apart/manifest.json",
+      "manifest_sha256": "a5824685be8f5a15566cc8c66f99bfa8758b15cd8f009d86eea87da5d9958728",
+      "loci": 128,
+      "read_records": 262144,
+      "coordinate_sorted": true,
+      "threads": [
+        1,
+        8
+      ],
+      "scope": "Bounded synthetic streaming extreme diagnostics; not real WGS or genotype truth."
+    },
+    {
+      "id": "mixed100k",
+      "fixture_id": "mixed100k",
+      "threads": [
+        1,
+        8
+      ],
+      "inputs": {
+        "reads": "work/fixtures/mixed100k/reads.bam",
+        "reference": "work/fixtures/genotyped100k/reference.fa",
+        "variant_catalog": "work/fixtures/genotyped100k/catalog.json"
+      },
+      "manifest": "work/fixtures/mixed100k/manifest.json",
+      "manifest_sha256": "b5077047bb143016688b04d50ab926e40494362fbb5ccdffb0ed9a8b7e680695",
+      "loci": 100000,
+      "read_records": 2200000,
+      "coordinate_sorted": true,
+      "scope": "Synthetic mixed diagnostic, not real WGS: 200k target records, 1M coarse-mask/exact-region misses, 1M outside-mask records.",
+      "required_manifest_file_hashes": {
+        "reference.fa": "7b9c315b256b14ae81e0bf3b61340eee03f15fbf39f45238a1ac963533296847",
+        "catalog.json": "a7de145c2fbb2a9ada60de937c2d1a1ddd7d332b16d773993b3d91b5f533eb3b"
+      },
+      "caches": {
+        "baseline": {
+          "path": "work/parallel-redesign/primary100k-v4/preparation/baseline.catalog",
+          "bytes": 2284218916,
+          "sha256": "0f3b29384a690f66c38786cbaa7e8b5f72263c8e090f16b4dbb7aeaf96ce9fed"
+        },
+        "candidate": {
+          "path": "work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog",
+          "bytes": 2284218916,
+          "sha256": "0f8089710cfb2c5add4ad59863e9f3632baed2a4eb3ebba33c4427f38bc810f2"
+        }
+      },
+      "deferred_input_validation": true,
+      "generation_command": [
+        "python3",
+        "work/NuExpansionHunter/tools/frontend_validation/generate_fixture.py",
+        "--kind",
+        "mixed",
+        "--loci",
+        "100000",
+        "--covered-loci",
+        "1000",
+        "--target-pairs",
+        "100",
+        "--background-pairs",
+        "10",
+        "--near-background-pairs",
+        "5",
+        "--seed",
+        "nueh-round5-v1",
+        "--bam-helper",
+        "work/sam_to_bam",
+        "--out",
+        "work/fixtures/mixed100k"
+      ],
+      "fixture_available_at_finalization": true
+    }
+  ],
+  "execution_enabled": true,
+  "plan_status": "Final frozen v6 stress matrix. Primary100k-v6 runs separately and must finish first.",
+  "exclusive_lock": "work/parallel-redesign/.stress-campaign.lock"
+}

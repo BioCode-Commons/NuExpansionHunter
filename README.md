@@ -115,7 +115,7 @@ new cache filename and the same preparation command above.
 <details>
 <summary><strong>Modes and options</strong></summary>
 
-**Seeking** queries indexed regions for each locus and suits small catalogs. **Streaming** reads the alignment file once for all loci, accepts unsorted or unindexed input, and uses more memory as the catalog grows.
+**Seeking** queries indexed regions for each locus and suits small catalogs. **Streaming** reads the alignment file once for all loci without requiring an alignment index, and uses more memory as the catalog grows. The parallel redesign is validated with coordinate-sorted BAM input.
 
 | Option | Default | Use |
 | :--- | :--- | :--- |
@@ -125,10 +125,10 @@ new cache filename and the same preparation command above.
 | `--output-prefix` | Required | Output path prefix; create its parent directory first |
 | `--analysis-mode` | `seeking` | `seeking` or `streaming` |
 | `--threads` | `1` | Number of analysis workers; I/O workers and coordinator threads are additional |
-| `--decode-threads` | `auto` | Streaming input decompression workers; `auto` retains `min(--threads, 12)`, and `0` or `1` uses synchronous input |
-| `--read-decode-threads` | `0` | Additional streaming sequence-preprocessing workers; `0` keeps preprocessing synchronous |
-| `--encode-threads` | `auto` | BAM output compression workers; `auto` retains `--threads`, and `0` uses synchronous compression |
-| `--bamlet-queue-mb` | `0` | Queued BAM record budget in MiB; `0` retains the unbounded queue |
+| `--decode-threads` | `auto` | Streaming input decompression workers; `auto=min(--threads, 4)`, and `0` or `1` uses synchronous input |
+| `--read-decode-threads` | `0` | Accepted streaming compatibility hint; sequence decoding shares the compute workers and creates no additional pool |
+| `--encode-threads` | `auto` | BAM compression workers; `auto=min(--threads, 2)` in streaming and `--threads` in seeking; `0` uses synchronous compression |
+| `--bamlet-queue-mb` | `auto` | BAM sink budget in MiB; `auto=8` in streaming and `0` in seeking; explicit `0` is unbounded |
 | `--sex` | `female` | `male` or `female`; sets ploidy on sex chromosomes |
 | `--region-extension-length` | `1000` | Bases searched around on-target and off-target regions |
 | `--aligner` | `dag-aligner` | `dag-aligner` or `path-aligner` |
@@ -137,16 +137,19 @@ new cache filename and the same preparation command above.
 | `--prepare-catalog-cache` | Off | Build the specified cache and exit before processing reads |
 
 For multiple samples on one node, tune the analysis, decompression and compression
-pools together: `--threads` alone is not a process-wide CPU limit. The default I/O
-pool sizes and unbounded BAM queue retain the previous behavior. Explicit resource
-settings require throughput measurements on the target workload.
+pools together: `--threads` alone is not a process-wide CPU limit. Automatic
+streaming codec pools are capped independently of compute concurrency. Seeking
+retains its previous defaults. Measure throughput on the target workload when
+choosing explicit resource settings.
 
-A nonzero `--bamlet-queue-mb` makes producers wait when queued BAM records fill the
-budget. It counts BAM structs and their allocated data buffers, excluding producer
-workspaces, the record being written, queue bookkeeping and HTS compression buffers.
-A record larger than the budget can enter an empty queue so it is never discarded.
-This is a queue budget, not a limit on process RAM, and backpressure can affect runtime.
-The writer continues draining after a write failure and reports the error on completion.
+A nonzero `--bamlet-queue-mb` makes producers wait when resident BAM batches fill
+the budget. It counts BAM structs, allocated record buffers and batch pointer
+storage, including the batch held by the consumer. Producer workspaces, container
+bookkeeping and HTS compression buffers are separate. One oversized batch can
+enter an otherwise empty sink to ensure progress. This is not a process RAM
+limit, and backpressure can affect runtime. A write failure releases pending
+records and wakes producers. Streaming batches propagate the failure to the
+executor; non-batched seeking writes report asynchronous errors at finalization.
 
 JSON output is serialized one locus at a time, retaining the existing key order,
 formatting and final-entry behavior for duplicate locus IDs. A compact ordering
@@ -241,7 +244,7 @@ NuExpansionHunter retains EH's genotyping model and reduces repeated catalog con
 
 The static repeat indexes use exact prefix buckets for eligible graphs. A 10-mer membership entry stores its remaining key bits in two bytes; a 14-mer alignment entry packs the remaining key bits and a compact node/position code into four bytes. Larger or highly skewed indexes retain the existing hash-table representation. All paths, path order, multiplicities and duplicate evidence are preserved.
 
-JSON output is written one locus at a time instead of retaining the complete result DOM. Decode and encode pools control HTS/BAM compression work, and the optional BAM queue limit provides backpressure. Streaming sequence preprocessing can also use an ordered, bounded worker pool via `--read-decode-threads`; its default is zero. Input access and read-pair dispatch remain on the caller thread. See [DecodedReadStream](ehunter/sample/DecodedReadStream.hh).
+JSON output is written one locus at a time instead of retaining the complete result DOM. The new streaming executor uses per-worker queues and work stealing. Alignment chunks can compute independently, while per-locus reduction replays evidence in input encounter order. Sequence decoding shares these workers. The input publisher can assist computation with its own workspace, and a dedicated BAM consumer drains bounded record batches. Scheduler state is allocated for active work rather than every catalog locus. See [HtsStreamingSampleAnalysis](ehunter/sample/HtsStreamingSampleAnalysis.cpp), [TaskExecutor](ehunter/core/TaskExecutor.hh), and [StreamingPairSource](ehunter/sample/StreamingPairSource.hh).
 
 ### MMAP catalog reuse
 
@@ -263,14 +266,15 @@ appropriate. This applies to both owned indexes and mapped archives.
 
 Archive version 4 stores a fixed graph-identity checksum in each index record
 instead of duplicating the graph's sequences. Older caches must be rebuilt.
-Streaming queue metadata uses one pointer per locus, bounded shared mutexes,
-and a pool of active queues. Unmatched mates and worker scratch are released
+Streaming scheduling metadata is allocated for active chunks and workers,
+without a queue or mutex for every catalog locus. Unmatched mates and worker scratch are released
 before genotyping, and each analyzer is released once its owned findings have
 been produced. These changes target memory that grows with catalog size.
 
-The [branch validation report](docs/Jiapeng_optimization_report.md) records output comparisons, archive sizes and local timings.
+The [earlier RAMOPT validation report](docs/Jiapeng_optimization_report.md) records output comparisons, archive sizes and local timings.
 The [streaming memory validation tools](tools/memory_validation/README.txt) reproduce catalog-size, sorted-input stress, and genotype-positive comparisons of process peak RSS and complete runtime.
 The [Jiapeng-RAMOPT results](docs/ramopt/README.md) include all 53 measured configurations, complete output comparisons, and the scope of the memory and runtime findings.
+The [Jiapeng-multithread v6 report](docs/multithread/README.md) compares cached streaming analysis against RAMOPT across 27 configurations, including end-to-end time, read-processing time, whole-process peak RSS, and all observed regressions. The [parallel validation runner](tools/parallel_validation/README.md) documents reproduction and measurement boundaries.
 
 ### Coordinate-ordered interval lookup
 
@@ -278,7 +282,7 @@ A sweep advances through sorted extraction intervals as reads move along the gen
 
 ### Smaller alignment state and fewer read copies
 
-The affine-gap aligner reuses temporary score rows and stores insertion traceback decisions as one bit per cell, preserving the original scores and traceback. Streaming queues are allocated on activation and recycled through a bounded pool when empty; recovered mates transfer their sequence buffers instead of copying them. See [alignment storage](ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrixVectorized.hh) and [streaming collection](ehunter/sample/HtsStreamingSampleAnalysis.cpp).
+The affine-gap aligner reuses temporary score rows and stores insertion traceback decisions as one bit per cell, preserving the original scores and traceback. Streaming work uses bounded active chunks, separating alignment computation from ordered evidence consumption. Consumed alignments and oriented reads are released before the next evidence update; recovered mates transfer their sequence buffers. See [alignment storage](ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/AffineAlignMatrixVectorized.hh) and [streaming collection](ehunter/sample/HtsStreamingSampleAnalysis.cpp).
 
 ### Batched mate retrieval and parallel BAM output
 
@@ -322,7 +326,7 @@ flowchart TB
 
 ### Roadmap
 
-- Improve parallel read dispatch while preserving read-pair order, remote-mate handling, and off-target interval correctness.
+- Validate the streaming executor on the 16/32-core server and address the measured far-apart-mate and high-error regressions.
 - Reduce per-sample processing time further, especially at lower core counts.
 - Extend output-equivalence checks to more samples, catalogs, and large expansions.
 - Improve build portability and complete the human code audit.

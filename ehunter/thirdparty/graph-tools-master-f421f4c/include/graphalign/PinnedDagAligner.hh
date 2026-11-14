@@ -200,7 +200,7 @@ private:
                 }
                 return;
             }
-            for (NodeId next : forward ? graph.successors(node) : graph.predecessors(node))
+            for (NodeId next : forward ? graph.successorsBorrowed(node) : graph.predecessorsBorrowed(node))
                 visit(next, forward ? 0 : graph.nodeSeqLength(next), queryPosition, mismatches, mismatchPosition, depth);
         }
     };
@@ -236,7 +236,7 @@ private:
             if (!length || length >= 32768)
                 return false;
             bool repeats = false;
-            for (NodeId next : graph.successors(node))
+            for (NodeId next : graph.successorsBorrowed(node))
             {
                 // Catalog graphs are ordered DAGs apart from self-loops. Other
                 // graph topologies retain the original discovery behavior.
@@ -376,7 +376,7 @@ private:
             || 15 * queryLength + 10 * targetLength + 10 >= 32768)
             return false;
         if (extensionLen > targetLength
-            && !(extendEnd ? graph.successors(nodeId) : graph.predecessors(nodeId)).empty())
+            && !(extendEnd ? graph.successorsBorrowed(nodeId) : graph.predecessorsBorrowed(nodeId)).empty())
             return false;
 
         const auto nodeSequence = graph.nodeSeq(nodeId);
@@ -849,7 +849,7 @@ private:
                 const int successorSeqOffset
                     = -1 == currentNodeSeqOffset ? 0 : currentNodeSeqOffset + currentNodeSeqLength;
                 // sequence does not terminate at this node, enqueue successors
-                const auto successors = graph.successors(currentNodeId);
+                const auto successors = graph.successorsBorrowed(currentNodeId);
                 for (const NodeId successorId : successors)
                 {
                     const auto seenSuccessor = nodeStartSeqOffset.find(successorId);
@@ -896,7 +896,7 @@ private:
             }
 
             const MappedId firstMappedId = originalIds.size();
-            const auto successors = graph.successors(nodeIdOffset.first);
+            const auto successors = graph.successorsBorrowed(nodeIdOffset.first);
             if (successors.end() != successors.find(nodeIdOffset.first))
             {
                 const std::size_t nodeSeqLen = graph.nodeSeqLength(nodeIdOffset.first);
@@ -981,7 +981,7 @@ private:
         {
             // Only the first expansion receives external predecessor edges;
             // repeat-to-repeat edges were already added by unrollRepeats.
-            for (const NodeId& predecessorId : graph.predecessors(range.originalId))
+            for (const NodeId& predecessorId : graph.predecessorsBorrowed(range.originalId))
             {
                 if (predecessorId != range.originalId)
                 {
@@ -1091,7 +1091,7 @@ private:
     {
         const auto startNodeLength = graph.nodeSeqLength(startNodeId);
         if (seqLen && startNodeOffset < startNodeLength
-            && (seqLen <= startNodeLength - startNodeOffset || graph.successors(startNodeId).empty()))
+            && (seqLen <= startNodeLength - startNodeOffset || graph.successorsBorrowed(startNodeId).empty()))
         {
             // Extraction cannot leave this node, so the general BFS/unrolling
             // produces exactly one mapped node and no edges. This also holds

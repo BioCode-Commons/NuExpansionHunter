@@ -1,0 +1,2428 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T20:20:42.984489+00:00",
+  "complete": true,
+  "baseline_comparison_label": "RAMOPT b00650d",
+  "expected_baseline_source_commit": "b00650d",
+  "parameters": {
+    "baseline": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+    "candidate": "<WORKSPACE>/work/parallel-redesign/prototype6",
+    "reads": "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+    "reference": "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+    "variant_catalog": "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+    "out": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001",
+    "baseline_cache": null,
+    "candidate_cache": null,
+    "baseline_source": null,
+    "candidate_source": null,
+    "baseline_label": "RAMOPT b00650d",
+    "threads": [
+      1,
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0,
+    "cpu_list": null,
+    "discard_equal_output": true,
+    "compare_chunk_mib": 512
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:20:43.009804+00:00",
+      "wall_seconds": 0.23128025000000002,
+      "user_seconds": 0.21800799999999998,
+      "system_seconds": 0.011505999999999999,
+      "peak_rss_bytes": 16416768,
+      "wait_status": 0,
+      "stdout_sha256": "0c73876bcc9419ae59f2f4ecfcdce542f6563e640464a6c4355f7a183aff7650",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.020883375
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:20:43.421250+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog",
+        "bytes": 2923776,
+        "sha256": "183cdf1caaf3398984aacbbee9844391905db8ca40993dc2356f01808f6bc3b5"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/parallel-redesign/prototype6",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:20:43.424934+00:00",
+      "wall_seconds": 0.22418616699999996,
+      "user_seconds": 0.209394,
+      "system_seconds": 0.011606,
+      "peak_rss_bytes": 16416768,
+      "wait_status": 0,
+      "stdout_sha256": "858f0ee0f08420b2c43508c0f3b4b522a77b605326a196be1321b7d0b9fa2d71",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.019541833
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:20:43.822059+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog",
+        "bytes": 2923776,
+        "sha256": "c22f39c7445dcd3d116dcf667973d6c3031c720462b22dc7d30309cb303c3616"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:43.826240+00:00",
+          "wall_seconds": 35.803943125,
+          "user_seconds": 255.494161,
+          "system_seconds": 1.075775,
+          "peak_rss_bytes": 246775808,
+          "wait_status": 0,
+          "stdout_sha256": "687ce505b90fcd65e046f05ce9bca9f5a604d316abdf06502fa3295c1754b593",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.005157291,
+            "catalog_index_seconds": 0.002383583,
+            "read_processing_seconds": 34.664328125,
+            "genotyping_seconds": 1.069221667,
+            "output_seconds": 0.019978042
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 131072.0,
+            "assignments": 245760.0,
+            "chunks": 3840.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 12547784.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.065831166,
+            "alignment_worker_seconds": 281.657068318,
+            "reduction_worker_seconds": 3.358106882,
+            "publisher_assisted_chunks": 371.0
+          },
+          "pending_mates": {
+            "peak_reads": 114689.0,
+            "peak_raw_bytes": 1999840.0,
+            "peak_cold_reads": 106069.0,
+            "cold_records": 113621.0
+          },
+          "bam_sink": {
+            "written_records": 225776.0,
+            "peak_resident_bytes": 703104.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 3.1833e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:21:19.808013+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/candidate/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/candidate/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 2809579,
+              "sha256": "9b01f0d21edcea3efdd23adb3c9403169e328f9e3d1aef4727b73825673265b3",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:21:19.818560+00:00",
+          "wall_seconds": 33.078116417,
+          "user_seconds": 259.013781,
+          "system_seconds": 1.128614,
+          "peak_rss_bytes": 221331456,
+          "wait_status": 0,
+          "stdout_sha256": "9c2d2ec28d82d48e6ddbc5d0cad69b064fd3848a273f53be912198837eadc763",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.016498708,
+            "catalog_index_seconds": 0.003065,
+            "read_processing_seconds": 32.066915708,
+            "genotyping_seconds": 0.914813125,
+            "output_seconds": 0.019831042
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 670,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:21:53.147669+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/baseline/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/baseline/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 5643389,
+              "sha256": "94e7f9f963308588448e6659d5b5e03cd4a147697b24bfc6da755823605aa1f7",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            225776,
+            225776
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746",
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:21:54.838270+00:00",
+          "wall_seconds": 82.74373433400001,
+          "user_seconds": 150.887261,
+          "system_seconds": 0.137753,
+          "peak_rss_bytes": 107724800,
+          "wait_status": 0,
+          "stdout_sha256": "fb9c75c08fa65be9e31e4c6e22e18c5cf6ffe2348c13c06f68402c2cbb46f5f4",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.0041475,
+            "catalog_index_seconds": 0.010190459,
+            "read_processing_seconds": 80.698582875,
+            "genotyping_seconds": 1.968221625,
+            "output_seconds": 0.017673292
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 131072.0,
+            "assignments": 245760.0,
+            "chunks": 3840.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1896136.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 146.253842253,
+            "reduction_worker_seconds": 1.992755288,
+            "publisher_assisted_chunks": 2307.0
+          },
+          "pending_mates": {
+            "peak_reads": 114689.0,
+            "peak_raw_bytes": 1999840.0,
+            "peak_cold_reads": 106069.0,
+            "cold_records": 113621.0
+          },
+          "bam_sink": {
+            "written_records": 225776.0,
+            "peak_resident_bytes": 109568.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.675e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:23:17.734224+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/candidate/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/candidate/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/candidate/result_realigned.bam",
+              "bytes": 2827925,
+              "sha256": "53c8aa0c3ab81f7edc3516363495864362afae061d79a0cda92a2c0655f9ab9d",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:23:17.737813+00:00",
+          "wall_seconds": 82.45702279199999,
+          "user_seconds": 159.613269,
+          "system_seconds": 0.443287,
+          "peak_rss_bytes": 122421248,
+          "wait_status": 0,
+          "stdout_sha256": "79cb780454ee52d125818cc6931bff3916f1252cce4ecf834b02080c1ff08344",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.011803417,
+            "catalog_index_seconds": 0.010658958,
+            "read_processing_seconds": 80.422105333,
+            "genotyping_seconds": 1.961418209,
+            "output_seconds": 0.017662125
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 3889,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:24:40.341235+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/baseline/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/baseline/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/warmup/t1/baseline/result_realigned.bam",
+              "bytes": 3762073,
+              "sha256": "1ded124fb97f88720cf15a0a7dd6b5525000c9ac7e85a1a4df2d53bcd3ce04de",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            225776,
+            225776
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746",
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      },
+      "cross_configuration_comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            225776,
+            225776
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746",
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:24:43.219456+00:00",
+          "wall_seconds": 83.73210120799999,
+          "user_seconds": 163.690012,
+          "system_seconds": 0.47929499999999997,
+          "peak_rss_bytes": 105267200,
+          "wait_status": 0,
+          "stdout_sha256": "d84c5248eccd368f62ac06675a032d026ac02ee0373dd288192eb0d3ba5cb9e0",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.013623,
+            "catalog_index_seconds": 0.0160805,
+            "read_processing_seconds": 81.842104,
+            "genotyping_seconds": 1.802668292,
+            "output_seconds": 0.017402292
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 3854,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:26:07.167107+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/baseline/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/baseline/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/baseline/result_realigned.bam",
+              "bytes": 3777058,
+              "sha256": "ed9c45c48c88ee8ea3dcada9dedc2b866d4bc6cd89228be58ddd891702757da1",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:26:07.171161+00:00",
+          "wall_seconds": 89.8663985,
+          "user_seconds": 163.992843,
+          "system_seconds": 0.16103399999999998,
+          "peak_rss_bytes": 107839488,
+          "wait_status": 0,
+          "stdout_sha256": "c5a211d9941b7d85330786cdaedb915a044b69d011a8753bc4b69d5700b0e02d",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008728417,
+            "catalog_index_seconds": 0.010726,
+            "read_processing_seconds": 87.203795334,
+            "genotyping_seconds": 2.588969334,
+            "output_seconds": 0.018172166
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 131072.0,
+            "assignments": 245760.0,
+            "chunks": 3840.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1896136.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 158.626869902,
+            "reduction_worker_seconds": 2.168989004,
+            "publisher_assisted_chunks": 2312.0
+          },
+          "pending_mates": {
+            "peak_reads": 114689.0,
+            "peak_raw_bytes": 1999840.0,
+            "peak_cold_reads": 106069.0,
+            "cold_records": 113621.0
+          },
+          "bam_sink": {
+            "written_records": 225776.0,
+            "peak_resident_bytes": 109568.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.2166e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:27:37.179737+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/candidate/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/candidate/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t1/candidate/result_realigned.bam",
+              "bytes": 2829448,
+              "sha256": "e6b9080bf0e5558664c327147058cd903b7669c34f26b442a59ffcdac07f90b4",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            225776,
+            225776
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746",
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:27:38.982508+00:00",
+          "wall_seconds": 33.620817583,
+          "user_seconds": 260.775592,
+          "system_seconds": 1.251539,
+          "peak_rss_bytes": 222150656,
+          "wait_status": 0,
+          "stdout_sha256": "8b22082fd80973f54f5a61216a28ccf683f0a2a726cf094d6a98250b0c6d660b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.007403042,
+            "catalog_index_seconds": 0.006355958,
+            "read_processing_seconds": 32.702229542,
+            "genotyping_seconds": 0.836739625,
+            "output_seconds": 0.019738666
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 608,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:28:12.831431+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/baseline/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/baseline/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 5645299,
+              "sha256": "d068633f7f7c86e66f0891ed93f70444d3289050c4c96503051bf915a15e2d56",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:28:12.842228+00:00",
+          "wall_seconds": 35.894392916,
+          "user_seconds": 256.039251,
+          "system_seconds": 1.063714,
+          "peak_rss_bytes": 248954880,
+          "wait_status": 0,
+          "stdout_sha256": "7c7d133546af2a5e866986755952fafbb4b7b8bfb0ad28549dcc419abeeb3583",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.00574975,
+            "catalog_index_seconds": 0.002471792,
+            "read_processing_seconds": 34.857736583,
+            "genotyping_seconds": 0.958497458,
+            "output_seconds": 0.020389334
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 131072.0,
+            "assignments": 245760.0,
+            "chunks": 3840.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 12547784.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.351773203,
+            "alignment_worker_seconds": 275.195957484,
+            "reduction_worker_seconds": 3.378247644,
+            "publisher_assisted_chunks": 381.0
+          },
+          "pending_mates": {
+            "peak_reads": 114689.0,
+            "peak_raw_bytes": 1999840.0,
+            "peak_cold_reads": 106069.0,
+            "cold_records": 113621.0
+          },
+          "bam_sink": {
+            "written_records": 225776.0,
+            "peak_resident_bytes": 533888.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 3.0833e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:28:48.944203+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/candidate/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/candidate/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 2812241,
+              "sha256": "76b5f09ade7ac200f94877a776008cb1ef07127a0769c960e1f56bf76a5b535f",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            225776,
+            225776
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746",
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:28:50.993727+00:00",
+          "wall_seconds": 36.141901416,
+          "user_seconds": 256.178676,
+          "system_seconds": 1.117748,
+          "peak_rss_bytes": 246071296,
+          "wait_status": 0,
+          "stdout_sha256": "ec8133cb61eee1797fcf18780f4c59576d029da929d5bdb8380e856f00b561cd",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.005175292,
+            "catalog_index_seconds": 0.002413375,
+            "read_processing_seconds": 35.077498167,
+            "genotyping_seconds": 0.995671542,
+            "output_seconds": 0.019097875
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 131072.0,
+            "assignments": 245760.0,
+            "chunks": 3840.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 12547784.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.075595707,
+            "alignment_worker_seconds": 286.984699466,
+            "reduction_worker_seconds": 3.479920496,
+            "publisher_assisted_chunks": 409.0
+          },
+          "pending_mates": {
+            "peak_reads": 114689.0,
+            "peak_raw_bytes": 1999840.0,
+            "peak_cold_reads": 106069.0,
+            "cold_records": 113621.0
+          },
+          "bam_sink": {
+            "written_records": 225776.0,
+            "peak_resident_bytes": 687904.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.2417e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:29:27.333771+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/candidate/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/candidate/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/candidate/result_realigned.bam",
+              "bytes": 2801624,
+              "sha256": "d0b65676788a6e76a5dd71d767202d7320a2421323290aef98fa677971c2f22b",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:29:27.343962+00:00",
+          "wall_seconds": 34.03849625,
+          "user_seconds": 261.591198,
+          "system_seconds": 1.151211,
+          "peak_rss_bytes": 219824128,
+          "wait_status": 0,
+          "stdout_sha256": "985edbb2fa97491c203abaae5966a82340bd234b47f900b70a2e4c9fbfd09cfe",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.019153834,
+            "catalog_index_seconds": 0.002956208,
+            "read_processing_seconds": 33.117766416,
+            "genotyping_seconds": 0.83257125,
+            "output_seconds": 0.019560791
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 631,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:30:01.592636+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/baseline/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/baseline/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t8/baseline/result_realigned.bam",
+              "bytes": 5648315,
+              "sha256": "7bcc2544bc79f61bc47c8715ec4ee6353178fcdbe4efdcb3341bb2f493c53329",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            225776,
+            225776
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746",
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:30:03.417598+00:00",
+          "wall_seconds": 84.261322875,
+          "user_seconds": 153.533249,
+          "system_seconds": 0.149867,
+          "peak_rss_bytes": 107413504,
+          "wait_status": 0,
+          "stdout_sha256": "aae0d883a822f8012d0aa62271f1affd552b9fbc91d83cfbf6bcfcdc5d9132f7",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.005631583,
+            "catalog_index_seconds": 0.011514417,
+            "read_processing_seconds": 82.223852,
+            "genotyping_seconds": 1.967000542,
+            "output_seconds": 0.017441166
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 131072.0,
+            "assignments": 245760.0,
+            "chunks": 3840.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1896136.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 148.853692503,
+            "reduction_worker_seconds": 2.036339211,
+            "publisher_assisted_chunks": 2308.0
+          },
+          "pending_mates": {
+            "peak_reads": 114689.0,
+            "peak_raw_bytes": 1999840.0,
+            "peak_cold_reads": 106069.0,
+            "cold_records": 113621.0
+          },
+          "bam_sink": {
+            "written_records": 225776.0,
+            "peak_resident_bytes": 109568.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.4958e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:31:27.850638+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/candidate/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/candidate/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/candidate/result_realigned.bam",
+              "bytes": 2829731,
+              "sha256": "7d1e571e5fc824786524afc2d106621afe7078fb3d34a966577f425d7f9c22e0",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:31:27.857697+00:00",
+          "wall_seconds": 86.52276095799999,
+          "user_seconds": 169.364877,
+          "system_seconds": 0.473948,
+          "peak_rss_bytes": 122765312,
+          "wait_status": 0,
+          "stdout_sha256": "66359f92faf7cc480793b4eb8272c7d5c2737a73774ce84f51aa0b9ae1ac8ac6",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.010168041,
+            "catalog_index_seconds": 0.009991792,
+            "read_processing_seconds": 84.661080667,
+            "genotyping_seconds": 1.794880792,
+            "output_seconds": 0.015009917
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 4029,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:32:54.515455+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/baseline/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/baseline/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-01/t1/baseline/result_realigned.bam",
+              "bytes": 3809659,
+              "sha256": "00cd8787d34e7ff80d98cd452964bacde4d1572523bcabc28e3272035407646b",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            225776,
+            225776
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746",
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:32:55.879402+00:00",
+          "wall_seconds": 35.332640834,
+          "user_seconds": 269.516362,
+          "system_seconds": 1.165189,
+          "peak_rss_bytes": 218071040,
+          "wait_status": 0,
+          "stdout_sha256": "e4b7bd1d2d5ced6a7fbcf8cc5388990202914f8171985c066cde95454744a07e",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.010514708,
+            "catalog_index_seconds": 0.002189542,
+            "read_processing_seconds": 34.342504542,
+            "genotyping_seconds": 0.913597583,
+            "output_seconds": 0.020071458
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 570,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:33:31.389015+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/baseline/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/baseline/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/baseline/result_realigned.bam",
+              "bytes": 5628042,
+              "sha256": "73b9178944742218e9d1a85ea138bb2cf58750925622c06d4c2635e9711f24a4",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:33:31.401802+00:00",
+          "wall_seconds": 36.564198083,
+          "user_seconds": 262.148491,
+          "system_seconds": 1.035515,
+          "peak_rss_bytes": 240648192,
+          "wait_status": 0,
+          "stdout_sha256": "11fb0e63c066f74c5f7a40cb23c8c243f59eff4c0563d10f027754352bfc9c02",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.005768,
+            "catalog_index_seconds": 0.003176583,
+            "read_processing_seconds": 35.499286667,
+            "genotyping_seconds": 0.988625833,
+            "output_seconds": 0.019415375
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 131072.0,
+            "assignments": 245760.0,
+            "chunks": 3840.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 12547784.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.28081687499999997,
+            "alignment_worker_seconds": 285.209130173,
+            "reduction_worker_seconds": 3.331436421,
+            "publisher_assisted_chunks": 383.0
+          },
+          "pending_mates": {
+            "peak_reads": 114689.0,
+            "peak_raw_bytes": 1999840.0,
+            "peak_cold_reads": 106069.0,
+            "cold_records": 113621.0
+          },
+          "bam_sink": {
+            "written_records": 225776.0,
+            "peak_resident_bytes": 551968.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 3.8958e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:34:08.192897+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/candidate/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/candidate/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t8/candidate/result_realigned.bam",
+              "bytes": 2799882,
+              "sha256": "b1ceeb5a7b32e9d151590e33da3fdaac4b7048b49ed382795f2d1eed0db8dc81",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            225776,
+            225776
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746",
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:34:09.933077+00:00",
+          "wall_seconds": 84.62684925,
+          "user_seconds": 164.387339,
+          "system_seconds": 0.482583,
+          "peak_rss_bytes": 105725952,
+          "wait_status": 0,
+          "stdout_sha256": "054654b977055e99efbf023aa41db8a49db026a232a60a878e478135aba22fa8",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.010986334,
+            "catalog_index_seconds": 0.011807667,
+            "read_processing_seconds": 82.56778375,
+            "genotyping_seconds": 1.985630042,
+            "output_seconds": 0.017512167
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 3859,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:35:34.739537+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/baseline/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/baseline/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/baseline/result_realigned.bam",
+              "bytes": 3775744,
+              "sha256": "807ece77dcda16dcf727ae24b67e43c5358e7cb26413d016d5cbbef9441419c9",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:35:34.747684+00:00",
+          "wall_seconds": 85.454340708,
+          "user_seconds": 155.515821,
+          "system_seconds": 0.11401399999999999,
+          "peak_rss_bytes": 122142720,
+          "wait_status": 0,
+          "stdout_sha256": "b340375eef022dad3e3d2747ea43bdbb67ad43060a8cee03d39bf57cfdc3ae2b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.012914291,
+            "catalog_index_seconds": 0.009985709,
+            "read_processing_seconds": 82.91281725,
+            "genotyping_seconds": 2.466356333,
+            "output_seconds": 0.01786825
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 131072.0,
+            "assignments": 245760.0,
+            "chunks": 3840.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1896136.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 150.239123792,
+            "reduction_worker_seconds": 2.045991628,
+            "publisher_assisted_chunks": 2327.0
+          },
+          "pending_mates": {
+            "peak_reads": 114689.0,
+            "peak_raw_bytes": 1999840.0,
+            "peak_cold_reads": 106069.0,
+            "cold_records": 113621.0
+          },
+          "bam_sink": {
+            "written_records": 225776.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.8417e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:37:00.354998+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/candidate/result.vcf",
+              "bytes": 31718,
+              "sha256": "0ad13c752ebfad27d6f5b4532b495d9785f80d4a81402156279fc35fe9585695",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/candidate/result.json",
+              "bytes": 94259,
+              "sha256": "eadd17c8a6581894c33cf27a2ff723b55c56d63a911574f7289c8c37db9075da",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/pending-large-far-apart/attempt-001/round-02/t1/candidate/result_realigned.bam",
+              "bytes": 2829019,
+              "sha256": "5ebb10076225531379527b92fb5ad085876dc2dfba002a01e9b30e031ee6b889",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            225776,
+            225776
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746",
+            "b784e5762e70b91349b789d2f879f4049f3ab82bf8ea7d767927232551221746"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+      "bytes": 2046800,
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/fixtures/pending-large/far-apart/reads.bam",
+      "bytes": 2195243,
+      "sha256": "b765499538bb11e28c9d960e870838e25986022e6120f6d32840dd7e305f8c05"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa",
+      "bytes": 533037,
+      "sha256": "012f149068b407f8893e180479ff1359b2597b2407f5e499ae3af90ee67b2721"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/pending-large/far-apart/catalog.json",
+      "bytes": 18895,
+      "sha256": "0b8404e780d6ef77a1eccae379901658000c89143840b7e7e3d044223b6baaf5"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/pending-large/far-apart/reference.fa.fai",
+      "bytes": 25,
+      "sha256": "ef33adfec38e60bb0dbf74a53515cafacfdc5ca20201b23e22b9b3d5aef948b7"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29361,
+      "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 11663,
+      "sha256": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      1,
+      8
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      1
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "1": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 84.62684925,
+            "candidate_median": 85.454340708,
+            "baseline_max": 86.52276095799999,
+            "candidate_max": 89.8663985,
+            "paired_deltas": [
+              6.134297292000014,
+              -2.2614380829999874,
+              0.8274914579999972
+            ],
+            "paired_ratios": [
+              1.073260997914787,
+              0.9738630846038566,
+              1.0097781196550928
+            ],
+            "paired_median_ratio": 1.0097781196550928,
+            "paired_ratio_bootstrap_95": [
+              0.9738630846038566,
+              1.073260997914787
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 164.869922,
+            "candidate_median": 155.62983499999999,
+            "baseline_max": 169.838825,
+            "candidate_max": 164.153877,
+            "paired_deltas": [
+              -0.015430000000009159,
+              -16.155709,
+              -9.240087000000017
+            ],
+            "paired_ratios": [
+              0.999906011663922,
+              0.9048762319216469,
+              0.9439552897950664
+            ],
+            "paired_median_ratio": 0.9439552897950664,
+            "paired_ratio_bootstrap_95": [
+              0.9048762319216469,
+              0.999906011663922
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 105725952,
+            "candidate_median": 107839488,
+            "baseline_max": 122765312,
+            "candidate_max": 122142720,
+            "paired_deltas": [
+              2572288,
+              -15351808,
+              16416768
+            ],
+            "paired_ratios": [
+              1.0244357976653697,
+              0.8749499532897371,
+              1.1552766155276615
+            ],
+            "paired_median_ratio": 1.0244357976653697,
+            "paired_ratio_bootstrap_95": [
+              0.8749499532897371,
+              1.1552766155276615
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.010986334,
+            "candidate_median": 0.008728417,
+            "baseline_max": 0.013623,
+            "candidate_max": 0.012914291,
+            "paired_deltas": [
+              -0.004894582999999999,
+              -0.004536457999999999,
+              0.0019279569999999992
+            ],
+            "paired_ratios": [
+              0.6407118109080232,
+              0.5538513269173482,
+              1.175486836646328
+            ],
+            "paired_median_ratio": 0.6407118109080232,
+            "paired_ratio_bootstrap_95": [
+              0.5538513269173482,
+              1.175486836646328
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.011807667,
+            "candidate_median": 0.010726,
+            "baseline_max": 0.0160805,
+            "candidate_max": 0.011514417,
+            "paired_deltas": [
+              -0.005354500000000002,
+              0.0015226250000000014,
+              -0.0018219580000000003
+            ],
+            "paired_ratios": [
+              0.667019060352601,
+              1.1523875797254388,
+              0.8456970373571681
+            ],
+            "paired_median_ratio": 0.8456970373571681,
+            "paired_ratio_bootstrap_95": [
+              0.667019060352601,
+              1.1523875797254388
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 1.802668292,
+            "candidate_median": 2.466356333,
+            "baseline_max": 1.985630042,
+            "candidate_max": 2.588969334,
+            "paired_deltas": [
+              0.7863010420000003,
+              0.17211975000000002,
+              0.48072629099999986
+            ],
+            "paired_ratios": [
+              1.4361873149317037,
+              1.0958948085951772,
+              1.2421026479413027
+            ],
+            "paired_median_ratio": 1.2421026479413027,
+            "paired_ratio_bootstrap_95": [
+              1.0958948085951772,
+              1.4361873149317037
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.017402292,
+            "candidate_median": 0.01786825,
+            "baseline_max": 0.017512167,
+            "candidate_max": 0.018172166,
+            "paired_deltas": [
+              0.0007698740000000003,
+              0.0024312490000000016,
+              0.0003560830000000001
+            ],
+            "paired_ratios": [
+              1.0442398047337673,
+              1.1619761788156457,
+              1.0203334630146002
+            ],
+            "paired_median_ratio": 1.0442398047337673,
+            "paired_ratio_bootstrap_95": [
+              1.0203334630146002,
+              1.1619761788156457
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 82.56778375,
+            "candidate_median": 82.91281725,
+            "baseline_max": 84.661080667,
+            "candidate_max": 87.203795334,
+            "paired_deltas": [
+              5.361691334,
+              -2.4372286669999994,
+              0.34503349999999955
+            ],
+            "paired_ratios": [
+              1.0655126282432816,
+              0.971211935309609,
+              1.0041787908592132
+            ],
+            "paired_median_ratio": 1.0041787908592132,
+            "paired_ratio_bootstrap_95": [
+              0.971211935309609,
+              1.0655126282432816
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 20000000,
+          "paired_actual_delta_bytes": [
+            2572288,
+            -15351808,
+            16416768
+          ],
+          "difference_of_medians_bytes": 2113536,
+          "difference_of_maxima_bytes": -622592,
+          "median_paired_delta_bytes": 2572288,
+          "largest_paired_delta_bytes": 16416768,
+          "paired_candidate_limits_bytes": [
+            125267200,
+            142765312,
+            125725952
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": false,
+        "wall_bootstrap_upper95_no_slower": false
+      },
+      "8": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 34.03849625,
+            "candidate_median": 36.141901416,
+            "baseline_max": 35.332640834,
+            "candidate_max": 36.564198083,
+            "paired_deltas": [
+              2.2735753330000037,
+              2.1034051660000017,
+              1.231557248999998
+            ],
+            "paired_ratios": [
+              1.0676240346442263,
+              1.0617948910125548,
+              1.0348560769851907
+            ],
+            "paired_median_ratio": 1.0617948910125548,
+            "paired_ratio_bootstrap_95": [
+              1.0348560769851907,
+              1.0676240346442263
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 262.742409,
+            "candidate_median": 257.296424,
+            "baseline_max": 270.681551,
+            "candidate_max": 263.18400599999995,
+            "paired_deltas": [
+              -4.924166000000014,
+              -5.445985000000007,
+              -7.497545000000059
+            ],
+            "paired_ratios": [
+              0.9812074193187269,
+              0.9792725315234512,
+              0.9723012337844922
+            ],
+            "paired_median_ratio": 0.9792725315234512,
+            "paired_ratio_bootstrap_95": [
+              0.9723012337844922,
+              0.9812074193187269
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 219824128,
+            "candidate_median": 246071296,
+            "baseline_max": 222150656,
+            "candidate_max": 248954880,
+            "paired_deltas": [
+              26804224,
+              26247168,
+              22577152
+            ],
+            "paired_ratios": [
+              1.1206578656243085,
+              1.1194007602295595,
+              1.1035311795642375
+            ],
+            "paired_median_ratio": 1.1194007602295595,
+            "paired_ratio_bootstrap_95": [
+              1.1035311795642375,
+              1.1206578656243085
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.010514708,
+            "candidate_median": 0.00574975,
+            "baseline_max": 0.019153834,
+            "candidate_max": 0.005768,
+            "paired_deltas": [
+              -0.0016532920000000006,
+              -0.013978542000000002,
+              -0.004746708
+            ],
+            "paired_ratios": [
+              0.7766739672691306,
+              0.270196139321245,
+              0.5485649244848264
+            ],
+            "paired_median_ratio": 0.5485649244848264,
+            "paired_ratio_bootstrap_95": [
+              0.270196139321245,
+              0.7766739672691306
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.002956208,
+            "candidate_median": 0.002471792,
+            "baseline_max": 0.006355958,
+            "candidate_max": 0.003176583,
+            "paired_deltas": [
+              -0.003884166,
+              -0.0005428329999999999,
+              0.0009870410000000001
+            ],
+            "paired_ratios": [
+              0.3888936962767847,
+              0.8163752347602063,
+              1.4507979294299904
+            ],
+            "paired_median_ratio": 0.8163752347602063,
+            "paired_ratio_bootstrap_95": [
+              0.3888936962767847,
+              1.4507979294299904
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.836739625,
+            "candidate_median": 0.988625833,
+            "baseline_max": 0.913597583,
+            "candidate_max": 0.995671542,
+            "paired_deltas": [
+              0.12175783299999998,
+              0.16310029199999998,
+              0.07502824999999991
+            ],
+            "paired_ratios": [
+              1.145514601391084,
+              1.195899500493201,
+              1.082123958508765
+            ],
+            "paired_median_ratio": 1.145514601391084,
+            "paired_ratio_bootstrap_95": [
+              1.082123958508765,
+              1.195899500493201
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.019738666,
+            "candidate_median": 0.019415375,
+            "baseline_max": 0.020071458,
+            "candidate_max": 0.020389334,
+            "paired_deltas": [
+              0.0006506680000000001,
+              -0.0004629160000000007,
+              -0.0006560830000000017
+            ],
+            "paired_ratios": [
+              1.0329641324292127,
+              0.9763344948575955,
+              0.9673126386732841
+            ],
+            "paired_median_ratio": 0.9763344948575955,
+            "paired_ratio_bootstrap_95": [
+              0.9673126386732841,
+              1.0329641324292127
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 33.117766416,
+            "candidate_median": 35.077498167,
+            "baseline_max": 34.342504542,
+            "candidate_max": 35.499286667,
+            "paired_deltas": [
+              2.155507041,
+              1.9597317509999996,
+              1.1567821249999994
+            ],
+            "paired_ratios": [
+              1.0659131524421492,
+              1.0591746353417484,
+              1.0336836855793463
+            ],
+            "paired_median_ratio": 1.0591746353417484,
+            "paired_ratio_bootstrap_95": [
+              1.0336836855793463,
+              1.0659131524421492
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            26804224,
+            26247168,
+            22577152
+          ],
+          "difference_of_medians_bytes": 26247168,
+          "difference_of_maxima_bytes": 26804224,
+          "median_paired_delta_bytes": 26247168,
+          "largest_paired_delta_bytes": 26804224,
+          "paired_candidate_limits_bytes": [
+            382150656,
+            379824128,
+            378071040
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": false,
+        "wall_bootstrap_upper95_no_slower": false
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            2.490483790326926,
+            2.541909029192204,
+            2.3951464496411212
+          ],
+          "median_wall_speedup": 2.490483790326926,
+          "median_compute_scaling_efficiency": 0.31131047379086574,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            2.5036333309858505,
+            2.3314025984725184,
+            2.3371041944915723
+          ],
+          "median_wall_speedup": 2.3371041944915723,
+          "median_compute_scaling_efficiency": 0.29213802431144653,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": false,
+    "all_observed_peak_rss_within_allowance": true,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T20:37:01.780134+00:00"
+}

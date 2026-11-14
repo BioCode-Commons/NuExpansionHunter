@@ -1,0 +1,2433 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T20:13:58.482788+00:00",
+  "complete": true,
+  "baseline_comparison_label": "RAMOPT b00650d",
+  "expected_baseline_source_commit": "b00650d",
+  "parameters": {
+    "baseline": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+    "candidate": "<WORKSPACE>/work/parallel-redesign/prototype6",
+    "reads": "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+    "reference": "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+    "variant_catalog": "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+    "out": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001",
+    "baseline_cache": null,
+    "candidate_cache": null,
+    "baseline_source": null,
+    "candidate_source": null,
+    "baseline_label": "RAMOPT b00650d",
+    "threads": [
+      1,
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0,
+    "cpu_list": null,
+    "discard_equal_output": true,
+    "compare_chunk_mib": 512
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:13:58.507683+00:00",
+      "wall_seconds": 0.384922458,
+      "user_seconds": 0.363575,
+      "system_seconds": 0.01738,
+      "peak_rss_bytes": 18120704,
+      "wait_status": 0,
+      "stdout_sha256": "b73be6300131f4912a1c88a0fa04c039219e39c94ef64426ac49287d0361883e",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.034533208
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:13:59.088858+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog",
+        "bytes": 4569230,
+        "sha256": "a22217a1e48158f4b0e75152c5fd14c192bbaf2fe1464c100ef484d2fcaaf4e0"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/parallel-redesign/prototype6",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:13:59.094912+00:00",
+      "wall_seconds": 0.38677562500000007,
+      "user_seconds": 0.355745,
+      "system_seconds": 0.020315,
+      "peak_rss_bytes": 18317312,
+      "wait_status": 0,
+      "stdout_sha256": "034d0e27d8e13d375e42ccbddd3bcbccbdfbb1fe53d0978fb54795bcc5aff397",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.034386625
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:13:59.688784+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog",
+        "bytes": 4569230,
+        "sha256": "ba1b5bf71586b64ea50f344da9a9bb8d7cb5b113f8cf45efe90f32533f163597"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:59.698149+00:00",
+          "wall_seconds": 0.528457625,
+          "user_seconds": 2.29509,
+          "system_seconds": 0.052412999999999994,
+          "peak_rss_bytes": 46907392,
+          "wait_status": 0,
+          "stdout_sha256": "2effcb0f1b2b1a83547efcc4936c5fefb04a6af23e54f00f9a843243f53adc1b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.010823208,
+            "catalog_index_seconds": 0.004801333,
+            "read_processing_seconds": 0.382792125,
+            "genotyping_seconds": 0.002939542,
+            "output_seconds": 0.085142083
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 67895296.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.536233248,
+            "reduction_worker_seconds": 1.679504173,
+            "publisher_assisted_chunks": 14.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 96256.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 8202240.0,
+            "submit_wait_seconds": 1.5040057500000006,
+            "drain_seconds": 0.062524042
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:00.437065+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/candidate/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/candidate/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 1728834,
+              "sha256": "24f14969908ee0a2c6d3eee9eec08fae51a9261b580e457cc3753fe276160ead",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:00.443902+00:00",
+          "wall_seconds": 1.104032833,
+          "user_seconds": 4.306389,
+          "system_seconds": 0.06940199999999999,
+          "peak_rss_bytes": 63324160,
+          "wait_status": 0,
+          "stdout_sha256": "12e67a46509cfebe12a4ac2e399d5e7bf018775edd2f6e769f704aa5a2bc5b29",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.011717917,
+            "catalog_index_seconds": 0.004826833,
+            "read_processing_seconds": 0.407940708,
+            "genotyping_seconds": 0.003763667,
+            "output_seconds": 0.626717291
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 39,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:01.823984+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/baseline/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/baseline/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 5145233,
+              "sha256": "1d93f60de381152247d22bb1072f2852e93e6100e7ae1ace4afaa0546c149c39",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483",
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:02.501295+00:00",
+          "wall_seconds": 0.82793275,
+          "user_seconds": 1.944817,
+          "system_seconds": 0.037315999999999995,
+          "peak_rss_bytes": 27262976,
+          "wait_status": 0,
+          "stdout_sha256": "a470860d14935d3b203c1d71a6c6a09167bf310ab8704a75e8399c63d390cbc6",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.010039292,
+            "catalog_index_seconds": 0.024525,
+            "read_processing_seconds": 0.712717208,
+            "genotyping_seconds": 0.019117333,
+            "output_seconds": 0.020817041
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 8486912.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.233705581,
+            "reduction_worker_seconds": 0.145335588,
+            "publisher_assisted_chunks": 96.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 96256.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 546816.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.8875e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:03.557341+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/candidate/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/candidate/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/candidate/result_realigned.bam",
+              "bytes": 1728444,
+              "sha256": "b21bdd9aa147bc52762dc96b9acb7af6d37df194167a842423dc514743e62ef9",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:03.562950+00:00",
+          "wall_seconds": 0.9443076250000001,
+          "user_seconds": 2.26232,
+          "system_seconds": 0.08197399999999999,
+          "peak_rss_bytes": 25378816,
+          "wait_status": 0,
+          "stdout_sha256": "d088b1aee97bdb57ccc71728e0a919637aefa1bc4d84c2142d2892d451b6225c",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.070177292,
+            "catalog_index_seconds": 0.025745458,
+            "read_processing_seconds": 0.762424458,
+            "genotyping_seconds": 0.019612667,
+            "output_seconds": 0.021852916
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 208,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:04.766410+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/baseline/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/baseline/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/warmup/t1/baseline/result_realigned.bam",
+              "bytes": 2788067,
+              "sha256": "5fe1e839bc6490fca87e2ea6704f57e7180217d47cefe1393b39df973a3f5d08",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483",
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      },
+      "cross_configuration_comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483",
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:05.949375+00:00",
+          "wall_seconds": 0.799309417,
+          "user_seconds": 2.039688,
+          "system_seconds": 0.071559,
+          "peak_rss_bytes": 25427968,
+          "wait_status": 0,
+          "stdout_sha256": "5c1fd3c53e08f6a64b04dad5443085ea035b9cdf5fccf8b70f8ad0a40043c029",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008766041,
+            "catalog_index_seconds": 0.022077042,
+            "read_processing_seconds": 0.690513083,
+            "genotyping_seconds": 0.020028542,
+            "output_seconds": 0.020762834
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 208,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:06.953807+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/baseline/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/baseline/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/baseline/result_realigned.bam",
+              "bytes": 2793396,
+              "sha256": "707fe3ca5ac895fe96158d716abb268123edcc98d8f5ab9ffd151376422ed4ea",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:06.960548+00:00",
+          "wall_seconds": 0.8042082499999998,
+          "user_seconds": 1.880755,
+          "system_seconds": 0.032344,
+          "peak_rss_bytes": 27246592,
+          "wait_status": 0,
+          "stdout_sha256": "64458615490d5ec1b7e60029453d16d360c071061e706a74025dbc6c78af52b8",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.009967833,
+            "catalog_index_seconds": 0.025217625,
+            "read_processing_seconds": 0.68621875,
+            "genotyping_seconds": 0.01940675,
+            "output_seconds": 0.021497083
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 8486912.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.180488704,
+            "reduction_worker_seconds": 0.138863042,
+            "publisher_assisted_chunks": 95.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 96256.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 546816.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.9708e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:08.000700+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/candidate/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/candidate/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t1/candidate/result_realigned.bam",
+              "bytes": 1728423,
+              "sha256": "b7c734d30177266d8812efbc40a68b6f8c9b3892b937051bdab199e12f11bd86",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483",
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:08.559814+00:00",
+          "wall_seconds": 0.8895575000000001,
+          "user_seconds": 3.407503,
+          "system_seconds": 0.051105,
+          "peak_rss_bytes": 64503808,
+          "wait_status": 0,
+          "stdout_sha256": "49313c1683f933c259cd741150cfea0ead62a88486fcb38db48911fd8560cd14",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.0087785,
+            "catalog_index_seconds": 0.003752417,
+            "read_processing_seconds": 0.333149917,
+            "genotyping_seconds": 0.003547,
+            "output_seconds": 0.501769917
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 20,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:09.648509+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/baseline/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/baseline/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 4980663,
+              "sha256": "3535d015badb1bd1ff59c1be93e96d8218a46bd8e795fa7c4157f0a4153ea3c6",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:09.657226+00:00",
+          "wall_seconds": 0.45386366699999997,
+          "user_seconds": 1.9583359999999999,
+          "system_seconds": 0.04401,
+          "peak_rss_bytes": 46612480,
+          "wait_status": 0,
+          "stdout_sha256": "98de0d7d0c94a72c429423d9370fabfd927029368c4f4eb9a49738869adcb11f",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.009608541,
+            "catalog_index_seconds": 0.003587542,
+            "read_processing_seconds": 0.327128083,
+            "genotyping_seconds": 0.002758083,
+            "output_seconds": 0.073444083
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 67895296.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.309808335,
+            "reduction_worker_seconds": 1.440064498,
+            "publisher_assisted_chunks": 14.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 96256.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 8202240.0,
+            "submit_wait_seconds": 1.2915887040000005,
+            "drain_seconds": 0.051352125
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:10.309749+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/candidate/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/candidate/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 1728692,
+              "sha256": "67d59dfd63f8961ff1423348783b8f1425dbdc28ef1690f3581fd234212f5e2b",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483",
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:10.863514+00:00",
+          "wall_seconds": 0.44612699999999994,
+          "user_seconds": 1.965436,
+          "system_seconds": 0.043987,
+          "peak_rss_bytes": 46596096,
+          "wait_status": 0,
+          "stdout_sha256": "1a504592e0c413da7632d487777e375db343ff7d9ff8bc8350f3d56ff484d64b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008126875,
+            "catalog_index_seconds": 0.003522875,
+            "read_processing_seconds": 0.325401959,
+            "genotyping_seconds": 0.002975875,
+            "output_seconds": 0.073709958
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 67895296.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.317157908,
+            "reduction_worker_seconds": 1.417538045,
+            "publisher_assisted_chunks": 12.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 96256.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 8202240.0,
+            "submit_wait_seconds": 1.2686252059999996,
+            "drain_seconds": 0.052528583
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:11.493143+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/candidate/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/candidate/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/candidate/result_realigned.bam",
+              "bytes": 1728826,
+              "sha256": "83f225f5dda969ed858b24d36392f5fbf602224a1d033622eb12020422d524da",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:11.502103+00:00",
+          "wall_seconds": 0.9616075000000001,
+          "user_seconds": 3.84793,
+          "system_seconds": 0.059192999999999996,
+          "peak_rss_bytes": 64389120,
+          "wait_status": 0,
+          "stdout_sha256": "4eeef88306fee469035119966bf991763b916a8429ed40fa0c5376359b8bb89b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.009153209,
+            "catalog_index_seconds": 0.004028959,
+            "read_processing_seconds": 0.351834625,
+            "genotyping_seconds": 0.003098416,
+            "output_seconds": 0.552902209
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 34,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:12.687165+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/baseline/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/baseline/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t8/baseline/result_realigned.bam",
+              "bytes": 5315630,
+              "sha256": "111c049f889041f61b029e455dd821303e08971c0da532c0b436b651e7c214bb",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483",
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:13.222630+00:00",
+          "wall_seconds": 0.630836542,
+          "user_seconds": 1.474304,
+          "system_seconds": 0.025098,
+          "peak_rss_bytes": 27279360,
+          "wait_status": 0,
+          "stdout_sha256": "6b2576b9730ef7f1792eb154bb3445920b4e4dbe70687f17bfe4392a9efc2956",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.007974416,
+            "catalog_index_seconds": 0.017741209,
+            "read_processing_seconds": 0.536340834,
+            "genotyping_seconds": 0.016881125,
+            "output_seconds": 0.019931042
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 8486912.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.925518958,
+            "reduction_worker_seconds": 0.108149798,
+            "publisher_assisted_chunks": 96.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 96256.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 546816.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.1417e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:14.032515+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/candidate/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/candidate/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/candidate/result_realigned.bam",
+              "bytes": 1728412,
+              "sha256": "6fc266319d5b9eafad9ff80149d4b0f3a66f31fbc8ab112456494cb96b28429a",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:14.041218+00:00",
+          "wall_seconds": 0.79051725,
+          "user_seconds": 2.024254,
+          "system_seconds": 0.068453,
+          "peak_rss_bytes": 25411584,
+          "wait_status": 0,
+          "stdout_sha256": "c88b9bda0221dc6c6db6b634f8ca414a1b536e95d288ad77257f4842aa398f99",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008766666,
+            "catalog_index_seconds": 0.021796167,
+            "read_processing_seconds": 0.6820445,
+            "genotyping_seconds": 0.020206709,
+            "output_seconds": 0.020726916
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 211,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:15.038704+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/baseline/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/baseline/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-01/t1/baseline/result_realigned.bam",
+              "bytes": 2792432,
+              "sha256": "3314b58ef46aa40b9e8d7201cd2cb611399baba1fab15253d7bc06f3ebfc6b5c",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483",
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:15.592386+00:00",
+          "wall_seconds": 0.9103209170000001,
+          "user_seconds": 3.425553,
+          "system_seconds": 0.053076,
+          "peak_rss_bytes": 64634880,
+          "wait_status": 0,
+          "stdout_sha256": "51da2399e01390f7912f7e50d528c6a4f895611b2502acac0cb4eca48b1501ce",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008684041,
+            "catalog_index_seconds": 0.003511084,
+            "read_processing_seconds": 0.334404375,
+            "genotyping_seconds": 0.003147833,
+            "output_seconds": 0.524298166
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 27,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:16.703167+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/baseline/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/baseline/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/baseline/result_realigned.bam",
+              "bytes": 4986125,
+              "sha256": "6616ec3d113335156d2676bdda81447e4baba36712c0d2356ce467d765c9751d",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:16.717005+00:00",
+          "wall_seconds": 0.515461292,
+          "user_seconds": 2.283118,
+          "system_seconds": 0.050393,
+          "peak_rss_bytes": 46809088,
+          "wait_status": 0,
+          "stdout_sha256": "f2f7d03b0c5b7c197d712a338edaf9f4ec3cdc517ef26a174823bdecdc516fc9",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.010109083,
+            "catalog_index_seconds": 0.004687292,
+            "read_processing_seconds": 0.370048333,
+            "genotyping_seconds": 0.003426041,
+            "output_seconds": 0.07904775
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 67895296.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.543274925,
+            "reduction_worker_seconds": 1.563455533,
+            "publisher_assisted_chunks": 13.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 96256.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 8202240.0,
+            "submit_wait_seconds": 1.3883044240000004,
+            "drain_seconds": 0.056927625
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:17.473102+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/candidate/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/candidate/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t8/candidate/result_realigned.bam",
+              "bytes": 1728799,
+              "sha256": "ede7a2e4e67557797e61af75bf1313d6512c674ed75b60143f4f897924d847e1",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483",
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:18.082941+00:00",
+          "wall_seconds": 0.710757792,
+          "user_seconds": 1.806076,
+          "system_seconds": 0.060613999999999994,
+          "peak_rss_bytes": 25509888,
+          "wait_status": 0,
+          "stdout_sha256": "2e55b1443a1e372dc794b2d72e7bdce0573423fa81f3a23257a4680c8b59a416",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008652542,
+            "catalog_index_seconds": 0.021937041,
+            "read_processing_seconds": 0.607078417,
+            "genotyping_seconds": 0.016305334,
+            "output_seconds": 0.019801541
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 207,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:18.996045+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/baseline/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/baseline/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/baseline/result_realigned.bam",
+              "bytes": 2796843,
+              "sha256": "f74d7f364932252e5c73b2eaf77e39883f2506a3c99fb03836a0fdcaf05204ee",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:19.005958+00:00",
+          "wall_seconds": 0.7349401249999999,
+          "user_seconds": 1.719184,
+          "system_seconds": 0.029859,
+          "peak_rss_bytes": 27295744,
+          "wait_status": 0,
+          "stdout_sha256": "c03df902621082bbdec4b4e4ae631acc40ecc0a68b47f8947b39b19f970b560b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008939209,
+            "catalog_index_seconds": 0.021512916,
+            "read_processing_seconds": 0.625398917,
+            "genotyping_seconds": 0.01913625,
+            "output_seconds": 0.020648833
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 8486912.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.078488331,
+            "reduction_worker_seconds": 0.126434373,
+            "publisher_assisted_chunks": 96.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 96256.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 546816.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.6292e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:19.956540+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/candidate/result.vcf",
+              "bytes": 41857,
+              "sha256": "8a15b5f3707fe43fe7626b4e278a7463e30e1d68266891ccd5d774ceb854160c",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/candidate/result.json",
+              "bytes": 131624,
+              "sha256": "bda9b1027ffca841474a0db366f6b9809c458cdeff8700f428c053ec42fb9f8a",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/longread1000/attempt-001/round-02/t1/candidate/result_realigned.bam",
+              "bytes": 1728337,
+              "sha256": "03ea47f00aa3313311d8da1c5f7d46dc94f5c52d289a4cb680b86cf83b95a899",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483",
+            "1ef6650614b81399bbaf6209f48e89af16982838f1696f864dea07d3ebe60483"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+      "bytes": 2046800,
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam",
+      "bytes": 1131413,
+      "sha256": "2539a41eb40288b50cff40fd071f3fc957be77f6a0ed8fcef92cabc59d345fb4"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa",
+      "bytes": 832866,
+      "sha256": "23f1d1d69bf21293f16066a2a7159fb765ad1f13afce9c5f1ae268d190625dec"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/longread1000/catalog.json",
+      "bytes": 29951,
+      "sha256": "c2f42dee2925e4fa4871003d5dd636f011d09a4db2272e85b579cb7d6c083f16"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reference.fa.fai",
+      "bytes": 27,
+      "sha256": "22c9f0f685bf7c67170905f4c70b27d058d9ac1e26d8a00eee7d8f7214a43dbd"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/longread1000/reads.bam.bai",
+      "bytes": 1664,
+      "sha256": "6103f672826e25312f5aefe77731cc16102bb84f393827483ef91d38ed8c0259"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29361,
+      "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 11663,
+      "sha256": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      1,
+      8
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      1
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "1": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 0.79051725,
+            "candidate_median": 0.7349401249999999,
+            "baseline_max": 0.799309417,
+            "candidate_max": 0.8042082499999998,
+            "paired_deltas": [
+              0.004898832999999825,
+              -0.159680708,
+              0.024182332999999945
+            ],
+            "paired_ratios": [
+              1.0061288318338426,
+              0.7980047772518563,
+              1.034023310433155
+            ],
+            "paired_median_ratio": 1.0061288318338426,
+            "paired_ratio_bootstrap_95": [
+              0.7980047772518563,
+              1.034023310433155
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 2.092707,
+            "candidate_median": 1.7490430000000001,
+            "baseline_max": 2.111247,
+            "candidate_max": 1.9130989999999999,
+            "paired_deltas": [
+              -0.1981480000000002,
+              -0.5933049999999997,
+              -0.11764699999999984
+            ],
+            "paired_ratios": [
+              0.9061464622566662,
+              0.7164892170762559,
+              0.9369756092334561
+            ],
+            "paired_median_ratio": 0.9061464622566662,
+            "paired_ratio_bootstrap_95": [
+              0.7164892170762559,
+              0.9369756092334561
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 25427968,
+            "candidate_median": 27279360,
+            "baseline_max": 25509888,
+            "candidate_max": 27295744,
+            "paired_deltas": [
+              1818624,
+              1867776,
+              1785856
+            ],
+            "paired_ratios": [
+              1.071520618556701,
+              1.0735009671179885,
+              1.0700064226075787
+            ],
+            "paired_median_ratio": 1.071520618556701,
+            "paired_ratio_bootstrap_95": [
+              1.0700064226075787,
+              1.0735009671179885
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.008766041,
+            "candidate_median": 0.008939209,
+            "baseline_max": 0.008766666,
+            "candidate_max": 0.009967833,
+            "paired_deltas": [
+              0.0012017920000000001,
+              -0.0007922499999999996,
+              0.00028666700000000087
+            ],
+            "paired_ratios": [
+              1.1370963243270251,
+              0.9096292706942412,
+              1.033130957353342
+            ],
+            "paired_median_ratio": 1.033130957353342,
+            "paired_ratio_bootstrap_95": [
+              0.9096292706942412,
+              1.1370963243270251
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.021937041,
+            "candidate_median": 0.021512916,
+            "baseline_max": 0.022077042,
+            "candidate_max": 0.025217625,
+            "paired_deltas": [
+              0.003140582999999999,
+              -0.004054958000000001,
+              -0.0004241250000000009
+            ],
+            "paired_ratios": [
+              1.142255606525548,
+              0.8139600416898989,
+              0.9806662621453823
+            ],
+            "paired_median_ratio": 0.9806662621453823,
+            "paired_ratio_bootstrap_95": [
+              0.8139600416898989,
+              1.142255606525548
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.020028542,
+            "candidate_median": 0.01913625,
+            "baseline_max": 0.020206709,
+            "candidate_max": 0.01940675,
+            "paired_deltas": [
+              -0.0006217919999999995,
+              -0.0033255839999999995,
+              0.0028309159999999993
+            ],
+            "paired_ratios": [
+              0.9689547047408643,
+              0.8354217898619711,
+              1.1736190132627764
+            ],
+            "paired_median_ratio": 0.9689547047408643,
+            "paired_ratio_bootstrap_95": [
+              0.8354217898619711,
+              1.1736190132627764
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.020726916,
+            "candidate_median": 0.020648833,
+            "baseline_max": 0.020762834,
+            "candidate_max": 0.021497083,
+            "paired_deltas": [
+              0.0007342489999999993,
+              -0.000795874000000002,
+              0.0008472919999999995
+            ],
+            "paired_ratios": [
+              1.0353636213630566,
+              0.9616019093240884,
+              1.0427891950429515
+            ],
+            "paired_median_ratio": 1.0353636213630566,
+            "paired_ratio_bootstrap_95": [
+              0.9616019093240884,
+              1.0427891950429515
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 0.6820445,
+            "candidate_median": 0.625398917,
+            "baseline_max": 0.690513083,
+            "candidate_max": 0.68621875,
+            "paired_deltas": [
+              -0.004294333000000039,
+              -0.14570366600000006,
+              0.018320500000000073
+            ],
+            "paired_ratios": [
+              0.9937809534595016,
+              0.7863722000543952,
+              1.0301781441852842
+            ],
+            "paired_median_ratio": 0.9937809534595016,
+            "paired_ratio_bootstrap_95": [
+              0.7863722000543952,
+              1.0301781441852842
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 20000000,
+          "paired_actual_delta_bytes": [
+            1818624,
+            1867776,
+            1785856
+          ],
+          "difference_of_medians_bytes": 1851392,
+          "difference_of_maxima_bytes": 1785856,
+          "median_paired_delta_bytes": 1818624,
+          "largest_paired_delta_bytes": 1867776,
+          "paired_candidate_limits_bytes": [
+            45427968,
+            45411584,
+            45509888
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": false,
+        "wall_bootstrap_upper95_no_slower": false
+      },
+      "8": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 0.9103209170000001,
+            "candidate_median": 0.45386366699999997,
+            "baseline_max": 0.9616075000000001,
+            "candidate_max": 0.515461292,
+            "paired_deltas": [
+              -0.43569383300000014,
+              -0.5154805000000001,
+              -0.39485962500000005
+            ],
+            "paired_ratios": [
+              0.510212849647156,
+              0.4639387691963716,
+              0.5662412918058873
+            ],
+            "paired_median_ratio": 0.510212849647156,
+            "paired_ratio_bootstrap_95": [
+              0.4639387691963716,
+              0.5662412918058873
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 3.4786289999999997,
+            "candidate_median": 2.009423,
+            "baseline_max": 3.907123,
+            "candidate_max": 2.333511,
+            "paired_deltas": [
+              -1.4562620000000006,
+              -1.8977,
+              -1.1451179999999996
+            ],
+            "paired_ratios": [
+              0.5789456336190744,
+              0.5142973487141306,
+              0.6708134152851598
+            ],
+            "paired_median_ratio": 0.5789456336190744,
+            "paired_ratio_bootstrap_95": [
+              0.5142973487141306,
+              0.6708134152851598
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 64503808,
+            "candidate_median": 46612480,
+            "baseline_max": 64634880,
+            "candidate_max": 46809088,
+            "paired_deltas": [
+              -17891328,
+              -17793024,
+              -17825792
+            ],
+            "paired_ratios": [
+              0.7226314452628905,
+              0.7236641221374046,
+              0.7242078580481622
+            ],
+            "paired_median_ratio": 0.7236641221374046,
+            "paired_ratio_bootstrap_95": [
+              0.7226314452628905,
+              0.7242078580481622
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.0087785,
+            "candidate_median": 0.009608541,
+            "baseline_max": 0.009153209,
+            "candidate_max": 0.010109083,
+            "paired_deltas": [
+              0.0008300410000000001,
+              -0.0010263340000000003,
+              0.0014250419999999996
+            ],
+            "paired_ratios": [
+              1.0945538531639802,
+              0.8878716742947746,
+              1.1640989488649351
+            ],
+            "paired_median_ratio": 1.0945538531639802,
+            "paired_ratio_bootstrap_95": [
+              0.8878716742947746,
+              1.1640989488649351
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.003752417,
+            "candidate_median": 0.003587542,
+            "baseline_max": 0.004028959,
+            "candidate_max": 0.004687292,
+            "paired_deltas": [
+              -0.0001648750000000001,
+              -0.0005060840000000004,
+              0.0011762080000000002
+            ],
+            "paired_ratios": [
+              0.9560616530625461,
+              0.874388396605674,
+              1.3349985360646457
+            ],
+            "paired_median_ratio": 0.9560616530625461,
+            "paired_ratio_bootstrap_95": [
+              0.874388396605674,
+              1.3349985360646457
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.003147833,
+            "candidate_median": 0.002975875,
+            "baseline_max": 0.003547,
+            "candidate_max": 0.003426041,
+            "paired_deltas": [
+              -0.0007889169999999997,
+              -0.00012254100000000032,
+              0.00027820799999999984
+            ],
+            "paired_ratios": [
+              0.77758190019735,
+              0.9604504366101904,
+              1.0883808003791815
+            ],
+            "paired_median_ratio": 0.9604504366101904,
+            "paired_ratio_bootstrap_95": [
+              0.77758190019735,
+              1.0883808003791815
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.524298166,
+            "candidate_median": 0.073709958,
+            "baseline_max": 0.552902209,
+            "candidate_max": 0.07904775,
+            "paired_deltas": [
+              -0.42832583399999996,
+              -0.47919225099999996,
+              -0.44525041600000004
+            ],
+            "paired_ratios": [
+              0.14637004035457152,
+              0.13331463828533918,
+              0.15076869446840674
+            ],
+            "paired_median_ratio": 0.14637004035457152,
+            "paired_ratio_bootstrap_95": [
+              0.13331463828533918,
+              0.15076869446840674
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 0.334404375,
+            "candidate_median": 0.327128083,
+            "baseline_max": 0.351834625,
+            "candidate_max": 0.370048333,
+            "paired_deltas": [
+              -0.006021834000000004,
+              -0.026432665999999994,
+              0.03564395800000003
+            ],
+            "paired_ratios": [
+              0.981924552002815,
+              0.9248719025309121,
+              1.1065893889695673
+            ],
+            "paired_median_ratio": 0.981924552002815,
+            "paired_ratio_bootstrap_95": [
+              0.9248719025309121,
+              1.1065893889695673
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            -17891328,
+            -17793024,
+            -17825792
+          ],
+          "difference_of_medians_bytes": -17891328,
+          "difference_of_maxima_bytes": -17825792,
+          "median_paired_delta_bytes": -17825792,
+          "largest_paired_delta_bytes": -17793024,
+          "paired_candidate_limits_bytes": [
+            224503808,
+            224389120,
+            224634880
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            0.8985472181393557,
+            0.822078914733922,
+            0.7807771728923152
+          ],
+          "median_wall_speedup": 0.822078914733922,
+          "median_compute_scaling_efficiency": 0.10275986434174025,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.771915904429512,
+            1.414029058989929,
+            1.4257911047955079
+          ],
+          "median_wall_speedup": 1.4257911047955079,
+          "median_compute_scaling_efficiency": 0.17822388809943848,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": false,
+    "all_observed_peak_rss_within_allowance": true,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T20:14:20.519526+00:00"
+}

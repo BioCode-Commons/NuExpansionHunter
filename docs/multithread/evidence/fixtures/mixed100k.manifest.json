@@ -1,0 +1,75 @@
+{
+  "scope": "Synthetic, independent loci and distinct deterministic flanks; not a WGS performance claim",
+  "parameters": {
+    "out": "<WORKSPACE>/work/fixtures/mixed100k",
+    "loci": 100000,
+    "covered_loci": 1000,
+    "coverage_layout": "even",
+    "pairs_per_locus": 100,
+    "background_pairs_per_locus": 5,
+    "read_length": 150,
+    "stride": 4096,
+    "loci_per_contig": 1000,
+    "motif": "CAG",
+    "repeat_count": 10,
+    "quality": "mixed",
+    "mismatch_every": 1,
+    "missing_quality_every": 17,
+    "seed": "nueh-round5-v1",
+    "bam_helper": null
+  },
+  "loci": 100000,
+  "covered_loci": 1000,
+  "contigs": 100,
+  "reference_bases": 409600000,
+  "read_records": 2200000,
+  "reference_repeat_allele_only": true,
+  "coordinate_sorted": true,
+  "pair_layout": "Forward-strand aligned SAM SEQ for both records; flags99/147; right mate covers repeat; left mate covers flank; additional b-prefixed background pairs lie beyond exact target stop inside its final coarse-mask bin",
+  "files": {
+    "catalog.json": {
+      "bytes": 12046003,
+      "sha256": "a7de145c2fbb2a9ada60de937c2d1a1ddd7d332b16d773993b3d91b5f533eb3b"
+    },
+    "reads.bam": {
+      "bytes": 68652779,
+      "sha256": "3339cf0c02a2a342848449d7c8451e7c4466f8ff53a34d04a01422e1a96dbb34"
+    },
+    "reads.bam.bai": {
+      "bytes": 804816,
+      "sha256": "fb0499e0b77b70fa4645a7ae3033671397af9351080c623cfb3252e47edcb81c"
+    },
+    "reads.sam": {
+      "bytes": 826594755,
+      "sha256": "c6c44c171237c5eaef442b8c1fbb17e02a210663fe0570f5d2fb97078f25cf44"
+    },
+    "reference.fa": {
+      "bytes": 416427700,
+      "sha256": "7b9c315b256b14ae81e0bf3b61340eee03f15fbf39f45238a1ac963533296847"
+    },
+    "reference.fa.fai": {
+      "bytes": 3267,
+      "sha256": "13ee895e3ca8ceab8ab4eaa5039aeb2a320632d00c142693b20e0677f2286552"
+    }
+  },
+  "target_read_records": 200000,
+  "background_read_records": 2000000,
+  "background_scope": "Background pairs split between coarse-mask/exact-region misses and wholly outside-mask reads.",
+  "fixture_kind": "mixed",
+  "conversion_command": [
+    "<WORKSPACE>/work/sam_to_bam",
+    "<WORKSPACE>/work/fixtures/mixed100k/reads.sam",
+    "<WORKSPACE>/work/fixtures/mixed100k/reads.bam"
+  ],
+  "frontend_generator_sha256": "21a3caac0e5331159c0a31c26c7bf16c7f4f73909c965cf045188f6d4595c9d6",
+  "base_generator_sha256": "110dd38fdf768a00c70f6aeb3934f5b917d675487c1fd6745c2daba2887202ef",
+  "target_read_fraction": 0.09090909090909091,
+  "near_background_read_records": 1000000,
+  "outside_background_read_records": 1000000,
+  "limitations": [
+    "Synthetic diagnostics only: not real WGS, clinical validation, or expanded-allele truth.",
+    "Requires region-extension-length 1000; 150 bp reads and fixed 4096 bp blocks.",
+    "Reference 10-CAG allele only; no remote mates, unmapped reads, or structural variants.",
+    "Large catalogs have many empty loci; no claim that a WGS population has these proportions."
+  ]
+}

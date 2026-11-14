@@ -26,6 +26,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include <boost/functional/hash.hpp>
 
@@ -101,6 +102,11 @@ public:
     const FragmentId& fragmentId() const { return readId_.fragmentId(); }
     MateNumber mateNumber() const { return readId_.mateNumber(); }
     const std::string& sequence() const { return sequence_; }
+
+    // Transfer sequence storage without another allocation. The moved-from Read
+    // retains its identity/orientation but is no longer a usable sequence read;
+    // only destroy it or assign another Read before sequence-dependent use.
+    std::string releaseSequence() { return std::move(sequence_); }
 
     bool isFirstMate() const { return mateNumber() == MateNumber::kFirstMate; }
     bool isSecondMate() const { return mateNumber() == MateNumber::kSecondMate; }

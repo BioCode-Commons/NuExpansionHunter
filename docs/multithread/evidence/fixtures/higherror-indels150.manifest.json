@@ -1,0 +1,101 @@
+{
+  "scope": "Synthetic streaming input extremes; not representative WGS or a guaranteed alignment fast-path/fallback witness",
+  "fixture_kind": "higherror-indels150",
+  "loci": 200,
+  "covered_loci": 200,
+  "contigs": 1,
+  "read_length": 150,
+  "read_records": 25600,
+  "target_read_records": 25600,
+  "target_read_fraction": 1.0,
+  "reference_bases": 819200,
+  "reference_repeat_count": 10,
+  "sample_repeat_count": 10,
+  "reference_repeat_allele_only": true,
+  "coordinate_sorted": true,
+  "required_region_extension_length": 1000,
+  "details": "150bp reads retain an initial exact seed; alternate 9 substitutions or balanced 4I/4D plus6 substitutions.",
+  "counts": {
+    "substitutions": 192000,
+    "missing_quality_reads": 0,
+    "records": 25600,
+    "reads_with_indels": 12800
+  },
+  "pair_layout": "Flags99/147; SAM SEQ stored in reference-aligned orientation for both mates; TLEN uses reference-consuming CIGAR spans.",
+  "expectations": {
+    "all_input_fields_valid": true,
+    "all_pairs_complete": true,
+    "catalog_reference_agree": true,
+    "same_input_for_both_binaries": true,
+    "output_comparison": "Exact VCF/JSON and BAM complete-header/full-record multiset, preserving duplicate multiplicity; only BAM record order may differ",
+    "genotype_truth_asserted": false
+  },
+  "limitations": [
+    "Read acceptance, genotyping and specific DP-path activation must be observed, not assumed.",
+    "Mismatch/IUPAC cases model read errors and uncertain base calls; no diploid genotype truth is asserted.",
+    "Expanded-repeat SAM alignments project one explicit haplotype; repeat mapping is intrinsically nonunique."
+  ],
+  "parameters": {
+    "out": "../fixtures/read-extremes",
+    "only": null,
+    "loci": 200,
+    "pairs_per_locus": 64,
+    "expanded_copies": 80,
+    "seed": "nueh-memory-read-extremes-v1",
+    "sam_to_bam": "../sam_to_bam",
+    "sam_only": false
+  },
+  "generator_sha256": "2e117f535d858c7452a445024aede5461bc3975e160d44b9c25b02ed708d04e0",
+  "base_generator_sha256": "110dd38fdf768a00c70f6aeb3934f5b917d675487c1fd6745c2daba2887202ef",
+  "generation_command": [
+    "<APPLE_COMMAND_LINE_TOOLS>/usr/bin/python3",
+    "<WORKSPACE>/work/NuExpansionHunter/tools/memory_validation/generate_read_extremes.py",
+    "--out",
+    "../fixtures/read-extremes",
+    "--sam-to-bam",
+    "../sam_to_bam",
+    "--loci",
+    "200",
+    "--pairs-per-locus",
+    "64"
+  ],
+  "conversion_command": [
+    "<WORKSPACE>/work/sam_to_bam",
+    "<WORKSPACE>/work/fixtures/read-extremes/higherror-indels150/reads.sam",
+    "<WORKSPACE>/work/fixtures/read-extremes/higherror-indels150/reads.bam"
+  ],
+  "files": {
+    "bam-conversion.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "catalog.json": {
+      "bytes": 29951,
+      "sha256": "c2f42dee2925e4fa4871003d5dd636f011d09a4db2272e85b579cb7d6c083f16"
+    },
+    "independent-validation.json": {
+      "bytes": 389,
+      "sha256": "fa762eff0d1c4d04cb816982c72306f14c14d2756bf3adff8cbfa2476b044a91"
+    },
+    "reads.bam": {
+      "bytes": 559926,
+      "sha256": "f86380f9858a5178926701007319203ae54b76997b1fd63f1201c1d000f83cb8"
+    },
+    "reads.bam.bai": {
+      "bytes": 1664,
+      "sha256": "e3177ab055252c9695ee893ff17796c389a493dd2ff120b56e9aa615497ad5ad"
+    },
+    "reads.sam": {
+      "bytes": 9823827,
+      "sha256": "ab34d1afe40993381a8022ae83f99364d80947018a35c57719dbd4733f6d72ba"
+    },
+    "reference.fa": {
+      "bytes": 832866,
+      "sha256": "23f1d1d69bf21293f16066a2a7159fb765ad1f13afce9c5f1ae268d190625dec"
+    },
+    "reference.fa.fai": {
+      "bytes": 27,
+      "sha256": "22c9f0f685bf7c67170905f4c70b27d058d9ac1e26d8a00eee7d8f7214a43dbd"
+    }
+  }
+}

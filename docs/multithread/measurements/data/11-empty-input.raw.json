@@ -1,0 +1,2428 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T20:20:22.933537+00:00",
+  "complete": true,
+  "baseline_comparison_label": "RAMOPT b00650d",
+  "expected_baseline_source_commit": "b00650d",
+  "parameters": {
+    "baseline": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+    "candidate": "<WORKSPACE>/work/parallel-redesign/prototype6",
+    "reads": "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+    "reference": "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+    "variant_catalog": "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+    "out": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001",
+    "baseline_cache": null,
+    "candidate_cache": null,
+    "baseline_source": null,
+    "candidate_source": null,
+    "baseline_label": "RAMOPT b00650d",
+    "threads": [
+      1,
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0,
+    "cpu_list": null,
+    "discard_equal_output": true,
+    "compare_chunk_mib": 512
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:20:22.954377+00:00",
+      "wall_seconds": 0.22860275000000002,
+      "user_seconds": 0.215111,
+      "system_seconds": 0.011094999999999999,
+      "peak_rss_bytes": 16302080,
+      "wait_status": 0,
+      "stdout_sha256": "5d80999ee46bafada52cb8e5a5bec74bae806acb07417f8150de77b57c013cba",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.020014041
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:20:23.356493+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog",
+        "bytes": 2923776,
+        "sha256": "ad6db38032719eaa9518fa67190552fa99bc2da1d03af6497889ee04b67764a2"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/parallel-redesign/prototype6",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:20:23.360021+00:00",
+      "wall_seconds": 0.21438883299999997,
+      "user_seconds": 0.20174299999999998,
+      "system_seconds": 0.010445999999999999,
+      "peak_rss_bytes": 16400384,
+      "wait_status": 0,
+      "stdout_sha256": "81d7a850ada5b2299b2874287b7d64d242b3b1c8868e93145ce2eebdde9d4a70",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.01964325
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:20:23.735077+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog",
+        "bytes": 2923776,
+        "sha256": "d053d01e3d8cbd9bc36ef1bc6bbfe63436a2dd8a02593cbde7b437809f7fca70"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:23.738915+00:00",
+          "wall_seconds": 0.037713041,
+          "user_seconds": 0.032589,
+          "system_seconds": 0.006193,
+          "peak_rss_bytes": 16613376,
+          "wait_status": 0,
+          "stdout_sha256": "d40dac41d9ee73321ab48eafbcfd3b3b9977a43c5c09f0783e585476d0e9085c",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004652375,
+            "catalog_index_seconds": 0.002219792,
+            "read_processing_seconds": 0.000150375,
+            "genotyping_seconds": 0.000112917,
+            "output_seconds": 0.001545875
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 0.0,
+            "assignments": 0.0,
+            "chunks": 0.0,
+            "peak_active_chunks": 0.0,
+            "peak_charged_cache_bytes": 0.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.0,
+            "reduction_worker_seconds": 0.0,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 0.0,
+            "peak_raw_bytes": 0.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 0.0,
+            "peak_resident_bytes": 0.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.4042e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:23.934540+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/candidate/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/candidate/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:23.936631+00:00",
+          "wall_seconds": 0.038287916000000005,
+          "user_seconds": 0.032869999999999996,
+          "system_seconds": 0.006431,
+          "peak_rss_bytes": 16695296,
+          "wait_status": 0,
+          "stdout_sha256": "b8b4aae5dfe9a3044991f134692523663ba3cb0be50af0226cf2a2ae386811ee",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.005014917,
+            "catalog_index_seconds": 0.002162041,
+            "read_processing_seconds": 0.000136584,
+            "genotyping_seconds": 0.000124292,
+            "output_seconds": 0.001594834
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:24.133849+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/baseline/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/baseline/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            0,
+            0
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:24.141936+00:00",
+          "wall_seconds": 0.047246917,
+          "user_seconds": 0.027769,
+          "system_seconds": 0.005791,
+          "peak_rss_bytes": 16531456,
+          "wait_status": 0,
+          "stdout_sha256": "b2e548375c386329c25186f018156945e9f7de1575ac08fafef702af27b344f4",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004697875,
+            "catalog_index_seconds": 0.011739083,
+            "read_processing_seconds": 0.000134792,
+            "genotyping_seconds": 3.6083e-05,
+            "output_seconds": 0.001488917
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 0.0,
+            "assignments": 0.0,
+            "chunks": 0.0,
+            "peak_active_chunks": 0.0,
+            "peak_charged_cache_bytes": 0.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.0,
+            "reduction_worker_seconds": 0.0,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 0.0,
+            "peak_raw_bytes": 0.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 0.0,
+            "peak_resident_bytes": 0.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.4333e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:24.348310+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/candidate/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/candidate/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/candidate/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:24.350641+00:00",
+          "wall_seconds": 0.050414291,
+          "user_seconds": 0.027639999999999998,
+          "system_seconds": 0.005928999999999999,
+          "peak_rss_bytes": 16613376,
+          "wait_status": 0,
+          "stdout_sha256": "c86087f788e5f98c6086f771bf1e877b31815fd64745fe9f2714d12127645688",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004597584,
+            "catalog_index_seconds": 0.0116085,
+            "read_processing_seconds": 0.000103042,
+            "genotyping_seconds": 5.1833e-05,
+            "output_seconds": 0.001527708
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:24.559346+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/baseline/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/baseline/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/warmup/t1/baseline/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            0,
+            0
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      },
+      "cross_configuration_comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            0,
+            0
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:24.574568+00:00",
+          "wall_seconds": 0.05063316700000001,
+          "user_seconds": 0.027864,
+          "system_seconds": 0.005898,
+          "peak_rss_bytes": 16580608,
+          "wait_status": 0,
+          "stdout_sha256": "374aa912f22c35f24b5bf70b7f3b58dde2ed98e91fe6b30fb5351bb584f0eac3",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.00464825,
+            "catalog_index_seconds": 0.011871917,
+            "read_processing_seconds": 0.000129375,
+            "genotyping_seconds": 4.7416e-05,
+            "output_seconds": 0.001527458
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:24.783714+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/baseline/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/baseline/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/baseline/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:24.786646+00:00",
+          "wall_seconds": 0.050227416000000025,
+          "user_seconds": 0.027593,
+          "system_seconds": 0.0058119999999999995,
+          "peak_rss_bytes": 16547840,
+          "wait_status": 0,
+          "stdout_sha256": "c2a9d305f3b3c8aa3abaa49e975b28628e39645a6bb3c6dada04c804bae14cd3",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004798167,
+            "catalog_index_seconds": 0.011391459,
+            "read_processing_seconds": 0.000179208,
+            "genotyping_seconds": 3.7875e-05,
+            "output_seconds": 0.00154425
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 0.0,
+            "assignments": 0.0,
+            "chunks": 0.0,
+            "peak_active_chunks": 0.0,
+            "peak_charged_cache_bytes": 0.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.0,
+            "reduction_worker_seconds": 0.0,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 0.0,
+            "peak_raw_bytes": 0.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 0.0,
+            "peak_resident_bytes": 0.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.4e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:24.996491+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/candidate/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/candidate/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t1/candidate/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            0,
+            0
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:25.024706+00:00",
+          "wall_seconds": 0.04105249999999999,
+          "user_seconds": 0.032264999999999995,
+          "system_seconds": 0.006742,
+          "peak_rss_bytes": 16695296,
+          "wait_status": 0,
+          "stdout_sha256": "ca1aa31bb4a6c000f186384beff1ad829f685ce8e69c9ff5ad9db16366f09f16",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004627042,
+            "catalog_index_seconds": 0.002097333,
+            "read_processing_seconds": 0.000147458,
+            "genotyping_seconds": 0.000134167,
+            "output_seconds": 0.001612542
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:25.236764+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/baseline/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/baseline/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:25.240394+00:00",
+          "wall_seconds": 0.03946691700000002,
+          "user_seconds": 0.033866,
+          "system_seconds": 0.006745999999999999,
+          "peak_rss_bytes": 16580608,
+          "wait_status": 0,
+          "stdout_sha256": "bf1f7e2e9f9bcc3e405bdb53e21b13db3d68fdb67cb605822ab6944272a1d30f",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.005230125,
+            "catalog_index_seconds": 0.002164667,
+            "read_processing_seconds": 0.00017075,
+            "genotyping_seconds": 0.000123834,
+            "output_seconds": 0.001596542
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 0.0,
+            "assignments": 0.0,
+            "chunks": 0.0,
+            "peak_active_chunks": 0.0,
+            "peak_charged_cache_bytes": 0.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.0,
+            "reduction_worker_seconds": 0.0,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 0.0,
+            "peak_raw_bytes": 0.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 0.0,
+            "peak_resident_bytes": 0.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.5125e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:25.437867+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/candidate/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/candidate/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            0,
+            0
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:25.488120+00:00",
+          "wall_seconds": 0.04472245900000002,
+          "user_seconds": 0.031956,
+          "system_seconds": 0.008487,
+          "peak_rss_bytes": 16531456,
+          "wait_status": 0,
+          "stdout_sha256": "a5464c72c0d6344744f1acbb6e4f4bdc956bf6496153a05fd9a82da6829a6176",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.005326417,
+            "catalog_index_seconds": 0.002589667,
+            "read_processing_seconds": 0.000173459,
+            "genotyping_seconds": 8.9583e-05,
+            "output_seconds": 0.001895791
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 0.0,
+            "assignments": 0.0,
+            "chunks": 0.0,
+            "peak_active_chunks": 0.0,
+            "peak_charged_cache_bytes": 0.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.0,
+            "reduction_worker_seconds": 0.0,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 0.0,
+            "peak_raw_bytes": 0.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 0.0,
+            "peak_resident_bytes": 0.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.5209e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:25.696687+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/candidate/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/candidate/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/candidate/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:25.701710+00:00",
+          "wall_seconds": 0.037594292,
+          "user_seconds": 0.032174999999999995,
+          "system_seconds": 0.0062959999999999995,
+          "peak_rss_bytes": 16695296,
+          "wait_status": 0,
+          "stdout_sha256": "f2da7db76f0767f00b3a5965c474f72a536b7cd08ef5e72f97ebdfcfef0450fc",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004625667,
+            "catalog_index_seconds": 0.002101709,
+            "read_processing_seconds": 0.000157875,
+            "genotyping_seconds": 0.0001425,
+            "output_seconds": 0.001506542
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:25.905264+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/baseline/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/baseline/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t8/baseline/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            0,
+            0
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:25.954642+00:00",
+          "wall_seconds": 0.046971665999999995,
+          "user_seconds": 0.027364,
+          "system_seconds": 0.005869999999999999,
+          "peak_rss_bytes": 16547840,
+          "wait_status": 0,
+          "stdout_sha256": "e02124e4a1d1b4b5bf36307efd82bb2a95fb6ce5faee7b169dee3d46dd481c02",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004574583,
+            "catalog_index_seconds": 0.011349291,
+            "read_processing_seconds": 0.000141417,
+            "genotyping_seconds": 3.5834e-05,
+            "output_seconds": 0.001546459
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 0.0,
+            "assignments": 0.0,
+            "chunks": 0.0,
+            "peak_active_chunks": 0.0,
+            "peak_charged_cache_bytes": 0.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.0,
+            "reduction_worker_seconds": 0.0,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 0.0,
+            "peak_raw_bytes": 0.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 0.0,
+            "peak_resident_bytes": 0.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.1833e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:26.162943+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/candidate/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/candidate/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/candidate/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:26.168148+00:00",
+          "wall_seconds": 0.050534666000000006,
+          "user_seconds": 0.027909,
+          "system_seconds": 0.0058779999999999995,
+          "peak_rss_bytes": 16596992,
+          "wait_status": 0,
+          "stdout_sha256": "fb88b7c128d626837f7630579d814c33e88612f80a29b5745e3ef5f93b9de0f6",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004703584,
+            "catalog_index_seconds": 0.011901083,
+            "read_processing_seconds": 0.00010425,
+            "genotyping_seconds": 4.925e-05,
+            "output_seconds": 0.001494125
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:26.377946+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/baseline/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/baseline/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-01/t1/baseline/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            0,
+            0
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:26.434542+00:00",
+          "wall_seconds": 0.041330166,
+          "user_seconds": 0.03259,
+          "system_seconds": 0.006960999999999999,
+          "peak_rss_bytes": 16646144,
+          "wait_status": 0,
+          "stdout_sha256": "83f3214a16f9de18cbc39ab1b243270cf84c1256f57174ab331c72522101b615",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004705042,
+            "catalog_index_seconds": 0.002124167,
+            "read_processing_seconds": 0.000164292,
+            "genotyping_seconds": 0.000128833,
+            "output_seconds": 0.001646667
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:26.636424+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/baseline/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/baseline/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/baseline/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:26.641804+00:00",
+          "wall_seconds": 0.038336250000000016,
+          "user_seconds": 0.032635,
+          "system_seconds": 0.006503,
+          "peak_rss_bytes": 16613376,
+          "wait_status": 0,
+          "stdout_sha256": "6ed0f8e480b48f63b32fb29131caaf6208c6d6df3f7d5865a9a9ccfb88cb168f",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004991208,
+            "catalog_index_seconds": 0.002243375,
+            "read_processing_seconds": 0.000143625,
+            "genotyping_seconds": 0.000115416,
+            "output_seconds": 0.001519833
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 0.0,
+            "assignments": 0.0,
+            "chunks": 0.0,
+            "peak_active_chunks": 0.0,
+            "peak_charged_cache_bytes": 0.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.0,
+            "reduction_worker_seconds": 0.0,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 0.0,
+            "peak_raw_bytes": 0.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 0.0,
+            "peak_resident_bytes": 0.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.4167e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:26.839019+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/candidate/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/candidate/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t8/candidate/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            0,
+            0
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:26.895789+00:00",
+          "wall_seconds": 0.051123583,
+          "user_seconds": 0.027954,
+          "system_seconds": 0.0061979999999999995,
+          "peak_rss_bytes": 16629760,
+          "wait_status": 0,
+          "stdout_sha256": "be8ed3f3cd013696548df5966b2e96c5ce02d9e6dcb4e22e09dc0bcea46c0b71",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004725834,
+            "catalog_index_seconds": 0.011889625,
+            "read_processing_seconds": 0.00010525,
+            "genotyping_seconds": 6.3334e-05,
+            "output_seconds": 0.001913667
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 0,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:27.106293+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/baseline/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/baseline/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/baseline/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:20:27.111697+00:00",
+          "wall_seconds": 0.049797167,
+          "user_seconds": 0.027249,
+          "system_seconds": 0.0056229999999999995,
+          "peak_rss_bytes": 16531456,
+          "wait_status": 0,
+          "stdout_sha256": "d1bca1533931a2cdf65eabaa2dd9773f3e3ad843a31f2da67779a9f8231d0ba8",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.004569333,
+            "catalog_index_seconds": 0.011405166,
+            "read_processing_seconds": 0.000182875,
+            "genotyping_seconds": 3.5458e-05,
+            "output_seconds": 0.001603208
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 0.0,
+            "assignments": 0.0,
+            "chunks": 0.0,
+            "peak_active_chunks": 0.0,
+            "peak_charged_cache_bytes": 0.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.0,
+            "reduction_worker_seconds": 0.0,
+            "publisher_assisted_chunks": 0.0
+          },
+          "pending_mates": {
+            "peak_reads": 0.0,
+            "peak_raw_bytes": 0.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 0.0,
+            "peak_resident_bytes": 0.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.3791e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:20:27.320544+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/candidate/result.vcf",
+              "bytes": 22331,
+              "sha256": "f0cc1ff18b6bbedfffc0c85dcf308021f97fb89ed11392ce5cc0a9f2b98d3925",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/candidate/result.json",
+              "bytes": 69041,
+              "sha256": "d4602656e4c5e6445a3a7fc46feebbcccfd5706b0f4cda85b8524865e6add666",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/empty-input/attempt-001/round-02/t1/candidate/result_realigned.bam",
+              "bytes": 103,
+              "sha256": "e866306fca62853ddbd2c587bb2628d8ab8b690d0c2d6278ae61476f68000ec2",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            0,
+            0
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "compressed_bytes_identical": true,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+      "bytes": 2046800,
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reads.bam",
+      "bytes": 148,
+      "sha256": "5f9cf0c91c0a84156abe46fda246aadc3a7ac517501a44007207cd3145aeb57b"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa",
+      "bytes": 533037,
+      "sha256": "012f149068b407f8893e180479ff1359b2597b2407f5e499ae3af90ee67b2721"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/catalog.json",
+      "bytes": 18895,
+      "sha256": "0b8404e780d6ef77a1eccae379901658000c89143840b7e7e3d044223b6baaf5"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/stream-extremes/empty-input/reference.fa.fai",
+      "bytes": 25,
+      "sha256": "ef33adfec38e60bb0dbf74a53515cafacfdc5ca20201b23e22b9b3d5aef948b7"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29361,
+      "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 11663,
+      "sha256": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      1,
+      8
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      1
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "1": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 0.05063316700000001,
+            "candidate_median": 0.049797167,
+            "baseline_max": 0.051123583,
+            "candidate_max": 0.050227416000000025,
+            "paired_deltas": [
+              -0.000405750999999982,
+              -0.0035630000000000106,
+              -0.001326415999999997
+            ],
+            "paired_ratios": [
+              0.9919864582043627,
+              0.9294939438206634,
+              0.9740547136533838
+            ],
+            "paired_median_ratio": 0.9740547136533838,
+            "paired_ratio_bootstrap_95": [
+              0.9294939438206634,
+              0.9919864582043627
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 0.033787,
+            "candidate_median": 0.033234,
+            "baseline_max": 0.034152,
+            "candidate_max": 0.033405,
+            "paired_deltas": [
+              -0.00035700000000000315,
+              -0.0005529999999999979,
+              -0.0012800000000000034
+            ],
+            "paired_ratios": [
+              0.9894259818731117,
+              0.983632758161423,
+              0.9625204966034199
+            ],
+            "paired_median_ratio": 0.983632758161423,
+            "paired_ratio_bootstrap_95": [
+              0.9625204966034199,
+              0.9894259818731117
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 16596992,
+            "candidate_median": 16547840,
+            "baseline_max": 16629760,
+            "candidate_max": 16547840,
+            "paired_deltas": [
+              -32768,
+              -49152,
+              -98304
+            ],
+            "paired_ratios": [
+              0.9980237154150198,
+              0.9970384995064165,
+              0.994088669950739
+            ],
+            "paired_median_ratio": 0.9970384995064165,
+            "paired_ratio_bootstrap_95": [
+              0.994088669950739,
+              0.9980237154150198
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.004703584,
+            "candidate_median": 0.004574583,
+            "baseline_max": 0.004725834,
+            "candidate_max": 0.004798167,
+            "paired_deltas": [
+              0.00014991700000000028,
+              -0.00012900100000000012,
+              -0.00015650099999999986
+            ],
+            "paired_ratios": [
+              1.032252353036089,
+              0.9725738925891405,
+              0.9668839404854255
+            ],
+            "paired_median_ratio": 0.9725738925891405,
+            "paired_ratio_bootstrap_95": [
+              0.9668839404854255,
+              1.032252353036089
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.011889625,
+            "candidate_median": 0.011391459,
+            "baseline_max": 0.011901083,
+            "candidate_max": 0.011405166,
+            "paired_deltas": [
+              -0.0004804579999999996,
+              -0.0005517920000000006,
+              -0.0004844589999999996
+            ],
+            "paired_ratios": [
+              0.95952987205015,
+              0.953635143961268,
+              0.9592536349968986
+            ],
+            "paired_median_ratio": 0.9592536349968986,
+            "paired_ratio_bootstrap_95": [
+              0.953635143961268,
+              0.95952987205015
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 4.925e-05,
+            "candidate_median": 3.5834e-05,
+            "baseline_max": 6.3334e-05,
+            "candidate_max": 3.7875e-05,
+            "paired_deltas": [
+              -9.541000000000002e-06,
+              -1.3415999999999995e-05,
+              -2.7876000000000002e-05
+            ],
+            "paired_ratios": [
+              0.7987810021933525,
+              0.7275939086294417,
+              0.559857264660372
+            ],
+            "paired_median_ratio": 0.7275939086294417,
+            "paired_ratio_bootstrap_95": [
+              0.559857264660372,
+              0.7987810021933525
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.001527458,
+            "candidate_median": 0.001546459,
+            "baseline_max": 0.001913667,
+            "candidate_max": 0.001603208,
+            "paired_deltas": [
+              1.6792000000000066e-05,
+              5.233400000000002e-05,
+              -0.0003104589999999999
+            ],
+            "paired_ratios": [
+              1.0109934282972102,
+              1.035026520538777,
+              0.8377674903731945
+            ],
+            "paired_median_ratio": 1.0109934282972102,
+            "paired_ratio_bootstrap_95": [
+              0.8377674903731945,
+              1.035026520538777
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 0.00010525,
+            "candidate_median": 0.000179208,
+            "baseline_max": 0.000129375,
+            "candidate_max": 0.000182875,
+            "paired_deltas": [
+              4.983300000000002e-05,
+              3.716699999999999e-05,
+              7.762500000000002e-05
+            ],
+            "paired_ratios": [
+              1.3851826086956525,
+              1.3565179856115106,
+              1.7375296912114016
+            ],
+            "paired_median_ratio": 1.3851826086956525,
+            "paired_ratio_bootstrap_95": [
+              1.3565179856115106,
+              1.7375296912114016
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 20000000,
+          "paired_actual_delta_bytes": [
+            -32768,
+            -49152,
+            -98304
+          ],
+          "difference_of_medians_bytes": -49152,
+          "difference_of_maxima_bytes": -81920,
+          "median_paired_delta_bytes": -49152,
+          "largest_paired_delta_bytes": -32768,
+          "paired_candidate_limits_bytes": [
+            36580608,
+            36596992,
+            36629760
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      },
+      "8": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 0.04105249999999999,
+            "candidate_median": 0.03946691700000002,
+            "baseline_max": 0.041330166,
+            "candidate_max": 0.04472245900000002,
+            "paired_deltas": [
+              -0.0015855829999999738,
+              0.007128167000000019,
+              -0.0029939159999999854
+            ],
+            "paired_ratios": [
+              0.9613767005663486,
+              1.1896076936360451,
+              0.9275609974564345
+            ],
+            "paired_median_ratio": 0.9613767005663486,
+            "paired_ratio_bootstrap_95": [
+              0.9275609974564345,
+              1.1896076936360451
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 0.03900699999999999,
+            "candidate_median": 0.040443,
+            "baseline_max": 0.039551,
+            "candidate_max": 0.040612,
+            "paired_deltas": [
+              0.0016050000000000092,
+              0.0019720000000000085,
+              -0.00041300000000000364
+            ],
+            "paired_ratios": [
+              1.041146460891635,
+              1.0512593901900136,
+              0.9895577861495284
+            ],
+            "paired_median_ratio": 1.041146460891635,
+            "paired_ratio_bootstrap_95": [
+              0.9895577861495284,
+              1.0512593901900136
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 16695296,
+            "candidate_median": 16580608,
+            "baseline_max": 16695296,
+            "candidate_max": 16613376,
+            "paired_deltas": [
+              -114688,
+              -163840,
+              -32768
+            ],
+            "paired_ratios": [
+              0.9931305201177625,
+              0.9901864573110893,
+              0.9980314960629921
+            ],
+            "paired_median_ratio": 0.9931305201177625,
+            "paired_ratio_bootstrap_95": [
+              0.9901864573110893,
+              0.9980314960629921
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.004627042,
+            "candidate_median": 0.005230125,
+            "baseline_max": 0.004705042,
+            "candidate_max": 0.005326417,
+            "paired_deltas": [
+              0.0006030830000000008,
+              0.00070075,
+              0.00028616599999999916
+            ],
+            "paired_ratios": [
+              1.130338777992506,
+              1.1514916659586607,
+              1.0608211361343851
+            ],
+            "paired_median_ratio": 1.130338777992506,
+            "paired_ratio_bootstrap_95": [
+              1.0608211361343851,
+              1.1514916659586607
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.002101709,
+            "candidate_median": 0.002243375,
+            "baseline_max": 0.002124167,
+            "candidate_max": 0.002589667,
+            "paired_deltas": [
+              6.733400000000006e-05,
+              0.0004879579999999997,
+              0.00011920799999999999
+            ],
+            "paired_ratios": [
+              1.0321045823433856,
+              1.2321720085892003,
+              1.056119881346429
+            ],
+            "paired_median_ratio": 1.056119881346429,
+            "paired_ratio_bootstrap_95": [
+              1.0321045823433856,
+              1.2321720085892003
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.000134167,
+            "candidate_median": 0.000115416,
+            "baseline_max": 0.0001425,
+            "candidate_max": 0.000123834,
+            "paired_deltas": [
+              -1.0333000000000011e-05,
+              -5.2916999999999995e-05,
+              -1.3416999999999997e-05
+            ],
+            "paired_ratios": [
+              0.9229840422756713,
+              0.6286526315789474,
+              0.895857427832931
+            ],
+            "paired_median_ratio": 0.895857427832931,
+            "paired_ratio_bootstrap_95": [
+              0.6286526315789474,
+              0.9229840422756713
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.001612542,
+            "candidate_median": 0.001596542,
+            "baseline_max": 0.001646667,
+            "candidate_max": 0.001895791,
+            "paired_deltas": [
+              -1.5999999999999955e-05,
+              0.00038924899999999993,
+              -0.00012683400000000015
+            ],
+            "paired_ratios": [
+              0.9900777778191204,
+              1.258372484802946,
+              0.9229753192357653
+            ],
+            "paired_median_ratio": 0.9900777778191204,
+            "paired_ratio_bootstrap_95": [
+              0.9229753192357653,
+              1.258372484802946
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 0.000157875,
+            "candidate_median": 0.00017075,
+            "baseline_max": 0.000164292,
+            "candidate_max": 0.000173459,
+            "paired_deltas": [
+              2.3292000000000007e-05,
+              1.5583999999999992e-05,
+              -2.0666999999999984e-05
+            ],
+            "paired_ratios": [
+              1.1579568419482158,
+              1.0987110055423595,
+              0.8742056825651889
+            ],
+            "paired_median_ratio": 1.0987110055423595,
+            "paired_ratio_bootstrap_95": [
+              0.8742056825651889,
+              1.1579568419482158
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            -114688,
+            -163840,
+            -32768
+          ],
+          "difference_of_medians_bytes": -114688,
+          "difference_of_maxima_bytes": -81920,
+          "median_paired_delta_bytes": -114688,
+          "largest_paired_delta_bytes": -32768,
+          "paired_candidate_limits_bytes": [
+            176695296,
+            176695296,
+            176646144
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": false
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.2333759697947755,
+            1.3442111371588008,
+            1.2369556657478704
+          ],
+          "median_wall_speedup": 1.2369556657478704,
+          "median_compute_scaling_efficiency": 0.1546194582184838,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.272646049348116,
+            1.0502925610597569,
+            1.29895769669699
+          ],
+          "median_wall_speedup": 1.272646049348116,
+          "median_compute_scaling_efficiency": 0.1590807561685145,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": true,
+    "all_observed_peak_rss_within_allowance": true,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T20:20:27.378539+00:00"
+}

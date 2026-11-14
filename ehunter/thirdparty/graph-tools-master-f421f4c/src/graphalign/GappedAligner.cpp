@@ -102,7 +102,9 @@ list<GraphAlignment> GappedGraphAligner::align(const string& query, AlignerSelec
 {
     try
     {
-        optional<AlignmentSeed> optional_seed = searchForAlignmentSeed(query);
+        const auto* seedFacet = alignerSelector.seedSearchFacet();
+        optional<AlignmentSeed> optional_seed
+            = seedFacet ? searchForAlignmentSeed(query, seedFacet) : searchForAlignmentSeed(query);
 
         if (optional_seed)
         {
@@ -187,16 +189,30 @@ private:
 
 optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignmentSeed(const string& query) const
 {
+    return searchForAlignmentSeed(query, nullptr);
+}
+
+optional<GappedGraphAligner::AlignmentSeed>
+GappedGraphAligner::searchForAlignmentSeed(const string& query, const std::ctype<char>* snapshotFacet) const
+{
     string upperQuery = query;
     if (!upperQuery.empty())
     {
-        // Resolve the same current-locale facet once per read. Keep the scalar
-        // operation used by boost::to_upper: a custom facet may implement its
-        // range overload differently from its single-character overload.
-        const std::locale locale;
-        const auto& facet = std::use_facet<std::ctype<char>>(locale);
-        for (char& base : upperQuery)
-            base = facet.toupper(base);
+        // Keep the scalar operation: a custom facet can implement its range
+        // overload differently. Only explicitly configured selectors bypass
+        // constructing a fresh current-global locale for this read.
+        if (snapshotFacet)
+        {
+            for (char& base : upperQuery)
+                base = snapshotFacet->toupper(base);
+        }
+        else
+        {
+            const std::locale locale;
+            const auto& facet = std::use_facet<std::ctype<char>>(locale);
+            for (char& base : upperQuery)
+                base = facet.toupper(base);
+        }
     }
 
     optional<GappedGraphAligner::AlignmentSeed> optional_seed;

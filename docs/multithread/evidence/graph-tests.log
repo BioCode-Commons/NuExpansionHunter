@@ -1,0 +1,71 @@
+# Publication evidence copy
+# Original file: <WORKSPACE>/work/parallel-redesign/graph-tests7.log
+# Original SHA-256: da635847fe641531dff7ebb8ced44ed73ff299114fbf28fe22bf2ed93241cab8
+# Redaction: Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.
+# Scope: 30 GraphTools test programs passed before the streaming-only v6 item-release change.
+# Original log follows.
+Test project <WORKSPACE>/work/build-candidate/thirdparty/graph-tools-master-f421f4c
+      Start  1: SequenceOperationsTest
+ 1/30 Test  #1: SequenceOperationsTest ...........   Passed    0.01 sec
+      Start  2: BaseMatchingTest
+ 2/30 Test  #2: BaseMatchingTest .................   Passed    0.01 sec
+      Start  3: OperationTest
+ 3/30 Test  #3: OperationTest ....................   Passed    0.01 sec
+      Start  4: OperationOperationsTest
+ 4/30 Test  #4: OperationOperationsTest ..........   Passed    0.01 sec
+      Start  5: LinearAlignmentTest
+ 5/30 Test  #5: LinearAlignmentTest ..............   Passed    0.01 sec
+      Start  6: LinearAlignmentOperationsTest
+ 6/30 Test  #6: LinearAlignmentOperationsTest ....   Passed    0.01 sec
+      Start  7: TracebackMatrixTest
+ 7/30 Test  #7: TracebackMatrixTest ..............   Passed    0.01 sec
+      Start  8: TracebackRunnerTest
+ 8/30 Test  #8: TracebackRunnerTest ..............   Passed    0.01 sec
+      Start  9: PinnedAlignerTest
+ 9/30 Test  #9: PinnedAlignerTest ................   Passed    0.01 sec
+      Start 10: DagAlignerTest
+10/30 Test #10: DagAlignerTest ...................   Passed    0.02 sec
+      Start 11: PinnedDagAlignerTest
+11/30 Test #11: PinnedDagAlignerTest .............   Passed    0.01 sec
+      Start 12: GraphAlignmentTest
+12/30 Test #12: GraphAlignmentTest ...............   Passed    0.01 sec
+      Start 13: GraphAlignmentOperationsTest
+13/30 Test #13: GraphAlignmentOperationsTest .....   Passed    0.01 sec
+      Start 14: GraphTest
+14/30 Test #14: GraphTest ........................   Passed    0.00 sec
+      Start 15: GraphBuildersTest
+15/30 Test #15: GraphBuildersTest ................   Passed    0.01 sec
+      Start 16: PathTest
+16/30 Test #16: PathTest .........................   Passed    0.01 sec
+      Start 17: PathOperationsTest
+17/30 Test #17: PathOperationsTest ...............   Passed    0.01 sec
+      Start 18: KmerEncodingTest
+18/30 Test #18: KmerEncodingTest .................   Passed    0.01 sec
+      Start 19: KmerIndexTest
+19/30 Test #19: KmerIndexTest ....................   Passed    0.01 sec
+      Start 20: KmerIndexOperationsTest
+20/30 Test #20: KmerIndexOperationsTest ..........   Passed    0.01 sec
+      Start 21: GappedAlignerTest
+21/30 Test #21: GappedAlignerTest ................   Passed    0.22 sec
+      Start 22: GraphCoordinatesTest
+22/30 Test #22: GraphCoordinatesTest .............   Passed    0.01 sec
+      Start 23: GraphOperationsTest
+23/30 Test #23: GraphOperationsTest ..............   Passed    0.01 sec
+      Start 24: PathFamilyTest
+24/30 Test #24: PathFamilyTest ...................   Passed    0.01 sec
+      Start 25: PathFamilyOperationsTest
+25/30 Test #25: PathFamilyOperationsTest .........   Passed    0.01 sec
+      Start 26: IntervalBufferTest
+26/30 Test #26: IntervalBufferTest ...............   Passed    0.04 sec
+      Start 27: IntervalListTest
+27/30 Test #27: IntervalListTest .................   Passed    0.03 sec
+      Start 28: GraphReferenceMappingTest
+28/30 Test #28: GraphReferenceMappingTest ........   Passed    0.01 sec
+      Start 29: DepthTestTest
+29/30 Test #29: DepthTestTest ....................   Passed    0.01 sec
+      Start 30: GraphJsonTest
+30/30 Test #30: GraphJsonTest ....................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 30
+
+Total Test time (real) =   0.51 sec

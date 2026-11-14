@@ -1,0 +1,179 @@
+{
+  "status": "built; no full-application comparison run by this script",
+  "purpose": "controlled owner-retention ablation; not candidate",
+  "only_source_change": "Borrowed successors/predecessors pass retainOwner=true instead of false.",
+  "schema_change": false,
+  "mapped_record_layout_change": false,
+  "source_sha256": {
+    "original/Graph.cpp": "06136341f9f2b3ef79def4edc88df469ad5e4a871f974b7e86b4a94820e9ac7a",
+    "owner-retained/Graph.cpp": "8099d052e72e966b2ed6f18762891a8ba3e76cbbea5db0a461902851d478beed"
+  },
+  "input_sha256": {
+    "<WORKSPACE>/work/build-candidate/thirdparty/graph-tools-master-f421f4c/libgraphtools.a": "744f35721214631c6d61e1139f4d92f606d1e03754ddc95d6a1e7974046526af",
+    "<WORKSPACE>/work/build-candidate/thirdparty/graph-tools-master-f421f4c/CMakeFiles/graphtools.dir/src/graphcore/Graph.cpp.o": "0117c0716624bd4a5a0b652005b2803704e98b2a458945c0325244dc38a25dc9",
+    "<WORKSPACE>/work/build-candidate/ExpansionHunter": "206f31c24e2f94d7d618c44c6dbe3f4e6a3774f48f78284441be5b3eb4486c09",
+    "<WORKSPACE>/work/build-candidate/build.ninja": "6f55f67fcb63e419cadced7631713841110fee50d342573ac536f31d87b09107",
+    "<WORKSPACE>/work/build-candidate/CMakeFiles/ExpansionHunter.dir/app/ExpansionHunter.cpp.o": "06bd80b09e8e57288508d523081877cd699a28fa386b764fc256be45c360dbf4",
+    "<WORKSPACE>/work/build-candidate/libExpansionHunterLib.a": "f4f11d33852c4f0e593097e4445d93f7aad5d9d18a94f5f1f56d9123c3d3cdf2",
+    "<WORKSPACE>/work/toolchain/env/lib/libhts.a": "60c15e97b8f8d8325fc99f1ae09183707206b90d40571fade6a59cdbc08d5c62",
+    "<WORKSPACE>/work/toolchain/env/lib/libboost_program_options.dylib": "a0462c716b123a669b95c5be8bfd120936ccb8d391faaf97c3477f9f0925fdc6",
+    "<WORKSPACE>/work/toolchain/env/lib/libboost_filesystem.dylib": "6f965d1181454fdb41aa44ccd8c33ca9e50654b777277f637e05ae84d9449784",
+    "<WORKSPACE>/work/toolchain/env/lib/libboost_system.dylib": "25e24c7fba4d254af9336e4661945c54fe93d8ad0fdf5a7f73e5a51c0cededff",
+    "<WORKSPACE>/work/toolchain/env/lib/liblzma.dylib": "87da687196fd317ce12ef7f68cde211abfb9de1246eb03687931078251287cd1",
+    "<WORKSPACE>/work/toolchain/env/lib/libcurl.dylib": "a9c2bc2122b4d29fe3af48ced8151c5935c70eed36b90d9d18e4f05b9cabacfb",
+    "<WORKSPACE>/work/toolchain/env/lib/libz.dylib": "429e99660514c8f6a70bc2919d2fd3a770993051b167549bab935aa1308b644f",
+    "<WORKSPACE>/work/toolchain/env/lib/libbz2.dylib": "69cd488fe49276d1b920d716d265ea42e4ffabf8258c33931407a5dc89a1f523",
+    "<WORKSPACE>/work/toolchain/env/lib/libspdlog.1.8.5.dylib": "288ac71c280b0b32afebbc09f878c8eda9ba244ae79d136fb524fb3a3d49968c",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_cord.2103.0.1.dylib": "b1c8dcb25a7de773adc8ecec42119440e85a09f780f79d53e56c5dbd844d400a",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_hash.2103.0.1.dylib": "a7cd359f56bb8ab800a087dc5d831d0e0a2f460463b234819a04611c7d1c01bd",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_city.2103.0.1.dylib": "18ffb8752ff6ba33805f8f574d7c34e5052b8bf32ce83c1f2c66ff9fbd9cedb8",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_bad_variant_access.2103.0.1.dylib": "19824895f324c2fff44d1b3d5e512c01daf5e9c503b82198af185fa5fd6a8b24",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_wyhash.2103.0.1.dylib": "31e4a25e3835c070455b829fa88cb1b782fdc7a852708d1cbcc944c9258b5224",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_raw_hash_set.2103.0.1.dylib": "ceeef7b48c409b316d32ad42871b8288266c1821406f77fe32b1a669859f74ab",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_bad_optional_access.2103.0.1.dylib": "5fc5366578e42af5c0516f01cc3a57ac13e0cbff9bcf8c52f926f5c887e332ae",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_hashtablez_sampler.2103.0.1.dylib": "cab23ea029ce25d7fe01c007624efcfbbab8e03d629d99134e57ca07a0fc9302",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_exponential_biased.2103.0.1.dylib": "5abe06deddf7216293b5528134379384edcbb2ae53b539b433de066da4789834",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_synchronization.2103.0.1.dylib": "c6e77efa7f24af3af930dfbcb92483e7caf2a0228c5cfe593b45563da039cd6b",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_graphcycles_internal.2103.0.1.dylib": "2945c69cffc6e2e6c3a65c37c4c275a50b77127a02c8dec26870e0dba8ff76a3",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_stacktrace.2103.0.1.dylib": "566ec1699e8d16629aa3187ab9442bf14a113f6befcf58f4641ffcad23606982",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_symbolize.2103.0.1.dylib": "ce374ea403d4e040db28c68c7c0bd9015ed22cb81e6833549afb6661684c2d74",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_malloc_internal.2103.0.1.dylib": "40fae5605d96b99c059a2d9b323f496ae697e670f708733a499c5510c1e82426",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_debugging_internal.2103.0.1.dylib": "12c3fe25ad71d76d60e05e72fc72c018c29aef698e77ab815888ebb7a7fac0eb",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_demangle_internal.2103.0.1.dylib": "2f2633e60b455682120cc0580a97792e01ff09088f5a55086145e2c197b32442",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_time.2103.0.1.dylib": "d164a0d8e90a023913b51e9bfe5cc4cd08b4a24d91b4f7d24a1a0222d6eee4ef",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_strings.2103.0.1.dylib": "0a71653b8d50dce4f1a706b5374b7f3d59e944289550ef3e3abf5af19c2fc9f8",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_strings_internal.2103.0.1.dylib": "6d1eea4099931c01415980e30dd7d696cea9b9aee484bf0470247b10464e6541",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_throw_delegate.2103.0.1.dylib": "3861276684b20a6b21a3736763a51ea35f2941ed95799882a53a5446a419ed8f",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_base.2103.0.1.dylib": "eeab10b67da88783a37e2dcf138de8167d50314df35319670088003acc6ba263",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_spinlock_wait.2103.0.1.dylib": "d3f41915727b058163f45017647a6a8361acad121dd1bd25a9f1959b5f7fc72e",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_raw_logging_internal.2103.0.1.dylib": "3b52ceb20164616b2c0bd1cc0f93b137789a565a7be4e7dab7fa6e34fcf2bb56",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_log_severity.2103.0.1.dylib": "97a01de5c5956e202e57128de6724be5053cbb328bfd1dc163ae913bedcc37bb",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_int128.2103.0.1.dylib": "2109aeee6fb94d208b232985307cac34b2209c00f9da583270f5ddcf49effff7",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_civil_time.2103.0.1.dylib": "f5d058233298b228ca729426e6ad7c01ea38a76a0e641977fbd35117127bbc2a",
+    "<WORKSPACE>/work/toolchain/env/lib/libabsl_time_zone.2103.0.1.dylib": "a98aa393f82e121e6e6b31a18a3ada43f23b01bc6b5ad366f36d7c337d9cd843"
+  },
+  "changed_archive_members": [
+    "Graph.cpp.o"
+  ],
+  "archive_member_sha256_original_and_ablated": {
+    "GappedAligner.cpp.o": [
+      "0a6bf41af45e0b7178437dc5e68e3f1644251c3f7a05f3650eaeccf5e902bfbc",
+      "0a6bf41af45e0b7178437dc5e68e3f1644251c3f7a05f3650eaeccf5e902bfbc"
+    ],
+    "GraphAlignment.cpp.o": [
+      "bbbfa46ca294772c39a1cb9639fa5bc49af190ae543b2032f9331217cc45a16c",
+      "bbbfa46ca294772c39a1cb9639fa5bc49af190ae543b2032f9331217cc45a16c"
+    ],
+    "GraphAlignmentOperations.cpp.o": [
+      "41c782d589dc4437dae21ccbfce25c760e207ba104b1b29c98539c0c1f8c6ad9",
+      "41c782d589dc4437dae21ccbfce25c760e207ba104b1b29c98539c0c1f8c6ad9"
+    ],
+    "KmerIndex.cpp.o": [
+      "47c5db94e1f6265a7c094bee5652f9ffb0d8bafd23396bc04eb7438d3a2c4aae",
+      "47c5db94e1f6265a7c094bee5652f9ffb0d8bafd23396bc04eb7438d3a2c4aae"
+    ],
+    "KmerIndexOperations.cpp.o": [
+      "07a0039154d2c0e9397c2970b90a730e2f5406372ae7ec43fa8b622ebbac3ee0",
+      "07a0039154d2c0e9397c2970b90a730e2f5406372ae7ec43fa8b622ebbac3ee0"
+    ],
+    "LinearAlignment.cpp.o": [
+      "d1de758b5a93575734b4e74efd203154ee000f405f00a1a33da9e074d9514764",
+      "d1de758b5a93575734b4e74efd203154ee000f405f00a1a33da9e074d9514764"
+    ],
+    "LinearAlignmentOperations.cpp.o": [
+      "0e6ab4c675f75a59f8a04af28a4dd82e400976c987c3446e6baa3ddcb5d9fedb",
+      "0e6ab4c675f75a59f8a04af28a4dd82e400976c987c3446e6baa3ddcb5d9fedb"
+    ],
+    "Operation.cpp.o": [
+      "fe32b9c4d67d5ae530f077d60adfa6e363cc16f5e393f7d8832c2fb9ce2db3c6",
+      "fe32b9c4d67d5ae530f077d60adfa6e363cc16f5e393f7d8832c2fb9ce2db3c6"
+    ],
+    "OperationOperations.cpp.o": [
+      "14210383814b0c5d6997b893120f5242bd82e8f3b27d7ba1561b9b9c8e47223f",
+      "14210383814b0c5d6997b893120f5242bd82e8f3b27d7ba1561b9b9c8e47223f"
+    ],
+    "PinnedAligner.cpp.o": [
+      "f5b6f6df1b0b7791f50c199b8c4c87e04e1604573dbed7d18ad306cda17b5f1c",
+      "f5b6f6df1b0b7791f50c199b8c4c87e04e1604573dbed7d18ad306cda17b5f1c"
+    ],
+    "TracebackMatrix.cpp.o": [
+      "c01c9bacb242816407a9b9830c63e1de2cdcbfb5c6027b8c68cfae15dbc776f2",
+      "c01c9bacb242816407a9b9830c63e1de2cdcbfb5c6027b8c68cfae15dbc776f2"
+    ],
+    "TracebackRunner.cpp.o": [
+      "17f0df3edb8f37e47f19b4a7ea56c58747cc8c5cb368fa99e512424236ca3937",
+      "17f0df3edb8f37e47f19b4a7ea56c58747cc8c5cb368fa99e512424236ca3937"
+    ],
+    "PenaltyMatrix.cpp.o": [
+      "9a381d78c9cbf37c55a44ea0f57e942e5ef7b7f6c60a3214fed426e2fff44a24",
+      "9a381d78c9cbf37c55a44ea0f57e942e5ef7b7f6c60a3214fed426e2fff44a24"
+    ],
+    "Graph.cpp.o": [
+      "0117c0716624bd4a5a0b652005b2803704e98b2a458945c0325244dc38a25dc9",
+      "931d99f3ba745e7da5635536a0eb2a61abaafc2baebc3cc3143aeebc67acebc3"
+    ],
+    "GraphBuilders.cpp.o": [
+      "48dd94fb0df3ede03fadb975868f23cf43abf6bb92a1442f637f53ca6f3639ed",
+      "48dd94fb0df3ede03fadb975868f23cf43abf6bb92a1442f637f53ca6f3639ed"
+    ],
+    "GraphCoordinates.cpp.o": [
+      "2cad6a758ddd11ddcda02f2962cf05c7f39b4724cd2e742a8031b32823bed623",
+      "2cad6a758ddd11ddcda02f2962cf05c7f39b4724cd2e742a8031b32823bed623"
+    ],
+    "GraphOperations.cpp.o": [
+      "3868359b79c6b9fb73e7bf5ba45fdaf2f8cac444cf7bd4f662a86d5874c6cb6e",
+      "3868359b79c6b9fb73e7bf5ba45fdaf2f8cac444cf7bd4f662a86d5874c6cb6e"
+    ],
+    "GraphReferenceMapping.cpp.o": [
+      "abc74e86233744d3aada8ccb39e9f1040185ae5371e43195220f5ba4d7936349",
+      "abc74e86233744d3aada8ccb39e9f1040185ae5371e43195220f5ba4d7936349"
+    ],
+    "Path.cpp.o": [
+      "ebe99938a43506785bdc7e572a51fe647a809840bd8e0688a05f022024c09cf4",
+      "ebe99938a43506785bdc7e572a51fe647a809840bd8e0688a05f022024c09cf4"
+    ],
+    "PathFamily.cpp.o": [
+      "9a6dd6b8b73a83b1a9dd7b57ec568cd52d55344b996ecb3b33c0cf2390f1fd18",
+      "9a6dd6b8b73a83b1a9dd7b57ec568cd52d55344b996ecb3b33c0cf2390f1fd18"
+    ],
+    "PathFamilyOperations.cpp.o": [
+      "a7f34fdc10bf121359b4f4bb5a427caea2af26cff65b3b5c8775e33436818675",
+      "a7f34fdc10bf121359b4f4bb5a427caea2af26cff65b3b5c8775e33436818675"
+    ],
+    "PathOperations.cpp.o": [
+      "137feca4fb14bc7887ded0fc3fca97722905e664aa50a86fbb795b016215aff6",
+      "137feca4fb14bc7887ded0fc3fca97722905e664aa50a86fbb795b016215aff6"
+    ],
+    "AlignmentWriter.cpp.o": [
+      "e10761bdeadf12c8e3649ae42660d69210acc1615d6b8e599133a1918210453f",
+      "e10761bdeadf12c8e3649ae42660d69210acc1615d6b8e599133a1918210453f"
+    ],
+    "GraphJson.cpp.o": [
+      "ca22aec53e79eac9c64327829e18db9357d86d121881d128d4061ff3d3deea4b",
+      "ca22aec53e79eac9c64327829e18db9357d86d121881d128d4061ff3d3deea4b"
+    ],
+    "DepthTest.cpp.o": [
+      "83678d27211602656defaf89c05793a67427c9a8b9567e6ce1dc0e9de95ce7c6",
+      "83678d27211602656defaf89c05793a67427c9a8b9567e6ce1dc0e9de95ce7c6"
+    ],
+    "IntervalBuffer.cpp.o": [
+      "4ef4e1e7d99f74e79620c757ca3294f46c2f4ab5edad59a1a3c25b7806dea6ba",
+      "4ef4e1e7d99f74e79620c757ca3294f46c2f4ab5edad59a1a3c25b7806dea6ba"
+    ],
+    "KmerEncoding.cpp.o": [
+      "dd67d7bf7cee3947f9728de1a687c69561e94ba15dbafb9bd575f461496b6251",
+      "dd67d7bf7cee3947f9728de1a687c69561e94ba15dbafb9bd575f461496b6251"
+    ],
+    "SequenceOperations.cpp.o": [
+      "00f90e5a82a6dcffb184ff2ff03f36dc9095e25c9f9d30d37d68e6fa9e4152db",
+      "00f90e5a82a6dcffb184ff2ff03f36dc9095e25c9f9d30d37d68e6fa9e4152db"
+    ]
+  },
+  "artifact_sha256": {
+    "ExpansionHunter.borrowed-adjacency": "206f31c24e2f94d7d618c44c6dbe3f4e6a3774f48f78284441be5b3eb4486c09",
+    "ExpansionHunter.owner-retained": "af7a0f399c4ab57519286caed7ebf67768d6710cf14cf54e0b84c7f5cd1d1506",
+    "libgraphtools.original.a": "744f35721214631c6d61e1139f4d92f606d1e03754ddc95d6a1e7974046526af",
+    "libgraphtools.owner-retained.a": "3aaa5e521eddd1e2f359761496ac34e20a3f5ec3d51f1bf9b02f92951ca3e91b",
+    "object/Graph.cpp.o": "931d99f3ba745e7da5635536a0eb2a61abaafc2baebc3cc3143aeebc67acebc3"
+  }
+}

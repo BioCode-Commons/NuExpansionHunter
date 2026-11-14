@@ -1,0 +1,14 @@
+{
+  "files": [
+    "README.md",
+    "ehunter/sample/HtsStreamingReadPairQueue.cpp",
+    "ehunter/sample/HtsStreamingReadPairQueue.hh",
+    "ehunter/sample/HtsStreamingSampleAnalysis.cpp",
+    "ehunter/tests/CatalogIndexTest.cpp",
+    "ehunter/tests/ConcurrentQueueTest.cpp",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/KmerIndex.hh",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/KmerIndex.cpp"
+  ],
+  "binary_sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b",
+  "base": "f3b1256"
+}

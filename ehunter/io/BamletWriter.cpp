@@ -23,6 +23,9 @@
 #include "io/BamletWriter.hh"
 
 #include <cstring>
+#include <utility>
+
+#include "spdlog/spdlog.h"
 
 #if defined(__aarch64__) && !defined(EH_DISABLE_BAM_ENCODING_SIMD)
 #include <arm_neon.h>
@@ -46,8 +49,7 @@ using std::to_string;
 namespace ehunter
 {
 
-// Establish the owned HTS compression pool before starting the existing writer
-// thread. A failed setup then unwinds the file without a joinable std::thread.
+// Establish compression and the header before starting the output consumer.
 static htsFile* openBamletFile(const string& path, int compressionThreads)
 {
     std::unique_ptr<htsFile, decltype(&hts_close)> file(hts_open(path.c_str(), "wb"), hts_close);
@@ -82,7 +84,6 @@ BamletWriter::BamletWriter(
     , bamHeader_(bam_hdr_init(), bam_hdr_destroy)
     , contigInfo_(contigInfo)
     , catalog_(regionCatalog)
-    , writeQueue_(maxQueueBytes)
 {
     if (!regionCatalog.mappedBytes().data)
         for (const auto& locusSpec : regionCatalog)
@@ -97,7 +98,10 @@ BamletWriter::BamletWriter(
         const auto& name = contigInfo_.getContigName(index);
         bamContigIds_.push_back(name.empty() ? -1 : bam_name2id(bamHeader_.get(), name.c_str()));
     }
-    writeThread_ = std::thread(&BamletWriter::writeHtsAlignments, this);
+    sink_.reset(new BamRecordSink([this](const bam1_t* record) {
+        if (bam_write1(filePtr_->fp.bgzf, record) <= 0)
+            throw std::logic_error("Cannot write alignment");
+    }, maxQueueBytes));
 }
 
 BamletWriter::~BamletWriter()
@@ -114,16 +118,95 @@ BamletWriter::~BamletWriter()
 
 void BamletWriter::finish()
 {
-    if (writeThread_.joinable())
+    if (sink_)
     {
-        writeQueue_.push(nullptr, 0);
-        writeThread_.join();
+        try
+        {
+            sink_->finish();
+        }
+        catch (...)
+        {
+            if (!finishError_)
+                finishError_ = std::current_exception();
+        }
     }
     const int closeResult = filePtr_ ? hts_close(filePtr_.release()) : 0;
-    if (writeError_)
-        std::rethrow_exception(writeError_);
-    if (closeResult != 0)
-        throw std::runtime_error("Cannot close alignment output");
+    if (closeResult != 0 && !finishError_)
+        finishError_ = std::make_exception_ptr(std::runtime_error("Cannot close alignment output"));
+    if (sink_ && !sinkStatsLogged_)
+    {
+        const auto stats = sink_->statistics();
+        sinkStatsLogged_ = true;
+        spdlog::info("BAM sink: written_records={} peak_resident_bytes={} submit_wait_seconds={} drain_seconds={}",
+            stats.writtenRecords, stats.peakResidentBytes, stats.submitWaitSeconds, stats.drainSeconds);
+    }
+    if (finishError_)
+        std::rethrow_exception(finishError_);
+}
+
+thread_local BamletWriter::Batch* BamletWriter::activeBatch_ = nullptr;
+
+BamletWriter::Batch::Batch(BamletWriter* writer)
+    : writer_(writer)
+{
+    if (writer_)
+    {
+        records_.reserve(128);
+        previous_ = activeBatch_;
+        activeBatch_ = this;
+    }
+}
+
+BamletWriter::Batch::~Batch() noexcept
+{
+    if (writer_ && !finished_ && activeBatch_ == this)
+        activeBatch_ = previous_;
+}
+
+void BamletWriter::Batch::submit()
+{
+    if (records_.empty())
+        return;
+    writer_->sink_->submit(std::move(records_));
+    bytes_ = 0;
+}
+
+void BamletWriter::Batch::append(BamRecordSink::Record record)
+{
+    // Retained producer data stays below 20 decimal MB, except for one large
+    // record. Bound pointer metadata too, even for tiny or zero-length queries.
+    const std::size_t localLimit = 20000000 - 128 * sizeof(BamRecordSink::Record);
+    const auto weight = BamRecordSink::recordBytes(*record);
+    if (!records_.empty() && (records_.size() >= 128 || weight > localLimit
+            || bytes_ > localLimit - weight))
+        submit();
+    records_.push_back(std::move(record));
+    bytes_ += weight;
+}
+
+void BamletWriter::Batch::finish()
+{
+    if (!writer_ || finished_)
+        return;
+    if (activeBatch_ != this)
+        throw std::logic_error("BAM output batches must finish in stack order");
+    activeBatch_ = previous_;
+    finished_ = true;
+    submit();
+}
+
+void BamletWriter::submitRecord(BamRecordSink::Record record)
+{
+    if (activeBatch_ && activeBatch_->writer_ == this)
+        activeBatch_->append(std::move(record));
+    else
+    {
+        BamRecordSink::Records single;
+        single.push_back(std::move(record));
+        // Seeking workers historically observe asynchronous output failures
+        // only through main-thread finish(). Streaming batch submits fail fast.
+        sink_->submit(std::move(single), BamRecordSink::WriteErrorPolicy::kDeferUntilFinish);
+    }
 }
 
 void BamletWriter::writeHeader()
@@ -314,7 +397,7 @@ void BamletWriter::write(
     bool isReversed, bool isMateReversed, const GraphAlignment& alignment)
 {
 
-    std::unique_ptr<bam1_t, decltype(&bam_destroy1)> ownedAlignment(bam_init1(), bam_destroy1);
+    BamRecordSink::Record ownedAlignment(bam_init1());
     if (!ownedAlignment)
         throw std::bad_alloc();
     bam1_t* htsAlignmentPtr = ownedAlignment.get();
@@ -379,33 +462,7 @@ void BamletWriter::write(
     if (appendResult != 0)
         throw std::runtime_error("Cannot append graph alignment BAM tag");
 
-    writeQueue_.push(htsAlignmentPtr, sizeof(bam1_t) + std::size_t(htsAlignmentPtr->m_data));
-    ownedAlignment.release();
-}
-
-void BamletWriter::writeHtsAlignments()
-{
-    bam1_t* htsAlignmentPtr(nullptr);
-    while (true)
-    {
-        writeQueue_.pop(htsAlignmentPtr);
-        if (not htsAlignmentPtr)
-            return;
-        if (!writeError_)
-        {
-            try
-            {
-                if (bam_write1(filePtr_->fp.bgzf, htsAlignmentPtr) <= 0)
-                    throw std::logic_error("Cannot write alignment");
-            }
-            catch (...)
-            {
-                writeError_ = std::current_exception();
-            }
-        }
-        // Continue draining after failure so locus producers cannot deadlock.
-        bam_destroy1(htsAlignmentPtr);
-    }
+    submitRecord(std::move(ownedAlignment));
 }
 
 }

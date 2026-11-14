@@ -1,0 +1,1007 @@
+# Publication evidence copy
+# Original file: <WORKSPACE>/work/executor-assistance-validation/tests-asan-ubsan.log
+# Original SHA-256: 3d2c66a8ec144800a0f91c16a447eac9c1481cec9d81d0b096878b6580705990
+# Redaction: Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.
+# Scope: Standalone executor component validation, 19 cases repeated 20 times; not whole-application instrumentation.
+# Original log follows.
+Running main() from ../googletest/src/gtest_main.cc
+
+Repeating all tests (iteration 1) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (2 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (1 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (1 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (31 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (33 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 2) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (2 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (0 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (1 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (1 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (30 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (30 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 3) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (2 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (0 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (1 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (1 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (31 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (31 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 4) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (1 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (1 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (32 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (32 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 5) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (1 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (1 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (26 ms)
+[----------] 19 tests from TaskExecutor (33 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (33 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 6) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (2 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (0 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (1 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (32 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (32 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 7) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (1 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (2 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (1 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (34 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (34 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 8) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (4 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (1 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (26 ms)
+[----------] 19 tests from TaskExecutor (35 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (35 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 9) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (1 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (23 ms)
+[----------] 19 tests from TaskExecutor (32 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (32 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 10) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (3 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (1 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (36 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (36 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 11) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (1 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (34 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (34 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 12) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (1 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (1 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (34 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (34 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 13) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (1 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (26 ms)
+[----------] 19 tests from TaskExecutor (35 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (35 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 14) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (1 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (26 ms)
+[----------] 19 tests from TaskExecutor (34 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (34 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 15) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (34 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (34 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 16) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (1 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (0 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (3 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (35 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (35 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 17) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (4 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (3 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (1 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (24 ms)
+[----------] 19 tests from TaskExecutor (34 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (34 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 18) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (1 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (1 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (24 ms)
+[----------] 19 tests from TaskExecutor (33 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (33 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 19) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (4 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (0 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (1 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (3 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (0 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (1 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (23 ms)
+[----------] 19 tests from TaskExecutor (33 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (33 ms total)
+[  PASSED  ] 19 tests.
+
+Repeating all tests (iteration 20) . . .
+
+Note: Google Test filter = TaskExecutor.*
+[==========] Running 19 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 19 tests from TaskExecutor
+[ RUN      ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership
+[       OK ] TaskExecutor.RejectsInvalidConfigurationWithoutTakingOwnership (0 ms)
+[ RUN      ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState
+[       OK ] TaskExecutor.StableWorkerIdsOwnDistinctThreadLocalState (3 ms)
+[ RUN      ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked
+[       OK ] TaskExecutor.StealsSkewedWorkWhileAnotherTaskIsBlocked (1 ms)
+[ RUN      ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions
+[       OK ] TaskExecutor.WaitIncludesDependentContinuationsAndCompletionSubmissions (0 ms)
+[ RUN      ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups
+[       OK ] TaskExecutor.RepeatedIdlePhasesDoNotLoseWakeups (2 ms)
+[ RUN      ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks
+[       OK ] TaskExecutor.ConcurrentProducersDrainAllAcceptedTasks (2 ms)
+[ RUN      ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException
+[       OK ] TaskExecutor.FailureCompletesCancelledTasksAndPreservesFirstException (0 ms)
+[ RUN      ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask
+[       OK ] TaskExecutor.CancellationReturnsCreditsForEveryAcceptedTask (0 ms)
+[ RUN      ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains
+[       OK ] TaskExecutor.CompletionFailureAlsoCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking
+[       OK ] TaskExecutor.RejectsWaitFromWorkerInsteadOfDeadlocking (0 ms)
+[ RUN      ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit
+[       OK ] TaskExecutor.DestroysBodyCapturesBeforeReturningAdmissionCredit (0 ms)
+[ RUN      ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait
+[       OK ] TaskExecutor.DestructorDrainsContinuationsWithoutExplicitWait (1 ms)
+[ RUN      ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks
+[       OK ] TaskExecutor.DestructorSuppressesFailureAfterRunningTerminalCallbacks (0 ms)
+[ RUN      ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues
+[       OK ] TaskExecutor.PublisherUsesDistinctIdAndStealsAcrossAllQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues
+[       OK ] TaskExecutor.PublisherContinuationsAndCompletionSubmissionsUseRealQueues (0 ms)
+[ RUN      ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks
+[       OK ] TaskExecutor.PublisherFailureReleasesCapturesAndCompletesCancelledTasks (0 ms)
+[ RUN      ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains
+[       OK ] TaskExecutor.PublisherCompletionFailureCancelsAndDrains (0 ms)
+[ RUN      ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers
+[       OK ] TaskExecutor.RejectsWorkerReentrancyAndConcurrentPublishers (0 ms)
+[ RUN      ] TaskExecutor.WaitIncludesAnAssistedCompletion
+[       OK ] TaskExecutor.WaitIncludesAnAssistedCompletion (25 ms)
+[----------] 19 tests from TaskExecutor (35 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test suite ran. (35 ms total)
+[  PASSED  ] 19 tests.

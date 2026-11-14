@@ -1,0 +1,2333 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T20:37:02.038233+00:00",
+  "complete": true,
+  "baseline_comparison_label": "RAMOPT b00650d",
+  "expected_baseline_source_commit": "b00650d",
+  "parameters": {
+    "baseline": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+    "candidate": "<WORKSPACE>/work/parallel-redesign/prototype6",
+    "reads": "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+    "reference": "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+    "variant_catalog": "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+    "out": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001",
+    "baseline_cache": "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog",
+    "candidate_cache": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog",
+    "baseline_source": null,
+    "candidate_source": null,
+    "baseline_label": "RAMOPT b00650d",
+    "threads": [
+      1,
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0,
+    "cpu_list": null,
+    "discard_equal_output": true,
+    "compare_chunk_mib": 512
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": true,
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog",
+        "bytes": 2284218916,
+        "sha256": "0f3b29384a690f66c38786cbaa7e8b5f72263c8e090f16b4dbb7aeaf96ce9fed"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": true,
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog",
+        "bytes": 2284218916,
+        "sha256": "0f8089710cfb2c5add4ad59863e9f3632baed2a4eb3ebba33c4427f38bc810f2"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:37:04.727130+00:00",
+          "wall_seconds": 8.781363458,
+          "user_seconds": 33.969202,
+          "system_seconds": 1.069816,
+          "peak_rss_bytes": 2495299584,
+          "wait_status": 0,
+          "stdout_sha256": "8a94a1f54620095d361aad15742e2aece1f8597e3f567d35311dfd99613e3868",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.583209125,
+            "catalog_index_seconds": 2.917307083,
+            "read_processing_seconds": 0.882574084,
+            "genotyping_seconds": 0.064372167,
+            "output_seconds": 1.277733625
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 100000.0,
+            "assignments": 100000.0,
+            "chunks": 2010.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 17385792.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 5.496943481,
+            "reduction_worker_seconds": 1.202987213,
+            "publisher_assisted_chunks": 70.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 200000.0,
+            "peak_resident_bytes": 3433248.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.6208e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:37:13.656364+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/candidate/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/candidate/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 3096967,
+              "sha256": "1624c6db366ada0160ea9fc95f8eab8820cba61ceb88cf5dc83c941cd834c409",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:37:13.696792+00:00",
+          "wall_seconds": 12.170965459000001,
+          "user_seconds": 40.143438,
+          "system_seconds": 3.506738,
+          "peak_rss_bytes": 2495922176,
+          "wait_status": 0,
+          "stdout_sha256": "0535c62902be6462856245d9dd032219e2131b33f1d2477775ca00b8bd4b3f84",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 4.035639166,
+            "catalog_index_seconds": 4.873030667,
+            "read_processing_seconds": 1.930898916,
+            "genotyping_seconds": 0.085276708,
+            "output_seconds": 1.188935375
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 257,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:37:26.022494+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/baseline/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/baseline/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 4737414,
+              "sha256": "756e384741f9fa93fa00326935e4ac96059e8bd9c3fa5ee3073474dd756a2708",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            200000,
+            200000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc",
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:37:27.234452+00:00",
+          "wall_seconds": 17.664278666999998,
+          "user_seconds": 18.295793,
+          "system_seconds": 1.080002,
+          "peak_rss_bytes": 2498002944,
+          "wait_status": 0,
+          "stdout_sha256": "8114f951092e73d3d2888fbca7a5370c1f608bc53000fa45c9d691de6c2cc57f",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 4.068714042,
+            "catalog_index_seconds": 10.004458375,
+            "read_processing_seconds": 1.87354125,
+            "genotyping_seconds": 0.22731775,
+            "output_seconds": 1.44011125
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 100000.0,
+            "assignments": 100000.0,
+            "chunks": 2010.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 9148224.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 2.503387751,
+            "reduction_worker_seconds": 0.739474192,
+            "publisher_assisted_chunks": 820.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 200000.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.3334e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:37:45.057716+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/candidate/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/candidate/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/candidate/result_realigned.bam",
+              "bytes": 3064664,
+              "sha256": "0eae971f08f0bf7dc5c2f291bce87b2662dff3a573a76617b30c4912a132949f",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:37:45.100732+00:00",
+          "wall_seconds": 17.561359041,
+          "user_seconds": 17.828985,
+          "system_seconds": 1.252018,
+          "peak_rss_bytes": 2477916160,
+          "wait_status": 0,
+          "stdout_sha256": "7cfad8d98bb5baa8aa2409cab360830cafc14b91b91d0b27cdd2b4bc0f59c005",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 4.035655417,
+            "catalog_index_seconds": 9.931063208,
+            "read_processing_seconds": 1.862246458,
+            "genotyping_seconds": 0.232888792,
+            "output_seconds": 1.441749333
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 1563,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:38:02.866075+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/baseline/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/baseline/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/warmup/t1/baseline/result_realigned.bam",
+              "bytes": 3477469,
+              "sha256": "9fc85f7b86ee99d19f1d47edb34882869f528458f4cc758633c4624f8ca67a07",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            200000,
+            200000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc",
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      },
+      "cross_configuration_comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            200000,
+            200000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc",
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:38:05.545584+00:00",
+          "wall_seconds": 15.731802875,
+          "user_seconds": 18.31999,
+          "system_seconds": 0.899227,
+          "peak_rss_bytes": 2497429504,
+          "wait_status": 0,
+          "stdout_sha256": "a6abc139db1e52d31661c2fe5165c5f0332c5724e0e323487627b786598197ab",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.638556958,
+            "catalog_index_seconds": 8.869167042,
+            "read_processing_seconds": 1.743485792,
+            "genotyping_seconds": 0.205119334,
+            "output_seconds": 1.223697125
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 1577,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:38:21.484478+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/baseline/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/baseline/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/baseline/result_realigned.bam",
+              "bytes": 3481609,
+              "sha256": "d3bf93fb4bbaa9cd4d39f7b57bce3cb78695ef8e856b28c802c2aaa6811ad0a9",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:38:21.526799+00:00",
+          "wall_seconds": 16.897362375,
+          "user_seconds": 17.106558,
+          "system_seconds": 1.03175,
+          "peak_rss_bytes": 2496446464,
+          "wait_status": 0,
+          "stdout_sha256": "804a418f41727fbe77028faa4a1dbeb46e5b337502b5ff865b67ee996eae4c23",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.378715167,
+            "catalog_index_seconds": 9.850999167,
+            "read_processing_seconds": 1.664020459,
+            "genotyping_seconds": 0.298241208,
+            "output_seconds": 1.654321833
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 100000.0,
+            "assignments": 100000.0,
+            "chunks": 2010.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 9148224.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 2.229247212,
+            "reduction_worker_seconds": 0.651436428,
+            "publisher_assisted_chunks": 818.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 200000.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.4125e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:38:38.580412+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/candidate/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/candidate/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t1/candidate/result_realigned.bam",
+              "bytes": 3062041,
+              "sha256": "cdd751c9945232a0fb08ee2299e5e7a56546f1c43336e72a7e6aa0c147021704",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            200000,
+            200000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc",
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:38:39.911221+00:00",
+          "wall_seconds": 11.353536875,
+          "user_seconds": 41.260634,
+          "system_seconds": 2.4715219999999998,
+          "peak_rss_bytes": 2497593344,
+          "wait_status": 0,
+          "stdout_sha256": "1eac54a88b3b99974249aeb2763fe219de9da66c10bf452c6863a975e61b6fb8",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.858885083,
+            "catalog_index_seconds": 4.178948209,
+            "read_processing_seconds": 1.885225792,
+            "genotyping_seconds": 0.079277542,
+            "output_seconds": 1.296269959
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 277,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:38:51.491672+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/baseline/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/baseline/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 4739154,
+              "sha256": "12513d5014b7e480d947d91df14192bb26b90063664e077ff176b747537c7300",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:38:51.540038+00:00",
+          "wall_seconds": 10.117939542,
+          "user_seconds": 33.618148,
+          "system_seconds": 1.493873,
+          "peak_rss_bytes": 2511798272,
+          "wait_status": 0,
+          "stdout_sha256": "5661080363345d9099c215561f0c651e032a2b61c1cfc8607edf88fdf1c925ae",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 4.314069166,
+            "catalog_index_seconds": 3.493000042,
+            "read_processing_seconds": 0.926484375,
+            "genotyping_seconds": 0.065931333,
+            "output_seconds": 1.2557845
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 100000.0,
+            "assignments": 100000.0,
+            "chunks": 2010.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 16903680.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 5.30421604,
+            "reduction_worker_seconds": 1.641003091,
+            "publisher_assisted_chunks": 71.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 200000.0,
+            "peak_resident_bytes": 8386368.0,
+            "submit_wait_seconds": 0.37544021000000016,
+            "drain_seconds": 2.4333e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:39:01.861313+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/candidate/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/candidate/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 3102993,
+              "sha256": "8df28611c1aa61a25e383b03e4a63eb53a559c80ec39ee6c50f99696eb7514b1",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            200000,
+            200000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc",
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:39:03.051894+00:00",
+          "wall_seconds": 9.049307792,
+          "user_seconds": 33.193944,
+          "system_seconds": 0.962283,
+          "peak_rss_bytes": 2513534976,
+          "wait_status": 0,
+          "stdout_sha256": "416ca5e1c5bee4f76b9fda294cae521ff1879014be3147b6b62264dd31f197bf",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.795842042,
+            "catalog_index_seconds": 2.955967625,
+            "read_processing_seconds": 0.901214125,
+            "genotyping_seconds": 0.067400834,
+            "output_seconds": 1.271093
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 100000.0,
+            "assignments": 100000.0,
+            "chunks": 2010.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 15659712.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 4.816299549,
+            "reduction_worker_seconds": 1.326565586,
+            "publisher_assisted_chunks": 62.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 200000.0,
+            "peak_resident_bytes": 8385344.0,
+            "submit_wait_seconds": 0.23987512400000005,
+            "drain_seconds": 2.3625e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:39:12.304923+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/candidate/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/candidate/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/candidate/result_realigned.bam",
+              "bytes": 3097721,
+              "sha256": "dd64b8b0e005e3c13bcf17dfd058352950d7e1b24c3323dc098815b69226239a",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:39:12.345015+00:00",
+          "wall_seconds": 10.997679583,
+          "user_seconds": 41.924053,
+          "system_seconds": 2.282792,
+          "peak_rss_bytes": 2497609728,
+          "wait_status": 0,
+          "stdout_sha256": "ff1a4e447ed5b5d0c599a7098ee4180b63371bbaac45e109a0041ff405967c16",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.932401625,
+            "catalog_index_seconds": 3.878601416,
+            "read_processing_seconds": 2.004943209,
+            "genotyping_seconds": 0.06532925,
+            "output_seconds": 1.066518125
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 234,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:39:23.495220+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/baseline/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/baseline/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t8/baseline/result_realigned.bam",
+              "bytes": 4707768,
+              "sha256": "bfe046681f5235cd11bc9de9645c1de26edf6f8e8368286eb4c5ff1436f56b87",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            200000,
+            200000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc",
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:39:24.836729+00:00",
+          "wall_seconds": 16.516733916,
+          "user_seconds": 17.049877,
+          "system_seconds": 0.860497,
+          "peak_rss_bytes": 2480766976,
+          "wait_status": 0,
+          "stdout_sha256": "6a15b0c3e81974380f339de7022569b299b32ce8aa113100865b146060567381",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.728618959,
+            "catalog_index_seconds": 9.673386334,
+            "read_processing_seconds": 1.532023458,
+            "genotyping_seconds": 0.210259375,
+            "output_seconds": 1.316339
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 100000.0,
+            "assignments": 100000.0,
+            "chunks": 2010.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 9148224.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 2.055603491,
+            "reduction_worker_seconds": 0.597130375,
+            "publisher_assisted_chunks": 820.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 200000.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.675e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:39:41.533771+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/candidate/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/candidate/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/candidate/result_realigned.bam",
+              "bytes": 3064872,
+              "sha256": "9d84bebc8b544cd5542de78e252e499e49dd77dc653d2d918bcaafc3c59379ab",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:39:41.586933+00:00",
+          "wall_seconds": 18.301760875,
+          "user_seconds": 19.567217,
+          "system_seconds": 1.321686,
+          "peak_rss_bytes": 2497363968,
+          "wait_status": 0,
+          "stdout_sha256": "78faf0bbda5ab9458692e71aa919f55055826f1fc94f547246dbd16051c0a654",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 4.203626625,
+            "catalog_index_seconds": 10.344390166,
+            "read_processing_seconds": 1.9571255,
+            "genotyping_seconds": 0.261671458,
+            "output_seconds": 1.478443
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 1554,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:40:00.090531+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/baseline/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/baseline/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-01/t1/baseline/result_realigned.bam",
+              "bytes": 3472233,
+              "sha256": "c32094d6d189ac82e0af2b202944e86d77dfbf369969e430e54418de7333a813",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            200000,
+            200000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc",
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:40:01.607302+00:00",
+          "wall_seconds": 9.776949083,
+          "user_seconds": 43.941133,
+          "system_seconds": 1.154035,
+          "peak_rss_bytes": 2483339264,
+          "wait_status": 0,
+          "stdout_sha256": "75e8933709783fb660f48108af48aa20a04e8e667e58481facdabf3959f9dc99",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.718201792,
+            "catalog_index_seconds": 2.81771275,
+            "read_processing_seconds": 1.991898959,
+            "genotyping_seconds": 0.060392042,
+            "output_seconds": 1.136462542
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 259,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:40:11.574610+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/baseline/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/baseline/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/baseline/result_realigned.bam",
+              "bytes": 4735545,
+              "sha256": "ad4d533f45f2881a52c58beabac47f5c3b0701f1cdd74d127e5870c3f70bff7c",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:40:11.617681+00:00",
+          "wall_seconds": 9.843578083999999,
+          "user_seconds": 32.390588,
+          "system_seconds": 2.226556,
+          "peak_rss_bytes": 2503770112,
+          "wait_status": 0,
+          "stdout_sha256": "556c3027852cd067c352b03e68e04ceaba9a781ecca8db2a536d965c1269d9bf",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.781051292,
+            "catalog_index_seconds": 3.655790167,
+            "read_processing_seconds": 0.882990042,
+            "genotyping_seconds": 0.066029959,
+            "output_seconds": 1.402074458
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 100000.0,
+            "assignments": 100000.0,
+            "chunks": 2010.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 16409664.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 4.974647807,
+            "reduction_worker_seconds": 1.062697274,
+            "publisher_assisted_chunks": 63.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 200000.0,
+            "peak_resident_bytes": 2455936.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 3.3709e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:40:21.617542+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/candidate/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/candidate/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t8/candidate/result_realigned.bam",
+              "bytes": 3092409,
+              "sha256": "64263b1980b4084082a701cc0096669b3de266487e2b4766ed669d6acdc26efe",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            200000,
+            200000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc",
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/primary100k-v4/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:40:23.056221+00:00",
+          "wall_seconds": 17.658315499999997,
+          "user_seconds": 19.361592,
+          "system_seconds": 1.176946,
+          "peak_rss_bytes": 2497445888,
+          "wait_status": 0,
+          "stdout_sha256": "eb30bc9dd4e824328c7831b8a540870f6d721930200a356c747165bd021f0d96",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.954915291,
+            "catalog_index_seconds": 10.219354083,
+            "read_processing_seconds": 1.93555075,
+            "genotyping_seconds": 0.227350417,
+            "output_seconds": 1.263810666
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 1550,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:40:40.906187+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/baseline/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/baseline/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/baseline/result_realigned.bam",
+              "bytes": 3476231,
+              "sha256": "8dcb20f63b9f49b57931cc2c2d5a6b7a6e565bd7d5e7b108dcde8d22ea99b24e",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:40:40.949516+00:00",
+          "wall_seconds": 16.652238375,
+          "user_seconds": 17.645188,
+          "system_seconds": 0.900882,
+          "peak_rss_bytes": 2499870720,
+          "wait_status": 0,
+          "stdout_sha256": "2bc07f2bc257d6f97b665300b525a9d9ec54c88f91332742aa8984f55f17a529",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 3.5910685,
+            "catalog_index_seconds": 9.760423375,
+            "read_processing_seconds": 1.663121416,
+            "genotyping_seconds": 0.22235125,
+            "output_seconds": 1.361395166
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 100000.0,
+            "assignments": 100000.0,
+            "chunks": 2010.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 9148224.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 2.227519003,
+            "reduction_worker_seconds": 0.654076548,
+            "publisher_assisted_chunks": 818.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 200000.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.525e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:40:57.764034+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/candidate/result.vcf",
+              "bytes": 17274709,
+              "sha256": "6cd2848b979ae066e70a096ddffe121e7e253de4488f379c42971960c4f484b9",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/candidate/result.json",
+              "bytes": 54158101,
+              "sha256": "f8d865fb76ec763e4bc23c98be67ccfa2c86c1390f156dd5b5c8adce2e5d26a9",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/mixed100k/attempt-001/round-02/t1/candidate/result_realigned.bam",
+              "bytes": 3066429,
+              "sha256": "a8398e639ccb88567d13de050eedcfa2fd9a4635476c6b8ab6eb0d96ee988051",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            200000,
+            200000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc",
+            "95cc824e2a3f471ad46573fd640de325cc6a76d7482c932bc710ea5ca0a5bdcc"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+      "bytes": 2046800,
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/fixtures/mixed100k/reads.bam",
+      "bytes": 68652779,
+      "sha256": "3339cf0c02a2a342848449d7c8451e7c4466f8ff53a34d04a01422e1a96dbb34"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa",
+      "bytes": 416427700,
+      "sha256": "7b9c315b256b14ae81e0bf3b61340eee03f15fbf39f45238a1ac963533296847"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped100k/catalog.json",
+      "bytes": 12046003,
+      "sha256": "a7de145c2fbb2a9ada60de937c2d1a1ddd7d332b16d773993b3d91b5f533eb3b"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped100k/reference.fa.fai",
+      "bytes": 3267,
+      "sha256": "13ee895e3ca8ceab8ab4eaa5039aeb2a320632d00c142693b20e0677f2286552"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/mixed100k/reads.bam.bai",
+      "bytes": 804816,
+      "sha256": "fb0499e0b77b70fa4645a7ae3033671397af9351080c623cfb3252e47edcb81c"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29361,
+      "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 11663,
+      "sha256": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      1,
+      8
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      1
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "1": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 17.658315499999997,
+            "candidate_median": 16.652238375,
+            "baseline_max": 18.301760875,
+            "candidate_max": 16.897362375,
+            "paired_deltas": [
+              1.1655595000000005,
+              -1.7850269589999996,
+              -1.0060771249999974
+            ],
+            "paired_ratios": [
+              1.074089378646629,
+              0.9024669281173744,
+              0.94302530583962
+            ],
+            "paired_median_ratio": 0.94302530583962,
+            "paired_ratio_bootstrap_95": [
+              0.9024669281173744,
+              1.074089378646629
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 20.538538000000003,
+            "candidate_median": 18.138308,
+            "baseline_max": 20.888903,
+            "candidate_max": 18.54607,
+            "paired_deltas": [
+              -1.080909000000002,
+              -2.9785290000000018,
+              -1.9924680000000023
+            ],
+            "paired_ratios": [
+              0.9437589470996658,
+              0.8574109420681401,
+              0.9029888105959635
+            ],
+            "paired_median_ratio": 0.9029888105959635,
+            "paired_ratio_bootstrap_95": [
+              0.8574109420681401,
+              0.9437589470996658
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 2497429504,
+            "candidate_median": 2496446464,
+            "baseline_max": 2497445888,
+            "candidate_max": 2499870720,
+            "paired_deltas": [
+              -983040,
+              -16596992,
+              2424832
+            ],
+            "paired_ratios": [
+              0.9996063792798053,
+              0.993354195778963,
+              1.000970924740212
+            ],
+            "paired_median_ratio": 0.9996063792798053,
+            "paired_ratio_bootstrap_95": [
+              0.993354195778963,
+              1.000970924740212
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 3.954915291,
+            "candidate_median": 3.5910685,
+            "baseline_max": 4.203626625,
+            "candidate_max": 3.728618959,
+            "paired_deltas": [
+              -0.25984179099999993,
+              -0.4750076660000002,
+              -0.36384679099999984
+            ],
+            "paired_ratios": [
+              0.9285865814389156,
+              0.8870005097086852,
+              0.9080013693774965
+            ],
+            "paired_median_ratio": 0.9080013693774965,
+            "paired_ratio_bootstrap_95": [
+              0.8870005097086852,
+              0.9285865814389156
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 10.219354083,
+            "candidate_median": 9.760423375,
+            "baseline_max": 10.344390166,
+            "candidate_max": 9.850999167,
+            "paired_deltas": [
+              0.9818321249999986,
+              -0.6710038320000002,
+              -0.45893070800000046
+            ],
+            "paired_ratios": [
+              1.110701728849003,
+              0.9351335534302003,
+              0.9550920044190037
+            ],
+            "paired_median_ratio": 0.9550920044190037,
+            "paired_ratio_bootstrap_95": [
+              0.9351335534302003,
+              1.110701728849003
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.227350417,
+            "candidate_median": 0.22235125,
+            "baseline_max": 0.261671458,
+            "candidate_max": 0.298241208,
+            "paired_deltas": [
+              0.093121874,
+              -0.051412083000000025,
+              -0.004999166999999999
+            ],
+            "paired_ratios": [
+              1.4539887692888083,
+              0.8035242995435902,
+              0.978011181743291
+            ],
+            "paired_median_ratio": 0.978011181743291,
+            "paired_ratio_bootstrap_95": [
+              0.8035242995435902,
+              1.4539887692888083
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 1.263810666,
+            "candidate_median": 1.361395166,
+            "baseline_max": 1.478443,
+            "candidate_max": 1.654321833,
+            "paired_deltas": [
+              0.4306247080000001,
+              -0.16210400000000003,
+              0.09758450000000018
+            ],
+            "paired_ratios": [
+              1.3519046496084561,
+              0.8903549206834487,
+              1.0772144931399086
+            ],
+            "paired_median_ratio": 1.0772144931399086,
+            "paired_ratio_bootstrap_95": [
+              0.8903549206834487,
+              1.3519046496084561
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 1.93555075,
+            "candidate_median": 1.663121416,
+            "baseline_max": 1.9571255,
+            "candidate_max": 1.664020459,
+            "paired_deltas": [
+              -0.07946533299999992,
+              -0.425102042,
+              -0.2724293339999999
+            ],
+            "paired_ratios": [
+              0.9544215769554146,
+              0.7827926507523406,
+              0.8592497076090617
+            ],
+            "paired_median_ratio": 0.8592497076090617,
+            "paired_ratio_bootstrap_95": [
+              0.7827926507523406,
+              0.9544215769554146
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 20000000,
+          "paired_actual_delta_bytes": [
+            -983040,
+            -16596992,
+            2424832
+          ],
+          "difference_of_medians_bytes": -983040,
+          "difference_of_maxima_bytes": 2424832,
+          "median_paired_delta_bytes": -983040,
+          "largest_paired_delta_bytes": 2424832,
+          "paired_candidate_limits_bytes": [
+            2517429504,
+            2517363968,
+            2517445888
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": false
+      },
+      "8": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 10.997679583,
+            "candidate_median": 9.843578083999999,
+            "baseline_max": 11.353536875,
+            "candidate_max": 10.117939542,
+            "paired_deltas": [
+              -1.2355973329999994,
+              -1.9483717909999996,
+              0.06662900099999902
+            ],
+            "paired_ratios": [
+              0.8911707121222523,
+              0.8228379199179657,
+              1.0068149072307078
+            ],
+            "paired_median_ratio": 0.8911707121222523,
+            "paired_ratio_bootstrap_95": [
+              0.8228379199179657,
+              1.0068149072307078
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 44.206845,
+            "candidate_median": 34.617144,
+            "baseline_max": 45.095168,
+            "candidate_max": 35.112021,
+            "paired_deltas": [
+              -8.620135000000005,
+              -10.050618,
+              -10.478023999999998
+            ],
+            "paired_ratios": [
+              0.8028879481725071,
+              0.7726456615485678,
+              0.7676464139129053
+            ],
+            "paired_median_ratio": 0.7726456615485678,
+            "paired_ratio_bootstrap_95": [
+              0.7676464139129053,
+              0.8028879481725071
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 2497593344,
+            "candidate_median": 2511798272,
+            "baseline_max": 2497609728,
+            "candidate_max": 2513534976,
+            "paired_deltas": [
+              14204928,
+              15925248,
+              20430848
+            ],
+            "paired_ratios": [
+              1.0056874462906962,
+              1.006376195536663,
+              1.008227167466072
+            ],
+            "paired_median_ratio": 1.006376195536663,
+            "paired_ratio_bootstrap_95": [
+              1.0056874462906962,
+              1.008227167466072
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 3.858885083,
+            "candidate_median": 3.795842042,
+            "baseline_max": 3.932401625,
+            "candidate_max": 4.314069166,
+            "paired_deltas": [
+              0.45518408300000024,
+              -0.13655958299999993,
+              0.0628495
+            ],
+            "paired_ratios": [
+              1.1179574082175383,
+              0.9652732360469412,
+              1.0169031977057366
+            ],
+            "paired_median_ratio": 1.0169031977057366,
+            "paired_ratio_bootstrap_95": [
+              0.9652732360469412,
+              1.1179574082175383
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 3.878601416,
+            "candidate_median": 3.493000042,
+            "baseline_max": 4.178948209,
+            "candidate_max": 3.655790167,
+            "paired_deltas": [
+              -0.6859481669999998,
+              -0.922633791,
+              0.838077417
+            ],
+            "paired_ratios": [
+              0.835856265094957,
+              0.7621220403844663,
+              1.297431814864734
+            ],
+            "paired_median_ratio": 0.835856265094957,
+            "paired_ratio_bootstrap_95": [
+              0.7621220403844663,
+              1.297431814864734
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.06532925,
+            "candidate_median": 0.066029959,
+            "baseline_max": 0.079277542,
+            "candidate_max": 0.067400834,
+            "paired_deltas": [
+              -0.013346209000000012,
+              0.0020715840000000013,
+              0.005637916999999999
+            ],
+            "paired_ratios": [
+              0.8316520837641509,
+              1.0317099002361116,
+              1.0933552967127689
+            ],
+            "paired_median_ratio": 1.0317099002361116,
+            "paired_ratio_bootstrap_95": [
+              0.8316520837641509,
+              1.0933552967127689
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 1.136462542,
+            "candidate_median": 1.271093,
+            "baseline_max": 1.296269959,
+            "candidate_max": 1.402074458,
+            "paired_deltas": [
+              -0.04048545899999989,
+              0.20457487500000004,
+              0.2656119159999999
+            ],
+            "paired_ratios": [
+              0.9687677256431738,
+              1.1918156571413168,
+              1.2337181439632525
+            ],
+            "paired_median_ratio": 1.1918156571413168,
+            "paired_ratio_bootstrap_95": [
+              0.9687677256431738,
+              1.2337181439632525
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 1.991898959,
+            "candidate_median": 0.901214125,
+            "baseline_max": 2.004943209,
+            "candidate_max": 0.926484375,
+            "paired_deltas": [
+              -0.9587414169999999,
+              -1.1037290839999998,
+              -1.108908917
+            ],
+            "paired_ratios": [
+              0.4914447802123004,
+              0.4494960859512306,
+              0.44329057857597887
+            ],
+            "paired_median_ratio": 0.4494960859512306,
+            "paired_ratio_bootstrap_95": [
+              0.44329057857597887,
+              0.4914447802123004
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            14204928,
+            15925248,
+            20430848
+          ],
+          "difference_of_medians_bytes": 14204928,
+          "difference_of_maxima_bytes": 15925248,
+          "median_paired_delta_bytes": 15925248,
+          "largest_paired_delta_bytes": 20430848,
+          "paired_candidate_limits_bytes": [
+            2657593344,
+            2657609728,
+            2643339264
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": false
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.3856301387139327,
+            1.6641474901024127,
+            1.8061171588490716
+          ],
+          "median_wall_speedup": 1.6641474901024127,
+          "median_compute_scaling_efficiency": 0.2080184362628016,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.6700398638337703,
+            1.8251930750550382,
+            1.6916855063167497
+          ],
+          "median_wall_speedup": 1.6916855063167497,
+          "median_compute_scaling_efficiency": 0.21146068828959372,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": true,
+    "all_observed_peak_rss_within_allowance": true,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T20:40:59.111453+00:00"
+}

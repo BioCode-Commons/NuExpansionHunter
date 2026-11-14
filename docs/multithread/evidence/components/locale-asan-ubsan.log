@@ -1,0 +1,28 @@
+# Publication evidence copy
+# Original file: <WORKSPACE>/work/locale-validation/asan.log
+# Original SHA-256: 96aabb3d38769de45ecd854f08f018493ac858b95249c761829aeef3498ff08c
+# Redaction: Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.
+# Scope: Six focused SeedUppercase cases; GappedAligner and its tests instrumented, existing graph library linked.
+# Original log follows.
+Running main() from ../googletest/src/gtest_main.cc
+Note: Google Test filter = SeedUppercase.*
+[==========] Running 6 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 6 tests from SeedUppercase
+[ RUN      ] SeedUppercase.PreservesSingleCharacterLocaleSemantics
+[       OK ] SeedUppercase.PreservesSingleCharacterLocaleSemantics (0 ms)
+[ RUN      ] SeedUppercase.UncachedSelectorObservesGlobalChangesAfterConstruction
+[       OK ] SeedUppercase.UncachedSelectorObservesGlobalChangesAfterConstruction (0 ms)
+[ RUN      ] SeedUppercase.SnapshotRetainsCapturedCustomGlobalBehavior
+[       OK ] SeedUppercase.SnapshotRetainsCapturedCustomGlobalBehavior (0 ms)
+[ RUN      ] SeedUppercase.SnapshotOwnsFacetAcrossCallerLifetimeAndSelectorCopyMove
+[       OK ] SeedUppercase.SnapshotOwnsFacetAcrossCallerLifetimeAndSelectorCopyMove (0 ms)
+[ RUN      ] SeedUppercase.SnapshotPreservesScalarRatherThanRangeFacetSemantics
+[       OK ] SeedUppercase.SnapshotPreservesScalarRatherThanRangeFacetSemantics (1 ms)
+[ RUN      ] SeedUppercase.ClearingSnapshotRestoresFreshGlobalLookup
+[       OK ] SeedUppercase.ClearingSnapshotRestoresFreshGlobalLookup (0 ms)
+[----------] 6 tests from SeedUppercase (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test suite ran. (1 ms total)
+[  PASSED  ] 6 tests.

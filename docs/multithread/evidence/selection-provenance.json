@@ -1,0 +1,152 @@
+{
+  "note": "The original genotyped10k-fixed T8 configuration has an objective timing inconsistency in baseline formal round 2: process wall and application/UTC elapsed times disagree. Its entire original result file and all runs remain in evidence. Main tables use the original T1/T4 configurations and the complete independent T8 recheck (three formal pairs plus one warmup), rather than selecting individual favorable repetitions. No measurements are changed. Original T8 is excluded only from selected main statistics.",
+  "inputs": [
+    {
+      "label": "primary100k",
+      "logical_case": "primary100k",
+      "original_result": "evidence/results/primary100k.json",
+      "selected_input": "evidence/report-inputs/primary100k.json",
+      "selected_threads": [
+        8
+      ]
+    },
+    {
+      "label": "genotyped10k-fixed",
+      "logical_case": "genotyped10k-fixed",
+      "original_result": "evidence/results/genotyped10k-fixed.json",
+      "selected_input": "evidence/report-inputs/genotyped10k-fixed.json",
+      "selected_threads": [
+        1,
+        4
+      ]
+    },
+    {
+      "label": "genotyped10k-auto-io",
+      "logical_case": "genotyped10k-auto-io",
+      "original_result": "evidence/results/genotyped10k-auto-io.json",
+      "selected_input": "evidence/report-inputs/genotyped10k-auto-io.json",
+      "selected_threads": [
+        8
+      ]
+    },
+    {
+      "label": "repository-example",
+      "logical_case": "repository-example",
+      "original_result": "evidence/results/repository-example.json",
+      "selected_input": "evidence/report-inputs/repository-example.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "longread1000",
+      "logical_case": "longread1000",
+      "original_result": "evidence/results/longread1000.json",
+      "selected_input": "evidence/report-inputs/longread1000.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "higherror-indels150",
+      "logical_case": "higherror-indels150",
+      "original_result": "evidence/results/higherror-indels150.json",
+      "selected_input": "evidence/report-inputs/higherror-indels150.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "iupac-missingquality150",
+      "logical_case": "iupac-missingquality150",
+      "original_result": "evidence/results/iupac-missingquality150.json",
+      "selected_input": "evidence/report-inputs/iupac-missingquality150.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "expandedrepeat150-genotyped",
+      "logical_case": "expandedrepeat150-genotyped",
+      "original_result": "evidence/results/expandedrepeat150-genotyped.json",
+      "selected_input": "evidence/report-inputs/expandedrepeat150-genotyped.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "dense-fanout-large",
+      "logical_case": "dense-fanout-large",
+      "original_result": "evidence/results/dense-fanout-large.json",
+      "selected_input": "evidence/report-inputs/dense-fanout-large.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "hot-locus",
+      "logical_case": "hot-locus",
+      "original_result": "evidence/results/hot-locus.json",
+      "selected_input": "evidence/report-inputs/hot-locus.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "empty-input",
+      "logical_case": "empty-input",
+      "original_result": "evidence/results/empty-input.json",
+      "selected_input": "evidence/report-inputs/empty-input.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "pending-million-missing-mates",
+      "logical_case": "pending-million-missing-mates",
+      "original_result": "evidence/results/pending-million-missing-mates.json",
+      "selected_input": "evidence/report-inputs/pending-million-missing-mates.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "pending-large-far-apart",
+      "logical_case": "pending-large-far-apart",
+      "original_result": "evidence/results/pending-large-far-apart.json",
+      "selected_input": "evidence/report-inputs/pending-large-far-apart.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "mixed100k",
+      "logical_case": "mixed100k",
+      "original_result": "evidence/results/mixed100k.json",
+      "selected_input": "evidence/report-inputs/mixed100k.json",
+      "selected_threads": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "genotyped10k-t8-recheck",
+      "logical_case": "genotyped10k-fixed",
+      "original_result": "evidence/results/genotyped10k-t8-recheck.json",
+      "selected_input": "evidence/report-inputs/genotyped10k-t8-recheck.json",
+      "selected_threads": [
+        8
+      ]
+    }
+  ]
+}

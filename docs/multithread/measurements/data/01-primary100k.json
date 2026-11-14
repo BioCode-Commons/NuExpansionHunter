@@ -1,0 +1,154 @@
+{
+  "label": "primary100k",
+  "display_label": "primary100k",
+  "source_result_filename": "primary100k.json",
+  "result_snapshot_sha256": "676f466d1632ea895487f3476d57933b0631086fdd34cc0bc9a219b19eb4f11b",
+  "run_status": "complete",
+  "declared_complete": true,
+  "fixture": {
+    "records": 20000000,
+    "loci": 100000,
+    "scope": "Synthetic, independent loci and distinct deterministic flanks; not a WGS performance claim",
+    "count_provenance": "Fixture manifest; records supplied with --records; loci supplied with --loci"
+  },
+  "rows": [
+    {
+      "threads": 8,
+      "state": "Complete",
+      "requested_pairs": 3,
+      "measured_pairs": 3,
+      "exact_verified_pairs": 3,
+      "warmup_pairs": 1,
+      "warmup_verified": true,
+      "missing_measured_rounds": [],
+      "duplicate_rounds": [],
+      "issues": [],
+      "outputs_mismatch": false,
+      "wall_seconds": {
+        "pairs": 3,
+        "baseline_median": 184.025617916,
+        "candidate_median": 90.112716875,
+        "baseline_max": 186.11326525,
+        "candidate_max": 93.048052542,
+        "paired_ratios": [
+          0.4896748501403359,
+          0.5379165630847744,
+          0.4333259588813753
+        ],
+        "paired_median_ratio": 0.4896748501403359,
+        "paired_deltas": [
+          -93.91290104099998,
+          -79.930544749,
+          -105.465556125
+        ],
+        "paired_median_delta": -93.91290104099998,
+        "largest_paired_delta": -79.930544749
+      },
+      "wall_ratio_bootstrap_95": [
+        0.4333259588813753,
+        0.5379165630847744
+      ],
+      "peak_rss_bytes": {
+        "pairs": 3,
+        "baseline_median": 3959668736,
+        "candidate_median": 3901636608,
+        "baseline_max": 4025909248,
+        "candidate_max": 4344168448,
+        "paired_ratios": [
+          1.114310180245943,
+          0.8995572232034575,
+          1.097104009864324
+        ],
+        "paired_median_ratio": 1.097104009864324,
+        "paired_deltas": [
+          400244736,
+          -404373504,
+          384499712
+        ],
+        "paired_median_delta": 384499712,
+        "largest_paired_delta": 400244736
+      },
+      "allowed_extra_bytes": 160000000,
+      "extra_decimal_mb_per_worker": 20,
+      "observed_memory_within_allowance": false,
+      "cpu_seconds": {
+        "pairs": 3,
+        "baseline_median": 1487.842707,
+        "candidate_median": 742.997789,
+        "baseline_max": 1548.8312489999998,
+        "candidate_max": 779.831436,
+        "paired_ratios": [
+          0.5221311193468792,
+          0.5241356712850427,
+          0.45358265560149486
+        ],
+        "paired_median_ratio": 0.5221311193468792,
+        "paired_deltas": [
+          -680.0121819999999,
+          -708.011271,
+          -846.3082579999998
+        ],
+        "paired_median_delta": -708.011271,
+        "largest_paired_delta": -680.0121819999999
+      },
+      "read_processing_seconds": {
+        "pairs": 3,
+        "baseline_median": 169.531811458,
+        "candidate_median": 79.725000625,
+        "baseline_max": 170.703486459,
+        "candidate_max": 81.673373792,
+        "paired_ratios": [
+          0.4670379163236866,
+          0.507198449424825,
+          0.4196443984769494
+        ],
+        "paired_median_ratio": 0.4670379163236866,
+        "paired_deltas": [
+          -90.978485834,
+          -79.355063666,
+          -98.38873641599999
+        ],
+        "paired_median_delta": -90.978485834,
+        "largest_paired_delta": -79.355063666
+      }
+    }
+  ],
+  "sources": {
+    "baseline": {
+      "head": null,
+      "dirty": null,
+      "tracked_diff_sha256": null
+    },
+    "candidate": {
+      "head": null,
+      "dirty": null,
+      "tracked_diff_sha256": null
+    }
+  },
+  "settings": {
+    "threads": [
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20
+  },
+  "binaries": {
+    "baseline": {
+      "filename": "ExpansionHunter",
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b",
+      "bytes": 2046800
+    },
+    "candidate": {
+      "filename": "prototype6",
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b",
+      "bytes": 2061472
+    }
+  },
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "compact_link": "data/01-primary100k.json",
+  "raw_link": "data/01-primary100k.raw.json",
+  "manifest_link": "data/01-primary100k.manifest.json"
+}

@@ -1,0 +1,154 @@
+{
+  "label": "genotyped10k-auto-io",
+  "display_label": "genotyped10k-auto-io",
+  "source_result_filename": "genotyped10k-auto-io.json",
+  "result_snapshot_sha256": "7a67fa9692f470da652382318467583ef82f05989dcef4e08bff8ea3d901cf36",
+  "run_status": "complete",
+  "declared_complete": true,
+  "fixture": {
+    "records": 2000000,
+    "loci": 10000,
+    "scope": "Synthetic, independent loci and distinct deterministic flanks; not a WGS performance claim",
+    "count_provenance": "Fixture manifest; records supplied with --records; loci supplied with --loci"
+  },
+  "rows": [
+    {
+      "threads": 8,
+      "state": "Complete",
+      "requested_pairs": 3,
+      "measured_pairs": 3,
+      "exact_verified_pairs": 3,
+      "warmup_pairs": 1,
+      "warmup_verified": true,
+      "missing_measured_rounds": [],
+      "duplicate_rounds": [],
+      "issues": [],
+      "outputs_mismatch": false,
+      "wall_seconds": {
+        "pairs": 3,
+        "baseline_median": 21.834899874999998,
+        "candidate_median": 10.899958875000001,
+        "baseline_max": 22.350028333999997,
+        "candidate_max": 10.91630575,
+        "paired_ratios": [
+          0.5032517457294959,
+          0.4741965183845388,
+          0.48769329112744036
+        ],
+        "paired_median_ratio": 0.48769329112744036,
+        "paired_deltas": [
+          -10.775235000000002,
+          -11.480866374999998,
+          -11.450069458999996
+        ],
+        "paired_median_delta": -11.450069458999996,
+        "largest_paired_delta": -10.775235000000002
+      },
+      "wall_ratio_bootstrap_95": [
+        0.4741965183845388,
+        0.5032517457294959
+      ],
+      "peak_rss_bytes": {
+        "pairs": 3,
+        "baseline_median": 461930496,
+        "candidate_median": 467976192,
+        "baseline_max": 464257024,
+        "candidate_max": 471351296,
+        "paired_ratios": [
+          1.013147141385069,
+          1.0152809147374364,
+          1.013087891040647
+        ],
+        "paired_median_ratio": 1.013147141385069,
+        "paired_deltas": [
+          6062080,
+          7094272,
+          6045696
+        ],
+        "paired_median_delta": 6062080,
+        "largest_paired_delta": 7094272
+      },
+      "allowed_extra_bytes": 160000000,
+      "extra_decimal_mb_per_worker": 20.0,
+      "observed_memory_within_allowance": true,
+      "cpu_seconds": {
+        "pairs": 3,
+        "baseline_median": 190.34468199999998,
+        "candidate_median": 87.712014,
+        "baseline_max": 193.254907,
+        "candidate_max": 89.936083,
+        "paired_ratios": [
+          0.4724906525100607,
+          0.4331282999619032,
+          0.4538669437252633
+        ],
+        "paired_median_ratio": 0.4538669437252633,
+        "paired_deltas": [
+          -100.40859899999998,
+          -106.90529199999999,
+          -105.542893
+        ],
+        "paired_median_delta": -105.542893,
+        "largest_paired_delta": -100.40859899999998
+      },
+      "read_processing_seconds": {
+        "pairs": 3,
+        "baseline_median": 20.458225166,
+        "candidate_median": 9.4181515,
+        "baseline_max": 20.950378958,
+        "candidate_max": 9.53456375,
+        "paired_ratios": [
+          0.46605038670928867,
+          0.4442161939447799,
+          0.4495456391925376
+        ],
+        "paired_median_ratio": 0.4495456391925376,
+        "paired_deltas": [
+          -10.923661415999998,
+          -11.323502166,
+          -11.532227458000001
+        ],
+        "paired_median_delta": -11.323502166,
+        "largest_paired_delta": -10.923661415999998
+      }
+    }
+  ],
+  "sources": {
+    "baseline": {
+      "head": null,
+      "dirty": null,
+      "tracked_diff_sha256": null
+    },
+    "candidate": {
+      "head": null,
+      "dirty": null,
+      "tracked_diff_sha256": null
+    }
+  },
+  "settings": {
+    "threads": [
+      8
+    ],
+    "pairs": 3,
+    "decode": "auto",
+    "encode": "auto",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0
+  },
+  "binaries": {
+    "baseline": {
+      "filename": "ExpansionHunter",
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b",
+      "bytes": 2046800
+    },
+    "candidate": {
+      "filename": "prototype6",
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b",
+      "bytes": 2061472
+    }
+  },
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "compact_link": "data/03-genotyped10k-auto-io.json",
+  "raw_link": "data/03-genotyped10k-auto-io.raw.json",
+  "manifest_link": "data/03-genotyped10k-auto-io.manifest.json"
+}

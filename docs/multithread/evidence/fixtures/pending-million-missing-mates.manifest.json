@@ -1,0 +1,94 @@
+{
+  "scope": "Bounded synthetic streaming extreme diagnostics; not real WGS or genotype truth.",
+  "fixture_kind": "missing-mates",
+  "description": "Only first-mate records retained in the INPUT fixture; no partner exists at EOF.",
+  "loci": 128,
+  "reference_blocks": 128,
+  "reference_bases": 524288,
+  "read_records": 2097152,
+  "read_length": 150,
+  "coordinate_sorted": true,
+  "sample_id": "synthetic",
+  "expected_unmatched_records": 2097152,
+  "intended_locus_pair_deliveries": null,
+  "recommended_compute_workers": 8,
+  "required_region_extension_length": 1000,
+  "parameters": {
+    "seed": "nueh-streaming-extremes-20261114-v1",
+    "scale": 128
+  },
+  "generation_command": [
+    "<APPLE_COMMAND_LINE_TOOLS>/usr/bin/python3",
+    "<WORKSPACE>/work/NuExpansionHunter/tools/memory_validation/generate_streaming_extremes.py",
+    "--out",
+    "work/fixtures/pending-million",
+    "--sam-to-bam",
+    "work/sam_to_bam_streaming",
+    "--only",
+    "far-apart",
+    "missing-mates",
+    "--scale",
+    "128"
+  ],
+  "conversion_command": [
+    "<WORKSPACE>/work/sam_to_bam_streaming",
+    "<WORKSPACE>/work/fixtures/pending-million/missing-mates/reads.sam",
+    "<WORKSPACE>/work/fixtures/pending-million/missing-mates/reads.bam"
+  ],
+  "generator_sha256": "a5422eb9438e032c5ce1aa0473ab399286f867c7d5e796bcfbfd1a6fc8309fa9",
+  "base_generator_sha256": "110dd38fdf768a00c70f6aeb3934f5b917d675487c1fd6745c2daba2887202ef",
+  "converter_sha256": "55850bb0e33c1ae0fc1642daf2f9860b00247dfe8fa47ac2157fc98cebf7b4c5",
+  "validation": {
+    "records": 2097152,
+    "completed_pairs": 0,
+    "unmatched_records_at_eof": 2097152,
+    "peak_pending_mates": 2097152,
+    "backwards_coordinate_steps": 0,
+    "far_apart_pairs": 0,
+    "all_complete_pair_fields_reciprocal": true,
+    "singletons_scope": "Mate alignments intentionally absent from this input subset; mate fields remain valid.",
+    "bam": {
+      "all_records_read": true,
+      "records": 2097152,
+      "input_order_preserved": true,
+      "core_pair_metadata_preserved": true,
+      "index_required": false
+    }
+  },
+  "limitations": [
+    "No read drops or caps in the application benchmark; fixture scale is fixed before runs.",
+    "No guarantee of particular scheduling, DP fast-path or nonempty BAM outputs.",
+    "Missing-mates and empty-input deliberately have no complete read pair.",
+    "Single reference contig,150bp reads,10-CAG allele; no clinical/expanded-allele claim."
+  ],
+  "files": {
+    "bam-conversion.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "catalog.json": {
+      "bytes": 18895,
+      "sha256": "0b8404e780d6ef77a1eccae379901658000c89143840b7e7e3d044223b6baaf5"
+    },
+    "independent-validation.json": {
+      "bytes": 514,
+      "sha256": "130b3ddaafb92848f0fe37f4f90cdc6e9d6470a3cbff54049532c3c5163b3dca"
+    },
+    "reads.bam": {
+      "bytes": 14255061,
+      "sha256": "fdbaa9fbb4741047dd621264c69957b195f85ff74276f6c01c1e594833d377e8"
+    },
+    "reads.sam": {
+      "bytes": 763000401,
+      "sha256": "48bcfc3a1735ed6d5810fae3f313abe2bd82fea4f04a1b3ed48f6265b03d1328"
+    },
+    "reference.fa": {
+      "bytes": 533037,
+      "sha256": "012f149068b407f8893e180479ff1359b2597b2407f5e499ae3af90ee67b2721"
+    },
+    "reference.fa.fai": {
+      "bytes": 25,
+      "sha256": "ef33adfec38e60bb0dbf74a53515cafacfdc5ca20201b23e22b9b3d5aef948b7"
+    }
+  }
+}

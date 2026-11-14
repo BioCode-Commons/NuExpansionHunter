@@ -1,0 +1,14 @@
+{
+  "<WORKSPACE>/work/NuExpansionHunter/ehunter/io/BamRecordSink.hh": "8f77eef43706aea4b9e5b9aac58ba3054b85c14ea557d2a34baefc74eb2c621e",
+  "<WORKSPACE>/work/NuExpansionHunter/ehunter/io/BamRecordSink.cpp": "bcda93d197340b49151ae3cab531a97f79dcd5a9a45c78789da68d754c4c8f4b",
+  "<WORKSPACE>/work/NuExpansionHunter/ehunter/io/BamletWriter.cpp": "063ed5161102bbfa5e288fd76efeba14ae623f5d09fc5f45e5e59b99d04b1bd3",
+  "<WORKSPACE>/work/NuExpansionHunter/ehunter/tests/BamRecordSinkTest.cpp": "d7d4f728a1ea91acfc45d95c75bb596de91dc026bd9937f9c6d66110637dc119",
+  "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/sink-only-tests.cpp": "476829d418389fa3317139b5fdb34f290e7f57d8b29ac1e6719e442677f91fde",
+  "_publication": {
+    "source_file": "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/sources.json",
+    "original_file_sha256": "785ddc16f6025d0ccaf60cb8bc34ddc9a8fb82e10a3a7d6b5ad8586359dbe681",
+    "original_file_bytes": 1109,
+    "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+    "scope": "Existing source SHA manifest for the seeking-error-fix component validation."
+  }
+}

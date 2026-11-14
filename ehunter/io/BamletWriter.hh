@@ -26,7 +26,6 @@
 #include <exception>
 #include <memory>
 #include <string>
-#include <thread>
 #include <unordered_map>
 
 #include "boost/noncopyable.hpp"
@@ -35,9 +34,9 @@
 // cppcheck-suppress missingInclude
 #include "htslib/sam.h"
 
-#include "core/ConcurrentQueue.hh"
 #include "core/Read.hh"
 #include "core/ReferenceContigInfo.hh"
+#include "io/BamRecordSink.hh"
 #include "graphalign/GraphAlignment.hh"
 #include "graphcore/GraphReferenceMapping.hh"
 #include "graphio/AlignmentWriter.hh"
@@ -46,20 +45,44 @@
 namespace ehunter
 {
 
-/// Supports multiple threads calling the write() method on the same object. To make this more efficient for high
-/// thread counts, this object creates its own asynchronous write thread to prevent calling threads from blocking on
-/// on the final bam record write operation.
+/// Thread-safe BAM serialization with optional producer-local batch scopes.
+/// A separate owned sink performs output independently of compute workers.
 ///
 class BamletWriter : public graphtools::AlignmentWriter, private boost::noncopyable
 {
 public:
     BamletWriter(
         const std::string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
-        int compressionThreads, std::size_t maxQueueBytes = 0);
+        int compressionThreads, std::size_t maxQueueBytes = BamRecordSink::defaultBudgetBytes);
     ~BamletWriter() override;
 
     // Called after all producers finish; propagate asynchronous write/close failure.
     void finish();
+
+    // Collect writes made by this thread to this writer. Explicit finish()
+    // submits the remaining records and can throw. Destruction discards only
+    // unsubmitted records and restores the previous scope without throwing.
+    // nullptr is a no-op. Scopes must be finished/destroyed in stack order and
+    // the writer must outlive every scope. Large scopes submit bounded pieces.
+    class Batch
+    {
+    public:
+        explicit Batch(BamletWriter* writer);
+        ~Batch() noexcept;
+        Batch(const Batch&) = delete;
+        Batch& operator=(const Batch&) = delete;
+        void finish();
+
+    private:
+        friend class BamletWriter;
+        void append(BamRecordSink::Record record);
+        void submit();
+        BamletWriter* writer_;
+        Batch* previous_ = nullptr;
+        BamRecordSink::Records records_;
+        std::size_t bytes_ = 0;
+        bool finished_ = false;
+    };
 
     /// Thread safe
     void write(
@@ -74,8 +97,8 @@ private:
         int32_t contigId, int64_t position, const std::string& fragmentName, const std::string& query,
         bool isFirstMate, bool isReversed, bool isMateReversed, const graphtools::GraphAlignment& alignment);
 
-    /// Function executed by dedicated bam writer thread
-    void writeHtsAlignments();
+    void submitRecord(BamRecordSink::Record record);
+    static thread_local Batch* activeBatch_;
 
     std::unique_ptr<htsFile, decltype(&hts_close)> filePtr_;
     std::unique_ptr<bam_hdr_t, decltype(&bam_hdr_destroy)> bamHeader_;
@@ -84,11 +107,9 @@ private:
 
     const RegionCatalog& catalog_;
 
-    // Budget covers queued BAM structs and their allocated data buffers. The
-    // record being written, producer-local records and HTS buffers are separate.
-    ConcurrentQueue<bam1_t*> writeQueue_;
-    std::thread writeThread_;
-    std::exception_ptr writeError_; // writer owns until join; main reads afterward
+    std::unique_ptr<BamRecordSink> sink_;
+    std::exception_ptr finishError_;
+    bool sinkStatsLogged_ = false;
 };
 
 }

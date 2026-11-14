@@ -209,6 +209,16 @@ def main():
         assistance = re.findall(r'Streaming reader assisted_locus_jobs=(\d+)', log)
         if assistance:
             record['reader_assisted_locus_jobs'] = int(assistance[-1])
+        batches = re.findall(r'Streaming batches: (.+)', log)
+        if batches:
+            record['streaming_batches'] = {key: float(value) for key, value in
+                re.findall(r'(\w+)=([0-9.eE+-]+)', batches[-1])}
+        for name, pattern in (('pending_mates', r'Streaming pending mates: ([^\n]+)'),
+                              ('bam_sink', r'BAM sink: ([^\n]+)')):
+            matches = re.findall(pattern, log)
+            if matches:
+                record[name] = {key: float(value) for key, value in
+                    re.findall(r'(\w+)=([0-9.eE+-]+)', matches[-1])}
         return record
 
     for inputs_dir in inputs:
@@ -263,7 +273,8 @@ def main():
                         command = [str(binaries[side])] + common + ['--threads', str(threads),
                             '--read-decode-threads', str(preprocess)] + cache_args[side] + ['--output-prefix', str(prefix)]
                         record[side] = run(command, directory/'measure')
-                        if record[side].get('preprocessing', {}).get('workers') != preprocess:
+                        if ('streaming_batches' not in record[side]
+                                and record[side].get('preprocessing', {}).get('workers') != preprocess):
                             raise RuntimeError('Missing or unexpected preprocessing worker telemetry')
                         record[side]['outputs'] = {suffix: {'bytes': Path(str(prefix)+suffix).stat().st_size,
                             'sha256': sha256(str(prefix)+suffix)} for suffix in ('.vcf', '.json', '_realigned.bam')}

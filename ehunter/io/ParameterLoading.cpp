@@ -98,10 +98,10 @@ boost::optional<UserParameters> tryParsingUserParameters(int argc, char** argv)
         ("aligner,a", po::value<string>(&params.alignerType)->default_value("dag-aligner"), "Specify which aligner to use (dag-aligner or path-aligner)")
         ("analysis-mode,m", po::value<string>(&params.analysisMode)->default_value("seeking"), "Specify which analysis workflow to use (seeking or streaming)")
         ("threads,n", po::value(&params.threadCount)->default_value(1), "Compute workers; not a total process thread limit")
-        ("decode-threads", po::value<string>(&params.decodeThreads)->default_value("auto"), "Streaming input decompression workers: auto=min(threads,12), 0 or 1=synchronous")
-        ("encode-threads", po::value<string>(&params.encodeThreads)->default_value("auto"), "BAM output compression workers: auto=threads, 0=synchronous; unused with --disable-bamlet-output")
-        ("read-decode-threads", po::value<string>(&params.readDecodeThreads)->default_value("0"), "Additional streaming sequence preprocessing workers; 0=synchronous; at most 20 MB batch cache per worker")
-        ("bamlet-queue-mb", po::value<string>(&params.bamletQueueMb)->default_value("0"), "Opt-in queued BAM-record budget in MiB: 0=unbounded (legacy default); not a process RAM limit")
+        ("decode-threads", po::value<string>(&params.decodeThreads)->default_value("auto"), "Streaming input decompression workers: auto=min(threads,4), 0 or 1=synchronous")
+        ("encode-threads", po::value<string>(&params.encodeThreads)->default_value("auto"), "BAM output compression workers: auto=min(threads,2) in streaming, threads in seeking; 0=synchronous; unused with --disable-bamlet-output")
+        ("read-decode-threads", po::value<string>(&params.readDecodeThreads)->default_value("0"), "Streaming compatibility hint only; sequence decoding shares compute workers and creates no additional pool")
+        ("bamlet-queue-mb", po::value<string>(&params.bamletQueueMb)->default_value("auto"), "Queued BAM-record budget in MiB: auto=8 in streaming, 0 in seeking; explicit 0=unbounded; not a process RAM limit")
         ("catalog-cache", po::value<string>(&params.catalogCache), "Read-only prepared catalog k-mer archive")
         ("prepare-catalog-cache", po::bool_switch(&params.prepareCatalogCache), "Build --catalog-cache and exit before processing reads")
     ;
@@ -206,11 +206,14 @@ static int decodeIoThreadCount(const string& encoding, const string& option, int
     return count;
 }
 
-static std::size_t decodeBamletQueueBytes(const string& encoding)
+static std::size_t decodeBamletQueueBytes(const string& encoding, std::size_t defaultBytes)
 {
+    if (encoding == "auto")
+        return defaultBytes;
+
     const std::size_t bytesPerMiB = 1024 * 1024;
     const std::size_t maxMiB = std::numeric_limits<std::size_t>::max() / bytesPerMiB;
-    const string message = "--bamlet-queue-mb must be a non-negative integer no greater than " + to_string(maxMiB);
+    const string message = "--bamlet-queue-mb must be auto or a non-negative integer no greater than " + to_string(maxMiB);
     if (encoding.empty())
         throw std::invalid_argument(message);
 
@@ -404,14 +407,14 @@ boost::optional<ProgramParameters> tryLoadingProgramParameters(int argc, char** 
     result.catalogCache = userParams.catalogCache;
     result.prepareCatalogCache = userParams.prepareCatalogCache;
     result.decodeThreadCount
-        = decodeIoThreadCount(userParams.decodeThreads, "--decode-threads", std::min(userParams.threadCount, 12));
-    result.encodeThreadCount = decodeIoThreadCount(userParams.encodeThreads, "--encode-threads", userParams.threadCount);
+        = decodeIoThreadCount(userParams.decodeThreads, "--decode-threads", result.decodeThreadCount);
+    result.encodeThreadCount = decodeIoThreadCount(userParams.encodeThreads, "--encode-threads", result.encodeThreadCount);
     if (userParams.readDecodeThreads == "auto")
-        throw std::invalid_argument("--read-decode-threads requires an explicit non-negative worker count");
+        throw std::invalid_argument("--read-decode-threads requires an explicit non-negative integer");
     result.readDecodeThreadCount = decodeIoThreadCount(userParams.readDecodeThreads, "--read-decode-threads", 0);
     if (userParams.analysisMode != "streaming" && result.readDecodeThreadCount)
         throw std::invalid_argument("--read-decode-threads is only supported with --analysis-mode streaming");
-    result.bamletQueueBytes = decodeBamletQueueBytes(userParams.bamletQueueMb);
+    result.bamletQueueBytes = decodeBamletQueueBytes(userParams.bamletQueueMb, result.bamletQueueBytes);
     if (userParams.analysisMode != "streaming" && userParams.decodeThreads != "auto")
         throw std::invalid_argument("--decode-threads is only supported with --analysis-mode streaming");
     return result;

@@ -1,0 +1,2433 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T20:14:53.443559+00:00",
+  "complete": true,
+  "baseline_comparison_label": "RAMOPT b00650d",
+  "expected_baseline_source_commit": "b00650d",
+  "parameters": {
+    "baseline": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+    "candidate": "<WORKSPACE>/work/parallel-redesign/prototype6",
+    "reads": "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+    "reference": "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+    "variant_catalog": "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+    "out": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001",
+    "baseline_cache": null,
+    "candidate_cache": null,
+    "baseline_source": null,
+    "candidate_source": null,
+    "baseline_label": "RAMOPT b00650d",
+    "threads": [
+      1,
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0,
+    "cpu_list": null,
+    "discard_equal_output": true,
+    "compare_chunk_mib": 512
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:14:53.468005+00:00",
+      "wall_seconds": 0.41629425,
+      "user_seconds": 0.39341099999999996,
+      "system_seconds": 0.019507,
+      "peak_rss_bytes": 22953984,
+      "wait_status": 0,
+      "stdout_sha256": "bf0b5506a278f7b959e366213f5eecc2880110a4b703cf37496f562a3362b0c6",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.042118875
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:14:54.079317+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog",
+        "bytes": 6270642,
+        "sha256": "28f0df11636c44bab278621a85840183b9bf66316cf8f38ae02b940455fb448f"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/parallel-redesign/prototype6",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:14:54.086709+00:00",
+      "wall_seconds": 0.37933195899999994,
+      "user_seconds": 0.35762499999999997,
+      "system_seconds": 0.018411999999999998,
+      "peak_rss_bytes": 22970368,
+      "wait_status": 0,
+      "stdout_sha256": "02092a0bdc89be91fe336575ad60994e0b4ebe04b45bc61effa318d7d65583d2",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.04222725
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:14:54.664398+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog",
+        "bytes": 6270642,
+        "sha256": "fda11d0836e3eeb6ed6b6f3833977ee30f57b3ed0231fa5cb77d19f164ed5d3b"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:54.671441+00:00",
+          "wall_seconds": 0.22710566699999998,
+          "user_seconds": 1.406144,
+          "system_seconds": 0.020864999999999998,
+          "peak_rss_bytes": 32833536,
+          "wait_status": 0,
+          "stdout_sha256": "69bd2d3d6d99fc488450b2109c13592a9c129166724f861c7c6a7b29aaafb112",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.014872,
+            "catalog_index_seconds": 0.003704833,
+            "read_processing_seconds": 0.150900917,
+            "genotyping_seconds": 0.002660708,
+            "output_seconds": 0.019695625
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 12189696.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.179254284,
+            "reduction_worker_seconds": 0.118865622,
+            "publisher_assisted_chunks": 17.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 14848.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 844800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.2667e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:55.076511+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/candidate/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/candidate/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 412502,
+              "sha256": "6c6c01d05eaff612863634e615876ac07ac2fa97224863b940251c981e01912e",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:55.080247+00:00",
+          "wall_seconds": 0.27607525,
+          "user_seconds": 1.818306,
+          "system_seconds": 0.060205999999999996,
+          "peak_rss_bytes": 28819456,
+          "wait_status": 0,
+          "stdout_sha256": "041f94f91e7253502ca436a98909e89d106e50aca90dd730cb802c756a22cce1",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.016561917,
+            "catalog_index_seconds": 0.004192083,
+            "read_processing_seconds": 0.1936805,
+            "genotyping_seconds": 0.003071084,
+            "output_seconds": 0.020415
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 47,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:55.565213+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/baseline/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/baseline/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 650048,
+              "sha256": "88fb00290ba000deaa17921a8be0bece87935ca8bdfd6f3318bbe67f0f44d606",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5",
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:55.807968+00:00",
+          "wall_seconds": 0.6146807910000001,
+          "user_seconds": 1.145416,
+          "system_seconds": 0.014672999999999999,
+          "peak_rss_bytes": 26509312,
+          "wait_status": 0,
+          "stdout_sha256": "d29b8d13dfc9f86caecb181c5bfcc4793a8b752999b158db9e62b14d000ccb40",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.01705675,
+            "catalog_index_seconds": 0.02185425,
+            "read_processing_seconds": 0.497956375,
+            "genotyping_seconds": 0.019638084,
+            "output_seconds": 0.020466333
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1523712.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.883866709,
+            "reduction_worker_seconds": 0.093258627,
+            "publisher_assisted_chunks": 98.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 14848.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.5417e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:56.634079+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/candidate/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/candidate/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/candidate/result_realigned.bam",
+              "bytes": 412043,
+              "sha256": "03e73b855a59e8c40fb6b68d4631da2cde3f8b81479d617ccbb43445c1421497",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:56.638036+00:00",
+          "wall_seconds": 0.668357,
+          "user_seconds": 1.25511,
+          "system_seconds": 0.05338,
+          "peak_rss_bytes": 25477120,
+          "wait_status": 0,
+          "stdout_sha256": "e46aa8a553019a64e6a6e4bbd9eac9b85dc37fecc3d73d6eefaf46646b56a95a",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.017929583,
+            "catalog_index_seconds": 0.022513542,
+            "read_processing_seconds": 0.551886959,
+            "genotyping_seconds": 0.01928325,
+            "output_seconds": 0.020416417
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 203,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:57.522080+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/baseline/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/baseline/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/warmup/t1/baseline/result_realigned.bam",
+              "bytes": 463230,
+              "sha256": "19e7c8fc5b0ccafe566f759e731d4e160ca2585fbf82ea0015b8d77f6d6f6b9b",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5",
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      },
+      "cross_configuration_comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5",
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:57.955967+00:00",
+          "wall_seconds": 0.591993584,
+          "user_seconds": 1.102526,
+          "system_seconds": 0.045607999999999996,
+          "peak_rss_bytes": 25362432,
+          "wait_status": 0,
+          "stdout_sha256": "ba4d269d522efe16aa5062ce8c0fa6ef6e48749d5e7ad9aa4b1696d2cd12b409",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.016832167,
+            "catalog_index_seconds": 0.022552,
+            "read_processing_seconds": 0.478508375,
+            "genotyping_seconds": 0.016824375,
+            "output_seconds": 0.0196625
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 204,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:58.744170+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/baseline/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/baseline/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/baseline/result_realigned.bam",
+              "bytes": 463680,
+              "sha256": "c32bd6b396ee82d42c66b251ee40af47cd1a956f55638dbb57960a329c73aea8",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:58.748137+00:00",
+          "wall_seconds": 0.580214,
+          "user_seconds": 1.07685,
+          "system_seconds": 0.013965,
+          "peak_rss_bytes": 26394624,
+          "wait_status": 0,
+          "stdout_sha256": "6b69b458e0bf8a20a14139bbbee88e105892b39bd43dcad3fa9717f86e3f10f0",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.016908959,
+            "catalog_index_seconds": 0.022917625,
+            "read_processing_seconds": 0.466715833,
+            "genotyping_seconds": 0.016608208,
+            "output_seconds": 0.019693125
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1523712.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.828850958,
+            "reduction_worker_seconds": 0.088175373,
+            "publisher_assisted_chunks": 98.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 14848.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 1.7417e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:14:59.522803+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/candidate/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/candidate/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t1/candidate/result_realigned.bam",
+              "bytes": 412037,
+              "sha256": "0f8bc87cb0708a334de3f79ce6a13af39987857151fa728f73be8a44883a7119",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5",
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:14:59.749154+00:00",
+          "wall_seconds": 0.28053008300000004,
+          "user_seconds": 1.7181629999999999,
+          "system_seconds": 0.062403999999999994,
+          "peak_rss_bytes": 29507584,
+          "wait_status": 0,
+          "stdout_sha256": "807495643373fd9b4a9821642231ec1483cc645d3cf81fca55b8f4f8981fbc0f",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.016804125,
+            "catalog_index_seconds": 0.003817833,
+            "read_processing_seconds": 0.198402208,
+            "genotyping_seconds": 0.002821583,
+            "output_seconds": 0.020499209
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 43,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:00.228410+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/baseline/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/baseline/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 637040,
+              "sha256": "2bddea79017f816df5b27fa7aafa81e7db4fa7e292821dedf738a25005d91029",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:00.234626+00:00",
+          "wall_seconds": 0.250318084,
+          "user_seconds": 1.553639,
+          "system_seconds": 0.026681999999999997,
+          "peak_rss_bytes": 32161792,
+          "wait_status": 0,
+          "stdout_sha256": "63474efd9fe271eee42e2941be4ffaa008fcf32cc632f070e4befd626bdb2aaf",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.017095292,
+            "catalog_index_seconds": 0.004044625,
+            "read_processing_seconds": 0.163432709,
+            "genotyping_seconds": 0.002963542,
+            "output_seconds": 0.021317708
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 12189696.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.275137417,
+            "reduction_worker_seconds": 0.136217086,
+            "publisher_assisted_chunks": 17.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 14848.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 384000.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.4541e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:00.715354+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/candidate/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/candidate/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 412346,
+              "sha256": "6ac383c05c93bb0323ae2629bbff01f564f8570f68aa76aac4883e01b5f352bd",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5",
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:01.014933+00:00",
+          "wall_seconds": 0.256065,
+          "user_seconds": 1.560578,
+          "system_seconds": 0.024706,
+          "peak_rss_bytes": 32849920,
+          "wait_status": 0,
+          "stdout_sha256": "907268cac81b59697811d22724c7361636ad9d67ba159e6a93b3cb6b8b76350b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.016789041,
+            "catalog_index_seconds": 0.004491208,
+            "read_processing_seconds": 0.172839209,
+            "genotyping_seconds": 0.003153709,
+            "output_seconds": 0.020676958
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 12189696.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.331171673,
+            "reduction_worker_seconds": 0.137249535,
+            "publisher_assisted_chunks": 14.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 14848.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 1152000.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.4209e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:01.476492+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/candidate/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/candidate/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/candidate/result_realigned.bam",
+              "bytes": 412446,
+              "sha256": "d56c79d25b4ac00d0368ef2204b3de04577c7342b756838debbd1f5759e7beed",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:01.483960+00:00",
+          "wall_seconds": 0.284325417,
+          "user_seconds": 1.830106,
+          "system_seconds": 0.058497,
+          "peak_rss_bytes": 29114368,
+          "wait_status": 0,
+          "stdout_sha256": "57ea2d604735056dc3c32bc0796c69a6644d6da6423a8467a833e82fcc47e1e4",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.018886583,
+            "catalog_index_seconds": 0.004374958,
+            "read_processing_seconds": 0.194753542,
+            "genotyping_seconds": 0.003089584,
+            "output_seconds": 0.020555625
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 45,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:02.012366+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/baseline/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/baseline/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t8/baseline/result_realigned.bam",
+              "bytes": 654771,
+              "sha256": "fee23e7eda7b2777d62d44980e7bd12e6812a5166d7439353e8f557d9fa17b93",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5",
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:02.335266+00:00",
+          "wall_seconds": 0.576258041,
+          "user_seconds": 1.066657,
+          "system_seconds": 0.015059999999999999,
+          "peak_rss_bytes": 26427392,
+          "wait_status": 0,
+          "stdout_sha256": "89f8b59fb98be760d726710c002674c5646551c970eef6814422cfc4e4e2d083",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.016556583,
+            "catalog_index_seconds": 0.022358291,
+            "read_processing_seconds": 0.4661995,
+            "genotyping_seconds": 0.016583583,
+            "output_seconds": 0.016217416
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1523712.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.820766915,
+            "reduction_worker_seconds": 0.087490879,
+            "publisher_assisted_chunks": 97.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 14848.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.2375e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:03.124017+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/candidate/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/candidate/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/candidate/result_realigned.bam",
+              "bytes": 412034,
+              "sha256": "dda3529e7d392049d799ce7e0858c958fcb0cf12d65f6a39ba272c75050ed603",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:03.131534+00:00",
+          "wall_seconds": 0.631855708,
+          "user_seconds": 1.182293,
+          "system_seconds": 0.049353999999999995,
+          "peak_rss_bytes": 25591808,
+          "wait_status": 0,
+          "stdout_sha256": "4ac2a5c472527a6f90888cfed462628bca6712241367deb2a9bb14968d653d42",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.016962417,
+            "catalog_index_seconds": 0.022378667,
+            "read_processing_seconds": 0.513281334,
+            "genotyping_seconds": 0.0198635,
+            "output_seconds": 0.021693667
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 207,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:03.963071+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/baseline/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/baseline/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-01/t1/baseline/result_realigned.bam",
+              "bytes": 462787,
+              "sha256": "38a07c484a7248282f220b78639a988e47b3b50459732b50992d5a1dc75cb0c2",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5",
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:04.250515+00:00",
+          "wall_seconds": 0.27551458399999995,
+          "user_seconds": 1.726415,
+          "system_seconds": 0.056303,
+          "peak_rss_bytes": 29360128,
+          "wait_status": 0,
+          "stdout_sha256": "5521e85081f5f0930424ab5a8cc171efdb4788b49a6a88b8c0f7a3a695ac55b0",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.023542625,
+            "catalog_index_seconds": 0.004011291,
+            "read_processing_seconds": 0.185871125,
+            "genotyping_seconds": 0.003075791,
+            "output_seconds": 0.02042975
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 40,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:04.726582+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/baseline/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/baseline/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/baseline/result_realigned.bam",
+              "bytes": 644016,
+              "sha256": "65e0f225c42a5832e237b38c97963e59c59374e0c5b6fe03d3093d8efda4a382",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:04.735421+00:00",
+          "wall_seconds": 0.265601541,
+          "user_seconds": 1.656146,
+          "system_seconds": 0.024354999999999998,
+          "peak_rss_bytes": 32129024,
+          "wait_status": 0,
+          "stdout_sha256": "1f1ce34de6bde5ae6892d23c543a377614d8acda7aa668607c7645a574c9871a",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.020292333,
+            "catalog_index_seconds": 0.004410917,
+            "read_processing_seconds": 0.174276292,
+            "genotyping_seconds": 0.002842,
+            "output_seconds": 0.020923416
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 12189696.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 1.344768083,
+            "reduction_worker_seconds": 0.157567452,
+            "publisher_assisted_chunks": 18.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 14848.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 230400.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.3333e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:05.251796+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/candidate/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/candidate/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t8/candidate/result_realigned.bam",
+              "bytes": 412283,
+              "sha256": "88d8ce85fa65ff970c6fa3fe723ab5032484fcae11bace7a4a9ed867225f71be",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5",
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:05.611659+00:00",
+          "wall_seconds": 0.6823663329999999,
+          "user_seconds": 1.27954,
+          "system_seconds": 0.05509,
+          "peak_rss_bytes": 25493504,
+          "wait_status": 0,
+          "stdout_sha256": "30a97ad84bd3a0da000ebc25738c3b1f6344cab7b45da7985f7e3f6a812153fa",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.01682675,
+            "catalog_index_seconds": 0.022758709,
+            "read_processing_seconds": 0.56317025,
+            "genotyping_seconds": 0.020279167,
+            "output_seconds": 0.020274875
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 200,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:06.528655+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/baseline/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/baseline/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/baseline/result_realigned.bam",
+              "bytes": 465657,
+              "sha256": "ddbdb244bd6c1bead28e84df686e118e63b9156f36158f1ea327c67bf45dcfe3",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:06.536674+00:00",
+          "wall_seconds": 0.599571541,
+          "user_seconds": 1.109128,
+          "system_seconds": 0.016579999999999998,
+          "peak_rss_bytes": 26492928,
+          "wait_status": 0,
+          "stdout_sha256": "7330d4c026ea21579c24a826ca794c1f87596d767fc993ad15f0f8f8c0643a66",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.017487959,
+            "catalog_index_seconds": 0.022249042,
+            "read_processing_seconds": 0.482007,
+            "genotyping_seconds": 0.017112208,
+            "output_seconds": 0.019875542
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 12800.0,
+            "assignments": 12800.0,
+            "chunks": 200.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 1523712.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 0.854298872,
+            "reduction_worker_seconds": 0.091303492,
+            "publisher_assisted_chunks": 98.0
+          },
+          "pending_mates": {
+            "peak_reads": 64.0,
+            "peak_raw_bytes": 14848.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 25600.0,
+            "peak_resident_bytes": 76800.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.2084e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:07.356083+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/candidate/result.vcf",
+              "bytes": 41257,
+              "sha256": "f6ae83fd43218b0fe27f91bd7e96e5116612eb6b0fc493b842b56e9d11e894d2",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/candidate/result.json",
+              "bytes": 130449,
+              "sha256": "685a60a3087625680d72657d6c9b7c7e8c33cb10d5adad0edb873390d1fbfaeb",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/iupac-missingquality150/attempt-001/round-02/t1/candidate/result_realigned.bam",
+              "bytes": 412032,
+              "sha256": "2e6c6b3fcc9dc3b6e9ab2fa2098986ca437f62f2bc141b02b45d324f1104d902",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            25600,
+            25600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5",
+            "4a8aadcc9254dbccd9359be2a039c8800cf7bdfbefa0f59985311be9afecd2e5"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+      "bytes": 2046800,
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam",
+      "bytes": 370746,
+      "sha256": "7febde55dc122ea4b79087079ba23068d7b22bcad38d4c38f29e9e774d6d3c6a"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa",
+      "bytes": 832866,
+      "sha256": "4cbf60c91490a61f2f89cf6ea00247dcb2df673cf0b763b417d594bf1ae8b0b4"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/catalog.json",
+      "bytes": 29951,
+      "sha256": "c2f42dee2925e4fa4871003d5dd636f011d09a4db2272e85b579cb7d6c083f16"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reference.fa.fai",
+      "bytes": 27,
+      "sha256": "22c9f0f685bf7c67170905f4c70b27d058d9ac1e26d8a00eee7d8f7214a43dbd"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/read-extremes/iupac-missingquality150/reads.bam.bai",
+      "bytes": 1664,
+      "sha256": "edc74edf02348ce3e7bc8338d9945939f69edb23abb5bf0cda24dd8285cd45fd"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29361,
+      "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 11663,
+      "sha256": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      1,
+      8
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      1
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "1": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 0.631855708,
+            "candidate_median": 0.580214,
+            "baseline_max": 0.6823663329999999,
+            "candidate_max": 0.599571541,
+            "paired_deltas": [
+              -0.01177958400000001,
+              -0.05559766700000002,
+              -0.08279479199999995
+            ],
+            "paired_ratios": [
+              0.9801018384010054,
+              0.9120089186564727,
+              0.8786651861383672
+            ],
+            "paired_median_ratio": 0.9120089186564727,
+            "paired_ratio_bootstrap_95": [
+              0.8786651861383672,
+              0.9801018384010054
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 1.231647,
+            "candidate_median": 1.090815,
+            "baseline_max": 1.33463,
+            "candidate_max": 1.125708,
+            "paired_deltas": [
+              -0.0573189999999999,
+              -0.1499299999999999,
+              -0.20892200000000005
+            ],
+            "paired_ratios": [
+              0.9500763848122259,
+              0.8782686922470482,
+              0.8434607344357612
+            ],
+            "paired_median_ratio": 0.8782686922470482,
+            "paired_ratio_bootstrap_95": [
+              0.8434607344357612,
+              0.9500763848122259
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 25493504,
+            "candidate_median": 26427392,
+            "baseline_max": 25591808,
+            "candidate_max": 26492928,
+            "paired_deltas": [
+              1032192,
+              835584,
+              999424
+            ],
+            "paired_ratios": [
+              1.0406976744186047,
+              1.0326504481434058,
+              1.0392030848329048
+            ],
+            "paired_median_ratio": 1.0392030848329048,
+            "paired_ratio_bootstrap_95": [
+              1.0326504481434058,
+              1.0406976744186047
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.016832167,
+            "candidate_median": 0.016908959,
+            "baseline_max": 0.016962417,
+            "candidate_max": 0.017487959,
+            "paired_deltas": [
+              7.679200000000261e-05,
+              -0.00040583400000000075,
+              0.0006612089999999994
+            ],
+            "paired_ratios": [
+              1.0045622170930222,
+              0.9760745181538691,
+              1.0392951104639934
+            ],
+            "paired_median_ratio": 1.0045622170930222,
+            "paired_ratio_bootstrap_95": [
+              0.9760745181538691,
+              1.0392951104639934
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.022552,
+            "candidate_median": 0.022358291,
+            "baseline_max": 0.022758709,
+            "candidate_max": 0.022917625,
+            "paired_deltas": [
+              0.00036562500000000137,
+              -2.0376000000002503e-05,
+              -0.0005096669999999984
+            ],
+            "paired_ratios": [
+              1.0162125310393757,
+              0.9990894900040291,
+              0.9776056278060412
+            ],
+            "paired_median_ratio": 0.9990894900040291,
+            "paired_ratio_bootstrap_95": [
+              0.9776056278060412,
+              1.0162125310393757
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.0198635,
+            "candidate_median": 0.016608208,
+            "baseline_max": 0.020279167,
+            "candidate_max": 0.017112208,
+            "paired_deltas": [
+              -0.00021616699999999975,
+              -0.0032799170000000002,
+              -0.0031669590000000004
+            ],
+            "paired_ratios": [
+              0.9871515583788403,
+              0.8348771867999094,
+              0.84383189901242
+            ],
+            "paired_median_ratio": 0.84383189901242,
+            "paired_ratio_bootstrap_95": [
+              0.8348771867999094,
+              0.9871515583788403
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.020274875,
+            "candidate_median": 0.019693125,
+            "baseline_max": 0.021693667,
+            "candidate_max": 0.019875542,
+            "paired_deltas": [
+              3.06249999999994e-05,
+              -0.005476251000000001,
+              -0.0003993330000000017
+            ],
+            "paired_ratios": [
+              1.0015575333757152,
+              0.7475645311601767,
+              0.9803040462641569
+            ],
+            "paired_median_ratio": 0.9803040462641569,
+            "paired_ratio_bootstrap_95": [
+              0.7475645311601767,
+              1.0015575333757152
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 0.513281334,
+            "candidate_median": 0.466715833,
+            "baseline_max": 0.56317025,
+            "candidate_max": 0.482007,
+            "paired_deltas": [
+              -0.011792541999999961,
+              -0.04708183399999999,
+              -0.08116324999999996
+            ],
+            "paired_ratios": [
+              0.9753556204737274,
+              0.9082728498363823,
+              0.855881502973568
+            ],
+            "paired_median_ratio": 0.9082728498363823,
+            "paired_ratio_bootstrap_95": [
+              0.855881502973568,
+              0.9753556204737274
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 20000000,
+          "paired_actual_delta_bytes": [
+            1032192,
+            835584,
+            999424
+          ],
+          "difference_of_medians_bytes": 933888,
+          "difference_of_maxima_bytes": 901120,
+          "median_paired_delta_bytes": 999424,
+          "largest_paired_delta_bytes": 1032192,
+          "paired_candidate_limits_bytes": [
+            45362432,
+            45591808,
+            45493504
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      },
+      "8": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 0.28053008300000004,
+            "candidate_median": 0.256065,
+            "baseline_max": 0.284325417,
+            "candidate_max": 0.265601541,
+            "paired_deltas": [
+              -0.030211999000000045,
+              -0.028260417000000038,
+              -0.009913042999999955
+            ],
+            "paired_ratios": [
+              0.8923038888488831,
+              0.9006053792229204,
+              0.9640198974004224
+            ],
+            "paired_median_ratio": 0.9006053792229204,
+            "paired_ratio_bootstrap_95": [
+              0.8923038888488831,
+              0.9640198974004224
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 1.782718,
+            "candidate_median": 1.585284,
+            "baseline_max": 1.888603,
+            "candidate_max": 1.6805009999999998,
+            "paired_deltas": [
+              -0.2002459999999997,
+              -0.3033190000000001,
+              -0.10221700000000022
+            ],
+            "paired_ratios": [
+              0.8875380707381414,
+              0.8393950449088559,
+              0.9426622718792315
+            ],
+            "paired_median_ratio": 0.8875380707381414,
+            "paired_ratio_bootstrap_95": [
+              0.8393950449088559,
+              0.9426622718792315
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 29360128,
+            "candidate_median": 32161792,
+            "baseline_max": 29507584,
+            "candidate_max": 32849920,
+            "paired_deltas": [
+              2654208,
+              3735552,
+              2768896
+            ],
+            "paired_ratios": [
+              1.0899500277623542,
+              1.128306133933596,
+              1.0943080357142858
+            ],
+            "paired_median_ratio": 1.0943080357142858,
+            "paired_ratio_bootstrap_95": [
+              1.0899500277623542,
+              1.128306133933596
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.018886583,
+            "candidate_median": 0.017095292,
+            "baseline_max": 0.023542625,
+            "candidate_max": 0.020292333,
+            "paired_deltas": [
+              0.0002911670000000019,
+              -0.0020975419999999974,
+              -0.003250292000000002
+            ],
+            "paired_ratios": [
+              1.0173271146221539,
+              0.8889401010230386,
+              0.8619401192517826
+            ],
+            "paired_median_ratio": 0.8889401010230386,
+            "paired_ratio_bootstrap_95": [
+              0.8619401192517826,
+              1.0173271146221539
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.004011291,
+            "candidate_median": 0.004410917,
+            "baseline_max": 0.004374958,
+            "candidate_max": 0.004491208,
+            "paired_deltas": [
+              0.00022679199999999953,
+              0.00011625000000000003,
+              0.00039962600000000015
+            ],
+            "paired_ratios": [
+              1.059403331680563,
+              1.0265716836595917,
+              1.099625282733165
+            ],
+            "paired_median_ratio": 1.059403331680563,
+            "paired_ratio_bootstrap_95": [
+              1.0265716836595917,
+              1.099625282733165
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.003075791,
+            "candidate_median": 0.002963542,
+            "baseline_max": 0.003089584,
+            "candidate_max": 0.003153709,
+            "paired_deltas": [
+              0.0001419590000000001,
+              6.412500000000038e-05,
+              -0.00023379100000000012
+            ],
+            "paired_ratios": [
+              1.0503118285019437,
+              1.020755221414922,
+              0.9239899590056672
+            ],
+            "paired_median_ratio": 1.020755221414922,
+            "paired_ratio_bootstrap_95": [
+              0.9239899590056672,
+              1.0503118285019437
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.020499209,
+            "candidate_median": 0.020923416,
+            "baseline_max": 0.020555625,
+            "candidate_max": 0.021317708,
+            "paired_deltas": [
+              0.0008184990000000003,
+              0.00012133299999999778,
+              0.0004936660000000002
+            ],
+            "paired_ratios": [
+              1.0399283211366839,
+              1.0059026665450455,
+              1.0241640744502503
+            ],
+            "paired_median_ratio": 1.0241640744502503,
+            "paired_ratio_bootstrap_95": [
+              1.0059026665450455,
+              1.0399283211366839
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 0.194753542,
+            "candidate_median": 0.172839209,
+            "baseline_max": 0.198402208,
+            "candidate_max": 0.174276292,
+            "paired_deltas": [
+              -0.03496949899999999,
+              -0.021914333000000008,
+              -0.011594832999999999
+            ],
+            "paired_ratios": [
+              0.8237444061106417,
+              0.8874765882306777,
+              0.9376189658291464
+            ],
+            "paired_median_ratio": 0.8874765882306777,
+            "paired_ratio_bootstrap_95": [
+              0.8237444061106417,
+              0.9376189658291464
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            2654208,
+            3735552,
+            2768896
+          ],
+          "difference_of_medians_bytes": 2801664,
+          "difference_of_maxima_bytes": 3342336,
+          "median_paired_delta_bytes": 2768896,
+          "largest_paired_delta_bytes": 3735552,
+          "paired_candidate_limits_bytes": [
+            189507584,
+            189114368,
+            189360128
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            2.1102677390930653,
+            2.2222976569133106,
+            2.4766976872629
+          ],
+          "median_wall_speedup": 2.2222976569133106,
+          "median_compute_scaling_efficiency": 0.2777872071141638,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            2.317906843678142,
+            2.2504365727452016,
+            2.2574098732356376
+          ],
+          "median_wall_speedup": 2.2574098732356376,
+          "median_compute_scaling_efficiency": 0.2821762341544547,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": true,
+    "all_observed_peak_rss_within_allowance": true,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T20:15:07.627102+00:00"
+}

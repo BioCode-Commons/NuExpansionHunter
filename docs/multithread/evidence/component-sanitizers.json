@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "status": "Completed component evidence with explicitly listed provenance gaps",
+  "publication_scope": "Historical component sanitizer runs only. None is whole-application sanitizer coverage, and none includes the final v6 item-release edit. No test or build was rerun for publication staging.",
+  "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+  "artifact_manifest": "initial-staging-manifest.json",
+  "components": [
+    {
+      "name": "Executor and publisher assistance",
+      "scope": "Standalone executor and test translation units; not the whole application. This run predates the final v6 streaming item-release change.",
+      "instrumentation_published": [
+        "AddressSanitizer",
+        "ThreadSanitizer"
+      ],
+      "instrumentation_limitation": "The retained summary labels one configuration as asan-ubsan, but exact compile flags were not retained. Additional UndefinedBehaviorSanitizer coverage is unverified and is not claimed. ASan/TSan runtime linkage was confirmed by a later read-only inspection; that inspection did not recover the original command.",
+      "runs": [
+        {
+          "log": "components/executor-asan-ubsan.log",
+          "case_executions": 380,
+          "completed_pass_summaries": 20,
+          "cases_per_completed_pass": [
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19
+          ],
+          "sanitizer_diagnostic_markers_found": []
+        },
+        {
+          "log": "components/executor-tsan.log",
+          "case_executions": 380,
+          "completed_pass_summaries": 20,
+          "cases_per_completed_pass": [
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19,
+            19
+          ],
+          "sanitizer_diagnostic_markers_found": []
+        }
+      ],
+      "tests_per_configuration": 19,
+      "repetitions_per_configuration": 20,
+      "total_case_executions": 760,
+      "existing_summary": "components/executor-summary.txt",
+      "compile_exit_codes_reported_by_summary": [
+        0,
+        0
+      ],
+      "test_exit_codes_reported_by_summary": [
+        0,
+        0
+      ],
+      "exact_compile_commands": null,
+      "exact_run_commands": null,
+      "evidenced_test_arguments": [
+        "--gtest_filter=TaskExecutor.*",
+        "--gtest_repeat=20"
+      ],
+      "source_scope_reported_in_task_history": [
+        "ehunter/core/TaskExecutor.cpp",
+        "ehunter/tests/TaskExecutorTest.cpp"
+      ],
+      "source_scope_provenance": "Earlier agent task history; no independent command manifest or contemporaneous source-hash manifest was retained for this standalone run.",
+      "source_hashes_at_validation": null,
+      "limitations": [
+        "Empty build logs do not prove compiler options or environment.",
+        "Evidenced test arguments are not a reconstructed exact invocation.",
+        "Source hashes from another later manifest are not substituted for missing validation-time hashes."
+      ]
+    },
+    {
+      "name": "BAM sink including deferred seeking errors",
+      "scope": "Standalone BamRecordSink.cpp and extracted sink test translation units; HTS/GTest dependencies linked. Includes the seeking error-policy fix; not whole-application instrumentation.",
+      "instrumentation_published": [
+        "AddressSanitizer",
+        "UndefinedBehaviorSanitizer",
+        "ThreadSanitizer"
+      ],
+      "runs": [
+        {
+          "log": "components/bam-sink-asan-ubsan.log",
+          "case_executions": 220,
+          "completed_pass_summaries": 20,
+          "cases_per_completed_pass": [
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11
+          ],
+          "sanitizer_diagnostic_markers_found": []
+        },
+        {
+          "log": "components/bam-sink-tsan.log",
+          "case_executions": 220,
+          "completed_pass_summaries": 20,
+          "cases_per_completed_pass": [
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11,
+            11
+          ],
+          "sanitizer_diagnostic_markers_found": []
+        }
+      ],
+      "tests_per_configuration": 11,
+      "repetitions_per_configuration": 20,
+      "total_case_executions": 440,
+      "commands": [
+        "components/bam-sink-asan-ubsan-commands.json",
+        "components/bam-sink-tsan-commands.json"
+      ],
+      "source_hash_manifest": "components/bam-sink-sources.json",
+      "gtest_xml": [
+        "components/bam-sink-asan-ubsan.xml",
+        "components/bam-sink-tsan.xml"
+      ],
+      "xml_scope": "GTest XML describes the final repetition; text logs retain all 20 repetitions.",
+      "limitations": [
+        "Dependency libraries are not claimed to be fully instrumented.",
+        "This does not instrument the final v6 streaming item-release edit."
+      ]
+    },
+    {
+      "name": "Locale snapshot lifetime and semantics",
+      "scope": "GappedAligner.cpp and GappedAlignerTest.cpp compiled with instrumentation and linked with an existing graph library; six focused SeedUppercase cases.",
+      "instrumentation_published": [
+        "AddressSanitizer",
+        "UndefinedBehaviorSanitizer"
+      ],
+      "runs": [
+        {
+          "log": "components/locale-asan-ubsan.log",
+          "case_executions": 6,
+          "completed_pass_summaries": 1,
+          "cases_per_completed_pass": [
+            6
+          ],
+          "sanitizer_diagnostic_markers_found": []
+        }
+      ],
+      "tests_per_configuration": 6,
+      "repetitions_per_configuration": 1,
+      "total_case_executions": 6,
+      "commands": [
+        "components/locale-asan-ubsan-commands.json"
+      ],
+      "gtest_xml": [
+        "components/locale-asan-ubsan.xml"
+      ],
+      "source_hashes_at_validation": null,
+      "limitations": [
+        "The retained command manifest identifies instrumented translation units and linked libraries but does not capture their source hashes.",
+        "The linked graph archive and whole application are not claimed to be instrumented.",
+        "This predates the final v6 streaming item-release edit."
+      ]
+    },
+    {
+      "name": "Borrowed adjacency and owning-range lifetime",
+      "scope": "Focused Graph tests; 22 cases from seven suites, one run. Not whole-application instrumentation.",
+      "instrumentation_published": [
+        "AddressSanitizer"
+      ],
+      "runs": [
+        {
+          "log": "components/borrowed-adjacency-asan.log",
+          "case_executions": 22,
+          "completed_pass_summaries": 1,
+          "cases_per_completed_pass": [
+            22
+          ],
+          "sanitizer_diagnostic_markers_found": []
+        }
+      ],
+      "tests_per_configuration": 22,
+      "repetitions_per_configuration": 1,
+      "total_case_executions": 22,
+      "exact_compile_commands": null,
+      "exact_run_commands": null,
+      "source_scope_reported_in_task_history": [
+        "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/Graph.cpp",
+        "SequenceOperations.cpp (graph-tools; exact source directory not recorded in task-history summary)",
+        "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphTest.cpp"
+      ],
+      "source_scope_provenance": "Earlier agent task history. ASan runtime linkage was confirmed by a later read-only inspection, not an original compile-command record.",
+      "source_hashes_at_validation": null,
+      "limitations": [
+        "No exact command manifest or validation-time source hashes were retained.",
+        "The empty build log does not prove compiler options or environment.",
+        "This predates the final v6 streaming item-release edit."
+      ]
+    }
+  ],
+  "aggregate_case_executions": 1228,
+  "interpretation": "The retained complete text logs contain the stated passing executions and no searched sanitizer diagnostic markers. Absence of diagnostics applies only to the instrumented component scope; it is not proof of all application behavior. Available commands and manifests accompany evidence; gaps are listed per component.",
+  "final_primary_and_stress_status": "Not represented in this component document. Refer to completed final measurement artifacts when available."
+}

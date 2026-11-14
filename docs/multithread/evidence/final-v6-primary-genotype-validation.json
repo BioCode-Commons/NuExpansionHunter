@@ -1,0 +1,87 @@
+{
+  "scope": "Observed genotype computation; no biological truth assertion or binary-output comparison",
+  "expected_loci_per_file": 100000,
+  "minimum_coverage": 10,
+  "require_reported_repeat_evidence": true,
+  "files": [
+    {
+      "json": "<WORKSPACE>/work/parallel-redesign/primary100k-v6/round-00/t8/baseline/result.json",
+      "vcf": "<WORKSPACE>/work/parallel-redesign/primary100k-v6/round-00/t8/baseline/result.vcf",
+      "json_sha256": "1b2fe065ac3d9a0e38f28fe0cc0bf207221b6c5cf0bbb730dfad342e46ca5e34",
+      "valid": true,
+      "loci": 100000,
+      "called_loci": 100000,
+      "repeat_variants": 100000,
+      "called_vcf_records": 100000,
+      "loci_with_reported_repeat_evidence": 100000,
+      "coverage": {
+        "min": 15.972972972972972,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          100000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/parallel-redesign/primary100k-v6/round-00/t8/candidate/result.json",
+      "vcf": "<WORKSPACE>/work/parallel-redesign/primary100k-v6/round-00/t8/candidate/result.vcf",
+      "json_sha256": "1b2fe065ac3d9a0e38f28fe0cc0bf207221b6c5cf0bbb730dfad342e46ca5e34",
+      "valid": true,
+      "loci": 100000,
+      "called_loci": 100000,
+      "repeat_variants": 100000,
+      "called_vcf_records": 100000,
+      "loci_with_reported_repeat_evidence": 100000,
+      "coverage": {
+        "min": 15.972972972972972,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          100000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    }
+  ],
+  "all_valid": true,
+  "files_checked": 2,
+  "_publication": {
+    "source_file": "<WORKSPACE>/work/parallel-redesign/primary100k-v6/genotype-validation.json",
+    "original_file_sha256": "9933cdb2aa356d3fe34e4a3e3639d6f4cd1b1166625f0edb9720c1eb26ad3241",
+    "original_file_bytes": 2620,
+    "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+    "scope": "Checks the two outputs from the first formal pair for observed genotype computation and repeat evidence; not a biological truth assertion, all-pair genotype scan, or binary-output comparison."
+  }
+}

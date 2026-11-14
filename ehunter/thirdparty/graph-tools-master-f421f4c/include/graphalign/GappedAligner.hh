@@ -23,6 +23,7 @@
 
 #include <cstdint>
 #include <list>
+#include <locale>
 #include <string>
 #include <utility>
 
@@ -52,6 +53,8 @@ class AlignerSelector
 {
     std::shared_ptr<PinnedPathAligner> ptrPathAligner_;
     mutable std::shared_ptr<PinnedDagAligner> ptrDagAligner_;
+    boost::optional<std::locale> seedSearchLocale_;
+    const std::ctype<char>* seedSearchFacet_ = nullptr;
 
 public:
     explicit AlignerSelector(
@@ -74,6 +77,26 @@ public:
                 "AlignerType " + std::to_string(static_cast<int>(alignerType)) + " is not available");
         }
     }
+
+    // Optional analysis-local snapshot. Configure before using this worker's
+    // selector; do not change it concurrently with alignment. Default selectors
+    // continue consulting the current global locale for every seed search.
+    void setSeedSearchLocale(const std::locale& locale)
+    {
+        // Resolve first so a missing facet cannot invalidate an existing cache.
+        const auto* facet = &std::use_facet<std::ctype<char>>(locale);
+        seedSearchLocale_ = locale;
+        seedSearchFacet_ = facet;
+    }
+
+    void clearSeedSearchLocale()
+    {
+        seedSearchFacet_ = nullptr;
+        seedSearchLocale_ = boost::none;
+    }
+
+    // Borrowed from the owned locale; no per-read locale/refcount operation.
+    const std::ctype<char>* seedSearchFacet() const noexcept { return seedSearchFacet_; }
 
     std::list<PathAndAlignment>
     suffixAlign(const Path& seed_path, const std::string& query_piece, size_t extension_len, int& score) const
@@ -177,5 +200,7 @@ private:
 
     // Performs a search for an alignment seed
     boost::optional<AlignmentSeed> searchForAlignmentSeed(const std::string& query) const;
+    boost::optional<AlignmentSeed>
+    searchForAlignmentSeed(const std::string& query, const std::ctype<char>* snapshotFacet) const;
 };
 }

@@ -60,6 +60,7 @@ class LocusAnalyzer
 {
 public:
     using Align = graphtools::GraphAlignment;
+    using AlignedPair = LocusAligner::AlignedPair;
     using Node = graphtools::NodeId;
 
     // A value handle shares owned catalog storage or borrows mapped payload.
@@ -71,6 +72,17 @@ public:
     const LocusSpecification& locusSpec() const { return locusSpec_; }
 
     void processMates(Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector);
+
+    // Concurrent computation is safe only with task-private reads and a
+    // separately constructed selector per worker. No evidence or output is
+    // changed here; offtarget computation leaves the reads unchanged.
+    AlignedPair computeMates(
+        Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector) const;
+
+    // Consume in original input order for this locus, using the same oriented
+    // reads and region type passed to computeMates. The analyzer and its graph
+    // must outlive all outstanding computations and returned alignments.
+    void consumeMates(Read& read, Read* mate, RegionType regionType, const AlignedPair& alignedPair);
     LocusFindings analyze(Sex sampleSex, boost::optional<double> genomeWideDepth);
 
     const boost::optional<IrrPairFinder>& irrPairFinder() const { return irrPairFinder_; }
@@ -81,7 +93,7 @@ public:
         std::string variantId, VariantSubtype subtype, std::vector<Node> nodes, boost::optional<Node> refNode);
 
 private:
-    void processOntargetMates(Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector);
+    void consumeOntargetMates(Read& read, Read* mate, const AlignedPair& alignedPair);
     void processOfftargetMates(const Read& read, const Read& mate);
     void runVariantAnalysis(const Read& read, const Align& readAlign, const Read& mate, const Align& mateAlign);
 

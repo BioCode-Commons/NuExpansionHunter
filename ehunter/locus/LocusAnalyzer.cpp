@@ -96,9 +96,26 @@ LocusAnalyzer::LocusAnalyzer(
 void LocusAnalyzer::processMates(
     Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector)
 {
+    auto alignedPair = computeMates(read, mate, regionType, alignerSelector);
+    consumeMates(read, mate, regionType, alignedPair);
+}
+
+LocusAnalyzer::AlignedPair LocusAnalyzer::computeMates(
+    Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector) const
+{
     if (regionType == RegionType::kTarget)
     {
-        processOntargetMates(read, mate, alignerSelector);
+        return aligner_.alignMates(read, mate, alignerSelector);
+    }
+    return {};
+}
+
+void LocusAnalyzer::consumeMates(
+    Read& read, Read* mate, RegionType regionType, const AlignedPair& alignedPair)
+{
+    if (regionType == RegionType::kTarget)
+    {
+        consumeOntargetMates(read, mate, alignedPair);
     }
     else if (mate)
     {
@@ -106,9 +123,9 @@ void LocusAnalyzer::processMates(
     }
 }
 
-void LocusAnalyzer::processOntargetMates(Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector)
+void LocusAnalyzer::consumeOntargetMates(Read& read, Read* mate, const AlignedPair& alignedPair)
 {
-    auto alignedPair = aligner_.align(read, mate, alignerSelector);
+    aligner_.writeAlignedPair(read, mate, alignedPair);
 
     const bool neitherMateAligned = !alignedPair.first && !alignedPair.second;
     const bool bothMatesAligned = alignedPair.first && alignedPair.second;

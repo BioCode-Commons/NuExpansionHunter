@@ -59,6 +59,7 @@ add_library(ExpansionHunterLib
         core/ReadPairs.hh core/ReadPairs.cpp
         core/ReadSupportCalculator.hh core/ReadSupportCalculator.cpp
         core/ThreadPool.hh
+        core/TaskExecutor.hh core/TaskExecutor.cpp
         core/WeightedPurityCalculator.hh core/WeightedPurityCalculator.cpp
         genotyping/AlignMatrix.hh genotyping/AlignMatrix.cpp
         genotyping/AlignMatrixFiltering.hh genotyping/AlignMatrixFiltering.cpp
@@ -72,6 +73,7 @@ add_library(ExpansionHunterLib
         genotyping/StrGenotyper.hh genotyping/StrGenotyper.cpp
         genotyping/TwoAlleleStrGenotyper.hh genotyping/TwoAlleleStrGenotyper.cpp
         io/BamletWriter.hh io/BamletWriter.cpp
+        io/BamRecordSink.hh io/BamRecordSink.cpp
         io/CatalogLoading.hh io/CatalogLoading.cpp
         io/PreparedCatalog.hh io/PreparedCatalog.cpp
         io/GraphBlueprint.hh io/GraphBlueprint.cpp
@@ -92,6 +94,7 @@ add_library(ExpansionHunterLib
         sample/HtsSeekingSampleAnalysis.hh sample/HtsSeekingSampleAnalysis.cpp
         sample/HtsStreamingReadPairQueue.hh sample/HtsStreamingReadPairQueue.cpp
         sample/HtsStreamingSampleAnalysis.hh sample/HtsStreamingSampleAnalysis.cpp
+        sample/StreamingPairSource.hh sample/StreamingPairSource.cpp
         sample/IndexBasedDepthEstimate.hh sample/IndexBasedDepthEstimate.cpp
         sample/MateExtractor.hh sample/MateExtractor.cpp
         )
@@ -154,6 +157,7 @@ add_executable(UnitTests
         tests/ClassifierOfAlignmentsToVariantTest.cpp
         tests/ConcurrentQueueTest.cpp
         tests/BamletWriterTest.cpp
+        tests/BamRecordSinkTest.cpp
         tests/CountTableTest.cpp
         tests/FragLogliksTest.cpp
         tests/GenomeMaskTest.cpp
@@ -166,6 +170,9 @@ add_executable(UnitTests
         tests/LocusStatsTest.cpp
         tests/JsonWriterTest.cpp
         tests/ThreadParametersTest.cpp
+        tests/TaskExecutorTest.cpp
+        tests/StreamingPairSourceTest.cpp
+        tests/LocusParallelKernelTest.cpp
         tests/DecodedReadStreamTest.cpp
         tests/ReadSupportCalculatorTest.cpp
         tests/ReadTest.cpp

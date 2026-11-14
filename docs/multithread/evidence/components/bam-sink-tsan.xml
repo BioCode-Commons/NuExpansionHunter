@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="11" failures="0" disabled="0" errors="0" time="0.11" timestamp="2026-11-14T11:09:39" name="AllTests">
+  <testsuite name="BamRecordSink" tests="11" failures="0" disabled="0" errors="0" time="0.11" timestamp="2026-11-14T11:09:41">
+    <testcase name="PreservesBatchAndRecordOrderAndFinishesTwice" status="run" result="completed" time="0" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="EmptyBatchesAndEmptyStreamFinish" status="run" result="completed" time="0.001" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="KeepsConsumerOwnedPayloadChargedUntilWriteCompletes" status="run" result="completed" time="0.025" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="OversizedBatchRunsExclusivelyWithoutDeadlock" status="run" result="completed" time="0.023" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="ExplicitZeroBudgetDoesNotBlockOnResidentPayload" status="run" result="completed" time="0" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish" status="run" result="completed" time="0.025" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="DeferredWriteFailureReleasesWaitersButFinishStillThrows" status="run" result="completed" time="0.025" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="DeferredSubmissionPreservesOutputAndRejectsAfterFinish" status="run" result="completed" time="0.001" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="FinishWakesCapacityWaitersWhileDrainingAcceptedWork" status="run" result="completed" time="0" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="ConcurrentProducersPreserveEveryRecordAndDuplicate" status="run" result="completed" time="0.009" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+    <testcase name="RejectsNullRecordsWithoutPoisoningTheSink" status="run" result="completed" time="0" timestamp="2026-11-14T11:09:41" classname="BamRecordSink" />
+  </testsuite>
+</testsuites>

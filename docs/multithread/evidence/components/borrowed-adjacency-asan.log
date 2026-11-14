@@ -1,0 +1,77 @@
+# Publication evidence copy
+# Original file: <WORKSPACE>/work/borrowed-adjacency-validation/tests-asan.log
+# Original SHA-256: fea59b937614db639b11a6ec51c8046efb2b92e0997d02a1b18b25e863130be3
+# Redaction: Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.
+# Scope: 22 focused Graph cases under ASan; not a whole-application sanitizer run.
+# Original log follows.
+Running main() from ../googletest/src/gtest_main.cc
+[==========] Running 22 tests from 7 test suites.
+[----------] Global test environment set-up.
+[----------] 1 test from GraphConstruction
+[ RUN      ] GraphConstruction.TypicalNodeCount_GraphConstructed
+[       OK ] GraphConstruction.TypicalNodeCount_GraphConstructed (0 ms)
+[----------] 1 test from GraphConstruction (0 ms total)
+
+[----------] 2 tests from NodeNameManipulation
+[ RUN      ] NodeNameManipulation.TypicalNode_NodeNameSet
+[       OK ] NodeNameManipulation.TypicalNode_NodeNameSet (0 ms)
+[ RUN      ] NodeNameManipulation.NonexistingNode_ExceptionRaised
+[       OK ] NodeNameManipulation.NonexistingNode_ExceptionRaised (0 ms)
+[----------] 2 tests from NodeNameManipulation (0 ms total)
+
+[----------] 5 tests from NodeSequenceManipulation
+[ RUN      ] NodeSequenceManipulation.TypicalSequence_SequenceSet
+[       OK ] NodeSequenceManipulation.TypicalSequence_SequenceSet (0 ms)
+[ RUN      ] NodeSequenceManipulation.DegenerateSequence_SequenceExpansionObtained
+[       OK ] NodeSequenceManipulation.DegenerateSequence_SequenceExpansionObtained (0 ms)
+[ RUN      ] NodeSequenceManipulation.NonexistingNode_ExceptionRaised
+[       OK ] NodeSequenceManipulation.NonexistingNode_ExceptionRaised (0 ms)
+[ RUN      ] NodeSequenceManipulation.EmptySequence_ExceptionRaised
+[       OK ] NodeSequenceManipulation.EmptySequence_ExceptionRaised (0 ms)
+[ RUN      ] NodeSequenceManipulation.LengthOnlyAccessPreservesOwnedMappedAndReverseSemantics
+[       OK ] NodeSequenceManipulation.LengthOnlyAccessPreservesOwnedMappedAndReverseSemantics (1 ms)
+[----------] 5 tests from NodeSequenceManipulation (1 ms total)
+
+[----------] 4 tests from AddingEdges
+[ RUN      ] AddingEdges.TypicalEdge_EdgeAdded
+[       OK ] AddingEdges.TypicalEdge_EdgeAdded (0 ms)
+[ RUN      ] AddingEdges.EdgeBreakingTopologicalOrder_ExceptionRaised
+[       OK ] AddingEdges.EdgeBreakingTopologicalOrder_ExceptionRaised (0 ms)
+[ RUN      ] AddingEdges.EdgesBetweenNonexistingNodes_ExceptionRaised
+[       OK ] AddingEdges.EdgesBetweenNonexistingNodes_ExceptionRaised (0 ms)
+[ RUN      ] AddingEdges.EdgesThatAlreadyExist_ExceptionRaised
+[       OK ] AddingEdges.EdgesThatAlreadyExist_ExceptionRaised (0 ms)
+[----------] 4 tests from AddingEdges (0 ms total)
+
+[----------] 1 test from CheckingIfEdgesExist
+[ RUN      ] CheckingIfEdgesExist.EdgesBetweenNonexistingNodes_ExceptionRaised
+[       OK ] CheckingIfEdgesExist.EdgesBetweenNonexistingNodes_ExceptionRaised (0 ms)
+[----------] 1 test from CheckingIfEdgesExist (0 ms total)
+
+[----------] 2 tests from EdgeLabelManipulation
+[ RUN      ] EdgeLabelManipulation.TypicalEdges_EdgesLabeled
+[       OK ] EdgeLabelManipulation.TypicalEdges_EdgesLabeled (0 ms)
+[ RUN      ] EdgeLabelManipulation.NonexistingEdges_ExceptionRaised
+[       OK ] EdgeLabelManipulation.NonexistingEdges_ExceptionRaised (0 ms)
+[----------] 2 tests from EdgeLabelManipulation (0 ms total)
+
+[----------] 7 tests from GettingNodeNeighbors
+[ RUN      ] GettingNodeNeighbors.TypicalNode_SuccessorsFound
+[       OK ] GettingNodeNeighbors.TypicalNode_SuccessorsFound (0 ms)
+[ RUN      ] GettingNodeNeighbors.LoopAtNode_SuccessorsFound
+[       OK ] GettingNodeNeighbors.LoopAtNode_SuccessorsFound (0 ms)
+[ RUN      ] GettingNodeNeighbors.TypicalNode_PredecessorsFound
+[       OK ] GettingNodeNeighbors.TypicalNode_PredecessorsFound (0 ms)
+[ RUN      ] GettingNodeNeighbors.NeighborsOfNonexistingNode_ExceptionRaised
+[       OK ] GettingNodeNeighbors.NeighborsOfNonexistingNode_ExceptionRaised (0 ms)
+[ RUN      ] GettingNodeNeighbors.BorrowedRangesPreserveOwnedMappedAndReverseTraversal
+[       OK ] GettingNodeNeighbors.BorrowedRangesPreserveOwnedMappedAndReverseTraversal (0 ms)
+[ RUN      ] GettingNodeNeighbors.BorrowedRangesAndIteratorsDoNotRetainMappedOwner
+[       OK ] GettingNodeNeighbors.BorrowedRangesAndIteratorsDoNotRetainMappedOwner (0 ms)
+[ RUN      ] GettingNodeNeighbors.OwningMappedRangesAndIteratorsOutliveGraph
+[       OK ] GettingNodeNeighbors.OwningMappedRangesAndIteratorsOutliveGraph (0 ms)
+[----------] 7 tests from GettingNodeNeighbors (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 22 tests from 7 test suites ran. (2 ms total)
+[  PASSED  ] 22 tests.

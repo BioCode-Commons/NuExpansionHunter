@@ -1,0 +1,687 @@
+# Publication evidence copy
+# Original file: <WORKSPACE>/work/bam-sink-validation/seeking-error-fix/tsan.log
+# Original SHA-256: 84eefef645027e4f9cf4c250c259c7c0de1fb280a4399b2857d036a29eca2876
+# Redaction: Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.
+# Scope: Standalone BAM sink component validation including seeking error policy, 11 cases repeated 20 times.
+# Original log follows.
+Running main() from ../googletest/src/gtest_main.cc
+
+Repeating all tests (iteration 1) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (5 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (24 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (1 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (5 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (110 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (111 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 2) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (26 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (9 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (110 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (110 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 3) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (22 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (1 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (25 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (26 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (9 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (108 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (108 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 4) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (24 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (26 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (24 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (5 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (104 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (104 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 5) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (26 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (22 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (26 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (26 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (1 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (9 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (110 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (110 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 6) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (2 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (26 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (1 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (25 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (23 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (7 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (110 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (110 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 7) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (24 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (21 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (1 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (23 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (1 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (6 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (102 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (102 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 8) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (23 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (26 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (6 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (105 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (105 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 9) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (26 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (21 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (22 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (1 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (4 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (100 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (100 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 10) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (1 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (25 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (6 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (107 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (107 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 11) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (26 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (9 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (110 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (110 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 12) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (20 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (22 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (25 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (26 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (8 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (102 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (102 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 13) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (1 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (23 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (25 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (26 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (8 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (108 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (108 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 14) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (26 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (22 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (24 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (7 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (104 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (104 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 15) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (1 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (1 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (25 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (26 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (7 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (110 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (110 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 16) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (23 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (26 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (24 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (1 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (9 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (108 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (108 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 17) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (20 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (26 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (24 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (6 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (102 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (102 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 18) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (1 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (25 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (6 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (107 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (107 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 19) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (0 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (25 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (25 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (26 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (0 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (6 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (107 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (107 ms total)
+[  PASSED  ] 11 tests.
+
+Repeating all tests (iteration 20) . . .
+
+Note: Google Test filter = BamRecordSink.*
+[==========] Running 11 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 11 tests from BamRecordSink
+[ RUN      ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice
+[       OK ] BamRecordSink.PreservesBatchAndRecordOrderAndFinishesTwice (0 ms)
+[ RUN      ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish
+[       OK ] BamRecordSink.EmptyBatchesAndEmptyStreamFinish (1 ms)
+[ RUN      ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes
+[       OK ] BamRecordSink.KeepsConsumerOwnedPayloadChargedUntilWriteCompletes (25 ms)
+[ RUN      ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock
+[       OK ] BamRecordSink.OversizedBatchRunsExclusivelyWithoutDeadlock (23 ms)
+[ RUN      ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload
+[       OK ] BamRecordSink.ExplicitZeroBudgetDoesNotBlockOnResidentPayload (0 ms)
+[ RUN      ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish
+[       OK ] BamRecordSink.ConsumerFailureWakesBlockedProducersAndPersistsThroughFinish (25 ms)
+[ RUN      ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows
+[       OK ] BamRecordSink.DeferredWriteFailureReleasesWaitersButFinishStillThrows (25 ms)
+[ RUN      ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish
+[       OK ] BamRecordSink.DeferredSubmissionPreservesOutputAndRejectsAfterFinish (1 ms)
+[ RUN      ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork
+[       OK ] BamRecordSink.FinishWakesCapacityWaitersWhileDrainingAcceptedWork (0 ms)
+[ RUN      ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate
+[       OK ] BamRecordSink.ConcurrentProducersPreserveEveryRecordAndDuplicate (9 ms)
+[ RUN      ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink
+[       OK ] BamRecordSink.RejectsNullRecordsWithoutPoisoningTheSink (0 ms)
+[----------] 11 tests from BamRecordSink (110 ms total)
+
+[----------] Global test environment tear-down
+[==========] 11 tests from 1 test suite ran. (110 ms total)
+[  PASSED  ] 11 tests.

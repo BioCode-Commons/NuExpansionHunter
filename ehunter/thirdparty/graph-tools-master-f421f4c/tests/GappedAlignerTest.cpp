@@ -22,6 +22,8 @@
 
 #include "gtest/gtest.h"
 #include <locale>
+#include <memory>
+#include <utility>
 
 #include "graphalign/GraphAlignmentOperations.hh"
 #include "graphalign/LinearAlignment.hh"
@@ -57,6 +59,21 @@ public:
 private:
     std::locale previous_;
 };
+
+class AllNUppercase : public std::ctype<char>
+{
+protected:
+    char do_toupper(char) const override { return 'N'; }
+};
+
+class TrackedUppercase : public DistinctRangeUppercase
+{
+public:
+    explicit TrackedUppercase(unsigned& destructions) : destructions_(destructions) { }
+    ~TrackedUppercase() override { ++destructions_; }
+private:
+    unsigned& destructions_;
+};
 }
 
 TEST(SeedUppercase, PreservesSingleCharacterLocaleSemantics)
@@ -70,6 +87,110 @@ TEST(SeedUppercase, PreservesSingleCharacterLocaleSemantics)
     const auto result = aligner.align("acgtactg", selector);
     const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
     EXPECT_EQ(expected, result);
+}
+
+TEST(SeedUppercase, UncachedSelectorObservesGlobalChangesAfterConstruction)
+{
+    RestoreLocale restore;
+    std::locale::global(std::locale::classic());
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(selector.seedSearchFacet(), nullptr);
+    EXPECT_EQ(aligner.align("acgtactg", selector), expected);
+
+    std::locale::global(std::locale(std::locale::classic(), new AllNUppercase));
+    EXPECT_TRUE(aligner.align("acgtactg", selector).empty());
+    std::locale::global(std::locale::classic());
+    EXPECT_EQ(aligner.align("acgtactg", selector), expected);
+}
+
+TEST(SeedUppercase, SnapshotRetainsCapturedCustomGlobalBehavior)
+{
+    RestoreLocale restore;
+    std::locale::global(std::locale(std::locale::classic(), new AllNUppercase));
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    AlignerSelector snapshot(AlignerType::DAG_ALIGNER);
+    {
+        const std::locale captured;
+        snapshot.setSeedSearchLocale(captured);
+    }
+    std::locale::global(std::locale::classic());
+    EXPECT_TRUE(aligner.align("acgtactg", snapshot).empty());
+
+    AlignerSelector fresh(AlignerType::DAG_ALIGNER);
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(aligner.align("acgtactg", fresh), expected);
+}
+
+TEST(SeedUppercase, SnapshotOwnsFacetAcrossCallerLifetimeAndSelectorCopyMove)
+{
+    RestoreLocale restore;
+    std::locale::global(std::locale::classic());
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    unsigned destructions = 0;
+    const std::ctype<char>* facet = nullptr;
+    std::unique_ptr<AlignerSelector> retained;
+    {
+        AlignerSelector original(AlignerType::DAG_ALIGNER);
+        {
+            const std::locale local(std::locale::classic(), new TrackedUppercase(destructions));
+            original.setSeedSearchLocale(local);
+            facet = original.seedSearchFacet();
+        }
+        EXPECT_EQ(destructions, 0u);
+        // Existing selector copies share DP workspaces; this test uses them only
+        // sequentially and checks that the independent locale owner stays valid.
+        retained.reset(new AlignerSelector(original));
+        original.clearSeedSearchLocale();
+        EXPECT_EQ(retained->seedSearchFacet(), facet);
+    }
+    EXPECT_EQ(destructions, 0u);
+    AlignerSelector moved(std::move(*retained));
+    retained.reset();
+    EXPECT_EQ(moved.seedSearchFacet(), facet);
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(aligner.align("acgtactg", moved), expected);
+    EXPECT_EQ(destructions, 0u);
+    moved.clearSeedSearchLocale();
+    EXPECT_EQ(moved.seedSearchFacet(), nullptr);
+    EXPECT_EQ(destructions, 1u);
+}
+
+TEST(SeedUppercase, SnapshotPreservesScalarRatherThanRangeFacetSemantics)
+{
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    selector.setSeedSearchLocale(std::locale(std::locale::classic(), new DistinctRangeUppercase));
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(aligner.align("acgtactg", selector), expected);
+}
+
+TEST(SeedUppercase, ClearingSnapshotRestoresFreshGlobalLookup)
+{
+    RestoreLocale restore;
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    selector.setSeedSearchLocale(std::locale::classic());
+    std::locale::global(std::locale(std::locale::classic(), new AllNUppercase));
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(aligner.align("acgtactg", selector), expected);
+
+    selector.clearSeedSearchLocale();
+    EXPECT_EQ(selector.seedSearchFacet(), nullptr);
+    EXPECT_TRUE(aligner.align("acgtactg", selector).empty());
+    std::locale::global(std::locale::classic());
+    EXPECT_EQ(aligner.align("acgtactg", selector), expected);
 }
 
 TEST(DISABLED_ExtendingAlignmentSuffix, UniquelyMappingQuery_AlignmentExtended)

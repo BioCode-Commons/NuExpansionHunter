@@ -1,0 +1,31 @@
+{
+  "captured_utc": "2026-11-14T19:26:09.056591+00:00",
+  "scope": "Read-only host snapshot during v6 screening; not process memory attribution",
+  "commands": [
+    {
+      "command": [
+        "sysctl",
+        "hw.memsize",
+        "vm.swapusage"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "sysctl: sysctl fmt -1 1024 1: Operation not permitted\n"
+    },
+    {
+      "command": [
+        "vm_stat"
+      ],
+      "returncode": 0,
+      "stdout": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                                     4018.\nPages active:                                 234644.\nPages inactive:                               227947.\nPages speculative:                              5747.\nPages throttled:                                   0.\nPages wired down:                             166070.\nPages purgeable:                                1510.\n\"Translation faults\":                     4339682080.\nPages copy-on-write:                       117206773.\nPages zero filled:                        3069114643.\nPages reactivated:                         432222714.\nPages purged:                              129416191.\nFile-backed pages:                            237280.\nAnonymous pages:                              231058.\nPages stored in compressor:                  1363713.\nPages occupied by compressor:                 370701.\nDecompressions:                            304666285.\nCompressions:                              394844509.\nPageins:                                   138051864.\nPageouts:                                    9464036.\nSwapins:                                      717633.\nSwapouts:                                    1305679.\n",
+      "stderr": ""
+    }
+  ],
+  "_publication": {
+    "source_file": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/host-memory-snapshot.json",
+    "original_file_sha256": "695f7789754e78745381c0ea3890ab8e58a82f14072f16092950f9d7e4e2594f",
+    "original_file_bytes": 1781,
+    "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+    "scope": "Host snapshot during v5/v6 screening, not per-process memory attribution."
+  }
+}

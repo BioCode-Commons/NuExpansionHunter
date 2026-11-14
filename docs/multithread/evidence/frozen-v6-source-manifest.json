@@ -1,0 +1,57 @@
+{
+  "baseline_commit": "b00650d297754f68d78778a441e2fcbf5096250b",
+  "source_files": {
+    "ehunter/core/TaskExecutor.cpp": "a1cd4596a3922a5a3e510a22d5401655d838f72d4e0eab821be15e351e9204c7",
+    "ehunter/core/TaskExecutor.hh": "2cb464509eb7bb73e00f3f9f47357c1fb3a1ae2a598701a4ec045dda04eff35f",
+    "ehunter/io/BamRecordSink.cpp": "bcda93d197340b49151ae3cab531a97f79dcd5a9a45c78789da68d754c4c8f4b",
+    "ehunter/io/BamRecordSink.hh": "8f77eef43706aea4b9e5b9aac58ba3054b85c14ea557d2a34baefc74eb2c621e",
+    "ehunter/sample/StreamingPairSource.cpp": "4458a109ae246407aa632bcdc83e4dd99f354145e6899ca7504f905125e123c1",
+    "ehunter/sample/StreamingPairSource.hh": "98c0275db553ca86eb52b47eab274144576a48db3a315fc662609fe72aa8e5ea",
+    "ehunter/tests/BamRecordSinkTest.cpp": "d7d4f728a1ea91acfc45d95c75bb596de91dc026bd9937f9c6d66110637dc119",
+    "ehunter/tests/LocusParallelKernelTest.cpp": "751f16a8663c02b8d3124d786bc81e93b4eb875ca877c5f0fe019cabdb2ddd69",
+    "ehunter/tests/StreamingPairSourceTest.cpp": "f4ae8fb6fd4e4b6e555687e23782bd881bcd63935929086b4c83660741e94d90",
+    "ehunter/tests/TaskExecutorTest.cpp": "b49dfe0b2724f16e0c19afe7b3d8691e7ee4f6277998dfa757f7ce75953ba902",
+    "tools/parallel_validation/README.md": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a",
+    "tools/parallel_validation/run.py": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0",
+    "tools/parallel_validation/test_runner.py": "927dbe97ffccf192bf0a31e746aea4a4cd0d4365bbf4366001f53d8615868cee",
+    "ehunter/CMakeLists.txt": "751d66287b481ec8df6e0a67133cf7242fde94e220c064de7a7fc70ac329ebb9",
+    "ehunter/core/Parameters.hh": "4effc27d7e1ee9b2f1240a342448202a94a9b6c5f6b08a4835e54254fdeba70e",
+    "ehunter/core/Read.hh": "05e28601acb18a3f470341b3b3b953351eef643206cbf42f8c122747e13aa754",
+    "ehunter/io/BamletWriter.cpp": "063ed5161102bbfa5e288fd76efeba14ae623f5d09fc5f45e5e59b99d04b1bd3",
+    "ehunter/io/BamletWriter.hh": "1c24174ce57b89d49f61d8311d3773a724d055bf62768de08c045681f6317304",
+    "ehunter/io/ParameterLoading.cpp": "c1001807fe53b7f4107a037f2f5f05e36e55f3ac8e8899b93beeffc50512791d",
+    "ehunter/locus/LocusAligner.cpp": "425d145a4287afd0ae8d0889b0d482a2958dfdcc61ef828dcf61be2ae4acb910",
+    "ehunter/locus/LocusAligner.hh": "542293955af1df5ca4cb8641546521f1ccf0d2cda9b9b6e13d663badee6d073a",
+    "ehunter/locus/LocusAnalyzer.cpp": "6d6953704ac04d3d35960cc6949d2c1287ab3d8f1888f25b4fb9be75f94f3edc",
+    "ehunter/locus/LocusAnalyzer.hh": "ad960e8759651a9f2c5d8d40790c1e952d249214bdc1b899ff2ee2c1c6ac8cf3",
+    "ehunter/sample/HtsStreamingSampleAnalysis.cpp": "605a430d702c511090dc1d65d9edcf24d030f95a0b9a0bcfe47c0e93992c233f",
+    "ehunter/tests/ThreadParametersTest.cpp": "462277c37fb1577a0c3f38c9bad379bd1436ea8314716d947068fb3c99af7ab9",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/GappedAligner.hh": "7a1b276117e0e3329cf5953b6ff8427f19757acc544a42930feee70cde38cfed",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/PinnedDagAligner.hh": "414456660a69ec6420541734fabe573daac8bf69da67e70e28b7997bfd09c940",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/include/graphcore/Graph.hh": "b42d7c107002b97d06dafa204ad93f4398a5e4a3c31d65c0fa58afcb1ed7aa43",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphalign/GappedAligner.cpp": "703c281455ad8f3fc41cbedf9447c7ea7ce4755dbf74482f1b853d0802d3b01d",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/Graph.cpp": "06136341f9f2b3ef79def4edc88df469ad5e4a871f974b7e86b4a94820e9ac7a",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/src/graphcore/PathOperations.cpp": "473795dace067b7ec745e1e65ec36c3f3406fdf828063e831294b50be4dbe6a0",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GappedAlignerTest.cpp": "fe13eb39193b8356ff9726446809ec8067b7f3b7eb5d486de50bc37fe2ed4982",
+    "ehunter/thirdparty/graph-tools-master-f421f4c/tests/GraphTest.cpp": "481e604558a1ad38dfffd1935562faf20a1c0f0adced1cc87eb81a6fbfe8bfe3",
+    "tools/frontend_validation/run_matrix.py": "ce1f422fba57e5d1638312b8fae78e8d3a6a838566f94d6c74ac375dc2d73988",
+    "README.md": "64dd05ffcaa649001d89b7a403d59db8baa790e9a430092434b50dd3b37b2cf2"
+  },
+  "binary_sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b",
+  "publication_branch": "Jiapeng-multithread",
+  "changes_from_prototype4": [
+    "Defer asynchronous sink errors for non-batched seeking writes",
+    "Recheck admission predicate after publisher assistance",
+    "Poll executor failure every 1024 primary records including filtered input"
+  ],
+  "validation": {
+    "eh_tests": 239,
+    "passed": 238,
+    "preexisting_failure": "PreparedCatalog.WholeCatalogRoundTripAndIndependentHandleLifetime",
+    "graph_test_programs": 30
+  },
+  "changes_from_prototype5": [
+    "Release each consumed item alignment/read/mate before the next evidence update"
+  ],
+  "status": "memory experiment, not accepted"
+}

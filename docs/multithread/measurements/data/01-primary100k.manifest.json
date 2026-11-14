@@ -1,0 +1,60 @@
+{
+  "scope": "Synthetic, independent loci and distinct deterministic flanks; not a WGS performance claim",
+  "parameters": {
+    "out": "work/fixtures/genotyped100k",
+    "loci": 100000,
+    "covered_loci": 100000,
+    "coverage_layout": "even",
+    "pairs_per_locus": 100,
+    "background_pairs_per_locus": 0,
+    "read_length": 150,
+    "stride": 4096,
+    "loci_per_contig": 1000,
+    "motif": "CAG",
+    "repeat_count": 10,
+    "quality": "mixed",
+    "mismatch_every": 1,
+    "missing_quality_every": 16,
+    "seed": "nueh-round5-v1",
+    "bam_helper": "work/sam_to_bam"
+  },
+  "loci": 100000,
+  "covered_loci": 100000,
+  "contigs": 100,
+  "reference_bases": 409600000,
+  "read_records": 20000000,
+  "reference_repeat_allele_only": true,
+  "coordinate_sorted": true,
+  "pair_layout": "Forward-strand aligned SAM SEQ for both records; flags99/147; right mate covers repeat; left mate covers flank",
+  "files": {
+    "catalog.json": {
+      "bytes": 12046003,
+      "sha256": "a7de145c2fbb2a9ada60de937c2d1a1ddd7d332b16d773993b3d91b5f533eb3b"
+    },
+    "reads.bam": {
+      "bytes": 243173465,
+      "sha256": "dc9a5a39aa279e3ad3dc44379e941bdffbe0503a5395af286adebee14202ff1d"
+    },
+    "reads.bam.bai": {
+      "bytes": 804816,
+      "sha256": "85959af10fee4775cdad658e43a5505d17589a64eebd14a7840fba6a8b05c666"
+    },
+    "reads.sam": {
+      "bytes": 7350402755,
+      "sha256": "1d19829fa68670e8a1629c854d765f810837fe9c3a5b59cef6c45edc5049ff44"
+    },
+    "reference.fa": {
+      "bytes": 416427700,
+      "sha256": "7b9c315b256b14ae81e0bf3b61340eee03f15fbf39f45238a1ac963533296847"
+    },
+    "reference.fa.fai": {
+      "bytes": 3267,
+      "sha256": "13ee895e3ca8ceab8ab4eaa5039aeb2a320632d00c142693b20e0677f2286552"
+    }
+  },
+  "conversion_command": [
+    "<WORKSPACE>/work/sam_to_bam",
+    "<WORKSPACE>/work/fixtures/genotyped100k/reads.sam",
+    "<WORKSPACE>/work/fixtures/genotyped100k/reads.bam"
+  ]
+}

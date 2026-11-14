@@ -45,6 +45,14 @@ LocusAligner::LocusAligner(
 
 LocusAligner::AlignedPair LocusAligner::align(Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector)
 {
+    auto alignedPair = alignMates(read, mate, alignerSelector);
+    writeAlignedPair(read, mate, alignedPair);
+    return alignedPair;
+}
+
+LocusAligner::AlignedPair LocusAligner::alignMates(
+    Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector) const
+{
     auto readAlign = align(read, alignerSelector);
     auto mateAlign = mate ? align(*mate, alignerSelector) : boost::none;
 
@@ -58,17 +66,20 @@ LocusAligner::AlignedPair LocusAligner::align(Read& read, Read* mate, graphtools
         return { boost::none, boost::none };
     }
 
-    if (readAlign && mateAlign)
+    return { std::move(readAlign), std::move(mateAlign) };
+}
+
+void LocusAligner::writeAlignedPair(const Read& read, const Read* mate, const AlignedPair& alignedPair) const
+{
+    if (alignedPair.first && alignedPair.second)
     {
         writer_->write(
             locusId_, read.fragmentId(), read.sequence(), read.isFirstMate(), read.isReversed(), read.isReversed(),
-            *readAlign);
+            *alignedPair.first);
         writer_->write(
             locusId_, mate->fragmentId(), mate->sequence(), mate->isFirstMate(), mate->isReversed(), mate->isReversed(),
-            *mateAlign);
+            *alignedPair.second);
     }
-
-    return { std::move(readAlign), std::move(mateAlign) };
 }
 
 LocusAligner::OptionalAlign LocusAligner::align(Read& read, graphtools::AlignerSelector& alignerSelector) const

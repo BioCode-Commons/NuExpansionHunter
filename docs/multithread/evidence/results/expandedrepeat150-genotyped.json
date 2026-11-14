@@ -1,0 +1,2433 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T20:15:07.890881+00:00",
+  "complete": true,
+  "baseline_comparison_label": "RAMOPT b00650d",
+  "expected_baseline_source_commit": "b00650d",
+  "parameters": {
+    "baseline": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+    "candidate": "<WORKSPACE>/work/parallel-redesign/prototype6",
+    "reads": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+    "reference": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+    "variant_catalog": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+    "out": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001",
+    "baseline_cache": null,
+    "candidate_cache": null,
+    "baseline_source": null,
+    "candidate_source": null,
+    "baseline_label": "RAMOPT b00650d",
+    "threads": [
+      1,
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0,
+    "cpu_list": null,
+    "discard_equal_output": true,
+    "compare_chunk_mib": 512
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:15:07.916424+00:00",
+      "wall_seconds": 0.363854958,
+      "user_seconds": 0.3448,
+      "system_seconds": 0.016329,
+      "peak_rss_bytes": 18235392,
+      "wait_status": 0,
+      "stdout_sha256": "5f198d1db0fd9f7fda14d57a34bfa69247ca91f2622f5fd136348cf9c220cd69",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.034452958
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:15:08.475824+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog",
+        "bytes": 4569230,
+        "sha256": "e375a0bca299d6f5f85d4c23a1342d25834ffd9fee717cbe4b82676785b3dbd4"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/parallel-redesign/prototype6",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "2",
+        "--encode-threads",
+        "1",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:15:08.481332+00:00",
+      "wall_seconds": 0.32963924999999994,
+      "user_seconds": 0.313187,
+      "system_seconds": 0.014221999999999999,
+      "peak_rss_bytes": 18120704,
+      "wait_status": 0,
+      "stdout_sha256": "80ed1ed8df17318030c114af87e9125ceeef21afaf5f30849727897f292bc116",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 0.030638959
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:15:08.989339+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog",
+        "bytes": 4569230,
+        "sha256": "41386ff2ef504d656aa4c51a192a1e522ce394d62efad82a254c7f9dacb8d0ae"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:08.994361+00:00",
+          "wall_seconds": 2.1939539580000003,
+          "user_seconds": 17.061468,
+          "system_seconds": 0.14465699999999998,
+          "peak_rss_bytes": 71663616,
+          "wait_status": 0,
+          "stdout_sha256": "4e6dfd4f4110e31d7b601fd2218adb2390c594b5f2c89213d99b1596bade8791",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.007900209,
+            "catalog_index_seconds": 0.003366666,
+            "read_processing_seconds": 2.101401917,
+            "genotyping_seconds": 0.022954333,
+            "output_seconds": 0.022595125
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 52800.0,
+            "assignments": 52800.0,
+            "chunks": 1000.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19760640.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 15.527650557,
+            "reduction_worker_seconds": 3.093879306,
+            "publisher_assisted_chunks": 106.0
+          },
+          "pending_mates": {
+            "peak_reads": 256.0,
+            "peak_raw_bytes": 59392.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 105600.0,
+            "peak_resident_bytes": 2689952.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.6e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:11.352172+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/candidate/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/candidate/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 1650733,
+              "sha256": "ed793aea1a8c2da07bcce2e05b403db1a13301b5f01adb28647d77a047715f49",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:11.358669+00:00",
+          "wall_seconds": 4.543080042000001,
+          "user_seconds": 38.799112,
+          "system_seconds": 0.378926,
+          "peak_rss_bytes": 53395456,
+          "wait_status": 0,
+          "stdout_sha256": "2976d71e74253081128286a0e72c676df1fe7f1a9853ce2c2f4e3dd51eedcec8",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.011537833,
+            "catalog_index_seconds": 0.005437417,
+            "read_processing_seconds": 4.43223175,
+            "genotyping_seconds": 0.023886875,
+            "output_seconds": 0.022201125
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 190,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:16.198241+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/baseline/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/baseline/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 2793453,
+              "sha256": "5f55745b4717376f38fa8dac06de079a0b9e042007b976376d0a7a9fe6a0cb74",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            105600,
+            105600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93",
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:17.313678+00:00",
+          "wall_seconds": 4.964277875,
+          "user_seconds": 10.019536,
+          "system_seconds": 0.043354,
+          "peak_rss_bytes": 51576832,
+          "wait_status": 0,
+          "stdout_sha256": "8041f8e4fab0594bc582a9c10a9c71ea4577746adf5af58d0044e7c6b95062c3",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008976459,
+            "catalog_index_seconds": 0.021861166,
+            "read_processing_seconds": 4.765515167,
+            "genotyping_seconds": 0.111065167,
+            "output_seconds": 0.02057025
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 52800.0,
+            "assignments": 52800.0,
+            "chunks": 1000.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 9142272.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 7.273733613,
+            "reduction_worker_seconds": 2.167444131,
+            "publisher_assisted_chunks": 495.0
+          },
+          "pending_mates": {
+            "peak_reads": 256.0,
+            "peak_raw_bytes": 59392.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 105600.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.125e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:22.489273+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/candidate/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/candidate/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/candidate/result_realigned.bam",
+              "bytes": 1580528,
+              "sha256": "cc4fb63094b1a4b7cf898b7f4cafc25586410e183286b838c6b2465561021264",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:22.494295+00:00",
+          "wall_seconds": 5.389825167,
+          "user_seconds": 10.844659,
+          "system_seconds": 0.204596,
+          "peak_rss_bytes": 47955968,
+          "wait_status": 0,
+          "stdout_sha256": "7978279cacac0a0572b830c22863728f25a897a045c4c53ad41594065c7647d6",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008995291,
+            "catalog_index_seconds": 0.021920583,
+            "read_processing_seconds": 5.193367959,
+            "genotyping_seconds": 0.1050825,
+            "output_seconds": 0.020809042
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 854,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:28.084552+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/baseline/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/baseline/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/warmup/t1/baseline/result_realigned.bam",
+              "bytes": 1924625,
+              "sha256": "c7272a636bf86b960743fae927b1bcf4c433b78743c78788dcf466ed6c5ec698",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            105600,
+            105600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93",
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      },
+      "cross_configuration_comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            105600,
+            105600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93",
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:29.693303+00:00",
+          "wall_seconds": 5.194571667,
+          "user_seconds": 10.434816,
+          "system_seconds": 0.20015,
+          "peak_rss_bytes": 48300032,
+          "wait_status": 0,
+          "stdout_sha256": "66429beab9c30f69b975db7fdfd378f9e04a94c49a6018a9acbee38a75993c80",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.007980334,
+            "catalog_index_seconds": 0.018249375,
+            "read_processing_seconds": 5.006753333,
+            "genotyping_seconds": 0.105858333,
+            "output_seconds": 0.020086709
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 854,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:35.053789+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/baseline/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/baseline/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/baseline/result_realigned.bam",
+              "bytes": 1920837,
+              "sha256": "2d97807842b7600b5753b5fabda2e9570bd5d6541a2d189af40be5b963679441",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:35.059571+00:00",
+          "wall_seconds": 4.808935709,
+          "user_seconds": 9.671042,
+          "system_seconds": 0.039391999999999996,
+          "peak_rss_bytes": 51675136,
+          "wait_status": 0,
+          "stdout_sha256": "8137218f2afe13f6d8d7765f589c62e42c17f9a5a648288655035ff819a98a77",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.00886875,
+            "catalog_index_seconds": 0.021894333,
+            "read_processing_seconds": 4.59229275,
+            "genotyping_seconds": 0.124759333,
+            "output_seconds": 0.020765458
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 52800.0,
+            "assignments": 52800.0,
+            "chunks": 1000.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 9148224.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 7.006707102,
+            "reduction_worker_seconds": 2.07343468,
+            "publisher_assisted_chunks": 495.0
+          },
+          "pending_mates": {
+            "peak_reads": 256.0,
+            "peak_raw_bytes": 59392.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 105600.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.5875e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:40.070906+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/candidate/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/candidate/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t1/candidate/result_realigned.bam",
+              "bytes": 1573405,
+              "sha256": "e9687cff8da0383a0f323dbec482e47bbf863f36aee2437ae1d15d749c9e2502",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            105600,
+            105600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93",
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:41.021150+00:00",
+          "wall_seconds": 4.496129292,
+          "user_seconds": 38.526242,
+          "system_seconds": 0.359625,
+          "peak_rss_bytes": 53231616,
+          "wait_status": 0,
+          "stdout_sha256": "cd70810d00651609f4b217b99a98881dcd30c731810f51d1a8748d2ac31efcca",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008963333,
+            "catalog_index_seconds": 0.003794625,
+            "read_processing_seconds": 4.4094465,
+            "genotyping_seconds": 0.018746875,
+            "output_seconds": 0.021138083
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 191,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:45.719099+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/baseline/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/baseline/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 2795728,
+              "sha256": "70bbfef1902fe40bec4d379065a4fda95db8bc7745ff5e040b9534b556d724cb",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:45.727205+00:00",
+          "wall_seconds": 2.2927056660000003,
+          "user_seconds": 17.528737,
+          "system_seconds": 0.160105,
+          "peak_rss_bytes": 69599232,
+          "wait_status": 0,
+          "stdout_sha256": "7a869da496eb74e406e2295b11db2026de717274d790a51e22a2198407274fda",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.010352541,
+            "catalog_index_seconds": 0.004263084,
+            "read_processing_seconds": 2.189067583,
+            "genotyping_seconds": 0.021301459,
+            "output_seconds": 0.022684917
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 52800.0,
+            "assignments": 52800.0,
+            "chunks": 1000.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19760640.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 15.860165649,
+            "reduction_worker_seconds": 3.351317711,
+            "publisher_assisted_chunks": 105.0
+          },
+          "pending_mates": {
+            "peak_reads": 256.0,
+            "peak_raw_bytes": 59392.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 105600.0,
+            "peak_resident_bytes": 1059072.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.8583e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:48.279885+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/candidate/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/candidate/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 1652350,
+              "sha256": "b1e38acaced79c2bebbcc7a764c4d31c2107b741ccfada244f67c87219312487",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            105600,
+            105600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93",
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:49.481174+00:00",
+          "wall_seconds": 2.226052584,
+          "user_seconds": 17.910724,
+          "system_seconds": 0.112643,
+          "peak_rss_bytes": 69976064,
+          "wait_status": 0,
+          "stdout_sha256": "41e68700421aed44064b2f593b52e813d243a1d6b0dbcfd880b032f7da215dda",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.007534584,
+            "catalog_index_seconds": 0.003380291,
+            "read_processing_seconds": 2.136831917,
+            "genotyping_seconds": 0.021564458,
+            "output_seconds": 0.02233575
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 52800.0,
+            "assignments": 52800.0,
+            "chunks": 1000.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19713024.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 16.040533997,
+            "reduction_worker_seconds": 2.986138337,
+            "publisher_assisted_chunks": 112.0
+          },
+          "pending_mates": {
+            "peak_reads": 256.0,
+            "peak_raw_bytes": 59392.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 105600.0,
+            "peak_resident_bytes": 1843200.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 5.4625e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:51.890289+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/candidate/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/candidate/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/candidate/result_realigned.bam",
+              "bytes": 1649874,
+              "sha256": "efba67c1b26c808511f4c1a0e7bc55f388da07d63c123fdf587a6b512fa584d1",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:51.901338+00:00",
+          "wall_seconds": 4.615327292,
+          "user_seconds": 37.940074,
+          "system_seconds": 0.456236,
+          "peak_rss_bytes": 53411840,
+          "wait_status": 0,
+          "stdout_sha256": "5117138e04f5ae63f96f219425e7eae71f07edf54262eca57945aa2203e7d10c",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.01835175,
+            "catalog_index_seconds": 0.033657125,
+            "read_processing_seconds": 4.463724083,
+            "genotyping_seconds": 0.01858,
+            "output_seconds": 0.020981125
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 194,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:15:56.868299+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/baseline/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/baseline/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t8/baseline/result_realigned.bam",
+              "bytes": 2787960,
+              "sha256": "917a9f033c56bb49ad7cfa65d31a14b865cada70498d24aaf6632c3975aa48d7",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            105600,
+            105600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93",
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:15:57.874433+00:00",
+          "wall_seconds": 4.849997875000001,
+          "user_seconds": 9.820155,
+          "system_seconds": 0.039987999999999996,
+          "peak_rss_bytes": 51871744,
+          "wait_status": 0,
+          "stdout_sha256": "bf8701301207e360ca89f75d9a9bb56a7c3f9220ff3da8a12641cf9518fad7b1",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.007356292,
+            "catalog_index_seconds": 0.017984875,
+            "read_processing_seconds": 4.652306875,
+            "genotyping_seconds": 0.119152083,
+            "output_seconds": 0.020704125
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 52800.0,
+            "assignments": 52800.0,
+            "chunks": 1000.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 9142272.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 7.131386536,
+            "reduction_worker_seconds": 2.107899036,
+            "publisher_assisted_chunks": 498.0
+          },
+          "pending_mates": {
+            "peak_reads": 256.0,
+            "peak_raw_bytes": 59392.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 105600.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.6041e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:16:02.899581+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/candidate/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/candidate/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/candidate/result_realigned.bam",
+              "bytes": 1584898,
+              "sha256": "66f3b31254e1f4133c72b8c1eedc7821fdc1a7adde9c89654343f11a3a463f84",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:16:02.909208+00:00",
+          "wall_seconds": 5.1035517089999995,
+          "user_seconds": 10.185361,
+          "system_seconds": 0.20383099999999998,
+          "peak_rss_bytes": 48119808,
+          "wait_status": 0,
+          "stdout_sha256": "184273da2a7c9af5da1748939cb7d042f021fda2037f7b9ad430d56f17e53507",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.009681667,
+            "catalog_index_seconds": 0.022354083,
+            "read_processing_seconds": 4.907585208,
+            "genotyping_seconds": 0.103611458,
+            "output_seconds": 0.0203365
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 851,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:16:08.217043+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/baseline/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/baseline/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-01/t1/baseline/result_realigned.bam",
+              "bytes": 1923912,
+              "sha256": "6059aa8e6f25a34ecaad111284dcefabe221962657796c3e939b1e86774f2e03",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            105600,
+            105600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93",
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:16:09.190146+00:00",
+          "wall_seconds": 4.419406542000001,
+          "user_seconds": 37.738195,
+          "system_seconds": 0.40086299999999997,
+          "peak_rss_bytes": 53067776,
+          "wait_status": 0,
+          "stdout_sha256": "fbdd8461e478574d028e3119ab55e81c68126aeb413fbd66bd6dd91b6f76ed9b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.018079875,
+            "catalog_index_seconds": 0.003792084,
+            "read_processing_seconds": 4.318438917,
+            "genotyping_seconds": 0.017997833,
+            "output_seconds": 0.022049625
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 193,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:16:13.807429+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/baseline/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/baseline/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/baseline/result_realigned.bam",
+              "bytes": 2796467,
+              "sha256": "c8ad44b2737afef6ffadadf8d0014441b2ee6ac1370fc31d6e08c639de9ec227",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:16:13.819301+00:00",
+          "wall_seconds": 2.2534161249999998,
+          "user_seconds": 17.867591,
+          "system_seconds": 0.155029,
+          "peak_rss_bytes": 68960256,
+          "wait_status": 0,
+          "stdout_sha256": "b117371ab46b3953e3182a79206f5bf97d98fb3175703cd459b03e1f9c2f2b24",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.010411083,
+            "catalog_index_seconds": 0.004598792,
+            "read_processing_seconds": 2.149998917,
+            "genotyping_seconds": 0.022114958,
+            "output_seconds": 0.022385042
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 52800.0,
+            "assignments": 52800.0,
+            "chunks": 1000.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19760640.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 15.940760717,
+            "reduction_worker_seconds": 3.121698211,
+            "publisher_assisted_chunks": 105.0
+          },
+          "pending_mates": {
+            "peak_reads": 256.0,
+            "peak_raw_bytes": 59392.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 105600.0,
+            "peak_resident_bytes": 1075200.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.3208e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:16:16.322738+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/candidate/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/candidate/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t8/candidate/result_realigned.bam",
+              "bytes": 1647110,
+              "sha256": "fbec11c5ecb6d4be990b70933600b550243411fe8da57742b27825cd7585d613",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            105600,
+            105600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93",
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 1,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:16:17.851190+00:00",
+          "wall_seconds": 5.293295499999999,
+          "user_seconds": 10.48018,
+          "system_seconds": 0.21392599999999998,
+          "peak_rss_bytes": 48365568,
+          "wait_status": 0,
+          "stdout_sha256": "19fe268d7b8695e1eab8f0851e35bb5213d846b6c13a1f5a81ed6abdd0b7353c",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.008711584,
+            "catalog_index_seconds": 0.021888333,
+            "read_processing_seconds": 5.074830666,
+            "genotyping_seconds": 0.130821959,
+            "output_seconds": 0.01876775
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 857,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:16:23.346926+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/baseline/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/baseline/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/baseline/result_realigned.bam",
+              "bytes": 1924135,
+              "sha256": "48bdb88d91e0c9f982989f2cbb64826ae330046d9d22765310607ed34980c2c5",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "1",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:16:23.357996+00:00",
+          "wall_seconds": 4.567391583,
+          "user_seconds": 9.19206,
+          "system_seconds": 0.038527,
+          "peak_rss_bytes": 51707904,
+          "wait_status": 0,
+          "stdout_sha256": "3b0f28d100772b684aad7a1d52e0e31b3522dbcea02e7c5e3342a114dc3e1898",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.010147834,
+            "catalog_index_seconds": 0.023236917,
+            "read_processing_seconds": 4.362364125,
+            "genotyping_seconds": 0.109121583,
+            "output_seconds": 0.019686834
+          },
+          "resolved_thread_pools": {
+            "compute": 1,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 52800.0,
+            "assignments": 52800.0,
+            "chunks": 1000.0,
+            "peak_active_chunks": 4.0,
+            "peak_charged_cache_bytes": 9142272.0,
+            "cache_budget_bytes": 20000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 6.642902159,
+            "reduction_worker_seconds": 1.992682916,
+            "publisher_assisted_chunks": 492.0
+          },
+          "pending_mates": {
+            "peak_reads": 256.0,
+            "peak_raw_bytes": 59392.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 105600.0,
+            "peak_resident_bytes": 153600.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.0166e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:16:28.162557+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/candidate/result.vcf",
+              "bytes": 42991,
+              "sha256": "007df746ad40373e07b69aa46af2060154d53db933dba7097317b923bc062696",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/candidate/result.json",
+              "bytes": 139037,
+              "sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/expandedrepeat150-genotyped/attempt-001/round-02/t1/candidate/result_realigned.bam",
+              "bytes": 1573063,
+              "sha256": "2cb9ebce3466d4f234fc84d8d1461182780a02a524338033f40f1a0550ec0eb6",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            105600,
+            105600
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93",
+            "1a8005eddc21beb3486399880192ccef0357da2ff764ecd1e2127ee4f1471a93"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+      "bytes": 2046800,
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam",
+      "bytes": 825856,
+      "sha256": "6c5c3ee9f4a1b06011c36a87d1f2fb01c065de358b8cc62da9fe07e6d5e8cd42"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa",
+      "bytes": 832866,
+      "sha256": "23f1d1d69bf21293f16066a2a7159fb765ad1f13afce9c5f1ae268d190625dec"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/catalog.json",
+      "bytes": 29951,
+      "sha256": "c2f42dee2925e4fa4871003d5dd636f011d09a4db2272e85b579cb7d6c083f16"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reference.fa.fai",
+      "bytes": 27,
+      "sha256": "22c9f0f685bf7c67170905f4c70b27d058d9ac1e26d8a00eee7d8f7214a43dbd"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped-read-extremes/expandedrepeat150-genotyped/reads.bam.bai",
+      "bytes": 1664,
+      "sha256": "c618d48ba85c74b3ace12a6965eeb7c9c748950b690e02ebd5c0a05e74759246"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29361,
+      "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 11663,
+      "sha256": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      1,
+      8
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      1
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "1": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 5.194571667,
+            "candidate_median": 4.808935709,
+            "baseline_max": 5.293295499999999,
+            "candidate_max": 4.849997875000001,
+            "paired_deltas": [
+              -0.38563595799999995,
+              -0.253553833999999,
+              -0.7259039169999992
+            ],
+            "paired_ratios": [
+              0.9257617407706852,
+              0.9503181610655845,
+              0.8628635191441704
+            ],
+            "paired_median_ratio": 0.9257617407706852,
+            "paired_ratio_bootstrap_95": [
+              0.8628635191441704,
+              0.9503181610655845
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 10.634966,
+            "candidate_median": 9.710434,
+            "baseline_max": 10.694106000000001,
+            "candidate_max": 9.860142999999999,
+            "paired_deltas": [
+              -0.924532000000001,
+              -0.5290490000000005,
+              -1.4635190000000016
+            ],
+            "paired_ratios": [
+              0.9130667648584865,
+              0.9490769830801086,
+              0.8631471391811526
+            ],
+            "paired_median_ratio": 0.9130667648584865,
+            "paired_ratio_bootstrap_95": [
+              0.8631471391811526,
+              0.9490769830801086
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 48300032,
+            "candidate_median": 51707904,
+            "baseline_max": 48365568,
+            "candidate_max": 51871744,
+            "paired_deltas": [
+              3375104,
+              3751936,
+              3342336
+            ],
+            "paired_ratios": [
+              1.0698778833107192,
+              1.0779707184201566,
+              1.0691056910569106
+            ],
+            "paired_median_ratio": 1.0698778833107192,
+            "paired_ratio_bootstrap_95": [
+              1.0691056910569106,
+              1.0779707184201566
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.008711584,
+            "candidate_median": 0.00886875,
+            "baseline_max": 0.009681667,
+            "candidate_max": 0.010147834,
+            "paired_deltas": [
+              0.0008884159999999995,
+              -0.0023253749999999993,
+              0.00143625
+            ],
+            "paired_ratios": [
+              1.1113256663192292,
+              0.7598166720669075,
+              1.1648666878491902
+            ],
+            "paired_median_ratio": 1.1113256663192292,
+            "paired_ratio_bootstrap_95": [
+              0.7598166720669075,
+              1.1648666878491902
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.021888333,
+            "candidate_median": 0.021894333,
+            "baseline_max": 0.022354083,
+            "candidate_max": 0.023236917,
+            "paired_deltas": [
+              0.0036449579999999968,
+              -0.004369207999999999,
+              0.001348584
+            ],
+            "paired_ratios": [
+              1.1997305661152777,
+              0.8045454157077255,
+              1.0616120012428538
+            ],
+            "paired_median_ratio": 1.0616120012428538,
+            "paired_ratio_bootstrap_95": [
+              0.8045454157077255,
+              1.1997305661152777
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.105858333,
+            "candidate_median": 0.119152083,
+            "baseline_max": 0.130821959,
+            "candidate_max": 0.124759333,
+            "paired_deltas": [
+              0.018901,
+              0.015540625000000002,
+              -0.021700375999999993
+            ],
+            "paired_ratios": [
+              1.1785499493932141,
+              1.1499894442176464,
+              0.8341228325437322
+            ],
+            "paired_median_ratio": 1.1499894442176464,
+            "paired_ratio_bootstrap_95": [
+              0.8341228325437322,
+              1.1785499493932141
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.020086709,
+            "candidate_median": 0.020704125,
+            "baseline_max": 0.0203365,
+            "candidate_max": 0.020765458,
+            "paired_deltas": [
+              0.0006787489999999993,
+              0.0003676249999999999,
+              0.0009190840000000006
+            ],
+            "paired_ratios": [
+              1.0337909510213943,
+              1.0180771027462936,
+              1.0489714536905064
+            ],
+            "paired_median_ratio": 1.0337909510213943,
+            "paired_ratio_bootstrap_95": [
+              1.0180771027462936,
+              1.0489714536905064
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 5.006753333,
+            "candidate_median": 4.59229275,
+            "baseline_max": 5.074830666,
+            "candidate_max": 4.652306875,
+            "paired_deltas": [
+              -0.41446058299999944,
+              -0.2552783330000006,
+              -0.7124665410000004
+            ],
+            "paired_ratios": [
+              0.9172196919971572,
+              0.9479829035706067,
+              0.8596078198680924
+            ],
+            "paired_median_ratio": 0.9172196919971572,
+            "paired_ratio_bootstrap_95": [
+              0.8596078198680924,
+              0.9479829035706067
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 20000000,
+          "paired_actual_delta_bytes": [
+            3375104,
+            3751936,
+            3342336
+          ],
+          "difference_of_medians_bytes": 3407872,
+          "difference_of_maxima_bytes": 3506176,
+          "median_paired_delta_bytes": 3375104,
+          "largest_paired_delta_bytes": 3751936,
+          "paired_candidate_limits_bytes": [
+            68300032,
+            68119808,
+            68365568
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      },
+      "8": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 4.496129292,
+            "candidate_median": 2.2534161249999998,
+            "baseline_max": 4.615327292,
+            "candidate_max": 2.2927056660000003,
+            "paired_deltas": [
+              -2.2034236259999997,
+              -2.389274708,
+              -2.165990417000001
+            ],
+            "paired_ratios": [
+              0.5099287669683855,
+              0.482317383614059,
+              0.5098911140182675
+            ],
+            "paired_median_ratio": 0.5098911140182675,
+            "paired_ratio_bootstrap_95": [
+              0.482317383614059,
+              0.5099287669683855
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 38.39631,
+            "candidate_median": 18.02262,
+            "baseline_max": 38.885867000000005,
+            "candidate_max": 18.023366999999997,
+            "paired_deltas": [
+              -21.197025000000004,
+              -20.372943000000003,
+              -20.116438
+            ],
+            "paired_ratios": [
+              0.45489128479506447,
+              0.4694036223793379,
+              0.4725502134845596
+            ],
+            "paired_median_ratio": 0.4694036223793379,
+            "paired_ratio_bootstrap_95": [
+              0.45489128479506447,
+              0.4725502134845596
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 53231616,
+            "candidate_median": 69599232,
+            "baseline_max": 53411840,
+            "candidate_max": 69976064,
+            "paired_deltas": [
+              16367616,
+              16564224,
+              15892480
+            ],
+            "paired_ratios": [
+              1.3074792243767313,
+              1.3101226993865032,
+              1.2994751466502006
+            ],
+            "paired_median_ratio": 1.3074792243767313,
+            "paired_ratio_bootstrap_95": [
+              1.2994751466502006,
+              1.3101226993865032
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.018079875,
+            "candidate_median": 0.010352541,
+            "baseline_max": 0.01835175,
+            "candidate_max": 0.010411083,
+            "paired_deltas": [
+              0.0013892079999999994,
+              -0.010817166,
+              -0.007668791999999999
+            ],
+            "paired_ratios": [
+              1.1549878822978015,
+              0.41056487800890923,
+              0.5758382179080331
+            ],
+            "paired_median_ratio": 0.5758382179080331,
+            "paired_ratio_bootstrap_95": [
+              0.41056487800890923,
+              1.1549878822978015
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.003794625,
+            "candidate_median": 0.004263084,
+            "baseline_max": 0.033657125,
+            "candidate_max": 0.004598792,
+            "paired_deltas": [
+              0.0004684590000000005,
+              -0.030276834000000002,
+              0.0008067080000000002
+            ],
+            "paired_ratios": [
+              1.123453305662615,
+              0.10043314751334227,
+              1.2127347389983978
+            ],
+            "paired_median_ratio": 1.123453305662615,
+            "paired_ratio_bootstrap_95": [
+              0.10043314751334227,
+              1.2127347389983978
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.01858,
+            "candidate_median": 0.021564458,
+            "baseline_max": 0.018746875,
+            "candidate_max": 0.022114958,
+            "paired_deltas": [
+              0.0025545839999999986,
+              0.0029844580000000023,
+              0.004117124999999999
+            ],
+            "paired_ratios": [
+              1.136267191198533,
+              1.1606274488697526,
+              1.2287567064323799
+            ],
+            "paired_median_ratio": 1.1606274488697526,
+            "paired_ratio_bootstrap_95": [
+              1.136267191198533,
+              1.2287567064323799
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.021138083,
+            "candidate_median": 0.022385042,
+            "baseline_max": 0.022049625,
+            "candidate_max": 0.022684917,
+            "paired_deltas": [
+              0.0015468340000000004,
+              0.0013546250000000017,
+              0.00033541700000000105
+            ],
+            "paired_ratios": [
+              1.0731775913643635,
+              1.0645639831038614,
+              1.0152119140348193
+            ],
+            "paired_median_ratio": 1.0645639831038614,
+            "paired_ratio_bootstrap_95": [
+              1.0152119140348193,
+              1.0731775913643635
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 4.4094465,
+            "candidate_median": 2.149998917,
+            "baseline_max": 4.463724083,
+            "candidate_max": 2.189067583,
+            "paired_deltas": [
+              -2.2203789169999997,
+              -2.326892166,
+              -2.16844
+            ],
+            "paired_ratios": [
+              0.49644951650961183,
+              0.4787105737870492,
+              0.49786484382962964
+            ],
+            "paired_median_ratio": 0.49644951650961183,
+            "paired_ratio_bootstrap_95": [
+              0.4787105737870492,
+              0.49786484382962964
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            16367616,
+            16564224,
+            15892480
+          ],
+          "difference_of_medians_bytes": 16367616,
+          "difference_of_maxima_bytes": 16564224,
+          "median_paired_delta_bytes": 16367616,
+          "largest_paired_delta_bytes": 16564224,
+          "paired_candidate_limits_bytes": [
+            213231616,
+            213411840,
+            213067776
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.155343036118366,
+            1.1057832708519428,
+            1.1977389836610326
+          ],
+          "median_wall_speedup": 1.155343036118366,
+          "median_compute_scaling_efficiency": 0.14441787951479576,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "1": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 1,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            2.0974937081173506,
+            2.178743624413861,
+            2.0268744562214405
+          ],
+          "median_wall_speedup": 2.0974937081173506,
+          "median_compute_scaling_efficiency": 0.2621867135146688,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": true,
+    "all_observed_peak_rss_within_allowance": true,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T20:16:29.085048+00:00"
+}

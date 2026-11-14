@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "status": "partial publication evidence staging only",
+  "created_utc": "2026-11-14T19:47:11.036450+00:00",
+  "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+  "scope_note": "Completed historical/correctness evidence and completed final v6 primary results/genotype validation are staged. Final stress measurements remain absent and pending. No benchmark, build, test, large input hash, BAM copy or cache copy was performed for staging.",
+  "artifacts": [
+    {
+      "source_file": "<WORKSPACE>/work/parallel-redesign/unit8.log",
+      "original_file_sha256": "9dc7b911f49d1875f427d5cecea7ec81302c7b97f8ea4eafedce5a8cde8b71ce",
+      "original_file_bytes": 49847,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Final frozen-v6 application unit run: 239 tests, 238 passed, one disclosed pre-existing failure.",
+      "published_relative_path": "unit-v6.log",
+      "published_file_sha256": "6089d7c8c6d69b6e219f167d84f8ab21b3d8aa392c26f38fa65465f9b156d7fd",
+      "published_file_bytes": 50327
+    },
+    {
+      "source_file": "<WORKSPACE>/work/parallel-redesign/graph-tests7.log",
+      "original_file_sha256": "da635847fe641531dff7ebb8ced44ed73ff299114fbf28fe22bf2ed93241cab8",
+      "original_file_bytes": 3457,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "30 GraphTools test programs passed before the streaming-only v6 item-release change.",
+      "published_relative_path": "graph-tests.log",
+      "published_file_sha256": "16402182d38c8625b5c8863f4be4c6a0e33812ba421bb39355d8751430b28dc2",
+      "published_file_bytes": 3932
+    },
+    {
+      "source_file": "<WORKSPACE>/work/ctest-baseline.log",
+      "original_file_sha256": "dfd42e902f31d1b7875787a42aa763566cd0e55657fc500764af135cf4a544fc",
+      "original_file_bytes": 38432,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Historical baseline: 168 application tests, 167 passed; identical PreparedCatalog edge-label ordering failure. This is not the final candidate suite.",
+      "published_relative_path": "preexisting-baseline-test-failure.log",
+      "published_file_sha256": "8f4f9b4330d28c914111a8c61571c02a3408909db636f982011a707375879f68",
+      "published_file_bytes": 38875
+    },
+    {
+      "source_file": "<WORKSPACE>/work/parallel-redesign/seeking-v5/comparison.json",
+      "original_file_sha256": "aaed87e8cedff170f229447eb7c6f13a0c0aa599e747492300eee4df9691e8ba",
+      "original_file_bytes": 649,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "RAMOPT versus v5 seeking-mode compatibility smoke; not a v6 measurement or seeking performance campaign.",
+      "published_relative_path": "seeking-v5.json",
+      "published_file_sha256": "806edf328c6516159f4d4fc88932d03c1c83d80a48143b902ec3de2d60fef027",
+      "published_file_bytes": 1274
+    },
+    {
+      "source_file": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/host-memory-snapshot.json",
+      "original_file_sha256": "695f7789754e78745381c0ea3890ab8e58a82f14072f16092950f9d7e4e2594f",
+      "original_file_bytes": 1781,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Host snapshot during v5/v6 screening, not per-process memory attribution.",
+      "published_relative_path": "screening-host-memory.json",
+      "published_file_sha256": "a68a663fc5c0f18489cb772dc1cc72e5b974d5f99ea24feaa38fbf2047babf9d",
+      "published_file_bytes": 2400
+    },
+    {
+      "source_file": "<WORKSPACE>/work/parallel-redesign/primary100k-v4/results.json",
+      "original_file_sha256": "28152ef518070776a8ff7493305859428b7549fb3f89f19a81a80df749be3712",
+      "original_file_bytes": 60576,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Historical RAMOPT versus v4 only; do not pool with the final v6 comparison.",
+      "published_relative_path": "historical-v4-primary.json",
+      "published_file_sha256": "f36217cc69ebdb6e6fb1863b4d873896e82cf3e9bcc7c93f8dfe2c4706d1f98f",
+      "published_file_bytes": 51036
+    },
+    {
+      "source_file": "<WORKSPACE>/work/parallel-redesign/item-release-ablation-v6/results.json",
+      "original_file_sha256": "0cb60e3f12eefdde3ff1bf3e5239f7adbf60d5f65479cd0f3a37d79cc9bebb76",
+      "original_file_bytes": 40667,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "One formal pair plus one warmup, v5 versus v6. Baseline differs from RAMOPT; not final v6 acceptance.",
+      "published_relative_path": "v5-v6-screening.json",
+      "published_file_sha256": "d4273fb431490d17e1f458bf5a61884165ac516a6e77edcb35709456c10882ba",
+      "published_file_bytes": 35051
+    },
+    {
+      "source_file": "<WORKSPACE>/work/executor-assistance-validation/tests-asan-ubsan.log",
+      "original_file_sha256": "3d2c66a8ec144800a0f91c16a447eac9c1481cec9d81d0b096878b6580705990",
+      "original_file_bytes": 66583,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Standalone executor component validation, 19 cases repeated 20 times; not whole-application instrumentation.",
+      "published_relative_path": "components/executor-asan-ubsan.log",
+      "published_file_sha256": "6d9e662e6d71684bcc5e8241e477bbb864504d0846a62ccfc9432f021dbaf453",
+      "published_file_bytes": 67180
+    },
+    {
+      "source_file": "<WORKSPACE>/work/executor-assistance-validation/tests-tsan.log",
+      "original_file_sha256": "b0d1f7a7d495fc218526a4d5342d912cb3f8f7747f815fc8e8983b3ad7777e07",
+      "original_file_bytes": 66596,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Standalone executor component validation, 19 cases repeated 20 times; not whole-application instrumentation.",
+      "published_relative_path": "components/executor-tsan.log",
+      "published_file_sha256": "d922c10380712f4282abda5437457bdad24d4767673bdac497236efa29c8cbc2",
+      "published_file_bytes": 67187
+    },
+    {
+      "source_file": "<WORKSPACE>/work/executor-assistance-validation/sanitizer-summary.txt",
+      "original_file_sha256": "6672e11701d23856516f7654651e75ed50df2738d6bc7b71eaf78ce4706d3ecc",
+      "original_file_bytes": 158,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Existing compile/run status summary for the executor component sanitizer runs.",
+      "published_relative_path": "components/executor-summary.txt",
+      "published_file_sha256": "744dd5c292dfb3ef10ebbf5a833ad672c3e940bc38cfbe492e4303b34fa8a9bc",
+      "published_file_bytes": 726
+    },
+    {
+      "source_file": "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/asan.log",
+      "original_file_sha256": "db8c126888b990584b9caafeb718e08dc6f1641c422884e710bc0ff3aa65b7f1",
+      "original_file_bytes": 43285,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Standalone BAM sink component validation including seeking error policy, 11 cases repeated 20 times.",
+      "published_relative_path": "components/bam-sink-asan-ubsan.log",
+      "published_file_sha256": "843ab577ff846ac9e047ee979bff1798a58733b7032d2d4f21c7db98c57273e4",
+      "published_file_bytes": 43869
+    },
+    {
+      "source_file": "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/tsan.log",
+      "original_file_sha256": "84eefef645027e4f9cf4c250c259c7c0de1fb280a4399b2857d036a29eca2876",
+      "original_file_bytes": 43303,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Standalone BAM sink component validation including seeking error policy, 11 cases repeated 20 times.",
+      "published_relative_path": "components/bam-sink-tsan.log",
+      "published_file_sha256": "5b2de8bedb3de0090ee1c50d98ece57613381a95d81fa3e5ced2f393e72e4723",
+      "published_file_bytes": 43887
+    },
+    {
+      "source_file": "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/asan.commands.json",
+      "original_file_sha256": "cd28cd09b8372068e27bed4909a0086b64e7073b17beb0a68ec62e7c8f0e239c",
+      "original_file_bytes": 2002,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Existing exact compile/run commands and environment for the ASan+UBSan sink component run.",
+      "published_relative_path": "components/bam-sink-asan-ubsan-commands.json",
+      "published_file_sha256": "e2617727d4b0d743a2ee1a784ded2b1aec594c5791ab1b01c292632335abdc52",
+      "published_file_bytes": 1816
+    },
+    {
+      "source_file": "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/tsan.commands.json",
+      "original_file_sha256": "b6798e9c8bee058f972f19467f10b3f520c0a5014044c80f236d0d48141c644d",
+      "original_file_bytes": 1991,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Existing exact compile/run commands and environment for the TSan sink component run.",
+      "published_relative_path": "components/bam-sink-tsan-commands.json",
+      "published_file_sha256": "9c2ed6b3ed4a9975a141c263e2eb8350fa7c2baba920a79e048554ee29a2a925",
+      "published_file_bytes": 1799
+    },
+    {
+      "source_file": "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/sources.json",
+      "original_file_sha256": "785ddc16f6025d0ccaf60cb8bc34ddc9a8fb82e10a3a7d6b5ad8586359dbe681",
+      "original_file_bytes": 1109,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Existing source SHA manifest for the seeking-error-fix component validation.",
+      "published_relative_path": "components/bam-sink-sources.json",
+      "published_file_sha256": "865a7bd2a7533dfa33547ef843bbf3ffb649d100aeaa8d463c41d752acf86647",
+      "published_file_bytes": 1308
+    },
+    {
+      "source_file": "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/asan.xml",
+      "original_file_sha256": "65b5abce6588ee2712a94fadbb8479853f395458859252e0425ec33b9d5fe8fa",
+      "original_file_bytes": 2235,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Existing GTest XML from the final repetition; the complete text log retains all 20 repetitions.",
+      "published_relative_path": "components/bam-sink-asan-ubsan.xml",
+      "published_file_sha256": "65b5abce6588ee2712a94fadbb8479853f395458859252e0425ec33b9d5fe8fa",
+      "published_file_bytes": 2235
+    },
+    {
+      "source_file": "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/tsan.xml",
+      "original_file_sha256": "76e19f6defdd5957a73a0966cee0e95ac33b130f0988ca5662ebaed47b40d7e1",
+      "original_file_bytes": 2237,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Existing GTest XML from the final repetition; the complete text log retains all 20 repetitions.",
+      "published_relative_path": "components/bam-sink-tsan.xml",
+      "published_file_sha256": "76e19f6defdd5957a73a0966cee0e95ac33b130f0988ca5662ebaed47b40d7e1",
+      "published_file_bytes": 2237
+    },
+    {
+      "source_file": "<WORKSPACE>/work/locale-validation/asan.log",
+      "original_file_sha256": "96aabb3d38769de45ecd854f08f018493ac858b95249c761829aeef3498ff08c",
+      "original_file_bytes": 1356,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Six focused SeedUppercase cases; GappedAligner and its tests instrumented, existing graph library linked.",
+      "published_relative_path": "components/locale-asan-ubsan.log",
+      "published_file_sha256": "529418e8f17424a2cc83509bef9e160cfaca57dc2e4887613583df6fbf2f9891",
+      "published_file_bytes": 1925
+    },
+    {
+      "source_file": "<WORKSPACE>/work/locale-validation/commands.json",
+      "original_file_sha256": "0a0e11e3f2da630607b88d3a9f4bf4f32332cde92f80a1e13c70c86c8b727e71",
+      "original_file_bytes": 5147,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Existing exact compile/link/run commands and environment for the focused locale validation.",
+      "published_relative_path": "components/locale-asan-ubsan-commands.json",
+      "published_file_sha256": "06e72220f9cbe414eacca15d6bbcde9865710e06a80aa9afe2aacf8da1efbdc0",
+      "published_file_bytes": 3965
+    },
+    {
+      "source_file": "<WORKSPACE>/work/locale-validation/asan.xml",
+      "original_file_sha256": "a7860a98fe6698f8c302aa5f6d3e978d1fd0a9dc34f54490a9d82fddc716ff2c",
+      "original_file_bytes": 1349,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Existing GTest XML for the six focused locale cases.",
+      "published_relative_path": "components/locale-asan-ubsan.xml",
+      "published_file_sha256": "a7860a98fe6698f8c302aa5f6d3e978d1fd0a9dc34f54490a9d82fddc716ff2c",
+      "published_file_bytes": 1349
+    },
+    {
+      "source_file": "<WORKSPACE>/work/borrowed-adjacency-validation/tests-asan.log",
+      "original_file_sha256": "fea59b937614db639b11a6ec51c8046efb2b92e0997d02a1b18b25e863130be3",
+      "original_file_bytes": 4246,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "22 focused Graph cases under ASan; not a whole-application sanitizer run.",
+      "published_relative_path": "components/borrowed-adjacency-asan.log",
+      "published_file_sha256": "2c2ecbd723e8ea21d3cdd4c38225cb407c1290cea46529194e073525204e9695",
+      "published_file_bytes": 4801
+    },
+    {
+      "source_file": "<WORKSPACE>/work/parallel-redesign/primary100k-v6/results.json",
+      "original_file_sha256": "d3086bae622b2f28f64c291bd67c27239c9bd1c3770a31fe93072dcea3c84d56",
+      "original_file_bytes": 55718,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Completed frozen RAMOPT versus v6 primary comparison: three formal pairs and a separate excluded warmup, all exact output comparisons verified. This is not the final stress campaign.",
+      "published_relative_path": "final-v6-primary.json",
+      "published_file_sha256": "3afb7b27b32e2b620c5f9d76d282f897a377c24e075d6bd36e6b521f2eb13c75",
+      "published_file_bytes": 47581
+    },
+    {
+      "source_file": "<WORKSPACE>/work/parallel-redesign/primary100k-v6/genotype-validation.json",
+      "original_file_sha256": "9933cdb2aa356d3fe34e4a3e3639d6f4cd1b1166625f0edb9720c1eb26ad3241",
+      "original_file_bytes": 2620,
+      "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+      "scope": "Checks the two outputs from the first formal pair for observed genotype computation and repeat evidence; not a biological truth assertion, all-pair genotype scan, or binary-output comparison.",
+      "published_relative_path": "final-v6-primary-genotype-validation.json",
+      "published_file_sha256": "002973b6d051b89b069726b37f2a320a0e7f7abab5bdfd5d82d6e73ca383913c",
+      "published_file_bytes": 3022
+    }
+  ],
+  "generated_artifacts": [
+    {
+      "published_relative_path": "component-sanitizers.json",
+      "published_file_sha256": "2bd0363150c84f4971e5305cdd3757a765c82e94cff354a0f14a57fc1edcc8f3",
+      "published_file_bytes": 9318,
+      "provenance": "Summary derived from staged original logs/command manifests plus explicitly identified earlier task history. No original-file hash applies to this generated summary."
+    }
+  ],
+  "updated_utc": "2026-11-14T19:58:00.310193+00:00"
+}

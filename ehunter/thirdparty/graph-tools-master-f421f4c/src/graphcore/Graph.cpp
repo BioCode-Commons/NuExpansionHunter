@@ -289,22 +289,44 @@ void Graph::eraseLabel(const std::string& label)
 
 CatalogRange<NodeId> Graph::successors(NodeId node_id) const
 {
+    return successorsImpl(node_id, true);
+}
+
+CatalogRange<NodeId> Graph::successorsBorrowed(NodeId node_id) const
+{
+    return successorsImpl(node_id, false);
+}
+
+CatalogRange<NodeId> Graph::successorsImpl(NodeId node_id, bool retainOwner) const
+{
     assertNodeExists(node_id);
     if (mapped_.data)
     {
         const auto slice = mappedNode(node_id).successors;
-        return CatalogRange<NodeId>::fromArray(mapped_.array<NodeId>(slice), slice.count, mapped_.owner);
+        return CatalogRange<NodeId>::fromArray(
+            mapped_.array<NodeId>(slice), slice.count, retainOwner ? mapped_.owner : std::shared_ptr<const void>());
     }
     return CatalogRange<NodeId>::fromContainer(adjacency_list_[node_id]);
 }
 
 CatalogRange<NodeId> Graph::predecessors(NodeId node_id) const
 {
+    return predecessorsImpl(node_id, true);
+}
+
+CatalogRange<NodeId> Graph::predecessorsBorrowed(NodeId node_id) const
+{
+    return predecessorsImpl(node_id, false);
+}
+
+CatalogRange<NodeId> Graph::predecessorsImpl(NodeId node_id, bool retainOwner) const
+{
     assertNodeExists(node_id);
     if (mapped_.data)
     {
         const auto slice = mappedNode(node_id).predecessors;
-        return CatalogRange<NodeId>::fromArray(mapped_.array<NodeId>(slice), slice.count, mapped_.owner);
+        return CatalogRange<NodeId>::fromArray(
+            mapped_.array<NodeId>(slice), slice.count, retainOwner ? mapped_.owner : std::shared_ptr<const void>());
     }
     return CatalogRange<NodeId>::fromContainer(reverse_adjacency_list_[node_id]);
 }

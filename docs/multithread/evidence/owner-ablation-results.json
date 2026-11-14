@@ -1,0 +1,2508 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T18:22:38.266974+00:00",
+  "complete": true,
+  "parameters": {
+    "baseline": "work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+    "candidate": "work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+    "reads": "work/fixtures/genotyped10k/reads.bam",
+    "reference": "work/fixtures/genotyped10k/reference.fa",
+    "variant_catalog": "work/fixtures/genotyped10k/catalog.json",
+    "out": "work/parallel-redesign/owner-ablation/results",
+    "baseline_cache": "work/parallel-redesign/owner-ablation/owner-retained.catalog",
+    "candidate_cache": "work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog",
+    "baseline_source": null,
+    "candidate_source": null,
+    "threads": [
+      4,
+      8
+    ],
+    "pairs": 3,
+    "decode": "2",
+    "encode": "1",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20,
+    "cpu_list": null,
+    "discard_equal_output": true,
+    "compare_chunk_mib": 16
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": true,
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/owner-retained.catalog",
+        "bytes": 228467532,
+        "sha256": "3b7e68d86e848d3165186fc568a3b0649e989833ff402ae845aa8f29e01e5028"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": true,
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog",
+        "bytes": 228467532,
+        "sha256": "3b7e68d86e848d3165186fc568a3b0649e989833ff402ae845aa8f29e01e5028"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T18:22:38.510603+00:00",
+          "wall_seconds": 6.271380584,
+          "user_seconds": 44.230807,
+          "system_seconds": 0.808771,
+          "peak_rss_bytes": 471515136,
+          "wait_status": 0,
+          "stdout_sha256": "05188c04ee6abc239b60e7b7ebcee638ed61bc12c2dcd73a378071111dbd994c",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.277958125,
+            "catalog_index_seconds": 0.132312459,
+            "read_processing_seconds": 4.950785375,
+            "genotyping_seconds": 0.130011667,
+            "output_seconds": 0.137060083
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19689216.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 36.101133386,
+            "reduction_worker_seconds": 7.153532248,
+            "publisher_assisted_chunks": 1654.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 8388352.0,
+            "submit_wait_seconds": 1.3888930660000005,
+            "drain_seconds": 2.1916e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:22:44.902065+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 30803610,
+              "sha256": "fa2b8979e74e8bb2b409af874d6de1eb465c26988baaf0d3fcd7ec2d34319c93",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/owner-retained.catalog"
+          ],
+          "started_utc": "2026-11-14T18:22:44.920410+00:00",
+          "wall_seconds": 13.362568916999999,
+          "user_seconds": 107.43838,
+          "system_seconds": 1.144761,
+          "peak_rss_bytes": 469139456,
+          "wait_status": 0,
+          "stdout_sha256": "1af0cd169579dcb354d84b68358500e0d667a346dab4fc39f0f330f2523a942f",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.259122292,
+            "catalog_index_seconds": 0.13046175,
+            "read_processing_seconds": 12.453661583,
+            "genotyping_seconds": 0.129734542,
+            "output_seconds": 0.131620375
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19647552.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 104.137761288,
+            "reduction_worker_seconds": 6.286631767,
+            "publisher_assisted_chunks": 1897.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 8387008.0,
+            "submit_wait_seconds": 0.34417975200000006,
+            "drain_seconds": 2.2917e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:22:58.409268+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 30729223,
+              "sha256": "5b972cb34c054cc7dc6da7051e3d1242836f0e3530cb3298129bf1742ddd20dd",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 4,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "4",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T18:23:11.419308+00:00",
+          "wall_seconds": 5.8351876659999995,
+          "user_seconds": 30.861783,
+          "system_seconds": 0.562856,
+          "peak_rss_bytes": 460783616,
+          "wait_status": 0,
+          "stdout_sha256": "62ad89ba05a736e25d5a2c6f18a4f5a0586934dbfe908797f9329522989777e9",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.364276542,
+            "catalog_index_seconds": 0.278378291,
+            "read_processing_seconds": 4.788004708,
+            "genotyping_seconds": 0.2010795,
+            "output_seconds": 0.140710792
+          },
+          "resolved_thread_pools": {
+            "compute": 4,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 16.0,
+            "peak_charged_cache_bytes": 13719360.0,
+            "cache_budget_bytes": 80000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 18.953928414,
+            "reduction_worker_seconds": 4.487357299,
+            "publisher_assisted_chunks": 3641.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 2248192.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.1042e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:23:17.384848+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/candidate/result_realigned.bam",
+              "bytes": 30740379,
+              "sha256": "1a8279fcfec56a9ce3192a51110dd238ef96229610ef199809bdd902365caa4f",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "4",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/owner-retained.catalog"
+          ],
+          "started_utc": "2026-11-14T18:23:17.402012+00:00",
+          "wall_seconds": 8.21726425,
+          "user_seconds": 43.549587,
+          "system_seconds": 0.590704,
+          "peak_rss_bytes": 460570624,
+          "wait_status": 0,
+          "stdout_sha256": "893867f89eeb9abcd4bbf38abb0142fff72938b256786e6e7f5257558593d34e",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.290260208,
+            "catalog_index_seconds": 0.198363041,
+            "read_processing_seconds": 7.336551417,
+            "genotyping_seconds": 0.210298584,
+            "output_seconds": 0.147450541
+          },
+          "resolved_thread_pools": {
+            "compute": 4,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 16.0,
+            "peak_charged_cache_bytes": 13719360.0,
+            "cache_budget_bytes": 80000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 31.446251172,
+            "reduction_worker_seconds": 4.712382143,
+            "publisher_assisted_chunks": 3805.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 3504288.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.1584e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:23:25.735255+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/warmup/t4/baseline/result_realigned.bam",
+              "bytes": 30739219,
+              "sha256": "b942fd00d1348b65c42245120239c13b2ff3f9fd6cbc57b810c5afb215948012",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      },
+      "cross_configuration_comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 4,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "4",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/owner-retained.catalog"
+          ],
+          "started_utc": "2026-11-14T18:23:51.304233+00:00",
+          "wall_seconds": 8.040304417,
+          "user_seconds": 42.581923,
+          "system_seconds": 0.620219,
+          "peak_rss_bytes": 457785344,
+          "wait_status": 0,
+          "stdout_sha256": "215d260ecdec185df63ad15145cd25cd1ae64bf85aa19dc28d3a9b76a42d22a0",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.344051459,
+            "catalog_index_seconds": 0.257682125,
+            "read_processing_seconds": 7.014089,
+            "genotyping_seconds": 0.207875709,
+            "output_seconds": 0.14631825
+          },
+          "resolved_thread_pools": {
+            "compute": 4,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 16.0,
+            "peak_charged_cache_bytes": 13719360.0,
+            "cache_budget_bytes": 80000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 30.278272832,
+            "reduction_worker_seconds": 4.322421888,
+            "publisher_assisted_chunks": 3801.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 1256960.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.2e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:23:59.477281+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/baseline/result_realigned.bam",
+              "bytes": 30729843,
+              "sha256": "a1c7f6b95a2cde24fb0659feeecd1c636cef0c02c72dc4d1e701620877926888",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "4",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T18:23:59.495019+00:00",
+          "wall_seconds": 6.124157333,
+          "user_seconds": 33.57831,
+          "system_seconds": 0.528833,
+          "peak_rss_bytes": 460488704,
+          "wait_status": 0,
+          "stdout_sha256": "64baa862aedd99814c5158ed87e532643394ee457bb846f450a67f6572b1c322",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.3067375,
+            "catalog_index_seconds": 0.210208708,
+            "read_processing_seconds": 5.212543084,
+            "genotyping_seconds": 0.22175125,
+            "output_seconds": 0.139703916
+          },
+          "resolved_thread_pools": {
+            "compute": 4,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 16.0,
+            "peak_charged_cache_bytes": 13719360.0,
+            "cache_budget_bytes": 80000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 20.673975186,
+            "reduction_worker_seconds": 4.898631725,
+            "publisher_assisted_chunks": 3695.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 1426048.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.05e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:24:05.737976+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t4/candidate/result_realigned.bam",
+              "bytes": 30739354,
+              "sha256": "3f48d19d366a71c17362185c2da10e84c4b3986dff2e644e5e4d2ab0ba6ad16a",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/owner-retained.catalog"
+          ],
+          "started_utc": "2026-11-14T18:24:19.401692+00:00",
+          "wall_seconds": 14.801786125,
+          "user_seconds": 123.376042,
+          "system_seconds": 1.153826,
+          "peak_rss_bytes": 462684160,
+          "wait_status": 0,
+          "stdout_sha256": "610abcd99f74fd78b09481b3b05d882e4428b9fe5001f5ef96fe4acd169aa025",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.335726708,
+            "catalog_index_seconds": 0.228210167,
+            "read_processing_seconds": 13.8695505,
+            "genotyping_seconds": 0.145688584,
+            "output_seconds": 0.16298325
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19433280.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 117.605368166,
+            "reduction_worker_seconds": 6.073979276,
+            "publisher_assisted_chunks": 1964.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 2386304.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.1708e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:24:34.335786+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 30703336,
+              "sha256": "184fc9337d6ccc0afc37a3b477c1571a195db08c9117b4ad418ddf6f42d94178",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T18:24:34.356698+00:00",
+          "wall_seconds": 7.623390333,
+          "user_seconds": 62.472119,
+          "system_seconds": 0.7878219999999999,
+          "peak_rss_bytes": 471154688,
+          "wait_status": 0,
+          "stdout_sha256": "cbe4d0ee0f29dcbec2186be3343d45488507971babe0e8a86a722d680e44a174",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.287634541,
+            "catalog_index_seconds": 0.143417541,
+            "read_processing_seconds": 6.810018833,
+            "genotyping_seconds": 0.169544333,
+            "output_seconds": 0.176890041
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19814208.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 51.997912954,
+            "reduction_worker_seconds": 7.663561829,
+            "publisher_assisted_chunks": 1851.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 8387392.0,
+            "submit_wait_seconds": 0.069793128,
+            "drain_seconds": 2.4792e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:24:42.116235+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 30725627,
+              "sha256": "ba9867a2b53c99be3703e7ff85318c8ebda0e2ab42963db0ab9f06cc5d132d4a",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T18:24:56.593222+00:00",
+          "wall_seconds": 7.939666083999999,
+          "user_seconds": 59.72746,
+          "system_seconds": 1.058412,
+          "peak_rss_bytes": 480591872,
+          "wait_status": 0,
+          "stdout_sha256": "80d41178daccf78c7731d9f5a1db146be98d12a5e30451b293f57b0cb4547724",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.343698,
+            "catalog_index_seconds": 0.227432125,
+            "read_processing_seconds": 6.874765,
+            "genotyping_seconds": 0.20892025,
+            "output_seconds": 0.226007083
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19736832.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 47.588249718,
+            "reduction_worker_seconds": 12.762113625,
+            "publisher_assisted_chunks": 1819.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 8388576.0,
+            "submit_wait_seconds": 4.672325288999997,
+            "drain_seconds": 3.0459e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:25:04.669373+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/candidate/result_realigned.bam",
+              "bytes": 30784334,
+              "sha256": "02a49dc40389c56121de8fdfa2a397e6582dfc82122b9a026c22e80c98de2275",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/owner-retained.catalog"
+          ],
+          "started_utc": "2026-11-14T18:25:04.701392+00:00",
+          "wall_seconds": 17.074946917000002,
+          "user_seconds": 141.403685,
+          "system_seconds": 1.274003,
+          "peak_rss_bytes": 463077376,
+          "wait_status": 0,
+          "stdout_sha256": "98656af5d1ad4d492e5df37be68d51744d88e10784cf34d60e63b89b8c9c942c",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.345364625,
+            "catalog_index_seconds": 0.169539542,
+            "read_processing_seconds": 16.174600834,
+            "genotyping_seconds": 0.159131917,
+            "output_seconds": 0.186601042
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19480896.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 136.608978178,
+            "reduction_worker_seconds": 7.247763682,
+            "publisher_assisted_chunks": 2015.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 2894624.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.6333e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:25:21.965105+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t8/baseline/result_realigned.bam",
+              "bytes": 30703213,
+              "sha256": "00657652f10c6246e07c69ce699bd0a8825ce22ff1061022fc81f41d2f7fc9d1",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 4,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "4",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T18:25:36.876828+00:00",
+          "wall_seconds": 10.644032166999999,
+          "user_seconds": 55.31554,
+          "system_seconds": 0.965027,
+          "peak_rss_bytes": 461488128,
+          "wait_status": 0,
+          "stdout_sha256": "e0ddd61b790e2846c887ee269349909a37673a5fb82dceedbfe5bb2be13456c3",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.392434208,
+            "catalog_index_seconds": 0.351367416,
+            "read_processing_seconds": 9.286714209,
+            "genotyping_seconds": 0.349051542,
+            "output_seconds": 0.200553209
+          },
+          "resolved_thread_pools": {
+            "compute": 4,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 16.0,
+            "peak_charged_cache_bytes": 13719360.0,
+            "cache_budget_bytes": 80000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 36.198005649,
+            "reduction_worker_seconds": 9.143144695,
+            "publisher_assisted_chunks": 3665.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 2553568.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.9292e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:25:47.695377+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/candidate/result_realigned.bam",
+              "bytes": 30772616,
+              "sha256": "eacca9a6c4c84a69672110777de0f63c3a1c594e0718a89e9c7b03f60a30b49c",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "4",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/owner-retained.catalog"
+          ],
+          "started_utc": "2026-11-14T18:25:47.723992+00:00",
+          "wall_seconds": 12.822796083,
+          "user_seconds": 67.072352,
+          "system_seconds": 0.827944,
+          "peak_rss_bytes": 458063872,
+          "wait_status": 0,
+          "stdout_sha256": "7306713fb6fecb38781c739692652bfaad5cff31d72a919f7c738aa5f3cfb56b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.32151825,
+            "catalog_index_seconds": 0.230686584,
+            "read_processing_seconds": 11.676160375,
+            "genotyping_seconds": 0.339544459,
+            "output_seconds": 0.20253975
+          },
+          "resolved_thread_pools": {
+            "compute": 4,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 16.0,
+            "peak_charged_cache_bytes": 13719360.0,
+            "cache_budget_bytes": 80000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 50.209210388,
+            "reduction_worker_seconds": 7.449172973,
+            "publisher_assisted_chunks": 3827.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 953088.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.7833e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:26:00.720189+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-01/t4/baseline/result_realigned.bam",
+              "bytes": 30686992,
+              "sha256": "5074edaf946cffcc993a79db7c70b597c297025ae641bf00b0e0810753d0d5cd",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/owner-retained.catalog"
+          ],
+          "started_utc": "2026-11-14T18:26:14.904001+00:00",
+          "wall_seconds": 18.141425166,
+          "user_seconds": 137.899988,
+          "system_seconds": 1.729512,
+          "peak_rss_bytes": 467943424,
+          "wait_status": 0,
+          "stdout_sha256": "13547f00ed08fd2a9dba51a9ac19043946674a8ae0a0abaf8ce0533f8c0f448b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.385688333,
+            "catalog_index_seconds": 0.2717825,
+            "read_processing_seconds": 16.99341475,
+            "genotyping_seconds": 0.178097125,
+            "output_seconds": 0.210652042
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19611840.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 140.786220429,
+            "reduction_worker_seconds": 9.583588495,
+            "publisher_assisted_chunks": 1957.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 7933472.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.5334e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:26:33.261510+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/baseline/result_realigned.bam",
+              "bytes": 30704891,
+              "sha256": "6146585ee25c295914925a29b46d3e6343717c49c593fe11e4c3bf513962e491",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T18:26:33.292373+00:00",
+          "wall_seconds": 8.970956000000001,
+          "user_seconds": 64.864507,
+          "system_seconds": 1.148488,
+          "peak_rss_bytes": 471433216,
+          "wait_status": 0,
+          "stdout_sha256": "a7cc36c4d71ada9def49e87ee1c813c42d963bd3088ee113be688ab0d3b07b6f",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.440200959,
+            "catalog_index_seconds": 0.18924975,
+            "read_processing_seconds": 7.882004125,
+            "genotyping_seconds": 0.204555375,
+            "output_seconds": 0.21017825
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19814208.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 52.577810257,
+            "reduction_worker_seconds": 16.784279257,
+            "publisher_assisted_chunks": 1907.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 8388576.0,
+            "submit_wait_seconds": 6.679329996999982,
+            "drain_seconds": 2.5917e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:26:42.466196+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t8/candidate/result_realigned.bam",
+              "bytes": 30792581,
+              "sha256": "88e77d15ed10fe561f01e751cfee7abf7621b607f800c6b5b35f8438c3ce3a38",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 4,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "4",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/owner-retained.catalog"
+          ],
+          "started_utc": "2026-11-14T18:26:57.530627+00:00",
+          "wall_seconds": 13.182058875000001,
+          "user_seconds": 68.225671,
+          "system_seconds": 0.86734,
+          "peak_rss_bytes": 457900032,
+          "wait_status": 0,
+          "stdout_sha256": "3da3bc2875f01825664c83e602eb2a230dff03c2d806be9a27d1fc0adca72c1b",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.356691083,
+            "catalog_index_seconds": 0.303874834,
+            "read_processing_seconds": 11.896269083,
+            "genotyping_seconds": 0.343486917,
+            "output_seconds": 0.212300792
+          },
+          "resolved_thread_pools": {
+            "compute": 4,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 16.0,
+            "peak_charged_cache_bytes": 13719360.0,
+            "cache_budget_bytes": 80000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 51.038655417,
+            "reduction_worker_seconds": 7.715066638,
+            "publisher_assisted_chunks": 3840.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 1128544.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 2.85e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:27:10.856082+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/baseline/result_realigned.bam",
+              "bytes": 30752932,
+              "sha256": "d6824211c07ac4a0f3165fb4f502225aece4d3253d112270ac16408a6ad2c164",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "4",
+            "--decode-threads",
+            "2",
+            "--encode-threads",
+            "1",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/large-calibration3/genotyped10k/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T18:27:10.889424+00:00",
+          "wall_seconds": 10.46344,
+          "user_seconds": 54.543825,
+          "system_seconds": 0.910605,
+          "peak_rss_bytes": 461176832,
+          "wait_status": 0,
+          "stdout_sha256": "95cd05de6f0739ffe7360a6469f9dbf3960b87cf337a8fe71ca0170f7612d4b5",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.344090292,
+            "catalog_index_seconds": 0.246823125,
+            "read_processing_seconds": 9.15790625,
+            "genotyping_seconds": 0.423850917,
+            "output_seconds": 0.243904042
+          },
+          "resolved_thread_pools": {
+            "compute": 4,
+            "decode": 2,
+            "encode": 1
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 16.0,
+            "peak_charged_cache_bytes": 13719360.0,
+            "cache_budget_bytes": 80000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 35.989185881,
+            "reduction_worker_seconds": 8.799040374,
+            "publisher_assisted_chunks": 3674.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 2181152.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 3.825e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T18:27:21.541657+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/results/round-02/t4/candidate/result_realigned.bam",
+              "bytes": 30732821,
+              "sha256": "41710999bed97e732ece7e93a8368075649c4a6991feebc9d7a58c621cc7ab1f",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.owner-retained",
+      "bytes": 2057680,
+      "sha256": "af7a0f399c4ab57519286caed7ebf67768d6710cf14cf54e0b84c7f5cd1d1506"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/owner-ablation/ExpansionHunter.borrowed-adjacency",
+      "bytes": 2057664,
+      "sha256": "206f31c24e2f94d7d618c44c6dbe3f4e6a3774f48f78284441be5b3eb4486c09"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+      "bytes": 24315429,
+      "sha256": "fe79f90927ef897289196e4149eb0cf943162a3d81751f034f50d75f5df4bb5c"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+      "bytes": 41642770,
+      "sha256": "37daf2afe74c6b31a8c5ac49016c659100d332d441329536474aa638a1fe49cc"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+      "bytes": 1204603,
+      "sha256": "aad4ac731a21cde309d33ea2bd69629da1fcb4363bb89f70ee777c23bdd6466e"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa.fai",
+      "bytes": 312,
+      "sha256": "b5a18c62a5293acaba23cf94fe997961e3bfe5b2b4bf5a3363b4cbb9f2558c89"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam.bai",
+      "bytes": 80496,
+      "sha256": "b546b11ed133a646a5fc6bb1d045f954055def1eb8c66bf6b3ef82bcb8a9529d"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29043,
+      "sha256": "76c73b940640d13587b72230a5811e3d0d79c7410782976f80c89c962a639356"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 9232,
+      "sha256": "f7fab60ecb2a18c9d88854f47fa426fe61f6e4e8ec357fcf06fd8e74594a9315"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      4,
+      8
+    ],
+    [
+      8,
+      4
+    ],
+    [
+      8,
+      4
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "4": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 12.822796083,
+            "candidate_median": 10.46344,
+            "baseline_max": 13.182058875000001,
+            "candidate_max": 10.644032166999999,
+            "paired_deltas": [
+              -1.9161470839999994,
+              -2.178763916000001,
+              -2.7186188750000007
+            ],
+            "paired_ratios": [
+              0.7616822716378004,
+              0.83008667517621,
+              0.7937637131817165
+            ],
+            "paired_median_ratio": 0.7937637131817165,
+            "paired_ratio_bootstrap_95": [
+              0.7616822716378004,
+              0.83008667517621
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 67.900296,
+            "candidate_median": 55.454429999999995,
+            "baseline_max": 69.093011,
+            "candidate_max": 56.280567,
+            "paired_deltas": [
+              -9.094999000000001,
+              -11.619729,
+              -13.63858100000001
+            ],
+            "paired_ratios": [
+              0.7894780541205573,
+              0.8288707165577011,
+              0.8026054907348008
+            ],
+            "paired_median_ratio": 0.8026054907348008,
+            "paired_ratio_bootstrap_95": [
+              0.7894780541205573,
+              0.8288707165577011
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 457900032,
+            "candidate_median": 461176832,
+            "baseline_max": 458063872,
+            "candidate_max": 461488128,
+            "paired_deltas": [
+              2703360,
+              3424256,
+              3276800
+            ],
+            "paired_ratios": [
+              1.005905300454529,
+              1.0074754989627297,
+              1.007156147130385
+            ],
+            "paired_median_ratio": 1.007156147130385,
+            "paired_ratio_bootstrap_95": [
+              1.005905300454529,
+              1.0074754989627297
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.344051459,
+            "candidate_median": 0.344090292,
+            "baseline_max": 0.356691083,
+            "candidate_max": 0.392434208,
+            "paired_deltas": [
+              -0.03731395900000001,
+              0.070915958,
+              -0.012600791
+            ],
+            "paired_ratios": [
+              0.8915454126878154,
+              1.220565887006414,
+              0.9646730978133254
+            ],
+            "paired_median_ratio": 0.9646730978133254,
+            "paired_ratio_bootstrap_95": [
+              0.8915454126878154,
+              1.220565887006414
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.257682125,
+            "candidate_median": 0.246823125,
+            "baseline_max": 0.303874834,
+            "candidate_max": 0.351367416,
+            "paired_deltas": [
+              -0.04747341699999999,
+              0.12068083199999999,
+              -0.05705170899999998
+            ],
+            "paired_ratios": [
+              0.8157675197687849,
+              1.5231376264169745,
+              0.8122526033202211
+            ],
+            "paired_median_ratio": 0.8157675197687849,
+            "paired_ratio_bootstrap_95": [
+              0.8122526033202211,
+              1.5231376264169745
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.339544459,
+            "candidate_median": 0.349051542,
+            "baseline_max": 0.343486917,
+            "candidate_max": 0.423850917,
+            "paired_deltas": [
+              0.013875541000000019,
+              0.009507082999999972,
+              0.08036399999999999
+            ],
+            "paired_ratios": [
+              1.0667492179184823,
+              1.0279995233260455,
+              1.2339652429906085
+            ],
+            "paired_median_ratio": 1.0667492179184823,
+            "paired_ratio_bootstrap_95": [
+              1.0279995233260455,
+              1.2339652429906085
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.20253975,
+            "candidate_median": 0.200553209,
+            "baseline_max": 0.212300792,
+            "candidate_max": 0.243904042,
+            "paired_deltas": [
+              -0.0066143339999999995,
+              -0.0019865409999999806,
+              0.03160325
+            ],
+            "paired_ratios": [
+              0.9547948803378936,
+              0.9901918462919008,
+              1.1488607258704904
+            ],
+            "paired_median_ratio": 0.9901918462919008,
+            "paired_ratio_bootstrap_95": [
+              0.9547948803378936,
+              1.1488607258704904
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 11.676160375,
+            "candidate_median": 9.15790625,
+            "baseline_max": 11.896269083,
+            "candidate_max": 9.286714209,
+            "paired_deltas": [
+              -1.8015459160000002,
+              -2.389446166000001,
+              -2.738362833
+            ],
+            "paired_ratios": [
+              0.7431532568235162,
+              0.7953568562559248,
+              0.7698133075257036
+            ],
+            "paired_median_ratio": 0.7698133075257036,
+            "paired_ratio_bootstrap_95": [
+              0.7431532568235162,
+              0.7953568562559248
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 80000000,
+          "paired_actual_delta_bytes": [
+            2703360,
+            3424256,
+            3276800
+          ],
+          "difference_of_medians_bytes": 3276800,
+          "difference_of_maxima_bytes": 3424256,
+          "median_paired_delta_bytes": 3276800,
+          "largest_paired_delta_bytes": 3424256,
+          "paired_candidate_limits_bytes": [
+            537785344,
+            538063872,
+            537900032
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      },
+      "8": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 17.074946917000002,
+            "candidate_median": 7.939666083999999,
+            "baseline_max": 18.141425166,
+            "candidate_max": 8.970956000000001,
+            "paired_deltas": [
+              -7.178395792,
+              -9.135280833000003,
+              -9.170469166
+            ],
+            "paired_ratios": [
+              0.5150317852603076,
+              0.46498921036733537,
+              0.49450117165067276
+            ],
+            "paired_median_ratio": 0.49450117165067276,
+            "paired_ratio_bootstrap_95": [
+              0.46498921036733537,
+              0.5150317852603076
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 139.6295,
+            "candidate_median": 63.259941,
+            "baseline_max": 142.677688,
+            "candidate_max": 66.012995,
+            "paired_deltas": [
+              -61.269926999999996,
+              -81.89181599999999,
+              -73.616505
+            ],
+            "paired_ratios": [
+              0.5079901072407785,
+              0.4260362839633342,
+              0.472772551645605
+            ],
+            "paired_median_ratio": 0.472772551645605,
+            "paired_ratio_bootstrap_95": [
+              0.4260362839633342,
+              0.5079901072407785
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 463077376,
+            "candidate_median": 471433216,
+            "baseline_max": 467943424,
+            "candidate_max": 480591872,
+            "paired_deltas": [
+              8470528,
+              17514496,
+              3489792
+            ],
+            "paired_ratios": [
+              1.0183073654390935,
+              1.037821964336258,
+              1.007457722068555
+            ],
+            "paired_median_ratio": 1.0183073654390935,
+            "paired_ratio_bootstrap_95": [
+              1.007457722068555,
+              1.037821964336258
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.345364625,
+            "candidate_median": 0.343698,
+            "baseline_max": 0.385688333,
+            "candidate_max": 0.440200959,
+            "paired_deltas": [
+              -0.048092166999999963,
+              -0.0016666249999999772,
+              0.05451262600000001
+            ],
+            "paired_ratios": [
+              0.8567520371361103,
+              0.9951743031006723,
+              1.1413385403078813
+            ],
+            "paired_median_ratio": 0.9951743031006723,
+            "paired_ratio_bootstrap_95": [
+              0.8567520371361103,
+              1.1413385403078813
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.228210167,
+            "candidate_median": 0.18924975,
+            "baseline_max": 0.2717825,
+            "candidate_max": 0.227432125,
+            "paired_deltas": [
+              -0.08479262599999998,
+              0.057892583000000025,
+              -0.08253274999999999
+            ],
+            "paired_ratios": [
+              0.6284450113916267,
+              1.3414695021412764,
+              0.6963279460598089
+            ],
+            "paired_median_ratio": 0.6963279460598089,
+            "paired_ratio_bootstrap_95": [
+              0.6284450113916267,
+              1.3414695021412764
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.159131917,
+            "candidate_median": 0.204555375,
+            "baseline_max": 0.178097125,
+            "candidate_max": 0.20892025,
+            "paired_deltas": [
+              0.02385574899999998,
+              0.04978833299999999,
+              0.026458250000000016
+            ],
+            "paired_ratios": [
+              1.1637448065251288,
+              1.3128745881946484,
+              1.1485607923204826
+            ],
+            "paired_median_ratio": 1.1637448065251288,
+            "paired_ratio_bootstrap_95": [
+              1.1485607923204826,
+              1.3128745881946484
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.186601042,
+            "candidate_median": 0.21017825,
+            "baseline_max": 0.210652042,
+            "candidate_max": 0.226007083,
+            "paired_deltas": [
+              0.013906791000000002,
+              0.039406041,
+              -0.00047379200000000066
+            ],
+            "paired_ratios": [
+              1.0853265044107294,
+              1.2111780329715416,
+              0.9977508312024813
+            ],
+            "paired_median_ratio": 1.0853265044107294,
+            "paired_ratio_bootstrap_95": [
+              0.9977508312024813,
+              1.2111780329715416
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 16.174600834,
+            "candidate_median": 6.874765,
+            "baseline_max": 16.99341475,
+            "candidate_max": 7.882004125,
+            "paired_deltas": [
+              -7.059531667000001,
+              -9.299835834,
+              -9.111410625
+            ],
+            "paired_ratios": [
+              0.49100501368086874,
+              0.42503460026962914,
+              0.46382697303377474
+            ],
+            "paired_median_ratio": 0.46382697303377474,
+            "paired_ratio_bootstrap_95": [
+              0.42503460026962914,
+              0.49100501368086874
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            8470528,
+            17514496,
+            3489792
+          ],
+          "difference_of_medians_bytes": 8355840,
+          "difference_of_maxima_bytes": 12648448,
+          "median_paired_delta_bytes": 8470528,
+          "largest_paired_delta_bytes": 17514496,
+          "paired_candidate_limits_bytes": [
+            622684160,
+            623077376,
+            627943424
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "4": {
+          "reference_compute_workers": 4,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 4,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            0.5431982565550008,
+            0.7509713585248974,
+            0.726627525366934
+          ],
+          "median_wall_speedup": 0.726627525366934,
+          "median_compute_scaling_efficiency": 0.363313762683467,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "4": {
+          "reference_compute_workers": 4,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        },
+        "8": {
+          "reference_compute_workers": 4,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            0.8033377625293374,
+            1.3406145868589907,
+            1.1663684450129952
+          ],
+          "median_wall_speedup": 1.1663684450129952,
+          "median_compute_scaling_efficiency": 0.5831842225064976,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": true,
+    "all_observed_peak_rss_within_allowance": true,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T18:27:36.051796+00:00",
+  "runner_default_expected_baseline_source_commit": "b00650d",
+  "expected_baseline_source_commit": null,
+  "ablation_provenance": {
+    "kind": "Controlled candidate3 graph-ownership ablation; neither binary is the RAMOPT baseline executable",
+    "baseline": "candidate3 with only borrowed adjacency accessors retaining ownership",
+    "candidate": "unchanged candidate3",
+    "manifest": "../manifest.json",
+    "manifest_sha256": "749e915160d03cd8a564d37ecc1795e3d861f853402f304dfe4854ff5abb66bb",
+    "annotation": "Corrects the generic runner default provenance expectation. No measurements, ordering, output comparisons, hashes or acceptance calculations were changed."
+  }
+}

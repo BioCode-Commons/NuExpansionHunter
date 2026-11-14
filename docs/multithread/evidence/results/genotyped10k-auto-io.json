@@ -1,0 +1,1335 @@
+{
+  "status": "complete",
+  "started_utc": "2026-11-14T20:10:10.330371+00:00",
+  "complete": true,
+  "baseline_comparison_label": "RAMOPT b00650d",
+  "expected_baseline_source_commit": "b00650d",
+  "parameters": {
+    "baseline": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+    "candidate": "<WORKSPACE>/work/parallel-redesign/prototype6",
+    "reads": "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+    "reference": "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+    "variant_catalog": "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+    "out": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001",
+    "baseline_cache": null,
+    "candidate_cache": null,
+    "baseline_source": null,
+    "candidate_source": null,
+    "baseline_label": "RAMOPT b00650d",
+    "threads": [
+      8
+    ],
+    "pairs": 3,
+    "decode": "auto",
+    "encode": "auto",
+    "bamlet_queue_mb": null,
+    "extra_cache_mb_per_worker": 20.0,
+    "cpu_list": null,
+    "discard_equal_output": true,
+    "compare_chunk_mib": 512
+  },
+  "preparations": {
+    "baseline": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "auto",
+        "--encode-threads",
+        "auto",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/baseline/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/baseline.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:10:10.398835+00:00",
+      "wall_seconds": 15.43314,
+      "user_seconds": 15.027217,
+      "system_seconds": 0.32492099999999996,
+      "peak_rss_bytes": 221659136,
+      "wait_status": 0,
+      "stdout_sha256": "4a9d40e1ba2294a70a1dcb60d56005674f6c788a8f26bcf1586e857dc6ca4abe",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/baseline/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/baseline/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 1.535334083
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:10:25.997243+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/baseline.catalog",
+        "bytes": 228467532,
+        "sha256": "0c4974339a1e5d409406bef2533fa784b2b919f45734817deb35f1a6fea014e8"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    },
+    "candidate": {
+      "reused_cache": false,
+      "status": "completed",
+      "command": [
+        "<WORKSPACE>/work/parallel-redesign/prototype6",
+        "--reads",
+        "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+        "--reference",
+        "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+        "--variant-catalog",
+        "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+        "--analysis-mode",
+        "streaming",
+        "--threads",
+        "1",
+        "--decode-threads",
+        "auto",
+        "--encode-threads",
+        "auto",
+        "--read-decode-threads",
+        "0",
+        "--region-extension-length",
+        "1000",
+        "--log-level",
+        "info",
+        "--output-prefix",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/candidate/result",
+        "--catalog-cache",
+        "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/candidate.catalog",
+        "--prepare-catalog-cache"
+      ],
+      "started_utc": "2026-11-14T20:10:26.123300+00:00",
+      "wall_seconds": 14.916618666,
+      "user_seconds": 14.526476,
+      "system_seconds": 0.34093,
+      "peak_rss_bytes": 221249536,
+      "wait_status": 0,
+      "stdout_sha256": "af566f5ff3ec84a855ef6b4df4ce93f9083519db41ca2c1a30a45a12a0d5419c",
+      "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/candidate/measure.stdout",
+      "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/candidate/measure.stderr",
+      "phases_seconds": {
+        "catalog_graph_seconds": 1.445840417
+      },
+      "resolved_thread_pools": null,
+      "streaming_batches": null,
+      "pending_mates": null,
+      "bam_sink": null,
+      "bamlet_queue": null,
+      "reader_assisted_locus_jobs": null,
+      "read_decode_compatibility_hint": null,
+      "driver_returncode": 0,
+      "finished_utc": "2026-11-14T20:10:41.204891+00:00",
+      "cache": {
+        "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/candidate.catalog",
+        "bytes": 228467532,
+        "sha256": "c367f2a2e81ea98fbf2875d29673a2cb3a07aac76ba06e1f70cb670b40d9b3a9"
+      },
+      "compatibility": "The matching application validates its archive; the harness does not infer compatibility."
+    }
+  },
+  "pairs": [
+    {
+      "threads": 8,
+      "round": -1,
+      "warmup": true,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "auto",
+            "--encode-threads",
+            "auto",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:10:41.343687+00:00",
+          "wall_seconds": 10.318115416,
+          "user_seconds": 85.385154,
+          "system_seconds": 0.962198,
+          "peak_rss_bytes": 467648512,
+          "wait_status": 0,
+          "stdout_sha256": "48c8f385ab6e11a7d00f68aecb86d88277a60383593114072ab6ecf60b7a4112",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.360265667,
+            "catalog_index_seconds": 0.176818083,
+            "read_processing_seconds": 9.218420959,
+            "genotyping_seconds": 0.234204792,
+            "output_seconds": 0.283063792
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 4,
+            "encode": 2
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19647552.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 70.854311846,
+            "reduction_worker_seconds": 10.755100077,
+            "publisher_assisted_chunks": 1934.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 4619168.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 4.45e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:10:51.828584+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/candidate/result_realigned.bam",
+              "bytes": 30754225,
+              "sha256": "24c1a71cddac1f81009f0dc1ce342badb0f08c2341221de7f7f098d7f93d20c5",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "auto",
+            "--encode-threads",
+            "auto",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:10:51.865616+00:00",
+          "wall_seconds": 21.762831458,
+          "user_seconds": 189.231216,
+          "system_seconds": 3.001254,
+          "peak_rss_bytes": 462110720,
+          "wait_status": 0,
+          "stdout_sha256": "cf4a3c0a0d9454ac54f509ffbcd808b24511dee9ca1ab06eb3559e860f6ff895",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.450382458,
+            "catalog_index_seconds": 0.207925917,
+            "read_processing_seconds": 20.583169792,
+            "genotyping_seconds": 0.206580083,
+            "output_seconds": 0.267239209
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 8,
+            "encode": 8
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 3665,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:11:13.849691+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/warmup/t8/baseline/result_realigned.bam",
+              "bytes": 47660333,
+              "sha256": "1eb075b6fd6919543b38066b779210257ad92adde94ac5aa79df3dcd6a39aefa",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 0,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "auto",
+            "--encode-threads",
+            "auto",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:11:27.566377+00:00",
+          "wall_seconds": 21.69154075,
+          "user_seconds": 186.916171,
+          "system_seconds": 3.428511,
+          "peak_rss_bytes": 461094912,
+          "wait_status": 0,
+          "stdout_sha256": "47abdec4d03b992fedba3bf3f134523d387b6cfdb92183961de2ad770e31bdea",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.432496708,
+            "catalog_index_seconds": 0.267832916,
+            "read_processing_seconds": 20.458225166,
+            "genotyping_seconds": 0.221911583,
+            "output_seconds": 0.262298125
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 8,
+            "encode": 8
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 3648,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:11:49.450932+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/baseline/result_realigned.bam",
+              "bytes": 47765663,
+              "sha256": "b2962767f8ce5943e5702f51d314f40449a24fb1a032ce7ee9f7ab2918f795a9",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "auto",
+            "--encode-threads",
+            "auto",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:11:49.503326+00:00",
+          "wall_seconds": 10.91630575,
+          "user_seconds": 88.885897,
+          "system_seconds": 1.050186,
+          "peak_rss_bytes": 467156992,
+          "wait_status": 0,
+          "stdout_sha256": "7efe749601b5c7b79105d52862c7a26d22ad234a1e341cb1eaca179605d76314",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.495840917,
+            "catalog_index_seconds": 0.295332,
+            "read_processing_seconds": 9.53456375,
+            "genotyping_seconds": 0.236127416,
+            "output_seconds": 0.297241959
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 4,
+            "encode": 2
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19611840.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 73.81265929,
+            "reduction_worker_seconds": 10.738948998,
+            "publisher_assisted_chunks": 1984.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 2676608.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 4.5e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:12:00.647523+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-00/t8/candidate/result_realigned.bam",
+              "bytes": 30738518,
+              "sha256": "9c9caaba89865caf854deb29a73b05af4ea17f9c691712dd0def363b902b13c5",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 1,
+      "warmup": false,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "status": "verified",
+      "runs": {
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "auto",
+            "--encode-threads",
+            "auto",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:12:14.924063+00:00",
+          "wall_seconds": 10.3540335,
+          "user_seconds": 80.748488,
+          "system_seconds": 0.9343819999999999,
+          "peak_rss_bytes": 471351296,
+          "wait_status": 0,
+          "stdout_sha256": "c6302de92331d56dfabc46ab95300a0bf82ed140e26a9d692f4d5b08e9a94e4d",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.432127292,
+            "catalog_index_seconds": 0.292253834,
+            "read_processing_seconds": 9.050431084,
+            "genotyping_seconds": 0.232125458,
+            "output_seconds": 0.300578167
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 4,
+            "encode": 2
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19689216.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 68.233168424,
+            "reduction_worker_seconds": 11.283223453,
+            "publisher_assisted_chunks": 1903.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 7970720.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 4.7875e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:12:25.477241+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/candidate/result_realigned.bam",
+              "bytes": 30762737,
+              "sha256": "7ebdfa578f1631644dc725923b1da385c67af4b65b174d991e925f53dde7dfb9",
+              "removed": true
+            }
+          }
+        },
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "auto",
+            "--encode-threads",
+            "auto",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:12:25.520019+00:00",
+          "wall_seconds": 21.834899874999998,
+          "user_seconds": 185.450315,
+          "system_seconds": 3.137847,
+          "peak_rss_bytes": 464257024,
+          "wait_status": 0,
+          "stdout_sha256": "e4380d21ede174c6819de9dded439cb0e27075cdb474094db8c23b3e40862ad4",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.508452417,
+            "catalog_index_seconds": 0.404960375,
+            "read_processing_seconds": 20.37393325,
+            "genotyping_seconds": 0.206656917,
+            "output_seconds": 0.284325875
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 8,
+            "encode": 8
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 3683,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:12:47.596885+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-01/t8/baseline/result_realigned.bam",
+              "bytes": 47788473,
+              "sha256": "918af828a7b39fd9d8564c6a941ee3cb6cffe2f94f555c69a004caf3e8a0a772",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    },
+    {
+      "threads": 8,
+      "round": 2,
+      "warmup": false,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "status": "verified",
+      "runs": {
+        "baseline": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/baseline/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "auto",
+            "--encode-threads",
+            "auto",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/baseline/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/baseline.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:03.278859+00:00",
+          "wall_seconds": 22.350028333999997,
+          "user_seconds": 189.920553,
+          "system_seconds": 3.334354,
+          "peak_rss_bytes": 461930496,
+          "wait_status": 0,
+          "stdout_sha256": "276ef5fec5f03175c0471ce30deb8c7cfb559fab9eda03250c2c688b5671aa05",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/baseline/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/baseline/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.440401833,
+            "catalog_index_seconds": 0.377656125,
+            "read_processing_seconds": 20.950378958,
+            "genotyping_seconds": 0.212803958,
+            "output_seconds": 0.284372625
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 8,
+            "encode": 8
+          },
+          "streaming_batches": null,
+          "pending_mates": null,
+          "bam_sink": null,
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": 3707,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:25.828350+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/baseline/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/baseline/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/baseline/result_realigned.bam",
+              "bytes": 47622781,
+              "sha256": "af90d8346524ce2ef09e6d268ad4075a5c1e4563af227bdd9bfe705a4bda74f5",
+              "removed": true
+            }
+          }
+        },
+        "candidate": {
+          "output_prefix": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/candidate/result",
+          "status": "completed",
+          "command": [
+            "<WORKSPACE>/work/parallel-redesign/prototype6",
+            "--reads",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+            "--reference",
+            "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+            "--variant-catalog",
+            "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+            "--analysis-mode",
+            "streaming",
+            "--threads",
+            "8",
+            "--decode-threads",
+            "auto",
+            "--encode-threads",
+            "auto",
+            "--read-decode-threads",
+            "0",
+            "--region-extension-length",
+            "1000",
+            "--log-level",
+            "info",
+            "--output-prefix",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/candidate/result",
+            "--catalog-cache",
+            "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/preparation/candidate.catalog"
+          ],
+          "started_utc": "2026-11-14T20:13:25.887480+00:00",
+          "wall_seconds": 10.899958875000001,
+          "user_seconds": 86.674216,
+          "system_seconds": 1.037798,
+          "peak_rss_bytes": 467976192,
+          "wait_status": 0,
+          "stdout_sha256": "52ce8f2ad80729f0380f4b5ee4e0e0b9b78ce4ca25741df8eef3bdfbe619074d",
+          "stdout_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/candidate/measure.stdout",
+          "stderr_path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/candidate/measure.stderr",
+          "phases_seconds": {
+            "catalog_graph_seconds": 0.534620583,
+            "catalog_index_seconds": 0.355400208,
+            "read_processing_seconds": 9.4181515,
+            "genotyping_seconds": 0.240243708,
+            "output_seconds": 0.296689584
+          },
+          "resolved_thread_pools": {
+            "compute": 8,
+            "decode": 4,
+            "encode": 2
+          },
+          "streaming_batches": {
+            "pairs": 1000000.0,
+            "assignments": 1000000.0,
+            "chunks": 20103.0,
+            "peak_active_chunks": 32.0,
+            "peak_charged_cache_bytes": 19534464.0,
+            "cache_budget_bytes": 160000000.0,
+            "admission_wait_seconds": 0.0,
+            "alignment_worker_seconds": 72.216411038,
+            "reduction_worker_seconds": 11.095667179,
+            "publisher_assisted_chunks": 1952.0
+          },
+          "pending_mates": {
+            "peak_reads": 100.0,
+            "peak_raw_bytes": 23200.0,
+            "peak_cold_reads": 0.0,
+            "cold_records": 0.0
+          },
+          "bam_sink": {
+            "written_records": 2000000.0,
+            "peak_resident_bytes": 4832288.0,
+            "submit_wait_seconds": 0.0,
+            "drain_seconds": 4.1292e-05
+          },
+          "bamlet_queue": null,
+          "reader_assisted_locus_jobs": null,
+          "read_decode_compatibility_hint": null,
+          "driver_returncode": 0,
+          "finished_utc": "2026-11-14T20:13:37.028128+00:00",
+          "outputs": {
+            ".vcf": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/candidate/result.vcf",
+              "bytes": 1996309,
+              "sha256": "abd27ff48ddb95610e8bb157e265644349a325d883a79c484fbe751d9335f9ca",
+              "removed": true
+            },
+            ".json": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/candidate/result.json",
+              "bytes": 6524701,
+              "sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+              "removed": true
+            },
+            "_realigned.bam": {
+              "path": "<WORKSPACE>/work/parallel-redesign/final-campaign-v6/genotyped10k-auto-io/attempt-001/round-02/t8/candidate/result_realigned.bam",
+              "bytes": 30729017,
+              "sha256": "3f312e327e05e647bd6b830d73dcdf7847f448fa46a99468599ccf3c267fda8a",
+              "removed": true
+            }
+          }
+        }
+      },
+      "comparison": {
+        "vcf_identical": true,
+        "json_identical": true,
+        "bam": {
+          "header_identical": true,
+          "record_counts": [
+            2000000,
+            2000000
+          ],
+          "record_multiset_identical": true,
+          "first_sorted_record_mismatch": null,
+          "canonical_diagnostic_sha256": [
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e",
+            "adcd26dc20dd16f65af957fcd66dccbffd3b5b211cf902f29fe49665237fde2e"
+          ],
+          "compressed_bytes_identical": false,
+          "comparison": "Exact complete BAM header and record bytes; external lexicographic sort preserves duplicates; SHA is diagnostic only"
+        },
+        "outputs_identical_under_user_policy": true
+      }
+    }
+  ],
+  "errors": [],
+  "output_policy": "Every VCF/JSON byte and complete BAM header/full-record-byte multiset, including duplicate multiplicity. Only BAM record order may differ.",
+  "timing_policy": "Cache preparation, hashes, warmup, comparison and cleanup are excluded. Archive loading remains timed. No OS page-cache clearing. All application processes run serially on the same inherited CPU mask.",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "hostname": "<LOCAL_HOST>",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "logical_cpus": 10,
+    "cpu_affinity": {
+      "applied": false,
+      "reason": "No portable CPU pinning on this platform"
+    },
+    "lscpu": null,
+    "numa_policy": null,
+    "thread_scope": "--threads is compute workers. Codec pools and coordinator roles are additional. A CPU mask limits eligible CPUs, not the number of threads."
+  },
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/frozen-v1/ExpansionHunter",
+      "bytes": 2046800,
+      "sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/parallel-redesign/prototype6",
+      "bytes": 2061472,
+      "sha256": "26f3f58964e42c0d9b332f7c0ab2fb77fe95bc3e0db67a3e8c7992a0a5b9095b"
+    }
+  },
+  "sources": {
+    "baseline": null,
+    "candidate": null
+  },
+  "inputs": [
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam",
+      "bytes": 24315429,
+      "sha256": "fe79f90927ef897289196e4149eb0cf943162a3d81751f034f50d75f5df4bb5c"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa",
+      "bytes": 41642770,
+      "sha256": "37daf2afe74c6b31a8c5ac49016c659100d332d441329536474aa638a1fe49cc"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/catalog.json",
+      "bytes": 1204603,
+      "sha256": "aad4ac731a21cde309d33ea2bd69629da1fcb4363bb89f70ee777c23bdd6466e"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/reference.fa.fai",
+      "bytes": 312,
+      "sha256": "b5a18c62a5293acaba23cf94fe997961e3bfe5b2b4bf5a3363b4cbb9f2558c89"
+    },
+    {
+      "path": "<WORKSPACE>/work/fixtures/genotyped10k/reads.bam.bai",
+      "bytes": 80496,
+      "sha256": "b546b11ed133a646a5fc6bb1d045f954055def1eb8c66bf6b3ef82bcb8a9529d"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/run.py",
+      "bytes": 29361,
+      "sha256": "34ba45cbfe7914cef4a83f603d42d1a2f4e35f271fcc68f63385dc72467aa1f0"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/parallel_validation/README.md",
+      "bytes": 11663,
+      "sha256": "63c2ab3851611e7fab7080e961763de21316fe7e4c2516dfec811c322edb336a"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/measure.py",
+      "bytes": 8028,
+      "sha256": "fd981c9d0b1c586b9da673a29586d775e945b1cd90fd185b0d0b04a32f3d4491"
+    },
+    {
+      "path": "<WORKSPACE>/work/NuExpansionHunter/tools/streaming_validation/compare_outputs.py",
+      "bytes": 7477,
+      "sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    }
+  ],
+  "round_configuration_orders": [
+    [
+      8
+    ],
+    [
+      8
+    ],
+    [
+      8
+    ]
+  ],
+  "summary": {
+    "by_compute_workers": {
+      "8": {
+        "verified_pairs": 3,
+        "metrics": {
+          "wall_seconds": {
+            "baseline_median": 21.834899874999998,
+            "candidate_median": 10.899958875000001,
+            "baseline_max": 22.350028333999997,
+            "candidate_max": 10.91630575,
+            "paired_deltas": [
+              -10.775235000000002,
+              -11.480866374999998,
+              -11.450069458999996
+            ],
+            "paired_ratios": [
+              0.5032517457294959,
+              0.4741965183845388,
+              0.48769329112744036
+            ],
+            "paired_median_ratio": 0.48769329112744036,
+            "paired_ratio_bootstrap_95": [
+              0.4741965183845388,
+              0.5032517457294959
+            ]
+          },
+          "cpu_seconds": {
+            "baseline_median": 190.34468199999998,
+            "candidate_median": 87.712014,
+            "baseline_max": 193.254907,
+            "candidate_max": 89.936083,
+            "paired_deltas": [
+              -100.40859899999998,
+              -106.90529199999999,
+              -105.542893
+            ],
+            "paired_ratios": [
+              0.4724906525100607,
+              0.4331282999619032,
+              0.4538669437252633
+            ],
+            "paired_median_ratio": 0.4538669437252633,
+            "paired_ratio_bootstrap_95": [
+              0.4331282999619032,
+              0.4724906525100607
+            ]
+          },
+          "peak_rss_bytes": {
+            "baseline_median": 461930496,
+            "candidate_median": 467976192,
+            "baseline_max": 464257024,
+            "candidate_max": 471351296,
+            "paired_deltas": [
+              6062080,
+              7094272,
+              6045696
+            ],
+            "paired_ratios": [
+              1.013147141385069,
+              1.0152809147374364,
+              1.013087891040647
+            ],
+            "paired_median_ratio": 1.013147141385069,
+            "paired_ratio_bootstrap_95": [
+              1.013087891040647,
+              1.0152809147374364
+            ]
+          }
+        },
+        "phases_seconds": {
+          "catalog_graph_seconds": {
+            "baseline_median": 0.440401833,
+            "candidate_median": 0.495840917,
+            "baseline_max": 0.508452417,
+            "candidate_max": 0.534620583,
+            "paired_deltas": [
+              0.06334420899999998,
+              -0.076325125,
+              0.09421875000000002
+            ],
+            "paired_ratios": [
+              1.1464617136461532,
+              0.8498873789403188,
+              1.2139381422601845
+            ],
+            "paired_median_ratio": 1.1464617136461532,
+            "paired_ratio_bootstrap_95": [
+              0.8498873789403188,
+              1.2139381422601845
+            ]
+          },
+          "catalog_index_seconds": {
+            "baseline_median": 0.377656125,
+            "candidate_median": 0.295332,
+            "baseline_max": 0.404960375,
+            "candidate_max": 0.355400208,
+            "paired_deltas": [
+              0.027499084000000007,
+              -0.112706541,
+              -0.022255917000000014
+            ],
+            "paired_ratios": [
+              1.1026725333491123,
+              0.7216850142436776,
+              0.9410683012224415
+            ],
+            "paired_median_ratio": 0.9410683012224415,
+            "paired_ratio_bootstrap_95": [
+              0.7216850142436776,
+              1.1026725333491123
+            ]
+          },
+          "genotyping_seconds": {
+            "baseline_median": 0.212803958,
+            "candidate_median": 0.236127416,
+            "baseline_max": 0.221911583,
+            "candidate_max": 0.240243708,
+            "paired_deltas": [
+              0.014215833000000011,
+              0.02546854100000001,
+              0.027439750000000013
+            ],
+            "paired_ratios": [
+              1.0640607975835132,
+              1.12324068978538,
+              1.1289437953029051
+            ],
+            "paired_median_ratio": 1.12324068978538,
+            "paired_ratio_bootstrap_95": [
+              1.0640607975835132,
+              1.1289437953029051
+            ]
+          },
+          "output_seconds": {
+            "baseline_median": 0.284325875,
+            "candidate_median": 0.297241959,
+            "baseline_max": 0.284372625,
+            "candidate_max": 0.300578167,
+            "paired_deltas": [
+              0.03494383400000001,
+              0.016252292,
+              0.012316959000000016
+            ],
+            "paired_ratios": [
+              1.133221821543711,
+              1.0571607912927377,
+              1.043312745029519
+            ],
+            "paired_median_ratio": 1.0571607912927377,
+            "paired_ratio_bootstrap_95": [
+              1.043312745029519,
+              1.133221821543711
+            ]
+          },
+          "read_processing_seconds": {
+            "baseline_median": 20.458225166,
+            "candidate_median": 9.4181515,
+            "baseline_max": 20.950378958,
+            "candidate_max": 9.53456375,
+            "paired_deltas": [
+              -10.923661415999998,
+              -11.323502166,
+              -11.532227458000001
+            ],
+            "paired_ratios": [
+              0.46605038670928867,
+              0.4442161939447799,
+              0.4495456391925376
+            ],
+            "paired_median_ratio": 0.4495456391925376,
+            "paired_ratio_bootstrap_95": [
+              0.4442161939447799,
+              0.46605038670928867
+            ]
+          }
+        },
+        "memory_allowance": {
+          "extra_bytes_per_worker": 20000000,
+          "allowed_extra_bytes": 160000000,
+          "paired_actual_delta_bytes": [
+            6062080,
+            7094272,
+            6045696
+          ],
+          "difference_of_medians_bytes": 6045696,
+          "difference_of_maxima_bytes": 7094272,
+          "median_paired_delta_bytes": 6062080,
+          "largest_paired_delta_bytes": 7094272,
+          "paired_candidate_limits_bytes": [
+            621094912,
+            624257024,
+            621930496
+          ],
+          "all_pairs_within_allowance": true,
+          "median_within_allowance": true,
+          "maximum_within_allowance": true
+        },
+        "observed_median_wall_no_slower": true,
+        "wall_bootstrap_upper95_no_slower": true
+      }
+    },
+    "within_version_scaling": {
+      "baseline": {
+        "8": {
+          "reference_compute_workers": 8,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      },
+      "candidate": {
+        "8": {
+          "reference_compute_workers": 8,
+          "same_round_pairs": 3,
+          "wall_speedup_by_round": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "median_wall_speedup": 1.0,
+          "median_compute_scaling_efficiency": 1.0,
+          "note": "Same allocation/mask; compute workers are not physical-core or total-thread counts."
+        }
+      }
+    },
+    "all_requested_pairs_verified": true,
+    "all_observed_median_wall_no_slower": true,
+    "all_observed_peak_rss_within_allowance": true,
+    "interpretation": "Observed timings/RSS only. Few-pair bootstrap intervals are descriptive, not a hardware-general guarantee. Exit 0 confirms complete measurements and exact outputs, not a speed or memory claim; review the explicit performance fields."
+  },
+  "finished_utc": "2026-11-14T20:13:51.841374+00:00"
+}

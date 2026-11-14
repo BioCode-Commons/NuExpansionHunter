@@ -124,6 +124,11 @@ public:
     }
     CatalogRange<NodeId> successors(NodeId node_id) const;
     CatalogRange<NodeId> predecessors(NodeId node_id) const;
+    // Internal traversals can borrow adjacency without retaining the mapped
+    // catalog owner. The graph must outlive the range and all its iterators,
+    // and its topology must remain unchanged while they are used.
+    CatalogRange<NodeId> successorsBorrowed(NodeId node_id) const;
+    CatalogRange<NodeId> predecessorsBorrowed(NodeId node_id) const;
     Slice freeze(BlobBuilder& out) const;
     static Graph mapped(MappedBytes bytes, Slice record);
 
@@ -134,6 +139,8 @@ private:
     void assertNodeExists(NodeId node_id) const;
     void assertEdgeExists(NodeIdPair edge) const;
     void assertMutable() const;
+    CatalogRange<NodeId> successorsImpl(NodeId node_id, bool retainOwner) const;
+    CatalogRange<NodeId> predecessorsImpl(NodeId node_id, bool retainOwner) const;
     const MappedNode& mappedNode(NodeId node) const { return mapped_.array<MappedNode>(mappedGraph_->nodes)[node]; }
     MappedBytes mapped_;
     const MappedGraph* mappedGraph_ = nullptr;
@@ -178,5 +185,8 @@ public:
 
     CatalogRange<NodeId> successors(NodeId nodeId) const { return graph_.predecessors(nodeId); }
     CatalogRange<NodeId> predecessors(NodeId nodeId) const { return graph_.successors(nodeId); }
+    // Borrowed ranges have the same lifetime requirement as on Graph.
+    CatalogRange<NodeId> successorsBorrowed(NodeId nodeId) const { return graph_.predecessorsBorrowed(nodeId); }
+    CatalogRange<NodeId> predecessorsBorrowed(NodeId nodeId) const { return graph_.successorsBorrowed(nodeId); }
 };
 }

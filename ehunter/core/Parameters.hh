@@ -174,8 +174,9 @@ public:
         InputPaths inputPaths, OutputPaths outputPaths, SampleParameters sample, HeuristicParameters heuristics,
         AnalysisMode analysisMode, LogLevel logLevel, const int initThreadCount, const bool initDisableBamletOutput)
         : threadCount(initThreadCount)
-        , decodeThreadCount(std::min(initThreadCount, 12))
-        , encodeThreadCount(initThreadCount)
+        , decodeThreadCount(std::min(initThreadCount, analysisMode == AnalysisMode::kStreaming ? 4 : 12))
+        , encodeThreadCount(analysisMode == AnalysisMode::kStreaming ? std::min(initThreadCount, 2) : initThreadCount)
+        , bamletQueueBytes(analysisMode == AnalysisMode::kStreaming ? std::size_t(8) * 1024 * 1024 : 0)
         , disableBamletOutput(initDisableBamletOutput)
         , inputPaths_(std::move(inputPaths))
         , outputPaths_(std::move(outputPaths))
@@ -195,15 +196,18 @@ public:
 
     // Compute workers; I/O pools and coordinator threads are additional.
     int threadCount;
-    // Streaming input uses synchronous decoding for 0 or 1; output uses
-    // synchronous compression for 0. Defaults retain the original pool sizes.
+    // Streaming input uses synchronous decompression for 0 or 1; output uses
+    // synchronous compression for 0. Streaming auto caps are 4 and 2: these I/O
+    // stages need not grow with locus compute concurrency. They are defaults,
+    // not a total process CPU limit. Seeking retains its original defaults.
     int decodeThreadCount;
     int encodeThreadCount;
-    // Additional streaming sequence preprocessing workers; 0 preserves sync.
-    // Each worker owns at most 20,000,000 bytes of batch-cache storage.
+    // Accepted streaming compatibility hint. Sequence decoding runs on the
+    // shared compute workers and does not create an additional worker pool.
     int readDecodeThreadCount = 0;
-    // Opt-in budget for queued BAM records only; 0 retains the original unbounded queue.
-    std::size_t bamletQueueBytes = 0;
+    // Queued BAM records only: auto is 8 MiB for streaming, 0 for seeking.
+    // Explicit 0 is unbounded. This is not a process RAM limit.
+    std::size_t bamletQueueBytes;
     bool disableBamletOutput;
     std::string catalogCache;
     bool prepareCatalogCache = false;

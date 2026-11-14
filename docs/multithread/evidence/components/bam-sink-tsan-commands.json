@@ -1,0 +1,42 @@
+{
+  "compile": [
+    "<APPLE_COMMAND_LINE_TOOLS>/usr/bin/c++",
+    "-std=c++11",
+    "-O1",
+    "-g",
+    "-fno-omit-frame-pointer",
+    "-fsanitize=thread",
+    "-DGTEST_LINKED_AS_SHARED_LIBRARY=1",
+    "-I<WORKSPACE>/work/NuExpansionHunter/ehunter",
+    "-isystem",
+    "<WORKSPACE>/work/toolchain/env/include",
+    "<WORKSPACE>/work/NuExpansionHunter/ehunter/io/BamRecordSink.cpp",
+    "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/sink-only-tests.cpp",
+    "-L<WORKSPACE>/work/toolchain/env/lib",
+    "-lhts",
+    "-lgtest_main",
+    "-lgtest",
+    "-Wl,-rpath,<WORKSPACE>/work/toolchain/env/lib",
+    "-o",
+    "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/sink_tsan"
+  ],
+  "run": [
+    "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/sink_tsan",
+    "--gtest_filter=BamRecordSink.*",
+    "--gtest_repeat=20",
+    "--gtest_break_on_failure",
+    "--gtest_output=xml:<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/tsan.xml"
+  ],
+  "runtime_environment": {
+    "DYLD_LIBRARY_PATH": "/usr/lib:<WORKSPACE>/work/toolchain/env/lib",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1",
+    "TSAN_OPTIONS": "halt_on_error=1"
+  },
+  "_publication": {
+    "source_file": "<WORKSPACE>/work/bam-sink-validation/seeking-error-fix/tsan.commands.json",
+    "original_file_sha256": "b6798e9c8bee058f972f19467f10b3f520c0a5014044c80f236d0d48141c644d",
+    "original_file_bytes": 1991,
+    "redaction_note": "Workspace prefixes are replaced with <WORKSPACE>; the recorded local hostname is replaced with <LOCAL_HOST>. Original measurements, hashes, equality fields, test output and other values are preserved. Publication metadata is added separately.",
+    "scope": "Existing exact compile/run commands and environment for the TSan sink component run."
+  }
+}
