@@ -324,16 +324,7 @@ flowchart TB
 
 ## Benchmarks <sup><sub>[↑ Contents](#contents)</sub></sup>
 
-We benchmarked the Multithread branch on the complete **HG002 Illumina PCR-free WGS dataset** using the **174,293-locus Illumina hg38 catalog** on Brown Oscar.
-
-| Physical cores | Runtime, original EH → NuExpansionHunter | Speedup | CPU-hours saved | Peak RSS, original → optimized |
-| ---: | ---: | ---: | ---: | ---: |
-| 4 | 3295.60 → 1706.41 s | 1.931× | 48.22% | 15.338 → 10.596 GiB |
-| 8 | 1703.73 → 902.08 s | 1.889× | 47.05% | 15.681 → 10.595 GiB |
-| 16 | 1248.94 → 576.29 s | 2.167× | 53.86% | 29.584 → 10.616 GiB |
-| 32 | 1064.28 → 500.47 s | 2.127× | 52.98% | 35.956 → 10.615 GiB |
-
-**Output identical at 4, 8, 16, and 32 cores:** complete HG002 VCF/JSON matched original EH byte for byte, and BAM headers and all 74,565,578 BAM records matched after ignoring record order only. Original timings are historical; each candidate was measured once with the default synchronous read preprocessing, and one-time cache preparation is excluded. Runs were not paired with the original and some shared a node. See [benchmark methods and validation](BENCHMARKS.md) for details.
+On full HG002, Happy Friday (`0888426`) took 4.1–9.2% less wall time than dp-readprocessing (`66200f6`) across 4, 8, 16, and 32 physical cores on Brown Oscar. Read processing, genotyping, and output together took 4.6–10.7% less time. Happy Friday passed full output comparison against original ExpansionHunter v5.0.0 at all four core counts. See the [paired results and phase timings](BENCHMARKS.md#happy-friday-vs-dp-readprocessing-on-full-hg002).
 
 <a id="ai-use-and-review"></a>
 

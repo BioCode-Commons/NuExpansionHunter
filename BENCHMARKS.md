@@ -2,6 +2,34 @@
 
 [← NuExpansionHunter README](README.md#benchmarks)
 
+## Happy Friday vs. dp-readprocessing on full HG002
+
+We compared Happy Friday (`0888426`) with dp-readprocessing (`66200f6`) on the full HG002 BAM with the 174,293-locus Illumina catalog. Each core count used one pair of sequential runs on the same Oscar Genoa allocation with the same CPU affinity. Happy Friday ran second at 4 and 16 cores and first at 8 and 32 cores. Each binary used its own prepared catalog cache. Wall time includes cache loading and analyzer initialization and excludes cache preparation and output verification.
+
+| Physical cores | Slurm job | dp-readprocessing wall (s) | Happy Friday wall (s) | Wall time saved | dp-readprocessing peak RSS (GiB) | Happy Friday peak RSS (GiB) |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 | 9052318 | 1354.772 | 1230.193 | 9.2% | 10.600 | 10.587 |
+| 8 | 9052319 | 759.154 | 695.411 | 8.4% | 10.600 | 10.597 |
+| 16 | 9052320 | 453.793 | 427.191 | 5.9% | 10.623 | 10.618 |
+| 32 | 9052321 | 494.137 | 474.047 | 4.1% | 10.603 | 10.617 |
+
+### Read processing, genotyping, and output
+
+The sum covers these three logged phases. It excludes cache loading, analyzer initialization, and any time outside the phase timers.
+
+| Physical cores | Version | Read processing (s) | Genotyping (s) | Output (s) | Sum (s) |
+| ---: | :--- | ---: | ---: | ---: | ---: |
+| 4 | dp-readprocessing | 1286.544 | 4.275 | 6.637 | 1297.456 |
+| 4 | Happy Friday | 1156.150 | 4.259 | 6.672 | 1167.080 |
+| 8 | dp-readprocessing | 698.027 | 3.545 | 6.780 | 708.351 |
+| 8 | Happy Friday | 622.877 | 3.173 | 6.697 | 632.747 |
+| 16 | dp-readprocessing | 403.006 | 0.942 | 6.764 | 410.712 |
+| 16 | Happy Friday | 374.919 | 1.092 | 6.676 | 382.687 |
+| 32 | dp-readprocessing | 442.890 | 0.500 | 7.570 | 450.961 |
+| 32 | Happy Friday | 422.021 | 1.011 | 7.170 | 430.201 |
+
+Happy Friday passed full output comparison against retained Illumina ExpansionHunter v5.0.0 at all four core counts. dp-readprocessing passed at 4, 8, and 16 cores. Its 32-core comparison was in progress at the last confirmed status. A passing comparison means byte-identical VCF and JSON and matching BAM headers and records after ignoring record order. Each result is a single paired observation.
+
 ## Multithread branch: complete HG002
 
 The Multithread candidate at commit `91a359c49a9f50afced3bfea102604f2aef480d3` processed the complete HG002 BAM with the 174,293-locus Illumina catalog. Each core count ran once on Oscar; original EH timings are historical observations from separate runs. Per-sample wall time excludes one-time cache preparation and output comparison. Some candidate runs overlapped on a node, so the measurements are not isolated paired comparisons.
