@@ -1,0 +1,8 @@
+{
+  "fixture": "example",
+  "loci": 1,
+  "read_records": 2402,
+  "coordinate_sorted": true,
+  "backwards_coordinate_steps": 0,
+  "scope": "Independent post-run input inventory; not added to historical raw run provenance."
+}

@@ -88,6 +88,7 @@ public:
         const KmerIndex* index_ = nullptr;
         uint32_t entry_ = 0;
         bool found_ = false;
+        bool mini_ = false;
     };
 
     // The caller supplies an A/C/G/T key encoded at this index's kmer length.

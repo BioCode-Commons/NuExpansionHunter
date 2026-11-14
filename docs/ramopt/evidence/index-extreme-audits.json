@@ -1,0 +1,538 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "machine": "arm64",
+  "binaries": {
+    "baseline": {
+      "path": "<WORKSPACE>/work/index-memory-extremes/baseline-probe",
+      "sha256": "8c19660a52bf72cd50d010c22e50dbd5f9aeebd285cfb4a712e32cc3107068a4"
+    },
+    "candidate": {
+      "path": "<WORKSPACE>/work/index-memory-extremes/candidate-probe",
+      "sha256": "af50a7d7f6f87d1d555b3046551870d5a9fb99d2a7930257d838c3cbf81a281b"
+    }
+  },
+  "profiles": [
+    {
+      "name": "start2047",
+      "audits": {
+        "baseline": {
+          "profile": "start2047",
+          "k": 14,
+          "membership": 0,
+          "entries": 2048,
+          "record_bytes": 26721,
+          "prefix": 0,
+          "expected_prefix": 1
+        },
+        "candidate": {
+          "profile": "start2047",
+          "k": 14,
+          "membership": 0,
+          "entries": 2048,
+          "record_bytes": 10338,
+          "prefix": 1,
+          "expected_prefix": 1
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "5f1f9decefa796a45f6c0a7b58086ce81864dea1ded161eedaab6dd775f64def",
+        "candidate": "5f1f9decefa796a45f6c0a7b58086ce81864dea1ded161eedaab6dd775f64def"
+      },
+      "equal": true
+    },
+    {
+      "name": "start2048",
+      "audits": {
+        "baseline": {
+          "profile": "start2048",
+          "k": 14,
+          "membership": 0,
+          "entries": 2049,
+          "record_bytes": 26730,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "start2048",
+          "k": 14,
+          "membership": 0,
+          "entries": 2049,
+          "record_bytes": 24664,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "484ec38b5a31d33d274bf2af4bf2fc86c43091d03216cbba18f898a396978e74",
+        "candidate": "484ec38b5a31d33d274bf2af4bf2fc86c43091d03216cbba18f898a396978e74"
+      },
+      "equal": true
+    },
+    {
+      "name": "node3",
+      "audits": {
+        "baseline": {
+          "profile": "node3",
+          "k": 14,
+          "membership": 0,
+          "entries": 987,
+          "record_bytes": 13130,
+          "prefix": 0,
+          "expected_prefix": 1
+        },
+        "candidate": {
+          "profile": "node3",
+          "k": 14,
+          "membership": 0,
+          "entries": 987,
+          "record_bytes": 6094,
+          "prefix": 1,
+          "expected_prefix": 1
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "3582d564efccf75e58d133015bb2cb441b8328423c35ae74a2e92ce43812753f",
+        "candidate": "3582d564efccf75e58d133015bb2cb441b8328423c35ae74a2e92ce43812753f"
+      },
+      "equal": true
+    },
+    {
+      "name": "node4",
+      "audits": {
+        "baseline": {
+          "profile": "node4",
+          "k": 14,
+          "membership": 0,
+          "entries": 987,
+          "record_bytes": 13148,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "node4",
+          "k": 14,
+          "membership": 0,
+          "entries": 987,
+          "record_bytes": 12072,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "28b78da1e6177f64a3275c50700c11ecc3109394bbfbf65581aa7f2d8d53ebf4",
+        "candidate": "28b78da1e6177f64a3275c50700c11ecc3109394bbfbf65581aa7f2d8d53ebf4"
+      },
+      "equal": true
+    },
+    {
+      "name": "dense14",
+      "audits": {
+        "baseline": {
+          "profile": "dense14",
+          "k": 14,
+          "membership": 0,
+          "entries": 1,
+          "record_bytes": 46589,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "dense14",
+          "k": 14,
+          "membership": 0,
+          "entries": 1,
+          "record_bytes": 44536,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "040d40cf48412dc2970d481c5b18a614219dff0bb3f1fc2d6e2752a92e948e17",
+        "candidate": "040d40cf48412dc2970d481c5b18a614219dff0bb3f1fc2d6e2752a92e948e17"
+      },
+      "equal": true
+    },
+    {
+      "name": "dense10",
+      "audits": {
+        "baseline": {
+          "profile": "dense10",
+          "k": 10,
+          "membership": 1,
+          "entries": 1,
+          "record_bytes": 2141,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "dense10",
+          "k": 10,
+          "membership": 1,
+          "entries": 1,
+          "record_bytes": 88,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "415d2304a89ec8086982d4befe578748128cf792a58219f570a0e51bacd0f8d7",
+        "candidate": "415d2304a89ec8086982d4befe578748128cf792a58219f570a0e51bacd0f8d7"
+      },
+      "equal": true
+    },
+    {
+      "name": "skew14",
+      "audits": {
+        "baseline": {
+          "profile": "skew14",
+          "k": 14,
+          "membership": 0,
+          "entries": 1787,
+          "record_bytes": 24372,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "skew14",
+          "k": 14,
+          "membership": 0,
+          "entries": 1787,
+          "record_bytes": 22568,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "8f46553775ccde4316922aac6d2b0c53f1dc4519fb913dc19965d4d6da8da9c0",
+        "candidate": "8f46553775ccde4316922aac6d2b0c53f1dc4519fb913dc19965d4d6da8da9c0"
+      },
+      "equal": true
+    },
+    {
+      "name": "skew10",
+      "audits": {
+        "baseline": {
+          "profile": "skew10",
+          "k": 10,
+          "membership": 1,
+          "entries": 1628,
+          "record_bytes": 16588,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "skew10",
+          "k": 10,
+          "membership": 1,
+          "entries": 1628,
+          "record_bytes": 14784,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "77f188a874d0f9b848e211bc43fc9898337eb01fcedb70e83a4740d1351934cd",
+        "candidate": "77f188a874d0f9b848e211bc43fc9898337eb01fcedb70e83a4740d1351934cd"
+      },
+      "equal": true
+    },
+    {
+      "name": "entries65535",
+      "audits": {
+        "baseline": {
+          "profile": "entries65535",
+          "k": 8,
+          "membership": 0,
+          "entries": 65535,
+          "record_bytes": 852050,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "entries65535",
+          "k": 8,
+          "membership": 0,
+          "entries": 65535,
+          "record_bytes": 786504,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "4ec133e3c898de56f1331b3021eccf323a6e95495924f710d4b8a7651e089496",
+        "candidate": "4ec133e3c898de56f1331b3021eccf323a6e95495924f710d4b8a7651e089496"
+      },
+      "equal": true
+    },
+    {
+      "name": "entries65536",
+      "audits": {
+        "baseline": {
+          "profile": "entries65536",
+          "k": 8,
+          "membership": 0,
+          "entries": 65536,
+          "record_bytes": 1114203,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "entries65536",
+          "k": 8,
+          "membership": 0,
+          "entries": 65536,
+          "record_bytes": 1048656,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "63870e8722341556ef0484c341fb39aa3ed28c08c3a1b38fdccb4768268782f7",
+        "candidate": "63870e8722341556ef0484c341fb39aa3ed28c08c3a1b38fdccb4768268782f7"
+      },
+      "equal": true
+    },
+    {
+      "name": "complex14",
+      "audits": {
+        "baseline": {
+          "profile": "complex14",
+          "k": 14,
+          "membership": 0,
+          "entries": 2167,
+          "record_bytes": 34540,
+          "prefix": 0,
+          "expected_prefix": 1
+        },
+        "candidate": {
+          "profile": "complex14",
+          "k": 14,
+          "membership": 0,
+          "entries": 2167,
+          "record_bytes": 18270,
+          "prefix": 1,
+          "expected_prefix": 1
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "25fdc83ee5814a20d9786ab2f32e6f2e33cbf71d0fdec13786838a7732548488",
+        "candidate": "25fdc83ee5814a20d9786ab2f32e6f2e33cbf71d0fdec13786838a7732548488"
+      },
+      "equal": true
+    },
+    {
+      "name": "complex10",
+      "audits": {
+        "baseline": {
+          "profile": "complex10",
+          "k": 10,
+          "membership": 1,
+          "entries": 2088,
+          "record_bytes": 18704,
+          "prefix": 0,
+          "expected_prefix": 1
+        },
+        "candidate": {
+          "profile": "complex10",
+          "k": 10,
+          "membership": 1,
+          "entries": 2088,
+          "record_bytes": 5300,
+          "prefix": 1,
+          "expected_prefix": 1
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "e06a702e46eaf5246fcbf151156f98b2a773acb5fa47ca429251eca464192860",
+        "candidate": "e06a702e46eaf5246fcbf151156f98b2a773acb5fa47ca429251eca464192860"
+      },
+      "equal": true
+    },
+    {
+      "name": "ambiguous14",
+      "audits": {
+        "baseline": {
+          "profile": "ambiguous14",
+          "k": 14,
+          "membership": 0,
+          "entries": 2339,
+          "record_bytes": 43723,
+          "prefix": 0,
+          "expected_prefix": 1
+        },
+        "candidate": {
+          "profile": "ambiguous14",
+          "k": 14,
+          "membership": 0,
+          "entries": 2339,
+          "record_bytes": 27422,
+          "prefix": 1,
+          "expected_prefix": 1
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "855d0a25c282fba378025c1f4bf3131574deff05d290259a856af53a982ea139",
+        "candidate": "855d0a25c282fba378025c1f4bf3131574deff05d290259a856af53a982ea139"
+      },
+      "equal": true
+    },
+    {
+      "name": "ambiguous10",
+      "audits": {
+        "baseline": {
+          "profile": "ambiguous10",
+          "k": 10,
+          "membership": 1,
+          "entries": 2126,
+          "record_bytes": 18831,
+          "prefix": 0,
+          "expected_prefix": 1
+        },
+        "candidate": {
+          "profile": "ambiguous10",
+          "k": 10,
+          "membership": 1,
+          "entries": 2126,
+          "record_bytes": 5376,
+          "prefix": 1,
+          "expected_prefix": 1
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "f7d1f52cbc07ade806cdd218f3f54cde53984ad98546be9971a23001196c6a5d",
+        "candidate": "f7d1f52cbc07ade806cdd218f3f54cde53984ad98546be9971a23001196c6a5d"
+      },
+      "equal": true
+    },
+    {
+      "name": "tail14",
+      "audits": {
+        "baseline": {
+          "profile": "tail14",
+          "k": 14,
+          "membership": 0,
+          "entries": 2032,
+          "record_bytes": 28727,
+          "prefix": 0,
+          "expected_prefix": 1
+        },
+        "candidate": {
+          "profile": "tail14",
+          "k": 14,
+          "membership": 0,
+          "entries": 2032,
+          "record_bytes": 12650,
+          "prefix": 1,
+          "expected_prefix": 1
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "40d4bbeff782a799520039a6b3af5fa0cda46bdc377c14a0fc7d9d58edc6ed39",
+        "candidate": "40d4bbeff782a799520039a6b3af5fa0cda46bdc377c14a0fc7d9d58edc6ed39"
+      },
+      "equal": true
+    },
+    {
+      "name": "tail10",
+      "audits": {
+        "baseline": {
+          "profile": "tail10",
+          "k": 10,
+          "membership": 1,
+          "entries": 2014,
+          "record_bytes": 18383,
+          "prefix": 0,
+          "expected_prefix": 1
+        },
+        "candidate": {
+          "profile": "tail10",
+          "k": 10,
+          "membership": 1,
+          "entries": 2014,
+          "record_bytes": 5152,
+          "prefix": 1,
+          "expected_prefix": 1
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "bb5d5e260b62463d5535c377350ac8bfb558661b9f6cf510fd8453db38de88e1",
+        "candidate": "bb5d5e260b62463d5535c377350ac8bfb558661b9f6cf510fd8453db38de88e1"
+      },
+      "equal": true
+    },
+    {
+      "name": "empty14",
+      "audits": {
+        "baseline": {
+          "profile": "empty14",
+          "k": 14,
+          "membership": 0,
+          "entries": 0,
+          "record_bytes": 89,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "empty14",
+          "k": 14,
+          "membership": 0,
+          "entries": 0,
+          "record_bytes": 82,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "ae2fc817bc9cd696cfa7e8147cd43ff799457087b483b3a35c61a589c17ec074",
+        "candidate": "ae2fc817bc9cd696cfa7e8147cd43ff799457087b483b3a35c61a589c17ec074"
+      },
+      "equal": true
+    },
+    {
+      "name": "maximum16",
+      "audits": {
+        "baseline": {
+          "profile": "maximum16",
+          "k": 16,
+          "membership": 0,
+          "entries": 2,
+          "record_bytes": 232,
+          "prefix": 0,
+          "expected_prefix": 0
+        },
+        "candidate": {
+          "profile": "maximum16",
+          "k": 16,
+          "membership": 0,
+          "entries": 2,
+          "record_bytes": 148,
+          "prefix": 0,
+          "expected_prefix": 0
+        }
+      },
+      "cases": [],
+      "audit_sha256": {
+        "baseline": "3d47cb5d55f5a955f3bd0072197e61b9d7d6d6113a11a7b6dc7bdc842b90be94",
+        "candidate": "3d47cb5d55f5a955f3bd0072197e61b9d7d6d6113a11a7b6dc7bdc842b90be94"
+      },
+      "equal": true
+    }
+  ]
+}

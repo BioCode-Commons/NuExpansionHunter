@@ -381,3 +381,89 @@ TEST(StreamingReadPairQueueTest, CapturedHelperFailureCancelsWaitAndRemainsObser
     ASSERT_TRUE(bool(recordedError));
     EXPECT_THROW(std::rethrow_exception(recordedError), std::runtime_error);
 }
+
+TEST(StreamingReadPairQueueTest, CollidingLocusCanDrainDuringCapacityWait)
+{
+    using Result = HtsStreamingReadPairQueue::InsertResult;
+    HtsStreamingReadPairQueue queue(1, 4097);
+    ASSERT_EQ(Result::Activated, queue.insertReadPair(0, streamingPair("first")));
+    std::promise<void> waiting;
+    bool announced = false;
+    auto producer = std::async(std::launch::async, [&] {
+        return queue.insertReadPair(4096, streamingPair("second"), [&] {
+            if (!announced)
+            {
+                announced = true;
+                waiting.set_value();
+            }
+            return false;
+        });
+    });
+    waiting.get_future().wait();
+    EXPECT_EQ(std::future_status::timeout, producer.wait_for(std::chrono::milliseconds(50)));
+    auto consumer = std::async(std::launch::async, [&] {
+        boost::optional<HtsStreamingReadPairQueue::ReadPair> pair;
+        queue.getNextReadPair(0, pair);
+        EXPECT_TRUE(bool(pair));
+        queue.getNextReadPair(0, pair);
+        EXPECT_FALSE(bool(pair));
+    });
+    const auto status = producer.wait_for(std::chrono::seconds(5));
+    // A failed assertion must not leave a capacity waiter blocking test teardown.
+    if (status != std::future_status::ready)
+        queue.cancel();
+    EXPECT_EQ(std::future_status::ready, status);
+    EXPECT_EQ(Result::Activated, producer.get());
+    consumer.get();
+}
+
+TEST(StreamingReadPairQueueTest, ReaderHelpCanDrainCollidingLocus)
+{
+    using Result = HtsStreamingReadPairQueue::InsertResult;
+    HtsStreamingReadPairQueue queue(1, 4097);
+    ASSERT_EQ(Result::Activated, queue.insertReadPair(0, streamingPair("first")));
+    unsigned calls = 0;
+    EXPECT_EQ(Result::Activated, queue.insertReadPair(4096, streamingPair("second"), [&] {
+        ++calls;
+        boost::optional<HtsStreamingReadPairQueue::ReadPair> pair;
+        queue.getNextReadPair(0, pair);
+        EXPECT_TRUE(bool(pair));
+        queue.getNextReadPair(0, pair);
+        EXPECT_FALSE(bool(pair));
+        return true;
+    }));
+    EXPECT_EQ(1u, calls);
+}
+
+TEST(StreamingReadPairQueueTest, CollidingLociRetainOrderThroughConcurrentReactivation)
+{
+    using Result = HtsStreamingReadPairQueue::InsertResult;
+    const unsigned locusCount = 8;
+    const unsigned pairsPerLocus = 1000;
+    HtsStreamingReadPairQueue queue(5, 1 + (locusCount - 1) * 4096);
+    ctpl::thread_pool pool(4);
+    std::vector<std::vector<unsigned>> observed(locusCount);
+    for (unsigned pairIndex = 0; pairIndex < pairsPerLocus; ++pairIndex)
+    {
+        for (unsigned locusIndex = 0; locusIndex < locusCount; ++locusIndex)
+        {
+            const unsigned queueIndex = locusIndex * 4096;
+            const auto result = queue.insertReadPair(queueIndex, streamingPair150(std::to_string(pairIndex)));
+            ASSERT_NE(Result::Cancelled, result);
+            if (result == Result::Activated)
+                pool.push([&, locusIndex, queueIndex](int) {
+                    boost::optional<HtsStreamingReadPairQueue::ReadPair> pair;
+                    queue.processBatch(queueIndex, 0, pair, [&](HtsStreamingReadPairQueue::ReadPair& current) {
+                        observed[locusIndex].push_back(std::stoul(current.read.fragmentId()));
+                    });
+                });
+        }
+    }
+    pool.stop(true);
+    for (const auto& locus : observed)
+    {
+        ASSERT_EQ(pairsPerLocus, locus.size());
+        for (unsigned i = 0; i < pairsPerLocus; ++i)
+            EXPECT_EQ(i, locus[i]);
+    }
+}

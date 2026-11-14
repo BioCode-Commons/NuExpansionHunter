@@ -24,6 +24,7 @@
 #include <condition_variable>
 #include <cstddef>
 #include <functional>
+#include <memory>
 #include <mutex>
 #include <queue>
 
@@ -56,7 +57,9 @@ public:
         : maxActiveLocusAnalyzerQueues_(maxActiveLocusAnalyzerQueues)
         , activeLocusAnalyzerQueues_(0)
         , queues_(locusAnalyzerCount)
+        , queueMutexes_(mutexCount(locusAnalyzerCount))
     {
+        idleQueues_.reserve(maxActiveLocusAnalyzerQueues);
     }
 
     struct ReadPair
@@ -123,21 +126,33 @@ public:
     }
 
 private:
-    struct LocusAnalyzerQueue
+    using ReadPairQueue = std::queue<ReadPair>;
+
+    static unsigned mutexCount(unsigned locusCount)
     {
-        boost::optional<std::queue<ReadPair>> queue;
+        unsigned count = 1;
+        while (count < locusCount && count < 4096)
+            count *= 2;
+        return count;
+    }
 
-        /// Queue mutex is used to synchronize between the two queue interaction threads (reader and writer)
-        std::mutex mutex;
-
-        /// True if a thread is either processing or scheduled to process this queue already
-        bool isActive = false;
-    };
+    std::mutex& queueMutex(unsigned locusIndex)
+    {
+        return queueMutexes_[locusIndex & (queueMutexes_.size() - 1)];
+    }
 
     const unsigned maxActiveLocusAnalyzerQueues_;
     unsigned activeLocusAnalyzerQueues_;
     bool cancelled_ = false;
-    std::vector<LocusAnalyzerQueue> queues_;
+    // A non-null pointer means one task owns the locus, even when its queue is
+    // temporarily empty. Only threads holding its stripe may access the pointer
+    // or queue. Millions of inactive loci cost one pointer each, rather than a
+    // mutex and an inline deque; only maxActiveLocusAnalyzerQueues_ queues exist.
+    std::vector<std::unique_ptr<ReadPairQueue>> queues_;
+    std::vector<std::mutex> queueMutexes_;
+    // Reuse drained deque allocations when a new locus becomes active. Access
+    // is protected by mutex_, and reserve() makes returning a queue nonthrowing.
+    std::vector<std::unique_ptr<ReadPairQueue>> idleQueues_;
 
     /// Global mutex/cv are used to enforce the max active LocusAnalyzerQueue limit
     std::mutex mutex_;

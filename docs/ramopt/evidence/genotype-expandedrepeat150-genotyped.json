@@ -1,0 +1,478 @@
+{
+  "scope": "Observed genotype computation; no biological truth assertion or binary-output comparison",
+  "expected_loci_per_file": 200,
+  "minimum_coverage": 10,
+  "require_reported_repeat_evidence": true,
+  "files": [
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair--1-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair--1-baseline/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair--1-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair--1-candidate/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-00-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-00-baseline/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-00-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-00-candidate/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-01-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-01-baseline/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-01-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-01-candidate/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-02-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-02-baseline/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-02-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-02-candidate/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-03-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-03-baseline/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-03-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-03-candidate/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-04-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-04-baseline/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-04-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/expandedrepeat150-genotyped/t8-p0/pair-04-candidate/result.vcf",
+      "json_sha256": "2804f2ca1bd39093b66f9543b26cd63b9380a414e9cb1426fafe7002563047e3",
+      "valid": true,
+      "loci": 200,
+      "called_loci": 200,
+      "repeat_variants": 200,
+      "called_vcf_records": 200,
+      "loci_with_reported_repeat_evidence": 200,
+      "coverage": {
+        "min": 22.054054054054053,
+        "median": 22.054054054054053,
+        "max": 22.054054054054053
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 2,
+      "most_common_genotypes": [
+        [
+          "34/34",
+          194
+        ],
+        [
+          "33/33",
+          6
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    }
+  ],
+  "all_valid": true,
+  "files_checked": 12
+}

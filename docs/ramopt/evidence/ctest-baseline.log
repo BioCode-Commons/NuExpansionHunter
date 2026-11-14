@@ -1,0 +1,615 @@
+Test project <WORKSPACE>/work/build-baseline
+      Start  1: UnitTests
+ 1/31 Test  #1: UnitTests ........................***Failed    1.45 sec
+[==========] Running 168 tests from 60 test suites.
+[----------] Global test environment set-up.
+[----------] 11 tests from CompactCatalogIndex
+[ RUN      ] CompactCatalogIndex.MatchesEnumeratedPathsAndMembership
+[       OK ] CompactCatalogIndex.MatchesEnumeratedPathsAndMembership (1 ms)
+[ RUN      ] CompactCatalogIndex.ViewsPreservePathOrderMultiplicityAndRepeatedNodes
+[       OK ] CompactCatalogIndex.ViewsPreservePathOrderMultiplicityAndRepeatedNodes (2 ms)
+[ RUN      ] CompactCatalogIndex.EmptyIndexesAndMembershipSurviveMapping
+[       OK ] CompactCatalogIndex.EmptyIndexesAndMembershipSurviveMapping (0 ms)
+[ RUN      ] CompactCatalogIndex.SixteenBaseKeysKeepAllBitsForMiniAndMultiplePaths
+[       OK ] CompactCatalogIndex.SixteenBaseKeysKeepAllBitsForMiniAndMultiplePaths (1 ms)
+[ RUN      ] CompactCatalogIndex.MiniStartBoundaryAndFullPathFallbackAreLossless
+[       OK ] CompactCatalogIndex.MiniStartBoundaryAndFullPathFallbackAreLossless (34 ms)
+[ RUN      ] CompactCatalogIndex.MiniNodeIdBoundaryFallsBackWithoutTruncation
+[       OK ] CompactCatalogIndex.MiniNodeIdBoundaryFallsBackWithoutTruncation (26 ms)
+[ RUN      ] CompactCatalogIndex.LargeRandomGraphExercisesWideBuckets
+[       OK ] CompactCatalogIndex.LargeRandomGraphExercisesWideBuckets (171 ms)
+[ RUN      ] CompactCatalogIndex.BucketIndexWidthBoundaryPreservesAllKeys
+[       OK ] CompactCatalogIndex.BucketIndexWidthBoundaryPreservesAllKeys (83 ms)
+[ RUN      ] CompactCatalogIndex.MappedCopyAndMoveKeepArchiveAlive
+[       OK ] CompactCatalogIndex.MappedCopyAndMoveKeepArchiveAlive (2 ms)
+[ RUN      ] CompactCatalogIndex.PreviousArchiveVersionIsRejected
+[       OK ] CompactCatalogIndex.PreviousArchiveVersionIsRejected (2 ms)
+[ RUN      ] CompactCatalogIndex.MappedArchiveRoundTripAndValidation
+[       OK ] CompactCatalogIndex.MappedArchiveRoundTripAndValidation (3 ms)
+[----------] 11 tests from CompactCatalogIndex (325 ms total)
+
+[----------] 2 tests from CatalogCoordinateSweep
+[ RUN      ] CatalogCoordinateSweep.PreservesRemoteMatesOfftargetsDuplicatesAndOrder
+[       OK ] CatalogCoordinateSweep.PreservesRemoteMatesOfftargetsDuplicatesAndOrder (23 ms)
+[ RUN      ] CatalogCoordinateSweep.EmptyAndSingletonCoalescingMatchesLegacyQueries
+[       OK ] CatalogCoordinateSweep.EmptyAndSingletonCoalescingMatchesLegacyQueries (3 ms)
+[----------] 2 tests from CatalogCoordinateSweep (26 ms total)
+
+[----------] 1 test from PreparedCatalog
+[ RUN      ] PreparedCatalog.WholeCatalogRoundTripAndIndependentHandleLifetime
+<WORKSPACE>/work/baseline/ehunter/tests/CatalogIndexTest.cpp:573: Failure
+Expected equality of these values:
+  graphtools::graphToJson(graph)
+    Which is: {"edges":[{"from":"left","labels":["b","a"],"to":""},{"from":"left","to":""},{"from":"","to":""}],"graph_id":"mapped-graph","nodes":[{"name":"left","sequence":"ACGTAC"},{"name":"","sequence":"GG"},{"name":"","sequence":"CATAC"}]}
+  graphtools::graphToJson(mapped[0].regionGraph())
+    Which is: {"edges":[{"from":"left","labels":["a","b"],"to":""},{"from":"left","to":""},{"from":"","to":""}],"graph_id":"mapped-graph","nodes":[{"name":"left","sequence":"ACGTAC"},{"name":"","sequence":"GG"},{"name":"","sequence":"CATAC"}]}
+[  FAILED  ] PreparedCatalog.WholeCatalogRoundTripAndIndependentHandleLifetime (2 ms)
+[----------] 1 test from PreparedCatalog (2 ms total)
+
+[----------] 1 test from CreatingAlignmentMatrix
+[ RUN      ] CreatingAlignmentMatrix.LikelihoodMatrixInitialization_Initialized
+[       OK ] CreatingAlignmentMatrix.LikelihoodMatrixInitialization_Initialized (0 ms)
+[----------] 1 test from CreatingAlignmentMatrix (0 ms total)
+
+[----------] 4 tests from ReadLikelihoods
+[ RUN      ] ReadLikelihoods.SpanningRead_Computed
+[       OK ] ReadLikelihoods.SpanningRead_Computed (0 ms)
+[ RUN      ] ReadLikelihoods.LeftFlankingRead_Computed
+[       OK ] ReadLikelihoods.LeftFlankingRead_Computed (0 ms)
+[ RUN      ] ReadLikelihoods.RightFlankingRead_Computed
+[       OK ] ReadLikelihoods.RightFlankingRead_Computed (0 ms)
+[ RUN      ] ReadLikelihoods.InRepeatRead_Computed
+[       OK ] ReadLikelihoods.InRepeatRead_Computed (0 ms)
+[----------] 4 tests from ReadLikelihoods (0 ms total)
+
+[----------] 2 tests from AddingIrrPairs
+[ RUN      ] AddingIrrPairs.NoOtherIrrsPresent_IrrPairsIgnored
+[       OK ] AddingIrrPairs.NoOtherIrrsPresent_IrrPairsIgnored (0 ms)
+[ RUN      ] AddingIrrPairs.OtherIrrsPresent_IrrPairsAdded
+[       OK ] AddingIrrPairs.OtherIrrsPresent_IrrPairsAdded (0 ms)
+[----------] 2 tests from AddingIrrPairs (0 ms total)
+
+[----------] 2 tests from InitializingAlignmentClassifier
+[ RUN      ] InitializingAlignmentClassifier.SingleUnitRepeatGraph_RepeatFlanksDetermined
+[       OK ] InitializingAlignmentClassifier.SingleUnitRepeatGraph_RepeatFlanksDetermined (0 ms)
+[ RUN      ] InitializingAlignmentClassifier.VariantNodesAreNonconsecutive_ExceptionThrown
+[       OK ] InitializingAlignmentClassifier.VariantNodesAreNonconsecutive_ExceptionThrown (0 ms)
+[----------] 2 tests from InitializingAlignmentClassifier (0 ms total)
+
+[----------] 4 tests from AlignmentClassificaton
+[ RUN      ] AlignmentClassificaton.SpanningAlignment_Classified
+[       OK ] AlignmentClassificaton.SpanningAlignment_Classified (0 ms)
+[ RUN      ] AlignmentClassificaton.FlankingAlignment_Classified
+[       OK ] AlignmentClassificaton.FlankingAlignment_Classified (0 ms)
+[ RUN      ] AlignmentClassificaton.RepeatAlignment_Classified
+[       OK ] AlignmentClassificaton.RepeatAlignment_Classified (0 ms)
+[ RUN      ] AlignmentClassificaton.OutsideRepeatAlignment_Classified
+[       OK ] AlignmentClassificaton.OutsideRepeatAlignment_Classified (0 ms)
+[----------] 4 tests from AlignmentClassificaton (0 ms total)
+
+[----------] 2 tests from ObtainingCanonicalAlignment
+[ RUN      ] ObtainingCanonicalAlignment.FlankingAndRepeatRead_ClassifiedAsRepeat
+[       OK ] ObtainingCanonicalAlignment.FlankingAndRepeatRead_ClassifiedAsRepeat (0 ms)
+[ RUN      ] ObtainingCanonicalAlignment.FlankingAndSpanningRead_ClassifiedAsFlanking
+[       OK ] ObtainingCanonicalAlignment.FlankingAndSpanningRead_ClassifiedAsFlanking (0 ms)
+[----------] 2 tests from ObtainingCanonicalAlignment (0 ms total)
+
+[----------] 4 tests from AlleleChecker
+[ RUN      ] AlleleChecker.ThrowsWithIllegalParameter
+[       OK ] AlleleChecker.ThrowsWithIllegalParameter (0 ms)
+[ RUN      ] AlleleChecker.NoReads
+[       OK ] AlleleChecker.NoReads (0 ms)
+[ RUN      ] AlleleChecker.NormalCoverage
+[       OK ] AlleleChecker.NormalCoverage (0 ms)
+[ RUN      ] AlleleChecker.LowCoverageCall
+[       OK ] AlleleChecker.LowCoverageCall (0 ms)
+[----------] 4 tests from AlleleChecker (0 ms total)
+
+[----------] 1 test from AllelePresenceChecker
+[ RUN      ] AllelePresenceChecker.HighCoverage
+[       OK ] AllelePresenceChecker.HighCoverage (0 ms)
+[----------] 1 test from AllelePresenceChecker (0 ms total)
+
+[----------] 1 test from ClassifyingAlignmentsOverIndel
+[ RUN      ] ClassifyingAlignmentsOverIndel.DownstreamAndUpstreamAlignments_Classified
+[       OK ] ClassifyingAlignmentsOverIndel.DownstreamAndUpstreamAlignments_Classified (0 ms)
+[----------] 1 test from ClassifyingAlignmentsOverIndel (0 ms total)
+
+[----------] 5 tests from ConcurrentQueueTest
+[ RUN      ] ConcurrentQueueTest.SerialOps
+[       OK ] ConcurrentQueueTest.SerialOps (0 ms)
+[ RUN      ] ConcurrentQueueTest.WeightedBudgetBlocksUntilSpaceIsReleased
+[       OK ] ConcurrentQueueTest.WeightedBudgetBlocksUntilSpaceIsReleased (104 ms)
+[ RUN      ] ConcurrentQueueTest.OversizedRecordCanProgressWithoutDiscardingIt
+[       OK ] ConcurrentQueueTest.OversizedRecordCanProgressWithoutDiscardingIt (101 ms)
+[ RUN      ] ConcurrentQueueTest.ZeroWeightSentinelFollowsRecordsAtCapacity
+[       OK ] ConcurrentQueueTest.ZeroWeightSentinelFollowsRecordsAtCapacity (0 ms)
+[ RUN      ] ConcurrentQueueTest.MultipleProducersPreserveEveryRecordAndTheirOrder
+[       OK ] ConcurrentQueueTest.MultipleProducersPreserveEveryRecordAndTheirOrder (29 ms)
+[----------] 5 tests from ConcurrentQueueTest (235 ms total)
+
+[----------] 8 tests from StreamingReadPairQueueTest
+[ RUN      ] StreamingReadPairQueueTest.BoundedHelpRetainsActiveOwnershipAndAppendedPairOrder
+[       OK ] StreamingReadPairQueueTest.BoundedHelpRetainsActiveOwnershipAndAppendedPairOrder (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.ExactHelpBudgetPublishesOneEmptyContinuationThatReleasesCapacity
+[       OK ] StreamingReadPairQueueTest.ExactHelpBudgetPublishesOneEmptyContinuationThatReleasesCapacity (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.BoundedHelpFailurePreservesCurrentPairAndDoesNotRequestContinuation
+[       OK ] StreamingReadPairQueueTest.BoundedHelpFailurePreservesCurrentPairAndDoesNotRequestContinuation (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.ReaderExecutesOneQueuedTaskAndPreservesPerLocusOrder
+[       OK ] StreamingReadPairQueueTest.ReaderExecutesOneQueuedTaskAndPreservesPerLocusOrder (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.ActiveQueueAppendDoesNotRunHelper
+[       OK ] StreamingReadPairQueueTest.ActiveQueueAppendDoesNotRunHelper (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.RechecksCapacityAfterHelperFindsNoPendingTask
+[       OK ] StreamingReadPairQueueTest.RechecksCapacityAfterHelperFindsNoPendingTask (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.CancellationWakesCapacityWaitWithoutLosingQueuedPairs
+[       OK ] StreamingReadPairQueueTest.CancellationWakesCapacityWaitWithoutLosingQueuedPairs (0 ms)
+[ RUN      ] StreamingReadPairQueueTest.CapturedHelperFailureCancelsWaitAndRemainsObservable
+[       OK ] StreamingReadPairQueueTest.CapturedHelperFailureCancelsWaitAndRemainsObservable (0 ms)
+[----------] 8 tests from StreamingReadPairQueueTest (0 ms total)
+
+[----------] 2 tests from BamletWriterQueue
+[ RUN      ] BamletWriterQueue.PreservesAllFieldsAndDuplicatesWithTinyBudget
+[       OK ] BamletWriterQueue.PreservesAllFieldsAndDuplicatesWithTinyBudget (69 ms)
+[ RUN      ] BamletWriterQueue.SynchronousCompressionPreservesOutput
+[       OK ] BamletWriterQueue.SynchronousCompressionPreservesOutput (35 ms)
+[----------] 2 tests from BamletWriterQueue (104 ms total)
+
+[----------] 5 tests from BamletWriterEncoding
+[ RUN      ] BamletWriterEncoding.PreservesAllAsciiBaseMappingsQualitiesAndOddPadding
+[       OK ] BamletWriterEncoding.PreservesAllAsciiBaseMappingsQualitiesAndOddPadding (1 ms)
+[ RUN      ] BamletWriterEncoding.Preserves150BaseSimdChunksAndScalarFallback
+[       OK ] BamletWriterEncoding.Preserves150BaseSimdChunksAndScalarFallback (12 ms)
+[ RUN      ] BamletWriterEncoding.PreservesGraphTagForAllOperationsAndRepeatedNodes
+[       OK ] BamletWriterEncoding.PreservesGraphTagForAllOperationsAndRepeatedNodes (1 ms)
+[ RUN      ] BamletWriterEncoding.ProjectsTheFirstMappedNodeAfterUnmappedNodes
+[       OK ] BamletWriterEncoding.ProjectsTheFirstMappedNodeAfterUnmappedNodes (0 ms)
+[ RUN      ] BamletWriterEncoding.RetainsValidationOfNodesAfterTheFirstMappedNode
+[       OK ] BamletWriterEncoding.RetainsValidationOfNodesAfterTheFirstMappedNode (1 ms)
+[----------] 5 tests from BamletWriterEncoding (15 ms total)
+
+[----------] 1 test from InitializationOfCountTable
+[ RUN      ] InitializationOfCountTable.TypicalCountTable_Initialized
+[       OK ] InitializationOfCountTable.TypicalCountTable_Initialized (0 ms)
+[----------] 1 test from InitializationOfCountTable (0 ms total)
+
+[----------] 1 test from ManipulatingCountTable
+[ RUN      ] ManipulatingCountTable.TypicalOperations_TableUpdated
+[       OK ] ManipulatingCountTable.TypicalOperations_TableUpdated (0 ms)
+[----------] 1 test from ManipulatingCountTable (0 ms total)
+
+[----------] 1 test from ObtainingElementsWithNonzeroCounts
+[ RUN      ] ObtainingElementsWithNonzeroCounts.TypicalCountTable_ElementsObtained
+[       OK ] ObtainingElementsWithNonzeroCounts.TypicalCountTable_ElementsObtained (0 ms)
+[----------] 1 test from ObtainingElementsWithNonzeroCounts (0 ms total)
+
+[----------] 1 test from TruncatingCounts
+[ RUN      ] TruncatingCounts.TypicalCountTables_CountsTruncated
+[       OK ] TruncatingCounts.TypicalCountTables_CountsTruncated (0 ms)
+[----------] 1 test from TruncatingCounts (0 ms total)
+
+[----------] 2 tests from MovingCountTable
+[ RUN      ] MovingCountTable.PreservesTargetAndAllowsSourceReuse
+[       OK ] MovingCountTable.PreservesTargetAndAllowsSourceReuse (0 ms)
+[ RUN      ] MovingCountTable.SelfMovePreservesExistingPublicBehavior
+[       OK ] MovingCountTable.SelfMovePreservesExistingPublicBehavior (0 ms)
+[----------] 2 tests from MovingCountTable (0 ms total)
+
+[----------] 1 test from ReadLogliks
+[ RUN      ] ReadLogliks.TypicalReads_Computed
+[       OK ] ReadLogliks.TypicalReads_Computed (0 ms)
+[----------] 1 test from ReadLogliks (0 ms total)
+
+[----------] 5 tests from GenomeMaskTest
+[ RUN      ] GenomeMaskTest.covered
+[       OK ] GenomeMaskTest.covered (0 ms)
+[ RUN      ] GenomeMaskTest.notCovered
+[       OK ] GenomeMaskTest.notCovered (0 ms)
+[ RUN      ] GenomeMaskTest.outOfBounds
+[       OK ] GenomeMaskTest.outOfBounds (0 ms)
+[ RUN      ] GenomeMaskTest.BinBoundariesAndNegativeCoordinatesRemainExact
+[       OK ] GenomeMaskTest.BinBoundariesAndNegativeCoordinatesRemainExact (0 ms)
+[ RUN      ] GenomeMaskTest.PreparedBoundsValidationKeepsOriginalShortCircuitOrder
+[       OK ] GenomeMaskTest.PreparedBoundsValidationKeepsOriginalShortCircuitOrder (0 ms)
+[----------] 5 tests from GenomeMaskTest (0 ms total)
+
+[----------] 3 tests from ComputingDistanceBetweenRegions
+[ RUN      ] ComputingDistanceBetweenRegions.OverlappingRegions_HaveZeroDistance
+[       OK ] ComputingDistanceBetweenRegions.OverlappingRegions_HaveZeroDistance (0 ms)
+[ RUN      ] ComputingDistanceBetweenRegions.DistanceBetweenDisjointRegions_Calculated
+[       OK ] ComputingDistanceBetweenRegions.DistanceBetweenDisjointRegions_Calculated (0 ms)
+[ RUN      ] ComputingDistanceBetweenRegions.RegionsOnDifferentChromosomes_HaveMaximalDistance
+[       OK ] ComputingDistanceBetweenRegions.RegionsOnDifferentChromosomes_HaveMaximalDistance (0 ms)
+[----------] 3 tests from ComputingDistanceBetweenRegions (0 ms total)
+
+[----------] 5 tests from MergingRegions
+[ RUN      ] MergingRegions.OverlappingSortedRegions_Merged
+[       OK ] MergingRegions.OverlappingSortedRegions_Merged (0 ms)
+[ RUN      ] MergingRegions.OverlappingUnsortedRegions_Merged
+[       OK ] MergingRegions.OverlappingUnsortedRegions_Merged (0 ms)
+[ RUN      ] MergingRegions.DisjointRegions_Merged
+[       OK ] MergingRegions.DisjointRegions_Merged (0 ms)
+[ RUN      ] MergingRegions.ProximalRegions_Merged
+[       OK ] MergingRegions.ProximalRegions_Merged (0 ms)
+[ RUN      ] MergingRegions.IncludedRegions_Merged
+[       OK ] MergingRegions.IncludedRegions_Merged (0 ms)
+[----------] 5 tests from MergingRegions (0 ms total)
+
+[----------] 1 test from ExtendingAlignmentWithSoftclip
+[ RUN      ] ExtendingAlignmentWithSoftclip.TypicalAlignment_Extended
+[       OK ] ExtendingAlignmentWithSoftclip.TypicalAlignment_Extended (0 ms)
+[----------] 1 test from ExtendingAlignmentWithSoftclip (0 ms total)
+
+[----------] 2 tests from CalculatingNumberOfNonRepeatMatchesAroundNode
+[ RUN      ] CalculatingNumberOfNonRepeatMatchesAroundNode.TypicalAlignment_Calculated
+[       OK ] CalculatingNumberOfNonRepeatMatchesAroundNode.TypicalAlignment_Calculated (0 ms)
+[ RUN      ] CalculatingNumberOfNonRepeatMatchesAroundNode.AlignmentNotPassingThroughRepeat_ZeroMatches
+[       OK ] CalculatingNumberOfNonRepeatMatchesAroundNode.AlignmentNotPassingThroughRepeat_ZeroMatches (0 ms)
+[----------] 2 tests from CalculatingNumberOfNonRepeatMatchesAroundNode (0 ms total)
+
+[----------] 1 test from StrOverlapQuantification
+[ RUN      ] StrOverlapQuantification.TypicalReads_StrOverlapComputed
+[       OK ] StrOverlapQuantification.TypicalReads_StrOverlapComputed (0 ms)
+[----------] 1 test from StrOverlapQuantification (0 ms total)
+
+[----------] 1 test from SplittingStringsIntoTokens
+[ RUN      ] SplittingStringsIntoTokens.ValidStrings_Split
+[       OK ] SplittingStringsIntoTokens.ValidStrings_Split (0 ms)
+[----------] 1 test from SplittingStringsIntoTokens (0 ms total)
+
+[----------] 1 test from ParsingTokens
+[ RUN      ] ParsingTokens.TypicalTokens_Parsed
+[       OK ] ParsingTokens.TypicalTokens_Parsed (0 ms)
+[----------] 1 test from ParsingTokens (0 ms total)
+
+[----------] 1 test from CanonicalAlignmentTransfer
+[ RUN      ] CanonicalAlignmentTransfer.PreservesInputsAndShrunkIntersection
+[       OK ] CanonicalAlignmentTransfer.PreservesInputsAndShrunkIntersection (0 ms)
+[----------] 1 test from CanonicalAlignmentTransfer (0 ms total)
+
+[----------] 3 tests from IntersectingPaths
+[ RUN      ] IntersectingPaths.IntersectionStartsAtLoopNode_PathsIntersected
+[       OK ] IntersectingPaths.IntersectionStartsAtLoopNode_PathsIntersected (0 ms)
+[ RUN      ] IntersectingPaths.IntersectionStartsAtRegularNode_PathsIntersected
+[       OK ] IntersectingPaths.IntersectionStartsAtRegularNode_PathsIntersected (0 ms)
+[ RUN      ] IntersectingPaths.NonintersectingPaths_HandleledProperly
+[       OK ] IntersectingPaths.NonintersectingPaths_HandleledProperly (0 ms)
+[----------] 3 tests from IntersectingPaths (0 ms total)
+
+[----------] 9 tests from SearchingForHighQualityBaseRuns
+[ RUN      ] SearchingForHighQualityBaseRuns.AllBasesHighQuality_FullRangeReturned
+[       OK ] SearchingForHighQualityBaseRuns.AllBasesHighQuality_FullRangeReturned (0 ms)
+[ RUN      ] SearchingForHighQualityBaseRuns.SequenceEndingInLowQualityBases_CorrectRangeReturned
+[       OK ] SearchingForHighQualityBaseRuns.SequenceEndingInLowQualityBases_CorrectRangeReturned (0 ms)
+[ RUN      ] SearchingForHighQualityBaseRuns.SequenceStartingWithLowQualityBases_CorrectRangeReturned
+[       OK ] SearchingForHighQualityBaseRuns.SequenceStartingWithLowQualityBases_CorrectRangeReturned (0 ms)
+[ RUN      ] SearchingForHighQualityBaseRuns.SequenceFlankedByLowQualityBasesOnBothSides_CorrectRangeReturned
+[       OK ] SearchingForHighQualityBaseRuns.SequenceFlankedByLowQualityBasesOnBothSides_CorrectRangeReturned (0 ms)
+[ RUN      ] SearchingForHighQualityBaseRuns.SequenceComprisedOfLowQualityBases_EmptyRangeReturned
+[       OK ] SearchingForHighQualityBaseRuns.SequenceComprisedOfLowQualityBases_EmptyRangeReturned (0 ms)
+[ RUN      ] SearchingForHighQualityBaseRuns.RealReadEndingInManyLowQualityBases_CorrectRangeReturned
+[       OK ] SearchingForHighQualityBaseRuns.RealReadEndingInManyLowQualityBases_CorrectRangeReturned (0 ms)
+[ RUN      ] SearchingForHighQualityBaseRuns.QueryWithLowQualityStart_CorrectRangeReturned
+[       OK ] SearchingForHighQualityBaseRuns.QueryWithLowQualityStart_CorrectRangeReturned (0 ms)
+[ RUN      ] SearchingForHighQualityBaseRuns.QueryWithLowQualityEnd_CorrectRangeReturned
+[       OK ] SearchingForHighQualityBaseRuns.QueryWithLowQualityEnd_CorrectRangeReturned (0 ms)
+[ RUN      ] SearchingForHighQualityBaseRuns.QueryWithLowQualityEnds_CorrectRangeReturned
+[       OK ] SearchingForHighQualityBaseRuns.QueryWithLowQualityEnds_CorrectRangeReturned (0 ms)
+[----------] 9 tests from SearchingForHighQualityBaseRuns (0 ms total)
+
+[----------] 5 tests from OrientationPrediction
+[ RUN      ] OrientationPrediction.UpperBoundPreservesThresholdsAndForwardTies
+[       OK ] OrientationPrediction.UpperBoundPreservesThresholdsAndForwardTies (0 ms)
+[ RUN      ] OrientationPrediction.MatchesFullTwoStrandScan
+[       OK ] OrientationPrediction.MatchesFullTwoStrandScan (14 ms)
+[ RUN      ] OrientationPrediction.ReverseAdapterPreservesAmbiguityCaseAndInvalidWindows
+[       OK ] OrientationPrediction.ReverseAdapterPreservesAmbiguityCaseAndInvalidWindows (7 ms)
+[ RUN      ] OrientationPrediction.BoundedScansPreserveLateHitsAndStrandTies
+[       OK ] OrientationPrediction.BoundedScansPreserveLateHitsAndStrandTies (5 ms)
+[ RUN      ] OrientationPrediction.BoundedScansMatchExhaustiveRandomizedCatalogs
+[       OK ] OrientationPrediction.BoundedScansMatchExhaustiveRandomizedCatalogs (234 ms)
+[----------] 5 tests from OrientationPrediction (260 ms total)
+
+[----------] 2 tests from LocusStatsCalculator
+[ RUN      ] LocusStatsCalculator.NoDataGiven_StatsNotCalculated
+[       OK ] LocusStatsCalculator.NoDataGiven_StatsNotCalculated (0 ms)
+[ RUN      ] LocusStatsCalculator.TypicalReadLengths_StatsCalculated
+[       OK ] LocusStatsCalculator.TypicalReadLengths_StatsCalculated (0 ms)
+[----------] 2 tests from LocusStatsCalculator (0 ms total)
+
+[----------] 6 tests from JsonWriterStreaming
+[ RUN      ] JsonWriterStreaming.EmptyCatalogRetainsOnlySampleParameters
+[       OK ] JsonWriterStreaming.EmptyCatalogRetainsOnlySampleParameters (1 ms)
+[ RUN      ] JsonWriterStreaming.SortsUnescapedIdsAndKeepsLastDuplicate
+[       OK ] JsonWriterStreaming.SortsUnescapedIdsAndKeepsLastDuplicate (0 ms)
+[ RUN      ] JsonWriterStreaming.PreservesFloatingPointFormattingAndNonfiniteValues
+[       OK ] JsonWriterStreaming.PreservesFloatingPointFormattingAndNonfiniteValues (0 ms)
+[ RUN      ] JsonWriterStreaming.PreservesNestedVariantRecordsAndOptionalGenotypes
+[       OK ] JsonWriterStreaming.PreservesNestedVariantRecordsAndOptionalGenotypes (0 ms)
+[ RUN      ] JsonWriterStreaming.MatchesLegacyForLargeUnsortedCatalog
+[       OK ] JsonWriterStreaming.MatchesLegacyForLargeUnsortedCatalog (6 ms)
+[ RUN      ] JsonWriterStreaming.PreservesBytesWithMappedCatalogIds
+[       OK ] JsonWriterStreaming.PreservesBytesWithMappedCatalogIds (2 ms)
+[----------] 6 tests from JsonWriterStreaming (9 ms total)
+
+[----------] 7 tests from ThreadParametersTest
+[ RUN      ] ThreadParametersTest.AutomaticIoPoolsRetainExistingDefaults
+[       OK ] ThreadParametersTest.AutomaticIoPoolsRetainExistingDefaults (0 ms)
+[ RUN      ] ThreadParametersTest.IoPoolsCanBeConfiguredIndependently
+[       OK ] ThreadParametersTest.IoPoolsCanBeConfiguredIndependently (2 ms)
+[ RUN      ] ThreadParametersTest.InvalidAndOverflowingIoCountsAreRejected
+[       OK ] ThreadParametersTest.InvalidAndOverflowingIoCountsAreRejected (2 ms)
+[ RUN      ] ThreadParametersTest.SeekingModeDoesNotSilentlyIgnoreExplicitDecodeThreads
+[       OK ] ThreadParametersTest.SeekingModeDoesNotSilentlyIgnoreExplicitDecodeThreads (1 ms)
+[ RUN      ] ThreadParametersTest.QueueBudgetSupportsDefaultExplicitAndUnboundedValues
+[       OK ] ThreadParametersTest.QueueBudgetSupportsDefaultExplicitAndUnboundedValues (1 ms)
+[ RUN      ] ThreadParametersTest.ReadPreprocessingIsExplicitAndStreamingOnly
+[       OK ] ThreadParametersTest.ReadPreprocessingIsExplicitAndStreamingOnly (2 ms)
+[ RUN      ] ThreadParametersTest.InvalidQueueBudgetsAreRejected
+[       OK ] ThreadParametersTest.InvalidQueueBudgetsAreRejected (1 ms)
+[----------] 7 tests from ThreadParametersTest (9 ms total)
+
+[----------] 3 tests from HtsReadParts
+[ RUN      ] HtsReadParts.MatchesScalarDecoderForAllPackedBasesAndQualityBoundaries
+[       OK ] HtsReadParts.MatchesScalarDecoderForAllPackedBasesAndQualityBoundaries (0 ms)
+[ RUN      ] HtsReadParts.VectorChunksMatchAllPackedBytesAndAllUnsignedQualities
+[       OK ] HtsReadParts.VectorChunksMatchAllPackedBytesAndAllUnsignedQualities (21 ms)
+[ RUN      ] HtsReadParts.VectorBoundariesAndMisalignedInputsMatchScalarOracle
+[       OK ] HtsReadParts.VectorBoundariesAndMisalignedInputsMatchScalarOracle (0 ms)
+[----------] 3 tests from HtsReadParts (21 ms total)
+
+[----------] 16 tests from DecodedReadStreamTest
+[ RUN      ] DecodedReadStreamTest.UndecodedSelectionPreserves150bpRecordsAndFiltering
+[       OK ] DecodedReadStreamTest.UndecodedSelectionPreserves150bpRecordsAndFiltering (1 ms)
+[ RUN      ] DecodedReadStreamTest.UndecodedSelectionPreservesEmptyQueryError
+[W::sam_parse1] mapped query must have a CIGAR; treated as unmapped
+[W::sam_parse1] mapped query must have a CIGAR; treated as unmapped
+[       OK ] DecodedReadStreamTest.UndecodedSelectionPreservesEmptyQueryError (1 ms)
+[ RUN      ] DecodedReadStreamTest.UndecodedSelectionRequiresSynchronousStream
+[       OK ] DecodedReadStreamTest.UndecodedSelectionRequiresSynchronousStream (0 ms)
+[ RUN      ] DecodedReadStreamTest.PreservesQualityThresholdAmbiguousBasesFlagsAndCoordinates
+[       OK ] DecodedReadStreamTest.PreservesQualityThresholdAmbiguousBasesFlagsAndCoordinates (1 ms)
+[ RUN      ] DecodedReadStreamTest.PreservesInputOrderAcrossCountBoundariesAndRepeatedNames
+[       OK ] DecodedReadStreamTest.PreservesInputOrderAcrossCountBoundariesAndRepeatedNames (10 ms)
+[ RUN      ] DecodedReadStreamTest.PreservesInputOrderAcrossRawByteBoundaries
+[       OK ] DecodedReadStreamTest.PreservesInputOrderAcrossRawByteBoundaries (12 ms)
+[ RUN      ] DecodedReadStreamTest.AppliesOriginalFiltersAndStopsAtFirstUnmappedPrimary
+[       OK ] DecodedReadStreamTest.AppliesOriginalFiltersAndStopsAtFirstUnmappedPrimary (1 ms)
+[ RUN      ] DecodedReadStreamTest.EmptyAndFullyFilteredStreamsFinish
+[       OK ] DecodedReadStreamTest.EmptyAndFullyFilteredStreamsFinish (1 ms)
+[ RUN      ] DecodedReadStreamTest.MaskSelectionPreservesBinBoundariesUnsortedReadsAndRemoteMates
+[       OK ] DecodedReadStreamTest.MaskSelectionPreservesBinBoundariesUnsortedReadsAndRemoteMates (1 ms)
+[ RUN      ] DecodedReadStreamTest.SynchronousSelectionObservesMaskChangesBetweenNextCalls
+[       OK ] DecodedReadStreamTest.SynchronousSelectionObservesMaskChangesBetweenNextCalls (0 ms)
+[ RUN      ] DecodedReadStreamTest.SelectedReadShortCircuitsInvalidPreparedMateMask
+[       OK ] DecodedReadStreamTest.SelectedReadShortCircuitsInvalidPreparedMateMask (1 ms)
+[ RUN      ] DecodedReadStreamTest.InvalidMateMaskStillFailsBeforeUnpairedFiltering
+[       OK ] DecodedReadStreamTest.InvalidMateMaskStillFailsBeforeUnpairedFiltering (1 ms)
+[ RUN      ] DecodedReadStreamTest.LargeRecordFallbackDrainsEarlierBatchesAndResumes
+[       OK ] DecodedReadStreamTest.LargeRecordFallbackDrainsEarlierBatchesAndResumes (8 ms)
+[ RUN      ] DecodedReadStreamTest.InvalidSequencePreservesEarlierDecodedPrefixAndError
+[W::sam_parse1] mapped query must have a CIGAR; treated as unmapped
+[W::sam_parse1] mapped query must have a CIGAR; treated as unmapped
+[W::sam_parse1] mapped query must have a CIGAR; treated as unmapped
+[W::sam_parse1] mapped query must have a CIGAR; treated as unmapped
+[       OK ] DecodedReadStreamTest.InvalidSequencePreservesEarlierDecodedPrefixAndError (5 ms)
+[ RUN      ] DecodedReadStreamTest.InputParseFailurePreservesEarlierDecodedPrefixAndError
+[W::sam_read1] Parse error at line 2061
+[W::sam_read1] Parse error at line 2061
+[W::sam_read1] Parse error at line 2061
+[W::sam_read1] Parse error at line 2061
+[       OK ] DecodedReadStreamTest.InputParseFailurePreservesEarlierDecodedPrefixAndError (4 ms)
+[ RUN      ] DecodedReadStreamTest.EarlyDestructionJoinsOutstandingWorkers
+[       OK ] DecodedReadStreamTest.EarlyDestructionJoinsOutstandingWorkers (9 ms)
+[----------] 16 tests from DecodedReadStreamTest (56 ms total)
+
+[----------] 1 test from ReadInitialization
+[ RUN      ] ReadInitialization.TypicalCoreInfo_CoreInfoAddedToRead
+[       OK ] ReadInitialization.TypicalCoreInfo_CoreInfoAddedToRead (0 ms)
+[----------] 1 test from ReadInitialization (0 ms total)
+
+[----------] 1 test from ReadReverseComplement
+[ RUN      ] ReadReverseComplement.SequenceReversed_ReversedFlagReversed
+[       OK ] ReadReverseComplement.SequenceReversed_ReversedFlagReversed (0 ms)
+[----------] 1 test from ReadReverseComplement (0 ms total)
+
+[----------] 2 tests from ConstructingRepeatRegionGraphs
+[ RUN      ] ConstructingRepeatRegionGraphs.SingleUnitStr_GraphConstructed
+[       OK ] ConstructingRepeatRegionGraphs.SingleUnitStr_GraphConstructed (0 ms)
+[ RUN      ] ConstructingRepeatRegionGraphs.MultiUnitStr_GraphConstructed
+[       OK ] ConstructingRepeatRegionGraphs.MultiUnitStr_GraphConstructed (0 ms)
+[----------] 2 tests from ConstructingRepeatRegionGraphs (0 ms total)
+
+[----------] 1 test from DISABLE_RegionAnalysis
+[ RUN      ] DISABLE_RegionAnalysis.ShortSingleUnitRepeat_Genotyped
+[       OK ] DISABLE_RegionAnalysis.ShortSingleUnitRepeat_Genotyped (0 ms)
+[----------] 1 test from DISABLE_RegionAnalysis (0 ms total)
+
+[----------] 4 tests from InitializingRepeatGenotype
+[ RUN      ] InitializingRepeatGenotype.HaploidGenotype_Initialized
+[       OK ] InitializingRepeatGenotype.HaploidGenotype_Initialized (0 ms)
+[ RUN      ] InitializingRepeatGenotype.DiploidGenotype_Initialized
+[       OK ] InitializingRepeatGenotype.DiploidGenotype_Initialized (0 ms)
+[ RUN      ] InitializingRepeatGenotype.NetherDiploidNorHaploidGenotype_ExceptionThrown
+[       OK ] InitializingRepeatGenotype.NetherDiploidNorHaploidGenotype_ExceptionThrown (0 ms)
+[ RUN      ] InitializingRepeatGenotype.UnorderedAlleleSizes_ExceptionThrown
+[       OK ] InitializingRepeatGenotype.UnorderedAlleleSizes_ExceptionThrown (0 ms)
+[----------] 4 tests from InitializingRepeatGenotype (0 ms total)
+
+[----------] 1 test from ExtractingAlleleSizesInBases
+[ RUN      ] ExtractingAlleleSizesInBases.DiploidGenotype_SizesExtracted
+[       OK ] ExtractingAlleleSizesInBases.DiploidGenotype_SizesExtracted (0 ms)
+[----------] 1 test from ExtractingAlleleSizesInBases (0 ms total)
+
+[----------] 2 tests from SettingAlleleSizesCis
+[ RUN      ] SettingAlleleSizesCis.TypicalGenotype_CiSet
+[       OK ] SettingAlleleSizesCis.TypicalGenotype_CiSet (0 ms)
+[ RUN      ] SettingAlleleSizesCis.CiNotCoveringRepeatSize_CiSizeExtended
+[       OK ] SettingAlleleSizesCis.CiNotCoveringRepeatSize_CiSizeExtended (0 ms)
+[----------] 2 tests from SettingAlleleSizesCis (0 ms total)
+
+[----------] 1 test from TestingHomozygosity
+[ RUN      ] TestingHomozygosity.TypicalGenotypes_HomozygosityDetermined
+[       OK ] TestingHomozygosity.TypicalGenotypes_HomozygosityDetermined (0 ms)
+[----------] 1 test from TestingHomozygosity (0 ms total)
+
+[----------] 2 tests from SmallVariantGenotyper
+[ RUN      ] SmallVariantGenotyper.ThrowsWithIllegalParameter
+[       OK ] SmallVariantGenotyper.ThrowsWithIllegalParameter (0 ms)
+[ RUN      ] SmallVariantGenotyper.RegularGenotye
+[       OK ] SmallVariantGenotyper.RegularGenotye (0 ms)
+[----------] 2 tests from SmallVariantGenotyper (0 ms total)
+
+[----------] 1 test from GettingCompatibleAlignmentByClippingFromLeft
+[ RUN      ] GettingCompatibleAlignmentByClippingFromLeft.TypicalRead_CompatibleAlignmentFound
+[       OK ] GettingCompatibleAlignmentByClippingFromLeft.TypicalRead_CompatibleAlignmentFound (0 ms)
+[----------] 1 test from GettingCompatibleAlignmentByClippingFromLeft (0 ms total)
+
+[----------] 1 test from GettingCompatibleAlignmentByClippingFromRight
+[ RUN      ] GettingCompatibleAlignmentByClippingFromRight.TypicalRead_CompatibleAlignmentFound
+[       OK ] GettingCompatibleAlignmentByClippingFromRight.TypicalRead_CompatibleAlignmentFound (0 ms)
+[----------] 1 test from GettingCompatibleAlignmentByClippingFromRight (0 ms total)
+
+[----------] 1 test from GettingCompatibleAlignmentByRemovingStutter
+[ RUN      ] GettingCompatibleAlignmentByRemovingStutter.TypicalRead_CompatibleAlignmentFound
+[       OK ] GettingCompatibleAlignmentByRemovingStutter.TypicalRead_CompatibleAlignmentFound (0 ms)
+[----------] 1 test from GettingCompatibleAlignmentByRemovingStutter (0 ms total)
+
+[----------] 1 test from GettingCompatibleAlignment
+[ RUN      ] GettingCompatibleAlignment.TypicalRead_CompatibleAlignmentFound
+[       OK ] GettingCompatibleAlignment.TypicalRead_CompatibleAlignmentFound (0 ms)
+[----------] 1 test from GettingCompatibleAlignment (0 ms total)
+
+[----------] 1 test from StrAlleleCandidates
+[ RUN      ] StrAlleleCandidates.TypicalAlignments_Computed
+[       OK ] StrAlleleCandidates.TypicalAlignments_Computed (0 ms)
+[----------] 1 test from StrAlleleCandidates (0 ms total)
+
+[----------] 1 test from GenotypingStrWithTwoAlleles
+[ RUN      ] GenotypingStrWithTwoAlleles.TypicalReads_Computed
+[       OK ] GenotypingStrWithTwoAlleles.TypicalReads_Computed (0 ms)
+[----------] 1 test from GenotypingStrWithTwoAlleles (0 ms total)
+
+[----------] 2 tests from StrGenotypeConfidenceIntervals
+[ RUN      ] StrGenotypeConfidenceIntervals.EmptyEvidencePreservesTiesAndWidthLimit
+[       OK ] StrGenotypeConfidenceIntervals.EmptyEvidencePreservesTiesAndWidthLimit (0 ms)
+[ RUN      ] StrGenotypeConfidenceIntervals.ExpansionFromZeroPreservesGenotypesAndIntervals
+[       OK ] StrGenotypeConfidenceIntervals.ExpansionFromZeroPreservesGenotypesAndIntervals (2 ms)
+[----------] 2 tests from StrGenotypeConfidenceIntervals (2 ms total)
+
+[----------] 4 tests from CalculatingWeightedPurityScore
+[ RUN      ] CalculatingWeightedPurityScore.PerfectRepeat_Calculated
+[       OK ] CalculatingWeightedPurityScore.PerfectRepeat_Calculated (0 ms)
+[ RUN      ] CalculatingWeightedPurityScore.ImperfectRepeat_Calculated
+[       OK ] CalculatingWeightedPurityScore.ImperfectRepeat_Calculated (0 ms)
+[ RUN      ] CalculatingWeightedPurityScore.OwnedAndPreparedMatchModuloReference
+[       OK ] CalculatingWeightedPurityScore.OwnedAndPreparedMatchModuloReference (22 ms)
+[ RUN      ] CalculatingWeightedPurityScore.CutoffMatchesFullScoreAtBoundaries
+[       OK ] CalculatingWeightedPurityScore.CutoffMatchesFullScoreAtBoundaries (7 ms)
+[----------] 4 tests from CalculatingWeightedPurityScore (29 ms total)
+
+[----------] 1 test from CreatingIrrPairFinder
+[ RUN      ] CreatingIrrPairFinder.TypicalArguments_Created
+[       OK ] CreatingIrrPairFinder.TypicalArguments_Created (0 ms)
+[----------] 1 test from CreatingIrrPairFinder (0 ms total)
+
+[----------] 3 tests from CheckingForIrrPairs
+[ RUN      ] CheckingForIrrPairs.PairOfPerfectIrrs_CheckPassed
+[       OK ] CheckingForIrrPairs.PairOfPerfectIrrs_CheckPassed (0 ms)
+[ RUN      ] CheckingForIrrPairs.PairOfIrrsWithWrongMotif_CheckFailed
+[       OK ] CheckingForIrrPairs.PairOfIrrsWithWrongMotif_CheckFailed (0 ms)
+[ RUN      ] CheckingForIrrPairs.NotIrrPair_CheckFailed
+[       OK ] CheckingForIrrPairs.NotIrrPair_CheckFailed (0 ms)
+[----------] 3 tests from CheckingForIrrPairs (0 ms total)
+
+[----------] 3 tests from AligningReads
+[ RUN      ] AligningReads.ReadPairFromSameStrand_Aligned
+[       OK ] AligningReads.ReadPairFromSameStrand_Aligned (0 ms)
+[ RUN      ] AligningReads.ReadPairFromOppositeStrand_Aligned
+[       OK ] AligningReads.ReadPairFromOppositeStrand_Aligned (0 ms)
+[ RUN      ] AligningReads.NotLocallyPlasedReads_NotAligned
+[       OK ] AligningReads.NotLocallyPlasedReads_NotAligned (0 ms)
+[----------] 3 tests from AligningReads (0 ms total)
+
+[----------] 1 test from CreatingLocusAnalyzer
+[ RUN      ] CreatingLocusAnalyzer.TypicalParameters_Created
+[       OK ] CreatingLocusAnalyzer.TypicalParameters_Created (0 ms)
+[----------] 1 test from CreatingLocusAnalyzer (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 168 tests from 60 test suites ran. (1093 ms total)
+[  PASSED  ] 167 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] PreparedCatalog.WholeCatalogRoundTripAndIndependentHandleLifetime
+
+ 1 FAILED TEST
+  YOU HAVE 1 DISABLED TEST
+
+
+      Start  2: SequenceOperationsTest
+ 2/31 Test  #2: SequenceOperationsTest ...........   Passed    0.00 sec
+      Start  3: BaseMatchingTest
+ 3/31 Test  #3: BaseMatchingTest .................   Passed    0.00 sec
+      Start  4: OperationTest
+ 4/31 Test  #4: OperationTest ....................   Passed    0.00 sec
+      Start  5: OperationOperationsTest
+ 5/31 Test  #5: OperationOperationsTest ..........   Passed    0.01 sec
+      Start  6: LinearAlignmentTest
+ 6/31 Test  #6: LinearAlignmentTest ..............   Passed    0.00 sec
+      Start  7: LinearAlignmentOperationsTest
+ 7/31 Test  #7: LinearAlignmentOperationsTest ....   Passed    0.01 sec
+      Start  8: TracebackMatrixTest
+ 8/31 Test  #8: TracebackMatrixTest ..............   Passed    0.00 sec
+      Start  9: TracebackRunnerTest
+ 9/31 Test  #9: TracebackRunnerTest ..............   Passed    0.00 sec
+      Start 10: PinnedAlignerTest
+10/31 Test #10: PinnedAlignerTest ................   Passed    0.00 sec
+      Start 11: DagAlignerTest
+11/31 Test #11: DagAlignerTest ...................   Passed    0.02 sec
+      Start 12: PinnedDagAlignerTest
+12/31 Test #12: PinnedDagAlignerTest .............   Passed    0.01 sec
+      Start 13: GraphAlignmentTest
+13/31 Test #13: GraphAlignmentTest ...............   Passed    0.01 sec
+      Start 14: GraphAlignmentOperationsTest
+14/31 Test #14: GraphAlignmentOperationsTest .....   Passed    0.01 sec
+      Start 15: GraphTest
+15/31 Test #15: GraphTest ........................   Passed    0.01 sec
+      Start 16: GraphBuildersTest
+16/31 Test #16: GraphBuildersTest ................   Passed    0.00 sec
+      Start 17: PathTest
+17/31 Test #17: PathTest .........................   Passed    0.01 sec
+      Start 18: PathOperationsTest
+18/31 Test #18: PathOperationsTest ...............   Passed    0.01 sec
+      Start 19: KmerEncodingTest
+19/31 Test #19: KmerEncodingTest .................   Passed    0.01 sec
+      Start 20: KmerIndexTest
+20/31 Test #20: KmerIndexTest ....................   Passed    0.01 sec
+      Start 21: KmerIndexOperationsTest
+21/31 Test #21: KmerIndexOperationsTest ..........   Passed    0.00 sec
+      Start 22: GappedAlignerTest
+22/31 Test #22: GappedAlignerTest ................   Passed    0.18 sec
+      Start 23: GraphCoordinatesTest
+23/31 Test #23: GraphCoordinatesTest .............   Passed    0.01 sec
+      Start 24: GraphOperationsTest
+24/31 Test #24: GraphOperationsTest ..............   Passed    0.00 sec
+      Start 25: PathFamilyTest
+25/31 Test #25: PathFamilyTest ...................   Passed    0.00 sec
+      Start 26: PathFamilyOperationsTest
+26/31 Test #26: PathFamilyOperationsTest .........   Passed    0.01 sec
+      Start 27: IntervalBufferTest
+27/31 Test #27: IntervalBufferTest ...............   Passed    0.05 sec
+      Start 28: IntervalListTest
+28/31 Test #28: IntervalListTest .................   Passed    0.04 sec
+      Start 29: GraphReferenceMappingTest
+29/31 Test #29: GraphReferenceMappingTest ........   Passed    0.00 sec
+      Start 30: DepthTestTest
+30/31 Test #30: DepthTestTest ....................   Passed    0.01 sec
+      Start 31: GraphJsonTest
+31/31 Test #31: GraphJsonTest ....................   Passed    0.01 sec
+
+97% tests passed, 1 tests failed out of 31
+
+Total Test time (real) =   1.91 sec
+
+The following tests FAILED:
+	  1 - UnitTests (Failed)
+Errors while running CTest

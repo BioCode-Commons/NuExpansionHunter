@@ -1,0 +1,103 @@
+{
+  "baseline_commit": "f3b1256286d5620a4dd8310786793a9c1913d841",
+  "candidate_binary_sha256": "2a74137bfa9e123a1fbb7e4f3374b9b296c676588b53839649fd45d3ca11188b",
+  "branch": "Jiapeng-RAMOPT",
+  "datasets": 17,
+  "configurations": 53,
+  "measured_pairs": 185,
+  "normalization": "Local workspace and temporary paths replaced; measurement values and recorded input/output/binary hashes preserved. Full raw records are gzip-compressed.",
+  "files": {
+    "README.md": {
+      "bytes": 8738,
+      "sha256": "15cb5af1e254e2b97135e3d8a4546d36d63079490d1f38d6b31ae3d076fd136c"
+    },
+    "benchmark-comparison.html": {
+      "bytes": 28786,
+      "sha256": "3f3e1b15ddc2d49e52754a982441764fb1e79f5f55711c03e38f20d55b232616"
+    },
+    "benchmark-data.json.gz": {
+      "bytes": 278833,
+      "sha256": "81bbc26c0f80b880844c39b96bf6938371fef5119517f577629fd5ee8869737f"
+    },
+    "evidence/ctest-baseline.log": {
+      "bytes": 38270,
+      "sha256": "25544dcb19fca9fda2bba5fe069b2c2c11dec9387b2031c60a3300d36437a582"
+    },
+    "evidence/ctest-candidate.log": {
+      "bytes": 39163,
+      "sha256": "bb832161d5df32b6c25761e5a53621c01f9eca9be48c424fe1d82fbd06c54bdb"
+    },
+    "evidence/dp-experiment-not-integrated.json": {
+      "bytes": 33906,
+      "sha256": "b1cd457491bb8ea59dc1392562293b9d8fddf41de1fcb758770cbc8321bc69ff"
+    },
+    "evidence/example-input-inventory.json": {
+      "bytes": 224,
+      "sha256": "e17ff52d44e55a3e080434e654da88263376b1e768b073a9090575eaf1dc08e5"
+    },
+    "evidence/genotype-expandedrepeat150-genotyped.json": {
+      "bytes": 13158,
+      "sha256": "2fe314202995a7377fac1038489471782bb98983b7c5a8d77f97066ad88cb94d"
+    },
+    "evidence/genotype-genotyped10k-auto.json": {
+      "bytes": 12440,
+      "sha256": "58f2c67c578e91c5f1a466338f9f4eaf9d888d5c3f0827165284676d9d53d935"
+    },
+    "evidence/genotype-genotyped10k.json": {
+      "bytes": 12320,
+      "sha256": "07af3095e947f3ad72e17a8ede1a2a390a2d13ad0a970a39d741b6e17931a648"
+    },
+    "evidence/genotype-negative-control.json": {
+      "bytes": 3340,
+      "sha256": "ef2ec966c778329bb1ae7f2f39971aa63f57d59b3f9209933abcea836f8efae2"
+    },
+    "evidence/index-extreme-audits.json": {
+      "bytes": 14225,
+      "sha256": "b2de6dc9fd5baad4195ba02ff5fdf233b58aa78ac34a6b4edc0609f1ce07f640"
+    },
+    "evidence/index-extreme-results.json": {
+      "bytes": 120151,
+      "sha256": "ca98b1f8b11cc69c4112f05ddf175be2d7fac1630e82a4725f747bb83d73077b"
+    },
+    "evidence/index-extreme-sanitizers.json": {
+      "bytes": 4109,
+      "sha256": "46a83675909075efe7cdb70d4c579a2872c8f91894cab16474b11d6d74158048"
+    },
+    "evidence/index-mixed-results.json": {
+      "bytes": 45489,
+      "sha256": "fc8c7dd49d8084dac17bebee59ed56d5456484b63bb7d04985460a35ee5f8926"
+    },
+    "evidence/index-path-results.json": {
+      "bytes": 6958,
+      "sha256": "9583cad2ae0f55997f4597faeb41dbb3b3b5e9c7331066c54a66aba842523ab3"
+    },
+    "evidence/queue-results.json": {
+      "bytes": 66659,
+      "sha256": "3fd90cc06ae69d952904d5ace04d799aeb8d2b6596e8b7c0aaf78c03f41223f7"
+    },
+    "evidence/queue-tsan.log": {
+      "bytes": 2525,
+      "sha256": "be6e25ff7a1f0c25f2ef2db1895643b7ddc710a7350ce6a1d31f939fbd08e902"
+    },
+    "evidence/tuning-checks.json": {
+      "bytes": 16016,
+      "sha256": "b4374d3c17c7795107e530b0817c1fdc13ddd6251a333ba814c1e37d8784ba6c"
+    },
+    "evidence/tuning-not-integrated.txt": {
+      "bytes": 4772,
+      "sha256": "d89b5655d07e341e21ae5c34da377a7893a414556118973bbee679b1a5bd87af"
+    },
+    "evidence/tuning-threeway-results.json": {
+      "bytes": 172247,
+      "sha256": "f07761fcb565b72be436f9bf6f53c5ea3f63ba1e21bd139d8d72cbd2798de0f6"
+    },
+    "reproduction.txt": {
+      "bytes": 16993,
+      "sha256": "adf9e744aff0e4743c1fd8a1f4a0e1ca42635ea2b7e4d0eb3344868979b18778"
+    },
+    "validation-report.txt": {
+      "bytes": 7538,
+      "sha256": "5a488ffd27743b755f767f9aab82ad12555b12acf1f2f53847c6ba2e30fddb86"
+    }
+  }
+}

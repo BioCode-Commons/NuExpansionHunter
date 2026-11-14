@@ -1,0 +1,95 @@
+NuExpansionHunter streaming memory optimization: final local validation record
+
+Baseline: f3b1256286d5620a4dd8310786793a9c1913d841. Candidate: frozen v1.
+Primary acceptance scope: coordinate-sorted BAM + --analysis-mode streaming + --catalog-cache.
+Environment: macOS 26.6.2 ARM64, AppleClang 21 Release; 10 logical CPUs, no CPU affinity configured.
+No other tests, builds or data generation for this task ran concurrently with the benchmarks.
+The machine was not a dedicated controlled server; all observed measurement ranges are retained.
+
+Reading the results
+benchmark-comparison.html lists each configuration's total time, median of per-process peak RSS,
+paired changes, intervals and maximum observed peak RSS.
+benchmark-data.json.gz contains the complete original measurement records for all matrices,
+input/binary hashes, commands, output comparisons and one-time cache preparation measurements.
+There are 53 application configurations and 185 measured pairs, plus 1 warmup pair per configuration;
+all complete output comparisons matched.
+These are fixed-size synthetic inputs and the repository example, not real WGS, a cross-hardware
+guarantee, or a guarantee of 50% memory reduction for every input.
+Absolute times cannot be compared directly across tests. Changes use the median of paired ratios,
+which may differ from the ratio of the two columns' marginal median times.
+Some runs showed substantial timing drift; the HTML details retain their ranges. An interval
+crossing 1 is inconclusive and does not establish the absence of a regression.
+
+Primary sorted, cached cases (seconds / MiB; changes are paired percentages, negative means lower)
+covered10k, compute/decode/encode=8/2/1, n=5: time 7.074 -> 6.930 (-2.04%, ratio95%=[0.8802122330533131, 1.14864042390934]); peak RSS 629.12 -> 348.55 (-44.71%).
+dense-fanout-large, compute/decode/encode=1/2/1, n=9: time 5.848 -> 6.005 (-5.28%, ratio95%=[0.9300521621660608, 1.007828642083126]); peak RSS 135.34 -> 137.11 (+1.18%).
+dense-fanout-large, compute/decode/encode=8/2/1, n=9: time 9.395 -> 9.335 (+0.53%, ratio95%=[0.9907132927593492, 1.0347333155493241]); peak RSS 171.41 -> 165.34 (-3.70%).
+expandedrepeat150-genotyped, compute/decode/encode=8/2/1, n=5: time 4.011 -> 4.065 (+0.56%, ratio95%=[0.954471145780894, 1.0730581893705]); peak RSS 56.33 -> 50.92 (-9.67%).
+genotyped10k, compute/decode/encode=8/2/1, n=5: time 19.965 -> 19.403 (-4.77%, ratio95%=[0.9454653448241009, 1.0070461930264987]); peak RSS 724.17 -> 441.39 (-39.02%).
+genotyped10k, compute/decode/encode=8/auto/auto, n=5: time 19.720 -> 19.234 (-4.14%, ratio95%=[0.9491694293939081, 0.9794434661007079]); peak RSS 729.36 -> 447.64 (-38.43%).
+sparse100k, compute/decode/encode=8/2/1, n=5: time 11.899 -> 7.858 (-35.26%, ratio95%=[0.44483957061056356, 0.8337591147033262]); peak RSS 5128.95 -> 2362.11 (-54.08%).
+
+Implemented changes
+1. Exact prefix buckets for 10-mers with 16-bit remaining keys, and packed remaining keys/short
+   paths for 14-mers; complex, oversized or unsuitable graphs retain the original hash layout.
+2. One pointer of queue metadata per locus and at most 4096 shared mutexes; queues are allocated
+   only for active loci and are reused.
+3. Unmatched mates and thread alignment scratch are released after read processing; each locus
+   analyzer is released once its genotyping is complete.
+The genotype model is unchanged. Evidence is not capped, sampled or discarded. Lookup key
+comparisons remain exact, preserving complete paths, their order and duplicate multiplicity.
+Repeated graph identity data in the archive uses the existing SHA1 checksum convention instead.
+Archive v4 is incompatible with older caches; rebuild with the new executable and a new filename.
+
+Correctness and dynamic checks
+Application comparison: exact VCF/JSON bytes and exact complete BAM header/full-record-byte
+multisets, retaining duplicate multiplicity and ignoring only record order.
+Every output from genotyped10k, the positive expansion fixture and auto I/O runs is checked for
+actual Genotype/CI, VCF GT/REPCN, positive coverage/fragment length and reported evidence.
+The older low-coverage covered10k negative control fails as expected; it is not performance
+evidence for completed genotype computation.
+EH unit tests: baseline 167/168, candidate 172/173; all 30 GraphTools test programs pass.
+Both versions have the same pre-existing failure:
+PreparedCatalog.WholeCatalogRoundTripAndIndependentHandleLifetime, edge-label order [b,a]/[a,b].
+Queue unit tests: 16/16. All 11 streaming tests in the isolated queue TSan run pass without a
+reported race; this is not whole-application TSan coverage.
+All 18 extreme index profiles pass independent-oracle, complete encode/path/multiplicity, and
+mapped/copy/move lifetime checks.
+The v1 index passes 18/18 extreme ASan/UBSan profiles. Only the modified index and probe are
+instrumented; supporting libraries use Release builds, and LeakSanitizer is disabled.
+x86_64/SSE2 received syntax compilation checks only; this round's performance tests were not
+run on an x86 machine.
+
+Focused microbenchmarks (not end-to-end measurements)
+Serialized indexes for 32 mixed loci: 1,583,520 -> 675,450 bytes, a 57.35% reduction.
+Earlier 9-pair mixed measurements: 10/14-mer hit times decrease by approximately 19.9%/14.1%,
+and miss-heavy times by approximately 75.2%/62.4%; path retrieval is approximately unchanged.
+Some extreme hot cases still regress: approximately +10% to +16% for hits in a single hot
+prefix, and approximately +7% to +10% for some fallback path retrieval cases.
+These local accesses do not depend on BAM sort order; no guarantee of regression-free queries
+is made. See the complete table for the measured sorted-input application results.
+In microbenchmarks, shuffled refers to key-query order; in application tests, shuffled refers
+to unsorted BAM input.
+An isolated process constructing only 5,577,376 idle locus queues uses peak RSS
+682.19 -> 44.16 MiB (-93.53%); this is not application peak RSS.
+Queue microbenchmarks, 9 pairs: 1,000,000 serial operations -27.10%;
+4 workers / 200,000 read pairs -8.61%. Both are faster in 9/9 pairs with matching checksums.
+
+Scope and tradeoffs
+The sparse 100,000-locus catalog achieves approximately 54% lower whole-process peak RAM;
+benefits are substantially smaller for abundant reads/evidence or small catalogs.
+Unsorted and uncached results are retained as supplementary evidence. As requested by the user,
+unsorted performance was not tuned further. Some uncached application cases have measured
+regressions; conclusions from cached runs cannot be applied to them.
+The DP row-compression experiment was reverted because it cost 1.3%–3.6% in local runtime for
+little memory benefit. The evidence-interning prototype was not integrated.
+A further 9 index-tuning variants were screened; none was integrated after the final 31-case
+three-way comparison. Reasons and data are in evidence/tuning-*.
+The source changes are prepared against the exact baseline commit above. Publication status
+is tracked separately.
+
+Usage
+This branch contains the code changes. Build using the repository instructions and rebuild old catalog caches as v4.
+See reproduction.txt and tools/memory_validation/README.txt for commands.
+Public copies normalize local paths to <WORKSPACE> / <TMPDIR>; measured values, recorded hashes and comparison results are preserved.
+benchmark-data.json.gz contains complete measurement records. Generated BAM/FASTA and individual application output files can be reproduced with the tools.

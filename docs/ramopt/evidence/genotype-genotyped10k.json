@@ -1,0 +1,430 @@
+{
+  "scope": "Observed genotype computation; no biological truth assertion or binary-output comparison",
+  "expected_loci_per_file": 10000,
+  "minimum_coverage": 10,
+  "require_reported_repeat_evidence": true,
+  "files": [
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair--1-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair--1-baseline/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair--1-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair--1-candidate/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-00-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-00-baseline/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-00-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-00-candidate/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-01-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-01-baseline/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-01-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-01-candidate/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-02-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-02-baseline/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-02-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-02-candidate/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-03-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-03-baseline/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-03-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-03-candidate/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-04-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-04-baseline/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    },
+    {
+      "json": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-04-candidate/result.json",
+      "vcf": "<WORKSPACE>/work/memory-genotyped/genotyped10k/t8-p0/pair-04-candidate/result.vcf",
+      "json_sha256": "77f523268b0211e7f74995dee1cd25c845504ec5b46a1a4cad3d2747283f283b",
+      "valid": true,
+      "loci": 10000,
+      "called_loci": 10000,
+      "repeat_variants": 10000,
+      "called_vcf_records": 10000,
+      "loci_with_reported_repeat_evidence": 10000,
+      "coverage": {
+        "min": 16.216216216216218,
+        "median": 16.216216216216218,
+        "max": 16.216216216216218
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 1,
+      "most_common_genotypes": [
+        [
+          "10/10",
+          10000
+        ]
+      ],
+      "failure_counts": {},
+      "failure_examples": {}
+    }
+  ],
+  "all_valid": true,
+  "files_checked": 12
+}

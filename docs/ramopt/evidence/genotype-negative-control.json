@@ -1,0 +1,125 @@
+{
+  "scope": "Observed genotype computation; no biological truth assertion or binary-output comparison",
+  "expected_loci_per_file": 10000,
+  "minimum_coverage": 10,
+  "require_reported_repeat_evidence": true,
+  "files": [
+    {
+      "json": "<WORKSPACE>/work/memory-owned/covered10k/t8-p0/pair-00-baseline/result.json",
+      "vcf": "<WORKSPACE>/work/memory-owned/covered10k/t8-p0/pair-00-baseline/result.vcf",
+      "json_sha256": "4e6622a6c663dd9b8c713a6122d4122086762afe7480f4c5abd1eec874805a03",
+      "valid": false,
+      "loci": 10000,
+      "called_loci": 0,
+      "repeat_variants": 10000,
+      "called_vcf_records": 0,
+      "loci_with_reported_repeat_evidence": 0,
+      "coverage": {
+        "min": 8.108108108108109,
+        "median": 8.108108108108109,
+        "max": 8.108108108108109
+      },
+      "fragment_length": {
+        "min": 300,
+        "median": 300.0,
+        "max": 300
+      },
+      "read_length": {
+        "min": 150,
+        "median": 150.0,
+        "max": 150
+      },
+      "distinct_genotypes": 0,
+      "most_common_genotypes": [],
+      "failure_counts": {
+        "Coverage": 10000,
+        "missing_or_invalid_genotype": 10000,
+        "missing_confidence_interval": 10000,
+        "no_reported_repeat_evidence": 10000,
+        "missing_vcf_gt": 10000,
+        "vcf_json_genotype_mismatch": 10000
+      },
+      "failure_examples": {
+        "Coverage": [
+          {
+            "locus": "SYN_0000000",
+            "value": 8.108108108108109
+          },
+          {
+            "locus": "SYN_0000001",
+            "value": 8.108108108108109
+          },
+          {
+            "locus": "SYN_0000002",
+            "value": 8.108108108108109
+          },
+          {
+            "locus": "SYN_0000003",
+            "value": 8.108108108108109
+          },
+          {
+            "locus": "SYN_0000004",
+            "value": 8.108108108108109
+          }
+        ],
+        "missing_or_invalid_genotype": [
+          {
+            "locus": "SYN_0000000",
+            "variant": "SYN_0000000",
+            "value": null
+          },
+          {
+            "locus": "SYN_0000001",
+            "variant": "SYN_0000001",
+            "value": null
+          },
+          {
+            "locus": "SYN_0000002",
+            "variant": "SYN_0000002",
+            "value": null
+          },
+          {
+            "locus": "SYN_0000003",
+            "variant": "SYN_0000003",
+            "value": null
+          },
+          {
+            "locus": "SYN_0000004",
+            "variant": "SYN_0000004",
+            "value": null
+          }
+        ],
+        "missing_confidence_interval": [
+          "SYN_0000000",
+          "SYN_0000001",
+          "SYN_0000002",
+          "SYN_0000003",
+          "SYN_0000004"
+        ],
+        "no_reported_repeat_evidence": [
+          "SYN_0000000",
+          "SYN_0000001",
+          "SYN_0000002",
+          "SYN_0000003",
+          "SYN_0000004"
+        ],
+        "missing_vcf_gt": [
+          "SYN_0000000",
+          "SYN_0000001",
+          "SYN_0000002",
+          "SYN_0000003",
+          "SYN_0000004"
+        ],
+        "vcf_json_genotype_mismatch": [
+          "SYN_0000000",
+          "SYN_0000001",
+          "SYN_0000002",
+          "SYN_0000003",
+          "SYN_0000004"
+        ]
+      }
+    }
+  ],
+  "all_valid": false,
+  "files_checked": 1
+}

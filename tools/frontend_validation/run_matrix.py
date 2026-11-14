@@ -89,6 +89,14 @@ def summary(pairs, max_rss_ratio=1.05):
 
 
 def main():
+    def io_workers(value):
+        if value == 'auto':
+            return value
+        count = int(value)
+        if count < 0:
+            raise argparse.ArgumentTypeError('I/O workers must be nonnegative or auto')
+        return count
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--baseline', type=Path, required=True)
     parser.add_argument('--candidate', type=Path, required=True)
@@ -98,8 +106,8 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--threads', type=int, nargs='+', default=[16, 32])
     parser.add_argument('--preprocess', type=int, nargs='+', default=[0])
-    parser.add_argument('--decode', type=int, default=2)
-    parser.add_argument('--encode', type=int, default=1)
+    parser.add_argument('--decode', type=io_workers, default=2)
+    parser.add_argument('--encode', type=io_workers, default=1)
     parser.add_argument('--pairs', type=int, default=5)
     parser.add_argument('--uncached', action='store_true')
     parser.add_argument('--baseline-cache', type=Path)
@@ -136,7 +144,7 @@ def main():
                         'physical_cores': len(cpus), 'inherited_by_all_children': True}
         except (OSError, ValueError) as error:
             parser.error(str(error))
-    if min(args.threads + [args.pairs]) < 1 or min(args.preprocess + [args.decode, args.encode]) < 0:
+    if min(args.threads + [args.pairs]) < 1 or min(args.preprocess) < 0:
         parser.error('Invalid worker/pair counts')
     supplied_caches = {'baseline': args.baseline_cache, 'candidate': args.candidate_cache}
     if any(supplied_caches.values()) and not all(supplied_caches.values()):
@@ -189,6 +197,9 @@ def main():
         log = Path(record['stdout_path']).read_text() + Path(record['stderr_path']).read_text()
         record['phases_seconds'] = {name: float(value) for name, value in
             re.findall(r'Phase (\w+_seconds)=([0-9.eE+-]+)', log)}
+        pools = re.findall(r'Thread pools: compute=(\d+), decode=(\d+), encode=(\d+)', log)
+        if pools:
+            record['resolved_thread_pools'] = dict(zip(('compute', 'decode', 'encode'), map(int, pools[-1])))
         telemetry = re.findall(r'Read preprocessing workers=(\d+) peak_worker_cache_bytes=(\d+) synchronous_large_records=(\d+)', log)
         if telemetry:
             record['preprocessing'] = dict(zip(('workers', 'peak_worker_cache_bytes', 'synchronous_large_records'), map(int, telemetry[-1])))
