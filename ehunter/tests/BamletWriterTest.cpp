@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <future>
+#include <random>
 #include <unistd.h>
 
 namespace
@@ -114,6 +115,182 @@ TEST(BamletWriterQueue, SynchronousCompressionPreservesOutput)
     fixture.writeRecords(threaded.path, 1024, 2);
     fixture.writeRecords(synchronous.path, 1024, 0);
     EXPECT_EQ(readBam(synchronous.path), readBam(threaded.path));
+}
+
+TEST(BamletWriterEncoding, PreservesAllAsciiBaseMappingsQualitiesAndOddPadding)
+{
+    WriterFixture fixture;
+    TemporaryBam output;
+    {
+        ehunter::BamletWriter writer(output.path, fixture.contigs, fixture.catalog, 0);
+        const auto alignment = graphtools::decodeGraphAlignment(0, "0[5M]", &fixture.graph);
+        for (unsigned length = 0; length <= 130; ++length)
+        {
+            std::string query;
+            for (unsigned index = 0; index < length; ++index)
+                query += static_cast<char>(index % 128);
+            // A long qname also exercises allocation across rounding boundaries.
+            const std::string name = std::string(length, 'q') + std::to_string(length);
+            writer.write("test-locus", name, query, true, false, true, alignment);
+        }
+        writer.finish();
+    }
+    std::unique_ptr<htsFile, decltype(&hts_close)> file(hts_open(output.path.c_str(), "rb"), hts_close);
+    ASSERT_TRUE(file);
+    std::unique_ptr<bam_hdr_t, decltype(&bam_hdr_destroy)> header(sam_hdr_read(file.get()), bam_hdr_destroy);
+    ASSERT_TRUE(header);
+    std::unique_ptr<bam1_t, decltype(&bam_destroy1)> record(bam_init1(), bam_destroy1);
+    for (unsigned length = 0; length <= 130; ++length)
+    {
+        ASSERT_GE(sam_read1(file.get(), header.get(), record.get()), 0);
+        ASSERT_EQ(record->core.l_qseq, length);
+        EXPECT_STREQ(bam_get_qname(record.get()), (std::string(length, 'q') + std::to_string(length)).c_str());
+        EXPECT_EQ(record->core.tid, 0);
+        EXPECT_EQ(record->core.pos, 10);
+        EXPECT_EQ(record->core.flag, BAM_FUNMAP | BAM_FPAIRED | BAM_FMUNMAP | BAM_FMREVERSE | BAM_FREAD1);
+        for (unsigned index = 0; index < length; ++index)
+        {
+            const unsigned character = index % 128;
+            EXPECT_EQ(bam_seqi(bam_get_seq(record.get()), index), seq_nt16_table[character]);
+            EXPECT_EQ(bam_get_qual(record.get())[index], (character >= 'A' && character <= 'Z') ? 40 : 0);
+        }
+        if (length % 2)
+            EXPECT_EQ(bam_get_seq(record.get())[length / 2] & 15, 0);
+        const auto* tag = bam_aux_get(record.get(), "XG");
+        ASSERT_NE(tag, nullptr);
+        EXPECT_STREQ(bam_aux2Z(tag), "test-locus,0,0[5M]");
+    }
+    EXPECT_EQ(sam_read1(file.get(), header.get(), record.get()), -1);
+}
+
+TEST(BamletWriterEncoding, Preserves150BaseSimdChunksAndScalarFallback)
+{
+    WriterFixture fixture;
+    TemporaryBam output;
+    std::vector<std::string> queries;
+    const std::string alphabet = "ACGTNacgtn";
+    std::mt19937 random(196527);
+    for (int read = 0; read != 200; ++read)
+    {
+        std::string query(150, 'A');
+        for (char& base : query)
+            base = alphabet[random() % alphabet.size()];
+        queries.push_back(std::move(query));
+    }
+    for (int character = 0; character != 128; ++character)
+    {
+        for (int offset : { 0, 15, 16, 31, 32, 127, 128, 149 })
+        {
+            auto query = queries[character];
+            query[offset] = static_cast<char>(character);
+            queries.push_back(std::move(query));
+        }
+    }
+    {
+        ehunter::BamletWriter writer(output.path, fixture.contigs, fixture.catalog, 0, 4096);
+        const auto alignment = graphtools::decodeGraphAlignment(0, "0[5M]", &fixture.graph);
+        for (std::size_t index = 0; index != queries.size(); ++index)
+            writer.write("test-locus", "read-" + std::to_string(index), queries[index], true, false, true, alignment);
+        writer.finish();
+    }
+    std::unique_ptr<htsFile, decltype(&hts_close)> file(hts_open(output.path.c_str(), "rb"), hts_close);
+    ASSERT_TRUE(file);
+    std::unique_ptr<bam_hdr_t, decltype(&bam_hdr_destroy)> header(sam_hdr_read(file.get()), bam_hdr_destroy);
+    ASSERT_TRUE(header);
+    std::unique_ptr<bam1_t, decltype(&bam_destroy1)> record(bam_init1(), bam_destroy1);
+    for (std::size_t index = 0; index != queries.size(); ++index)
+    {
+        ASSERT_GE(sam_read1(file.get(), header.get(), record.get()), 0);
+        EXPECT_STREQ(bam_get_qname(record.get()), ("read-" + std::to_string(index)).c_str());
+        ASSERT_EQ(record->core.l_qseq, 150);
+        EXPECT_EQ(record->core.tid, 0);
+        EXPECT_EQ(record->core.pos, 10);
+        for (int base = 0; base != 150; ++base)
+        {
+            const unsigned char character = queries[index][base];
+            EXPECT_EQ(bam_seqi(bam_get_seq(record.get()), base), seq_nt16_table[character]);
+            EXPECT_EQ(bam_get_qual(record.get())[base], isupper(queries[index][base]) ? 40 : 0);
+        }
+    }
+    EXPECT_EQ(sam_read1(file.get(), header.get(), record.get()), -1);
+}
+
+TEST(BamletWriterEncoding, PreservesGraphTagForAllOperationsAndRepeatedNodes)
+{
+    auto graph = graphtools::makeStrGraph(std::string(200, 'A'), "CAG", std::string(200, 'T'));
+    graph.setGraphId("test,long:graph-id");
+    ehunter::ReferenceContigInfo contigs({ { "chr1", 1000 } });
+    ehunter::RegionCatalog catalog;
+    catalog.push_back(ehunter::LocusSpecification(
+        "test-locus", ehunter::ChromType::kAutosome, { ehunter::GenomicRegion(0, 0, 500) }, graph,
+        { { 0, ehunter::GenomicRegion(0, 0, 200) } }, ehunter::GenotyperParameters()));
+    std::vector<graphtools::GraphAlignment> alignments;
+    alignments.push_back(graphtools::decodeGraphAlignment(10, "0[150M]", &graph));
+    alignments.push_back(graphtools::decodeGraphAlignment(10, "0[0S150M0I0M0D0N0X]", &graph));
+    alignments.push_back(graphtools::decodeGraphAlignment(10, "0[2S50M3N1X1I2D93M]", &graph));
+    std::string repeatCigar = "0[30M]";
+    for (int index = 0; index != 40; ++index)
+        repeatCigar += "1[3M]";
+    alignments.push_back(graphtools::decodeGraphAlignment(170, repeatCigar, &graph));
+    alignments.push_back(graphtools::decodeGraphAlignment(0, "2[150M]", &graph));
+    TemporaryBam output;
+    {
+        ehunter::BamletWriter writer(output.path, contigs, catalog, 0);
+        for (const auto& alignment : alignments)
+        {
+            ASSERT_EQ(alignment.queryLength(), 150);
+            writer.write("test-locus", "read", std::string(150, 'A'), true, false, true, alignment);
+        }
+        writer.finish();
+    }
+    std::unique_ptr<htsFile, decltype(&hts_close)> file(hts_open(output.path.c_str(), "rb"), hts_close);
+    ASSERT_TRUE(file);
+    std::unique_ptr<bam_hdr_t, decltype(&bam_hdr_destroy)> header(sam_hdr_read(file.get()), bam_hdr_destroy);
+    ASSERT_TRUE(header);
+    std::unique_ptr<bam1_t, decltype(&bam_destroy1)> record(bam_init1(), bam_destroy1);
+    for (const auto& alignment : alignments)
+    {
+        ASSERT_GE(sam_read1(file.get(), header.get(), record.get()), 0);
+        const auto expected = std::string(graph.graphId()) + "," + std::to_string(alignment.path().startPosition())
+            + "," + alignment.generateCigar();
+        const auto* tag = bam_aux_get(record.get(), "XG");
+        ASSERT_NE(tag, nullptr);
+        EXPECT_STREQ(bam_aux2Z(tag), expected.c_str());
+    }
+    EXPECT_EQ(sam_read1(file.get(), header.get(), record.get()), -1);
+}
+
+TEST(BamletWriterEncoding, ProjectsTheFirstMappedNodeAfterUnmappedNodes)
+{
+    WriterFixture fixture;
+    // Only the final node is mapped in this catalog.
+    ehunter::RegionCatalog catalog;
+    catalog.push_back(ehunter::LocusSpecification(
+        "test-locus", ehunter::ChromType::kAutosome, { ehunter::GenomicRegion(0, 0, 100) }, fixture.graph,
+        { { 2, ehunter::GenomicRegion(0, 30, 34) } }, ehunter::GenotyperParameters()));
+    TemporaryBam output;
+    {
+        ehunter::BamletWriter writer(output.path, fixture.contigs, catalog, 0);
+        const auto alignment = graphtools::decodeGraphAlignment(0, "0[6M]2[4M]", &fixture.graph);
+        writer.write("test-locus", "pair", "ACGTACTGTA", true, false, false, alignment);
+        writer.finish();
+    }
+    const auto records = readBam(output.path).second;
+    ASSERT_EQ(records.size(), 1u);
+    EXPECT_EQ(records.front(), "pair\t77\tchr1\t31\t0\t*\t*\t0\t0\tACGTACTGTA\tIIIIIIIIII\tXG:Z:test-locus,0,0[6M]2[4M]");
+}
+
+TEST(BamletWriterEncoding, RetainsValidationOfNodesAfterTheFirstMappedNode)
+{
+    WriterFixture fixture;
+    TemporaryBam output;
+    ehunter::BamletWriter writer(output.path, fixture.contigs, fixture.catalog, 0);
+    const auto alignment = graphtools::decodeGraphAlignment(0, "0[6M]2[4M]", &fixture.graph);
+    // A caller can mutate the backing graph after the Path was constructed.
+    // The old subpath construction rejected this even though node 0 is mapped.
+    fixture.graph.setNodeSeq(2, "T");
+    EXPECT_THROW(writer.write("test-locus", "pair", "ACGTACTGTA", true, false, false, alignment), std::logic_error);
+    writer.finish();
 }
 
 #ifdef __linux__

@@ -22,9 +22,10 @@
 #include "graphalign/GappedAligner.hh"
 
 #include <algorithm>
+#include <limits>
+#include <locale>
 #include <stdexcept>
 
-#include <boost/algorithm/string.hpp>
 #include <boost/optional.hpp>
 
 #include "graphalign/GraphAlignmentOperations.hh"
@@ -187,9 +188,19 @@ private:
 optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignmentSeed(const string& query) const
 {
     string upperQuery = query;
-    boost::to_upper(upperQuery);
+    if (!upperQuery.empty())
+    {
+        // Resolve the same current-locale facet once per read. Keep the scalar
+        // operation used by boost::to_upper: a custom facet may implement its
+        // range overload differently from its single-character overload.
+        const std::locale locale;
+        const auto& facet = std::use_facet<std::ctype<char>>(locale);
+        for (char& base : upperQuery)
+            base = facet.toupper(base);
+    }
 
     optional<GappedGraphAligner::AlignmentSeed> optional_seed;
+    size_t seed_length = 0;
 
     bool found_multipath_kmer = false;
     size_t kmer_start_position = 0;
@@ -210,13 +221,15 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
         {
             // This call updates kmer_start_position to the start of the extended path
             Path extended_path = extendPathMatching(paths[0], upperQuery, kmer_start_position);
+            const size_t extended_length = extended_path.length();
 
-            if (!optional_seed || extended_path.length() > optional_seed->path.length())
+            if (!optional_seed || extended_length > seed_length)
             {
                 optional_seed = AlignmentSeed(extended_path, kmer_start_position);
+                seed_length = extended_length;
             }
 
-            kmer_start_position += extended_path.length();
+            kmer_start_position += extended_length;
         }
         else
         {
@@ -247,16 +260,18 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
             {
                 size_t kmer_start_position_for_kmer_path = kmer_start_position;
                 Path extended_path = extendPathMatching(paths[path_index], upperQuery, kmer_start_position_for_kmer_path);
+                const size_t extended_length = extended_path.length();
 
-                if (longest_kmer_path_extension < extended_path.length())
+                if (longest_kmer_path_extension < extended_length)
                 {
-                    longest_kmer_path_extension = extended_path.length();
+                    longest_kmer_path_extension = extended_length;
                     kmer_start_position_for_longest_extension = kmer_start_position_for_kmer_path;
                 }
 
-                if (!optional_seed || extended_path.length() > optional_seed->path.length())
+                if (!optional_seed || extended_length > seed_length)
                 {
                     optional_seed = AlignmentSeed(extended_path, kmer_start_position_for_kmer_path);
+                    seed_length = extended_length;
                 }
             }
 
@@ -294,7 +309,8 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
         query_prefix_len = 1;
         Path prefix_path = seed_path;
         prefix_path.shrinkEndBy(prefix_path.length() - 1);
-        prefix_extensions = { make_pair(prefix_path, Alignment(0, "1M")) };
+        prefix_extensions.emplace_back(
+            std::move(prefix_path), Alignment(0, { Operation(OperationType::kMatch, 1) }));
         seed_path.shrinkStartBy(1);
     }
 
@@ -315,13 +331,14 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
         // suffix_extensions we create a 1bp suffix artificially.
         Path suffix_path = seed_path;
         suffix_path.shrinkStartBy(suffix_path.length() - 1);
-        suffix_extensions = { make_pair(suffix_path, Alignment(0, "1M")) };
+        suffix_extensions.emplace_back(
+            std::move(suffix_path), Alignment(0, { Operation(OperationType::kMatch, 1) }));
         seed_path.shrinkEndBy(1);
     }
 
     // Merge alignments together
-    list<PathAndAlignment> top_paths_and_alignments;
-    const string seed_cigar = to_string(seed_path.length()) + "M";
+    const size_t seed_length = seed_path.length();
+    list<GraphAlignment> top_graph_alignments;
     for (PathAndAlignment& prefix_path_and_alignment : prefix_extensions)
     {
         Path& prefix_path = prefix_path_and_alignment.first;
@@ -329,7 +346,10 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
         const int32_t prefix_plus_seed_length = prefix_plus_seed_path.length();
 
         Alignment& prefix_alignment = prefix_path_and_alignment.second;
-        Alignment kmer_alignment(prefix_alignment.referenceLength(), seed_cigar);
+        // Preserve the CIGAR parser's range error for unusually long paths.
+        Alignment kmer_alignment = seed_length <= static_cast<size_t>(std::numeric_limits<int>::max())
+            ? Alignment(prefix_alignment.referenceLength(), { Operation(OperationType::kMatch, seed_length) })
+            : Alignment(prefix_alignment.referenceLength(), to_string(seed_length) + "M");
         Alignment prefix_plus_kmer_alignment = mergeAlignments(prefix_alignment, kmer_alignment);
 
         for (PathAndAlignment& suffix_path_and_alignment : suffix_extensions)
@@ -340,16 +360,8 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
 
             suffix_alignment.setReferenceStart(prefix_plus_seed_length);
             Alignment full_alignment = mergeAlignments(prefix_plus_kmer_alignment, suffix_alignment);
-            top_paths_and_alignments.push_back(make_pair(full_path, full_alignment));
+            top_graph_alignments.push_back(projectAlignmentOntoGraph(std::move(full_alignment), std::move(full_path)));
         }
-    }
-
-    list<GraphAlignment> top_graph_alignments;
-    for (PathAndAlignment& path_and_alignment : top_paths_and_alignments)
-    {
-        Path& path = path_and_alignment.first;
-        Alignment& alignment = path_and_alignment.second;
-        top_graph_alignments.push_back(projectAlignmentOntoGraph(alignment, path));
     }
 
     top_graph_alignments.sort();

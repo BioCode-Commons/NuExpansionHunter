@@ -1,0 +1,38 @@
+{
+  "scope": "Portable synthetic streaming reproduction; original helper bytes preserved except explicitly listed edits",
+  "files": {
+    "generate_catalog.py": {
+      "source": "tools/streaming_validation/generate_catalog.py",
+      "source_sha256": "110dd38fdf768a00c70f6aeb3934f5b917d675487c1fd6745c2daba2887202ef",
+      "changes": [],
+      "published_sha256": "110dd38fdf768a00c70f6aeb3934f5b917d675487c1fd6745c2daba2887202ef"
+    },
+    "sam_to_bam.c": {
+      "source": "tools/streaming_validation/sam_to_bam.c",
+      "source_sha256": "b09db4ffc4452f79ce4c19a94c4f8e92a4fc9296a2b6383e9a43a35751456d5d",
+      "changes": [],
+      "published_sha256": "b09db4ffc4452f79ce4c19a94c4f8e92a4fc9296a2b6383e9a43a35751456d5d"
+    },
+    "compare_outputs.py": {
+      "source": "tools/streaming_validation/compare_outputs.py",
+      "source_sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f",
+      "changes": [],
+      "published_sha256": "1f885f73c727ac2ea224a8fd4a1039920c1e6cbed3d6c4ed37ac82847dc3198f"
+    },
+    "paired_streaming.py": {
+      "source": "tools/streaming_validation/paired_streaming.py",
+      "source_sha256": "c3ff5ec4f7a0ba042a8a4b2c943b68fddb2a986a6c3c4ea950669ac97a0f04bb",
+      "changes": [
+        "Report requested pair count rather than hardcoded 9.",
+        "Remove extra preprocessing cache RSS envelope: both variants use identical preprocessing workers; original RSS gates unchanged."
+      ],
+      "published_sha256": "df29edbc2be92db77565e636d294ea9cecd6518c923bcf3245d9e99f44b58e28"
+    },
+    "verify_fixture.py": {
+      "source": "ARM covered10k independent fixture validator",
+      "source_sha256": "71fd3f6531e10409258a7482d286cac688c7f133029f51b1d2ea14791d7e70b6",
+      "changes": [],
+      "published_sha256": "71fd3f6531e10409258a7482d286cac688c7f133029f51b1d2ea14791d7e70b6"
+    }
+  }
+}

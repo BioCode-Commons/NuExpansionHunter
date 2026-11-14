@@ -24,7 +24,8 @@
 namespace ehunter
 {
 
-bool HtsStreamingReadPairQueue::insertReadPair(const unsigned locusIndex, ReadPair readPair)
+HtsStreamingReadPairQueue::InsertResult HtsStreamingReadPairQueue::insertReadPair(
+    const unsigned locusIndex, ReadPair readPair, const WaitHelper& waitHelper)
 {
     auto& locusAnalyzerQueue(queues_[locusIndex]);
     std::unique_lock<std::mutex> locusAnalyzerQueueLock(locusAnalyzerQueue.mutex);
@@ -32,10 +33,29 @@ bool HtsStreamingReadPairQueue::insertReadPair(const unsigned locusIndex, ReadPa
     if (wasInActive)
     {
         std::unique_lock<std::mutex> globalLock(mutex_);
-        while (activeLocusAnalyzerQueues_ >= maxActiveLocusAnalyzerQueues_)
+        while (activeLocusAnalyzerQueues_ >= maxActiveLocusAnalyzerQueues_ && !cancelled_)
         {
-            cv_.wait(globalLock);
+            if (waitHelper)
+            {
+                // Only the input producer activates queues. This queue is
+                // inactive, so no worker can acquire it while the producer
+                // helps another queue. Release both locks before running any
+                // user work, then restore the usual locus -> global order.
+                globalLock.unlock();
+                locusAnalyzerQueueLock.unlock();
+                const bool helped = waitHelper();
+                locusAnalyzerQueueLock.lock();
+                globalLock.lock();
+                if (helped)
+                    continue;
+            }
+            // Recheck under the mutex: a worker may have freed capacity (or
+            // cancelled processing) while the helper was looking for work.
+            if (activeLocusAnalyzerQueues_ >= maxActiveLocusAnalyzerQueues_ && !cancelled_)
+                cv_.wait(globalLock);
         }
+        if (cancelled_)
+            return InsertResult::Cancelled;
         activeLocusAnalyzerQueues_++;
         globalLock.unlock();
 
@@ -43,7 +63,16 @@ bool HtsStreamingReadPairQueue::insertReadPair(const unsigned locusIndex, ReadPa
         locusAnalyzerQueue.isActive = true;
     }
     locusAnalyzerQueue.queue->emplace(std::move(readPair));
-    return wasInActive;
+    return wasInActive ? InsertResult::Activated : InsertResult::Queued;
+}
+
+void HtsStreamingReadPairQueue::cancel()
+{
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        cancelled_ = true;
+    }
+    cv_.notify_all();
 }
 
 void HtsStreamingReadPairQueue::getNextReadPair(const unsigned locusIndex, boost::optional<ReadPair>& readPair)

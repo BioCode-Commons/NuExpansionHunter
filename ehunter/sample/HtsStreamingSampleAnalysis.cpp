@@ -26,6 +26,8 @@
 #include <memory>
 
 #include "absl/container/flat_hash_set.h"
+#include "absl/hash/hash.h"
+#include "absl/strings/string_view.h"
 #include "spdlog/spdlog.h"
 #include <boost/optional.hpp>
 
@@ -50,6 +52,24 @@ namespace ehunter
 
 namespace
 {
+
+// Looking up a borrowed BAM qname avoids constructing a Read for a second
+// record whose pair has no exact target/off-target routing. Both overloads use
+// the identical hash; the existing fragment-only pairing rule is unchanged.
+struct FragmentHash
+{
+    using is_transparent = void;
+    size_t operator()(absl::string_view name) const { return absl::Hash<absl::string_view>()(name); }
+    size_t operator()(const Read& read) const { return (*this)(absl::string_view(read.fragmentId())); }
+};
+
+struct FragmentEqual
+{
+    using is_transparent = void;
+    bool operator()(const Read& a, const Read& b) const { return a.fragmentId() == b.fragmentId(); }
+    bool operator()(const Read& a, absl::string_view b) const { return a.fragmentId() == b; }
+    bool operator()(absl::string_view a, const Read& b) const { return a == b.fragmentId(); }
+};
 
 /// \brief Mutable data shared by all LocusAnalyzer-processing threads
 ///
@@ -78,7 +98,8 @@ struct LocusAnalyzerThreadLocalData
 /// Process queue for a single LocusAnalyzer on one thread
 void processLocusAnalyzerQueue(
     const int threadIndex, LocusAnalyzerThreadSharedData& locusAnalyzerThreadSharedData,
-    std::vector<LocusAnalyzerThreadLocalData>& locusAnalyzerThreadLocalDataPool, const unsigned locusIndex)
+    std::vector<LocusAnalyzerThreadLocalData>& locusAnalyzerThreadLocalDataPool, const unsigned locusIndex,
+    ctpl::thread_pool& pool, const int readerThreadIndex)
 {
     if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
     {
@@ -92,22 +113,32 @@ void processLocusAnalyzerQueue(
 
     try
     {
-        while (true)
+        // Workers retain the original drain-to-empty behavior. The reader may
+        // take a heavy pending locus while capacity is full; bound its help so
+        // that workers finishing other loci can promptly receive further input.
+        // readerThreadIndex is the compute-worker count, not the last storage
+        // slot (which is a worker when EH_READER_HELPER_DISABLE is defined).
+        const std::size_t limit = threadIndex == readerThreadIndex ? 32 : 0;
+        const bool needsContinuation = locusAnalyzerThreadSharedData.readPairQueue.processBatch(
+            locusIndex, limit, readPair, [&](HtsStreamingReadPairQueue::ReadPair& pair) {
+                processAnalyzerBundleReadPair(locusAnalyzer, pair.regionType, pair.inputType, pair.read, pair.mate,
+                    *locusAnalyzerThreadData.alignerSelectorPtr);
+            });
+        if (needsContinuation && !locusAnalyzerThreadSharedData.isWorkerThreadException.load())
         {
-            locusAnalyzerThreadSharedData.readPairQueue.getNextReadPair(locusIndex, readPair);
-            if (not readPair)
-            {
-                break;
-            }
-            processAnalyzerBundleReadPair(
-                locusAnalyzer, readPair->regionType, readPair->inputType, readPair->read, readPair->mate,
-                *locusAnalyzerThreadData.alignerSelectorPtr);
+            // All locus access above has ended. Queue publication transfers its
+            // sole ownership to one continuation, while its active flag/count
+            // remain unchanged. Only the synchronous reader reaches this path,
+            // so every continuation is submitted before pool.stop(true).
+            pool.push(processLocusAnalyzerQueue, std::ref(locusAnalyzerThreadSharedData),
+                std::ref(locusAnalyzerThreadLocalDataPool), locusIndex, std::ref(pool), readerThreadIndex);
         }
     }
     catch (const std::exception& e)
     {
-        locusAnalyzerThreadSharedData.isWorkerThreadException.store(true);
         locusAnalyzerThreadData.threadExceptionPtr = std::current_exception();
+        locusAnalyzerThreadSharedData.isWorkerThreadException.store(true);
+        locusAnalyzerThreadSharedData.readPairQueue.cancel();
 
         std::ostringstream oss;
         oss << "Exception caught in thread " << threadIndex << " while processing read pair queue for locus: `"
@@ -122,8 +153,9 @@ void processLocusAnalyzerQueue(
     }
     catch (...)
     {
-        locusAnalyzerThreadSharedData.isWorkerThreadException.store(true);
         locusAnalyzerThreadData.threadExceptionPtr = std::current_exception();
+        locusAnalyzerThreadSharedData.isWorkerThreadException.store(true);
+        locusAnalyzerThreadSharedData.readPairQueue.cancel();
 
         std::ostringstream oss;
         oss << "Exception caught in thread " << threadIndex << " while processing read pair queue for locus: `"
@@ -219,7 +251,14 @@ SampleFindings htsStreamingSampleAnalysis(
     const unsigned maxActiveLocusAnalyzerQueues(threadCount + 5);
     const unsigned locusAnalyzerCount(regionCatalog.size());
     LocusAnalyzerThreadSharedData locusAnalyzerThreadSharedData(maxActiveLocusAnalyzerQueues, locusAnalyzerCount);
-    std::vector<LocusAnalyzerThreadLocalData> locusAnalyzerThreadLocalDataPool(threadCount);
+#ifndef EH_READER_HELPER_DISABLE
+    const int processingSlotCount = threadCount + 1;
+#else
+    const int processingSlotCount = threadCount;
+#endif
+    // Fix the storage before workers start. The reader's additional slot is
+    // never shared with a worker and its aligner is allocated only if needed.
+    std::vector<LocusAnalyzerThreadLocalData> locusAnalyzerThreadLocalDataPool(processingSlotCount);
     for (int threadIndex(0); threadIndex < threadCount; ++threadIndex)
     {
         auto& locusAnalyzerThreadData(locusAnalyzerThreadLocalDataPool[threadIndex]);
@@ -227,10 +266,30 @@ SampleFindings htsStreamingSampleAnalysis(
             new graphtools::AlignerSelector(heuristicParams.alignerType()));
     }
     ctpl::thread_pool pool(threadCount);
+    std::size_t assistedLocusJobs = 0; // Accessed only by the input reader.
+    HtsStreamingReadPairQueue::WaitHelper waitHelper;
+#ifndef EH_READER_HELPER_DISABLE
+    waitHelper = [&]() {
+        if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
+            return false;
+        // pop() removes a single pending task atomically, using the same FIFO
+        // queue as the workers. A locus still has exactly one task owner.
+        auto pending = pool.pop();
+        if (!pending)
+            return false;
+        auto& readerData = locusAnalyzerThreadLocalDataPool[threadCount];
+        if (!readerData.alignerSelectorPtr)
+            readerData.alignerSelectorPtr.reset(new graphtools::AlignerSelector(heuristicParams.alignerType()));
+        pending(threadCount);
+        ++assistedLocusJobs;
+        // The packaged task captures exceptions; processLocusAnalyzerQueue
+        // records the exception and cancels capacity waits before rethrowing.
+        return true;
+    };
+#endif
 
     spdlog::info("Initializing all loci");
     const auto indexStart = std::chrono::steady_clock::now();
-    graphtools::AlignerSelector alignerSelector(heuristicParams.alignerType());
     locusAnalyzerThreadSharedData.locusAnalyzers
         = initializeLocusAnalyzers(regionCatalog, heuristicParams, bamletWriter, threadCount);
     GenomeQueryCollection genomeQuery(locusAnalyzerThreadSharedData.locusAnalyzers, &regionCatalog);
@@ -241,38 +300,65 @@ SampleFindings htsStreamingSampleAnalysis(
     spdlog::info("Streaming reads");
     const auto readsStart = std::chrono::steady_clock::now();
 
-    auto ReadHash = [](const Read& read) { return std::hash<std::string>()(read.fragmentId()); };
-    auto ReadEq = [](const Read& read1, const Read& read2) { return (read1.fragmentId() == read2.fragmentId()); };
-    using ReadCatalog = absl::flat_hash_set<Read, decltype(ReadHash), decltype(ReadEq)>;
-    ReadCatalog unpairedReads(1000, ReadHash, ReadEq);
+    using ReadCatalog = absl::flat_hash_set<Read, FragmentHash, FragmentEqual>;
+    ReadCatalog unpairedReads(1000);
 
     htshelpers::HtsFileStreamer readStreamer(inputPaths.htsFile(), inputPaths.reference(), decodeThreadCount);
     {
         DecodedReadStream decodedStream(readStreamer, genomeQuery.targetRegionMask, readDecodeThreadCount);
-        while (auto current = decodedStream.next())
+        for (;;)
         {
+            const auto* raw = readDecodeThreadCount == 0 ? decodedStream.nextUndecoded() : nullptr;
+            auto* current = readDecodeThreadCount != 0 ? decodedStream.next() : nullptr;
+            if (!raw && !current)
+                break;
             // Stop processing reads if an exception is thrown in the worker pool:
             if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
             {
                 break;
             }
 
-            Read read = std::move(current->read);
-            const auto mateIterator = unpairedReads.find(read);
+            boost::optional<Read> decodedRead;
+            if (current)
+                decodedRead.emplace(std::move(current->read));
+            const auto fragment = raw ? absl::string_view(bam_get_qname(raw))
+                                      : absl::string_view(decodedRead->fragmentId());
+            const auto mateIterator = unpairedReads.find(fragment);
             if (mateIterator == unpairedReads.end())
             {
-                unpairedReads.emplace(std::move(read));
+                // The first record must remain available even when its own
+                // coordinates look irrelevant: the eventual second record
+                // supplies the routing coordinates in the original algorithm.
+                if (raw)
+                    decodedRead.emplace(htshelpers::decodeReadParts(bam_get_qname(raw), raw->core.flag,
+                        raw->core.l_qseq, bam_get_seq(raw), bam_get_qual(raw)));
+                unpairedReads.emplace(std::move(*decodedRead));
                 continue;
             }
-            auto mateNode = unpairedReads.extract(mateIterator);
-            Read mate = std::move(mateNode.value());
 
-            const int64_t readEnd = current->position + read.sequence().length();
-            const int64_t mateEnd = current->matePosition + mate.sequence().length();
+            const int32_t contig = raw ? raw->core.tid : current->contig;
+            const int32_t mateContig = raw ? raw->core.mtid : current->mateContig;
+            const int64_t position = raw ? raw->core.pos : current->position;
+            const int64_t matePosition = raw ? raw->core.mpos : current->matePosition;
+            const int64_t readEnd = position + (raw ? raw->core.l_qseq : decodedRead->sequence().length());
+            const int64_t mateEnd = matePosition + mateIterator->sequence().length();
 
             vector<AnalyzerBundle> analyzerBundles = genomeQuery.analyzerFinder.queryStreaming(
-                current->contig, current->position, readEnd,
-                current->mateContig, current->matePosition, mateEnd);
+                contig, position, readEnd, mateContig, matePosition, mateEnd);
+            if (analyzerBundles.empty())
+            {
+                // Consume both records exactly as before; never leave a marker
+                // that could alter subsequent repeated-name pairing or grow
+                // the existing unpaired cache.
+                unpairedReads.erase(mateIterator);
+                continue;
+            }
+            if (raw)
+                decodedRead.emplace(htshelpers::decodeReadParts(bam_get_qname(raw), raw->core.flag,
+                    raw->core.l_qseq, bam_get_seq(raw), bam_get_qual(raw)));
+            Read& read = *decodedRead;
+            auto mateNode = unpairedReads.extract(mateIterator);
+            Read mate = std::move(mateNode.value());
 
             const unsigned bundleCount(analyzerBundles.size());
             for (unsigned bundleIndex(0); bundleIndex < bundleCount; ++bundleIndex)
@@ -280,11 +366,18 @@ SampleFindings htsStreamingSampleAnalysis(
                 auto& bundle(analyzerBundles[bundleIndex]);
                 auto sendReadPair = [&](HtsStreamingReadPairQueue::ReadPair readPair)
                 {
-                    if (locusAnalyzerThreadSharedData.readPairQueue.insertReadPair(bundle.locusIndex, std::move(readPair)))
+                    if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
+                        return;
+                    const auto insertion = locusAnalyzerThreadSharedData.readPairQueue.insertReadPair(
+                        bundle.locusIndex, std::move(readPair), waitHelper);
+                    if (insertion == HtsStreamingReadPairQueue::InsertResult::Cancelled)
+                        return;
+                    if (insertion == HtsStreamingReadPairQueue::InsertResult::Activated)
                     {
                         pool.push(
                             processLocusAnalyzerQueue, std::ref(locusAnalyzerThreadSharedData),
-                            std::ref(locusAnalyzerThreadLocalDataPool), bundle.locusIndex);
+                            std::ref(locusAnalyzerThreadLocalDataPool), bundle.locusIndex,
+                            std::ref(pool), threadCount);
                     }
                 };
 
@@ -306,11 +399,12 @@ SampleFindings htsStreamingSampleAnalysis(
     spdlog::info(
         "Phase read_processing_seconds={}",
         std::chrono::duration<double>(std::chrono::steady_clock::now() - readsStart).count());
+    spdlog::info("Streaming reader assisted_locus_jobs={}", assistedLocusJobs);
 
     // Rethrow exceptions from the pool in thread order:
     if (locusAnalyzerThreadSharedData.isWorkerThreadException.load())
     {
-        for (int threadIndex(0); threadIndex < threadCount; ++threadIndex)
+        for (int threadIndex(0); threadIndex < processingSlotCount; ++threadIndex)
         {
             const LocusAnalyzerThreadLocalData& locusAnalyzerThreadData(locusAnalyzerThreadLocalDataPool[threadIndex]);
             if (locusAnalyzerThreadData.threadExceptionPtr)

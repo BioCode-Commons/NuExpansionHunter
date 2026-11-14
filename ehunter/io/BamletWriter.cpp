@@ -23,9 +23,12 @@
 #include "io/BamletWriter.hh"
 
 #include <cstring>
-#include <vector>
 
-#include <boost/algorithm/string/join.hpp>
+#if defined(__aarch64__) && !defined(EH_DISABLE_BAM_ENCODING_SIMD)
+#include <arm_neon.h>
+#elif defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__)) && !defined(EH_DISABLE_BAM_ENCODING_SIMD)
+#include <immintrin.h>
+#endif
 
 // cppcheck-suppress missingInclude
 #include "htslib/bgzf.h"
@@ -39,7 +42,6 @@ using graphtools::GraphReferenceMapping;
 using graphtools::ReferenceInterval;
 using std::string;
 using std::to_string;
-using std::vector;
 
 namespace ehunter
 {
@@ -73,10 +75,6 @@ static void validateMapping(const ReferenceContigInfo& contigInfo, const LocusSp
     }
 }
 
-// Set a base in the bit-backed read sequence representation of a BAM record. (4 bits per base).
-// Sets position i to base c in sequence s.
-#define bam1_seq_seti(s, i, c) ((s)[(i) >> 1] = ((s)[(i) >> 1] & 0xf << (((i) & 1) << 2)) | (c) << ((~(i) & 1) << 2))
-
 BamletWriter::BamletWriter(
     const string& bamletPath, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
     int compressionThreads, std::size_t maxQueueBytes)
@@ -93,6 +91,12 @@ BamletWriter::BamletWriter(
         }
 
     writeHeader();
+    bamContigIds_.reserve(contigInfo_.numContigs());
+    for (int index = 0; index != contigInfo_.numContigs(); ++index)
+    {
+        const auto& name = contigInfo_.getContigName(index);
+        bamContigIds_.push_back(name.empty() ? -1 : bam_name2id(bamHeader_.get(), name.c_str()));
+    }
     writeThread_ = std::thread(&BamletWriter::writeHtsAlignments, this);
 }
 
@@ -147,71 +151,166 @@ void BamletWriter::writeHeader()
     }
 }
 
+// generateSubpathForEachNode used to allocate a list and a node vector for every
+// node, solely to obtain its start position. Check the same per-node bounds
+// without constructing those Paths. Invalid inputs retain the original Path
+// constructor's exception behavior through the slow fallback below.
+static bool nodeSubpathsAreValid(const graphtools::Path& path)
+{
+    try
+    {
+        for (std::size_t index = 0; index < path.numNodes(); ++index)
+        {
+            const int32_t start = path.getStartPositionOnNodeByIndex(index);
+            const int32_t end = path.getEndPositionOnNodeByIndex(index);
+            const auto length = path.graphRawPtr()->nodeSeqLength(path.getNodeIdByIndex(index));
+            if (start < 0 || end < 0 || static_cast<unsigned>(start) > length
+                || static_cast<unsigned>(end) > length || start > end)
+                return false;
+        }
+        return true;
+    }
+    catch (const std::exception&)
+    {
+        return false;
+    }
+}
+
 void BamletWriter::write(
     graphtools::TextView locusId, const string& fragmentName, const string& query, bool isFirstMate, bool isReversed,
     bool isMateReversed, const GraphAlignment& alignment)
 {
     const auto locusIndex = catalog_.findLocusIndex(locusId);
-    boost::optional<ReferenceInterval> optionalReferenceInterval;
-    for (const auto& nodePath : graphtools::generateSubpathForEachNode(alignment.path()))
+    const auto& path = alignment.path();
+    if (!nodeSubpathsAreValid(path))
+        (void)graphtools::generateSubpathForEachNode(path);
+    int32_t contigId = -1;
+    int64_t position = -1;
+    for (std::size_t index = 0; index < path.numNodes(); ++index)
     {
-        const auto node = nodePath.nodeIds().front();
+        const auto node = path.getNodeIdByIndex(index);
         if (node >= catalog_.nodeCount(locusIndex))
             throw std::logic_error("Invalid node " + std::to_string(node));
         const auto region = catalog_.referenceRegion(locusIndex, node);
         if (region)
         {
-            if (nodePath.startPosition() >= region->length())
+            const auto start = path.getStartPositionOnNodeByIndex(index);
+            if (start >= region->length())
                 throw std::logic_error("Cannot map position outside node");
-            optionalReferenceInterval.emplace(
-                contigInfo_.getContigName(region->contigIndex()), region->start() + nodePath.startPosition(),
-                region->start() + nodePath.startPosition());
-        }
-        if (optionalReferenceInterval)
+            const auto& contigName = contigInfo_.getContigName(region->contigIndex());
+            contigId = bamContigIds_[region->contigIndex()];
+            if (contigId == -1 && !contigName.empty())
+                throw std::logic_error("Unknown contig name " + contigName);
+            position = region->start() + start;
             break;
+        }
     }
-
-    if (optionalReferenceInterval)
-    {
-        write(*optionalReferenceInterval, fragmentName, query, isFirstMate, isReversed, isMateReversed, alignment);
-    }
-    else
-    {
-        ReferenceInterval interval("", -1, -1);
-        write(interval, fragmentName, query, isFirstMate, isReversed, isMateReversed, alignment);
-    }
+    write(contigId, position, fragmentName, query, isFirstMate, isReversed, isMateReversed, alignment);
 }
 
 // TODO: Consider moving to graph tools
 static string summarizeAlignment(const GraphAlignment& alignment)
 {
-    const vector<string> customTagComponents
-        = { alignment.path().graphRawPtr()->graphId(), to_string(alignment.path().startPosition()),
-            alignment.generateCigar() };
-
-    return boost::algorithm::join(customTagComponents, ",");
+    string encoding = alignment.path().graphRawPtr()->graphId();
+    encoding += ',';
+    encoding += to_string(alignment.path().startPosition());
+    encoding += ',';
+    // Operation::generateCigar constructs a stream just to append its type.
+    // Keep the same order and decimal formatting while writing directly into
+    // the XG string instead of allocating per-operation/per-node strings.
+    for (int32_t index = 0; index != static_cast<int32_t>(alignment.size()); ++index)
+    {
+        encoding += to_string(static_cast<int32_t>(alignment.getNodeIdByIndex(index)));
+        encoding += '[';
+        for (const auto& operation : alignment[index].operations())
+        {
+            encoding += to_string(operation.length());
+            switch (operation.type())
+            {
+            case graphtools::OperationType::kMatch: encoding += 'M'; break;
+            case graphtools::OperationType::kMismatch: encoding += 'X'; break;
+            case graphtools::OperationType::kInsertionToRef: encoding += 'I'; break;
+            case graphtools::OperationType::kDeletionFromRef: encoding += 'D'; break;
+            case graphtools::OperationType::kSoftclip: encoding += 'S'; break;
+            case graphtools::OperationType::kMissingBases: encoding += 'N'; break;
+            }
+        }
+        encoding += ']';
+    }
+    return encoding;
 }
 
 static const string graphAlignmentBamTag = "XG";
 
-static vector<int> extractQualityScores(const string& query)
+// ACGTN, including lower-case low-quality bases, covers the usual BAM input.
+// Other characters use HTSlib's complete mapping and the original quality rule.
+#if defined(__aarch64__) && !defined(EH_DISABLE_BAM_ENCODING_SIMD)
+static std::size_t encodeCommonBases(const string& query, uint8_t* sequence, uint8_t* quality)
 {
-    const int kLowQualityScore = 0;
-    const int kHighQualityScore = 40;
-
-    vector<int> qualities;
-    qualities.resize(query.length());
-
-    for (int index = 0; index != static_cast<int>(query.size()); ++index)
+    std::size_t index = 0;
+    for (; index + 16 <= query.size(); index += 16)
     {
-        qualities[index] = isupper(query[index]) ? kHighQualityScore : kLowQualityScore;
+        const auto bases = vld1q_u8(reinterpret_cast<const uint8_t*>(query.data() + index));
+        const auto upper = vandq_u8(bases, vdupq_n_u8(0xdf));
+        const auto a = vceqq_u8(upper, vdupq_n_u8('A'));
+        const auto c = vceqq_u8(upper, vdupq_n_u8('C'));
+        const auto g = vceqq_u8(upper, vdupq_n_u8('G'));
+        const auto t = vceqq_u8(upper, vdupq_n_u8('T'));
+        const auto n = vceqq_u8(upper, vdupq_n_u8('N'));
+        const auto valid = vorrq_u8(vorrq_u8(a, c), vorrq_u8(vorrq_u8(g, t), n));
+        if (vminvq_u8(valid) != 255)
+            break;
+        auto codes = vorrq_u8(vandq_u8(a, vdupq_n_u8(1)), vandq_u8(c, vdupq_n_u8(2)));
+        codes = vorrq_u8(codes, vorrq_u8(vandq_u8(g, vdupq_n_u8(4)), vandq_u8(t, vdupq_n_u8(8))));
+        codes = vorrq_u8(codes, vandq_u8(n, vdupq_n_u8(15)));
+        const auto even = vget_low_u8(vuzp1q_u8(codes, codes));
+        const auto odd = vget_low_u8(vuzp2q_u8(codes, codes));
+        vst1_u8(sequence + index / 2, vorr_u8(vshl_n_u8(even, 4), odd));
+        vst1q_u8(quality + index, vandq_u8(vceqq_u8(bases, upper), vdupq_n_u8(40)));
     }
-
-    return qualities;
+    return index;
+}
+#elif defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__)) && !defined(EH_DISABLE_BAM_ENCODING_SIMD)
+__attribute__((target("avx2"))) static std::size_t encodeCommonBasesAvx2(
+    const string& query, uint8_t* sequence, uint8_t* quality)
+{
+    std::size_t index = 0;
+    for (; index + 32 <= query.size(); index += 32)
+    {
+        const auto bases = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(query.data() + index));
+        const auto upper = _mm256_and_si256(bases, _mm256_set1_epi8(char(0xdf)));
+        const auto a = _mm256_cmpeq_epi8(upper, _mm256_set1_epi8('A'));
+        const auto c = _mm256_cmpeq_epi8(upper, _mm256_set1_epi8('C'));
+        const auto g = _mm256_cmpeq_epi8(upper, _mm256_set1_epi8('G'));
+        const auto t = _mm256_cmpeq_epi8(upper, _mm256_set1_epi8('T'));
+        const auto n = _mm256_cmpeq_epi8(upper, _mm256_set1_epi8('N'));
+        const auto valid = _mm256_or_si256(_mm256_or_si256(a, c), _mm256_or_si256(_mm256_or_si256(g, t), n));
+        if (_mm256_movemask_epi8(valid) != -1)
+            break;
+        auto codes = _mm256_or_si256(_mm256_and_si256(a, _mm256_set1_epi8(1)), _mm256_and_si256(c, _mm256_set1_epi8(2)));
+        codes = _mm256_or_si256(codes, _mm256_or_si256(_mm256_and_si256(g, _mm256_set1_epi8(4)), _mm256_and_si256(t, _mm256_set1_epi8(8))));
+        codes = _mm256_or_si256(codes, _mm256_and_si256(n, _mm256_set1_epi8(15)));
+        const auto packedWords = _mm256_maddubs_epi16(codes, _mm256_set1_epi16(0x0110));
+        const auto packed = _mm256_packus_epi16(packedWords, _mm256_setzero_si256());
+        const auto bytes = _mm_unpacklo_epi64(_mm256_castsi256_si128(packed), _mm256_extracti128_si256(packed, 1));
+        _mm_storeu_si128(reinterpret_cast<__m128i*>(sequence + index / 2), bytes);
+        _mm256_storeu_si256(reinterpret_cast<__m256i*>(quality + index),
+            _mm256_and_si256(_mm256_cmpeq_epi8(bases, upper), _mm256_set1_epi8(40)));
+    }
+    return index;
 }
 
+static std::size_t encodeCommonBases(const string& query, uint8_t* sequence, uint8_t* quality)
+{
+    static const bool hasAvx2 = __builtin_cpu_supports("avx2");
+    return hasAvx2 ? encodeCommonBasesAvx2(query, sequence, quality) : 0;
+}
+#else
+static std::size_t encodeCommonBases(const string&, uint8_t*, uint8_t*) { return 0; }
+#endif
+
 void BamletWriter::write(
-    const ReferenceInterval& interval, const string& fragmentName, const string& query, bool isFirstMate,
+    int32_t contigId, int64_t position, const string& fragmentName, const string& query, bool isFirstMate,
     bool isReversed, bool isMateReversed, const GraphAlignment& alignment)
 {
 
@@ -220,20 +319,8 @@ void BamletWriter::write(
         throw std::bad_alloc();
     bam1_t* htsAlignmentPtr = ownedAlignment.get();
 
-    if (interval.contig.empty())
-    {
-        htsAlignmentPtr->core.tid = -1;
-    }
-    else
-    {
-        htsAlignmentPtr->core.tid = bam_name2id(bamHeader_.get(), interval.contig.c_str());
-        if (htsAlignmentPtr->core.tid == -1)
-        {
-            throw std::logic_error("Unknown contig name " + interval.contig);
-        }
-    }
-
-    htsAlignmentPtr->core.pos = interval.start;
+    htsAlignmentPtr->core.tid = contigId;
+    htsAlignmentPtr->core.pos = position;
     htsAlignmentPtr->core.mtid = -1;
     htsAlignmentPtr->core.mpos = -1;
     htsAlignmentPtr->core.flag = BAM_FUNMAP;
@@ -247,7 +334,7 @@ void BamletWriter::write(
 
     htsAlignmentPtr->core.flag += isFirstMate ? BAM_FREAD1 : BAM_FREAD2;
 
-    const vector<int> qualities = extractQualityScores(query);
+    const string alignmentEncoding = summarizeAlignment(alignment);
 
     htsAlignmentPtr->core.l_qname = fragmentName.length() + 1; // +1 includes the tailing '\0'
     htsAlignmentPtr->core.l_qseq = query.length();
@@ -256,7 +343,9 @@ void BamletWriter::write(
     //`q->data` structure: qname-cigar-seq-qual-aux
     int seqQualLength = (int)(1.5 * query.length() + (query.length() % 2 != 0));
     htsAlignmentPtr->l_data = htsAlignmentPtr->core.l_qname + seqQualLength;
-    htsAlignmentPtr->m_data = htsAlignmentPtr->l_data;
+    // Include XG's two-byte name, type byte and terminating NUL in the first
+    // allocation. bam_aux_append still owns tag serialization and l_data.
+    htsAlignmentPtr->m_data = htsAlignmentPtr->l_data + 3 + alignmentEncoding.length() + 1;
     kroundup32(htsAlignmentPtr->m_data);
     auto* data = static_cast<uint8_t*>(realloc(htsAlignmentPtr->data, htsAlignmentPtr->m_data));
     if (!data)
@@ -264,29 +353,29 @@ void BamletWriter::write(
     htsAlignmentPtr->data = data;
     memcpy(htsAlignmentPtr->data, fragmentName.c_str(), htsAlignmentPtr->core.l_qname); // first set qname
 
-    uint8_t* htsSequencePtr = bam_get_seq(htsAlignmentPtr);
-    // Initialize both packed bases, including the unused nibble of an odd-length read.
-    std::memset(htsSequencePtr, 0, (htsAlignmentPtr->core.l_qseq + 1) / 2);
-    for (int index = 0; index < htsAlignmentPtr->core.l_qseq; ++index)
+    uint8_t* const htsSequencePtr = bam_get_seq(htsAlignmentPtr);
+    uint8_t* const htsQualityPtr = bam_get_qual(htsAlignmentPtr);
+    std::size_t index = encodeCommonBases(query, htsSequencePtr, htsQualityPtr);
+    // Write each packed byte once and derive qualities directly, without an
+    // intermediate vector<int>. Retain HTSlib's complete nucleotide mapping
+    // and the original isupper-based quality rule (including non-ACGT bases).
+    for (; index + 1 < query.length(); index += 2)
     {
-        bam1_seq_seti(htsSequencePtr, index, seq_nt16_table[(unsigned char)query[index]]);
+        const auto first = static_cast<unsigned char>(query[index]);
+        const auto second = static_cast<unsigned char>(query[index + 1]);
+        htsSequencePtr[index / 2] = (seq_nt16_table[first] << 4) | seq_nt16_table[second];
+        htsQualityPtr[index] = isupper(query[index]) ? 40 : 0;
+        htsQualityPtr[index + 1] = isupper(query[index + 1]) ? 40 : 0;
+    }
+    if (index < query.length())
+    {
+        htsSequencePtr[index / 2] = seq_nt16_table[static_cast<unsigned char>(query[index])] << 4;
+        htsQualityPtr[index] = isupper(query[index]) ? 40 : 0;
     }
 
-    htsSequencePtr = bam_get_qual(htsAlignmentPtr);
-    if (!qualities.empty() && qualities.size() != query.length())
-    {
-        throw std::logic_error("Mismatched sequence and quality lengths");
-    }
-
-    for (unsigned index = 0; index < query.length(); ++index)
-    {
-        htsSequencePtr[index] = qualities.empty() ? 0xFF : qualities[index];
-    }
-
-    string alignmentEncoding = summarizeAlignment(alignment);
     const int appendResult = bam_aux_append(
         htsAlignmentPtr, graphAlignmentBamTag.c_str(), 'Z', alignmentEncoding.length() + 1,
-        reinterpret_cast<uint8_t*>(&alignmentEncoding[0]));
+        reinterpret_cast<const uint8_t*>(alignmentEncoding.c_str()));
     if (appendResult != 0)
         throw std::runtime_error("Cannot append graph alignment BAM tag");
 

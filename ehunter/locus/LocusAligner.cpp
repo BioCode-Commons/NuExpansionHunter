@@ -68,7 +68,7 @@ LocusAligner::AlignedPair LocusAligner::align(Read& read, Read* mate, graphtools
             *mateAlign);
     }
 
-    return { readAlign, mateAlign };
+    return { std::move(readAlign), std::move(mateAlign) };
 }
 
 LocusAligner::OptionalAlign LocusAligner::align(Read& read, graphtools::AlignerSelector& alignerSelector) const
@@ -88,6 +88,11 @@ LocusAligner::OptionalAlign LocusAligner::align(Read& read, graphtools::AlignerS
     if (readAligns.empty())
     {
         return {};
+    }
+
+    if (readAligns.size() == 1)
+    {
+        return std::move(readAligns.front());
     }
 
     return computeCanonicalAlignment(readAligns);

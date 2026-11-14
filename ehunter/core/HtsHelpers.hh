@@ -42,6 +42,13 @@ bool isPrimaryAlignment(bam1_t* htsAlignPtr);
 Read decodeRead(bam1_t* htsAlignPtr);
 Read decodeReadParts(const char* qname, uint32_t samFlag, int32_t readLength,
     const uint8_t* packedSequence, const uint8_t* qualities);
+#ifdef EH_READ_DECODE_TEST_INSTRUMENT_SIMD
+namespace detail
+{
+uint64_t readDecodeSimdBlocksForTesting();
+bool readDecodeSimdSupportedForTesting();
+}
+#endif
 ReferenceContigInfo decodeContigInfo(bam_hdr_t* htsHeaderPtr);
 
 } // namespace htshelpers

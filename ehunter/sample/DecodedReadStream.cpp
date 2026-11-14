@@ -59,12 +59,37 @@ bool DecodedReadStream::seekSelected()
         return true;
     if (finished_)
         return false;
+    // A run of rejected records often stays in the same two mask bins. Keep
+    // these tiny memos only during this seek: the caller can change the mask
+    // between next() calls, and such changes must be observed immediately.
+    struct BinResult
+    {
+        int32_t contig = -1;
+        uint64_t bin = 0;
+        bool result = false;
+        bool valid = false;
+    };
+    BinResult readBin, mateBin;
+    const auto queryBin = [&](BinResult& cached, int32_t contig, int64_t position) {
+        if (contig < 0 || position < 0)
+            return false;
+        const auto bin = GenomeMask::binIndex(static_cast<uint64_t>(position));
+        if (!cached.valid || cached.contig != contig || cached.bin != bin)
+        {
+            const bool result = mask_.query(contig, position);
+            cached.contig = contig;
+            cached.bin = bin;
+            cached.result = result;
+            cached.valid = true;
+        }
+        return cached.result;
+    };
     try
     {
         while (input_.trySeekingToNextPrimaryAlignment() && input_.isStreamingAlignedReads())
         {
-            if ((mask_.query(input_.currentReadContigId(), input_.currentReadPosition())
-                || mask_.query(input_.currentMateContigId(), input_.currentMatePosition()))
+            if ((queryBin(readBin, input_.currentReadContigId(), input_.currentReadPosition())
+                || queryBin(mateBin, input_.currentMateContigId(), input_.currentMatePosition()))
                 && input_.currentIsPaired())
             {
                 hasRecord_ = true;
@@ -90,6 +115,22 @@ DecodedStreamRecord* DecodedReadStream::decodeCurrent()
         input_.currentReadPosition(), input_.currentMatePosition(), input_.decodeRead() });
     hasRecord_ = false;
     return &*directRecord_;
+}
+
+const bam1_t* DecodedReadStream::nextUndecoded()
+{
+    if (!slots_.empty())
+        throw std::logic_error("Undecoded streaming requires synchronous read preprocessing");
+    directRecord_ = boost::none;
+    if (!seekSelected())
+        return nullptr;
+    const auto* bam = input_.currentAlignment();
+    // Routing does not inspect bases, but skipping an eager Read must not hide
+    // its validation errors. Delegate unusual invalid records to that decoder.
+    if (bam->core.l_qseq <= 0 || !*bam_get_qname(bam))
+        input_.decodeRead();
+    hasRecord_ = false;
+    return bam;
 }
 
 void DecodedReadStream::account(Slot& slot)

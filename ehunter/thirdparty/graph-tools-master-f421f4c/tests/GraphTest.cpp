@@ -77,6 +77,37 @@ TEST(NodeSequenceManipulation, EmptySequence_ExceptionRaised)
     EXPECT_ANY_THROW(graph.setNodeSeq(1, ""));
 }
 
+TEST(NodeSequenceManipulation, LengthOnlyAccessPreservesOwnedMappedAndReverseSemantics)
+{
+    Graph graph(2);
+    graph.setNodeSeq(0, "ACGTN");
+    graph.setNodeSeq(1, string(1024, 'A'));
+    graph.addEdge(0, 1);
+    BlobBuilder blob;
+    const auto record = graph.freeze(blob);
+    MappedBytes bytes(blob.bytes.data(), blob.bytes.size());
+    Graph mapped = Graph::mapped(bytes, record);
+    ReverseGraph reverse(graph), mappedReverse(mapped);
+    for (NodeId node = 0; node < graph.numNodes(); ++node)
+    {
+        EXPECT_EQ(graph.nodeSeq(node).size(), graph.nodeSeqLength(node));
+        EXPECT_EQ(reverse.nodeSeq(node).size(), reverse.nodeSeqLength(node));
+        EXPECT_EQ(mapped.nodeSeq(node).size(), mapped.nodeSeqLength(node));
+        EXPECT_EQ(mappedReverse.nodeSeq(node).size(), mappedReverse.nodeSeqLength(node));
+    }
+    EXPECT_THROW(graph.nodeSeqLength(2), std::logic_error);
+    EXPECT_THROW(mappedReverse.nodeSeqLength(2), std::logic_error);
+    graph.setNodeSeq(0, "C");
+    EXPECT_EQ(reverse.nodeSeqLength(0), 1u);
+
+    const auto nodes = bytes.array<MappedGraph>(record)->nodes;
+    auto corrupt = bytes.array<MappedNode>(nodes)[0];
+    corrupt.sequence = { bytes.size, 1 };
+    blob.replace(nodes.offset, corrupt);
+    EXPECT_THROW(mapped.nodeSeq(0), std::runtime_error);
+    EXPECT_THROW(mapped.nodeSeqLength(0), std::runtime_error);
+}
+
 TEST(AddingEdges, TypicalEdge_EdgeAdded)
 {
     Graph graph(3);

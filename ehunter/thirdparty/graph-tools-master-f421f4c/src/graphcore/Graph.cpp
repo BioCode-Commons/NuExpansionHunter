@@ -22,6 +22,9 @@
 
 #include "graphcore/Graph.hh"
 
+#include <atomic>
+#include <limits>
+
 #include <stdexcept>
 
 #include "graphutils/SequenceOperations.hh"
@@ -33,6 +36,33 @@ using std::vector;
 
 namespace graphtools
 {
+
+uint64_t Graph::nextAlignmentRevision()
+{
+    static std::atomic<uint64_t> next(1);
+    uint64_t value = next.load(std::memory_order_relaxed);
+    do
+    {
+        // Never recycle an identity, even if this otherwise unreachable limit
+        // is reached. Only construction/mutation touches the shared counter.
+        if (value == std::numeric_limits<uint64_t>::max())
+            throw std::overflow_error("Graph alignment revision exhausted");
+    } while (!next.compare_exchange_weak(value, value + 1, std::memory_order_relaxed));
+    return value;
+}
+
+void Graph::swap(Graph& other) noexcept
+{
+    using std::swap;
+    swap(mapped_, other.mapped_);
+    swap(mappedGraph_, other.mappedGraph_);
+    swap(graphId_, other.graphId_);
+    swap(nodes_, other.nodes_);
+    swap(edge_labels_, other.edge_labels_);
+    swap(adjacency_list_, other.adjacency_list_);
+    swap(reverse_adjacency_list_, other.reverse_adjacency_list_);
+    swap(alignmentRevision_, other.alignmentRevision_);
+}
 
 void Graph::init(size_t numnodes_)
 {
@@ -75,6 +105,7 @@ void Graph::setNodeName(NodeId node_id, const std::string& node_name)
 {
     assertMutable();
     assertNodeExists(node_id);
+    alignmentRevision_ = nextAlignmentRevision();
     nodes_[node_id].name = node_name;
 }
 
@@ -82,6 +113,17 @@ TextView Graph::nodeSeq(const NodeId node_id) const
 {
     assertNodeExists(node_id);
     return mapped_.data ? mapped_.text(mappedNode(node_id).sequence) : TextView(nodes_[node_id].sequence);
+}
+
+size_t Graph::nodeSeqLength(const NodeId node_id) const
+{
+    assertNodeExists(node_id);
+    if (!mapped_.data)
+        return nodes_[node_id].sequence.size();
+    const auto sequence = mappedNode(node_id).sequence;
+    // Preserve the same mapped bounds checks as nodeSeq().
+    mapped_.array<char>(sequence);
+    return sequence.count;
 }
 
 CatalogRange<TextView> Graph::nodeSeqExpansion(NodeId node_id) const
@@ -110,6 +152,7 @@ void Graph::setNodeSeq(NodeId node_id, const string& sequence)
     assertMutable();
     assertNodeExists(node_id);
     assertValidSequence(sequence);
+    alignmentRevision_ = nextAlignmentRevision();
     nodes_[node_id].sequence = sequence;
     expandReferenceSequence(sequence, nodes_[node_id].sequence_expansion);
 }
@@ -132,6 +175,7 @@ void Graph::addEdge(NodeId source_id, NodeId sink_id)
     }
 
     NodeIdPair node_id_pair = std::make_pair(source_id, sink_id);
+    alignmentRevision_ = nextAlignmentRevision();
     edge_labels_[node_id_pair];
 
     adjacency_list_[source_id].emplace(sink_id);
@@ -143,7 +187,11 @@ bool Graph::hasEdge(NodeId source_id, NodeId sink_id) const
     assertNodeExists(source_id);
     assertNodeExists(sink_id);
     if (mapped_.data)
-        return successors(source_id).count(sink_id) != 0;
+    {
+        const auto slice = mappedNode(source_id).successors;
+        const auto* ids = mapped_.array<NodeId>(slice);
+        return std::find(ids, ids + slice.count, sink_id) != ids + slice.count;
+    }
     return edge_labels_.find(NodeIdPair(source_id, sink_id)) != edge_labels_.end();
 }
 
@@ -152,6 +200,7 @@ void Graph::addLabelToEdge(NodeId source_id, NodeId sink_id, const std::string& 
     assertMutable();
     NodeIdPair node_pair = std::make_pair(source_id, sink_id);
     assertEdgeExists(node_pair);
+    alignmentRevision_ = nextAlignmentRevision();
     edge_labels_[node_pair].insert(label);
 }
 
@@ -231,6 +280,7 @@ std::set<NodeIdPair> Graph::edgesWithLabel(const std::string& label) const
 void Graph::eraseLabel(const std::string& label)
 {
     assertMutable();
+    alignmentRevision_ = nextAlignmentRevision();
     for (auto& pair : edge_labels_)
     {
         pair.second.erase(label);

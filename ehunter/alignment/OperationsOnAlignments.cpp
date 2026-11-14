@@ -73,41 +73,32 @@ GraphAlignment extendWithSoftclip(const GraphAlignment& graphAlignment, int left
 
 int getNumNonrepeatMatchesUpstream(NodeId nodeId, const GraphAlignment& alignment)
 {
-    const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
-
-    if (repeatNodeIndexes.empty())
-    {
-        return 0;
-    }
-
-    const int firstRepeatNodeIndex = repeatNodeIndexes.front();
     int numMatches = 0;
-
-    for (int nodeIndex = 0; nodeIndex != firstRepeatNodeIndex; ++nodeIndex)
+    for (int nodeIndex = 0; nodeIndex != static_cast<int>(alignment.size()); ++nodeIndex)
     {
+        if (alignment.getNodeIdByIndex(nodeIndex) == nodeId)
+            return numMatches;
         numMatches += alignment[nodeIndex].numMatched();
     }
-
-    return numMatches;
+    return 0;
 }
 
 int getNumNonrepeatMatchesDownstream(NodeId nodeId, const GraphAlignment& alignment)
 {
-    const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
-
-    if (repeatNodeIndexes.empty())
+    int lastRepeatNodeIndex = -1;
+    for (int nodeIndex = static_cast<int>(alignment.size()) - 1; nodeIndex >= 0; --nodeIndex)
     {
+        if (alignment.getNodeIdByIndex(nodeIndex) == nodeId)
+        {
+            lastRepeatNodeIndex = nodeIndex;
+            break;
+        }
+    }
+    if (lastRepeatNodeIndex == -1)
         return 0;
-    }
-
-    const int lastRepeatNodeIndex = repeatNodeIndexes.back();
     int numMatches = 0;
-
     for (int nodeIndex = lastRepeatNodeIndex + 1; nodeIndex != static_cast<int>(alignment.size()); ++nodeIndex)
-    {
         numMatches += alignment[nodeIndex].numMatched();
-    }
-
     return numMatches;
 }
 
@@ -118,7 +109,8 @@ int scoreAlignmentToNonloopNodes(const graphtools::GraphAlignment& alignment, Li
     for (int nodeIndex = 0; nodeIndex != (int)alignment.size(); ++nodeIndex)
     {
         NodeId nodeId = alignment.path().getNodeIdByIndex(nodeIndex);
-        if (graph.successors(nodeId).find(nodeId) == graph.successors(nodeId).end())
+        const auto successors = graph.successors(nodeId);
+        if (successors.find(nodeId) == successors.end())
         {
             score += scoreAlignment(
                 alignment[nodeIndex], parameters.matchScore, parameters.mismatchScore, parameters.gapOpenScore);
@@ -130,15 +122,13 @@ int scoreAlignmentToNonloopNodes(const graphtools::GraphAlignment& alignment, Li
 
 int countFullOverlaps(NodeId nodeId, const GraphAlignment& alignment)
 {
-    const list<int> repeatNodeIndexes = alignment.getIndexesOfNode(nodeId);
-
     const graphtools::Graph& graph = *alignment.path().graphRawPtr();
     const std::size_t nodeLength = graph.nodeSeq(nodeId).length();
 
     int numFullOverlaps = 0;
-    for (auto nodeIndex : repeatNodeIndexes)
+    for (int nodeIndex = 0; nodeIndex != static_cast<int>(alignment.size()); ++nodeIndex)
     {
-        if (alignment[nodeIndex].referenceLength() == nodeLength)
+        if (alignment.getNodeIdByIndex(nodeIndex) == nodeId && alignment[nodeIndex].referenceLength() == nodeLength)
         {
             ++numFullOverlaps;
         }

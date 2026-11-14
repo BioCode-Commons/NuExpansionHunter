@@ -1,0 +1,62 @@
+# Native AVX2 correctness and full-program streaming validation.
+name: Native AVX2 streaming budget DP validation
+
+on:
+  push:
+    branches: [Jiapeng-DP-SIMD]
+    paths:
+      - '.github/workflows/dp-native-avx2.yml'
+      - 'tools/dp_budget_validation/*.py'
+      - 'tools/dp_budget_validation/*.cpp'
+      - 'tools/dp_budget_validation/*.c'
+      - 'ehunter/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-avx2:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out candidate commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+        with:
+          path: candidate
+          persist-credentials: false
+      - name: Check out published SIMD baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+        with:
+          ref: 7fa386484fa7c6f783dbe98239ad77fd097d057b
+          path: baseline
+          persist-credentials: false
+      - name: Install compiler and full application dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y             clang cmake ninja-build pkg-config libboost-dev             libboost-program-options-dev libboost-filesystem-dev libboost-system-dev             libgtest-dev libspdlog-dev libabsl-dev libhts-dev             zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev
+      - name: Verify native AVX2 correctness without microbenchmarks
+        run: |
+          python3 candidate/tools/dp_budget_validation/run-native.py             --baseline baseline --candidate candidate --out native-results             --cxx clang++ --jobs 2 --require-avx2 --skip-benchmarks
+      - name: Run paired full-program streaming benchmarks
+        run: |
+          python3 candidate/tools/dp_budget_validation/native-streaming.py             --candidate candidate --correctness-results native-results/results.json             --out streaming-results --cc clang --cxx clang++ --jobs 2 --pairs 9
+      - name: Upload JSON and text logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        with:
+          name: dp-native-avx2-streaming-${{ github.sha }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            native-results/*.json
+            native-results/*.log
+            native-results/correctness/*.json
+            native-results/correctness/*.stderr
+            streaming-results/*.json
+            streaming-results/*.log
+            streaming-results/benchmark/results.json
+            streaming-results/benchmark/prepare-*-measure.json
+            streaming-results/benchmark/prepare-*-measure.stderr
+            streaming-results/benchmark/pair-*/measure.json
+            streaming-results/benchmark/pair-*/measure.stderr

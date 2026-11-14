@@ -108,9 +108,17 @@ bool GreedyAlignmentIntersector::checkIfCommonNodeIsLoop() const
 void GreedyAlignmentIntersector::advanceIndexesToMatchRemainingIterations()
 {
     const NodeId loopNodeId = firstPath_.getNodeIdByIndex(nodeIndexOfIntersectionStartOnFirstPath_);
-    // TODO: Move getIndexesOfNode to path class;
-    const int numIterationsMadeByFirstPath = firstAlignment_.getIndexesOfNode(loopNodeId).size();
-    const int numIterationsMadeBySecondPath = secondAlignment_.getIndexesOfNode(loopNodeId).size();
+    // Keep the same alignment-index iteration and checked Path access as
+    // getIndexesOfNode, but only count: no temporary list is needed here.
+    const auto countIterations = [loopNodeId](const GraphAlignment& alignment) {
+        size_t count = 0;
+        const auto size = static_cast<int32_t>(alignment.size());
+        for (int32_t index = 0; index != size; ++index)
+            count += alignment.path().getNodeIdByIndex(static_cast<size_t>(index)) == loopNodeId;
+        return static_cast<int>(count);
+    };
+    const int numIterationsMadeByFirstPath = countIterations(firstAlignment_);
+    const int numIterationsMadeBySecondPath = countIterations(secondAlignment_);
 
     if (numIterationsMadeByFirstPath < numIterationsMadeBySecondPath)
     {

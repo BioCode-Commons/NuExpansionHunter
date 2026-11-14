@@ -22,6 +22,8 @@
 #pragma once
 
 #include <condition_variable>
+#include <cstddef>
+#include <functional>
 #include <mutex>
 #include <queue>
 
@@ -44,6 +46,9 @@ namespace ehunter
 class HtsStreamingReadPairQueue
 {
 public:
+    using WaitHelper = std::function<bool()>;
+    enum class InsertResult { Activated, Queued, Cancelled };
+
     /// \param[in] maxActiveLocusAnalyzerQueues The max number of non-empty LocusAnalyzer queues to store before
     /// blocking additional input
     ///
@@ -72,15 +77,50 @@ public:
     /// If \p locusIndex corresponds to an inactive queue, this will block until the queue can be activated without
     /// exceeding maxActiveLocusAnalyzerQueues.
     ///
-    /// \return True if the locusAnalyzer at \p locusIndex was marked as inactive before this method call
+    /// \return Activated if a new processing task is needed, Queued if an
+    /// existing task owns the queue, or Cancelled if the pair was not inserted.
     ///
-    bool insertReadPair(unsigned locusIndex, ReadPair readPair);
+    // The single input producer may execute one pending locus job while waiting
+    // for capacity. The helper runs with neither queue mutex held and returns
+    // whether it executed a job. It must not insert another read pair.
+    InsertResult insertReadPair(unsigned locusIndex, ReadPair readPair, const WaitHelper& waitHelper = WaitHelper());
+
+    // Wake a producer waiting for capacity after a processing failure. No more
+    // inactive queues are activated; the caller retains and rethrows the error
+    // after joining its workers.
+    void cancel();
 
     /// \brief Retrieve a read pair from the \p locusIndex queue
     ///
     /// \param[out] readPair Next read pair enqueued for \p locusIndex, or none if the queue is empty
     ///
     void getNextReadPair(unsigned locusIndex, boost::optional<ReadPair>& readPair);
+
+    // Only the current task owner may consume a locus. A nonzero limit yields
+    // after that many pairs without deactivating the queue or peeking/popping
+    // an extra pair. The caller must publish exactly one continuation after
+    // this returns true, unless processing has been cancelled. A zero limit
+    // drains as before. An empty continuation performs the usual deactivation.
+    template <typename ProcessPair>
+    bool processBatch(unsigned locusIndex, std::size_t limit,
+        boost::optional<ReadPair>& readPair, ProcessPair&& processPair)
+    {
+        std::size_t processed = 0;
+        while (true)
+        {
+            getNextReadPair(locusIndex, readPair);
+            if (!readPair)
+                return false;
+            processPair(*readPair);
+            if (limit && ++processed == limit)
+            {
+                // Finish all access/destruction for this pair before its owner
+                // publishes a continuation that another thread may start.
+                readPair = boost::none;
+                return true;
+            }
+        }
+    }
 
 private:
     struct LocusAnalyzerQueue
@@ -96,6 +136,7 @@ private:
 
     const unsigned maxActiveLocusAnalyzerQueues_;
     unsigned activeLocusAnalyzerQueues_;
+    bool cancelled_ = false;
     std::vector<LocusAnalyzerQueue> queues_;
 
     /// Global mutex/cv are used to enforce the max active LocusAnalyzerQueue limit

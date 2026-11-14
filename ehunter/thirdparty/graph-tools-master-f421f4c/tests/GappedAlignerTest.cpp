@@ -21,6 +21,7 @@
 #include "graphalign/GappedAligner.hh"
 
 #include "gtest/gtest.h"
+#include <locale>
 
 #include "graphalign/GraphAlignmentOperations.hh"
 #include "graphalign/LinearAlignment.hh"
@@ -33,6 +34,43 @@ using std::make_pair;
 using std::string;
 
 using namespace graphtools;
+
+namespace
+{
+class DistinctRangeUppercase : public std::ctype<char>
+{
+protected:
+    char do_toupper(char value) const override { return std::ctype<char>::do_toupper(value); }
+    const char* do_toupper(char* begin, const char* end) const override
+    {
+        while (begin != end)
+            *begin++ = 'N';
+        return end;
+    }
+};
+
+class RestoreLocale
+{
+public:
+    RestoreLocale() : previous_(std::locale()) { }
+    ~RestoreLocale() { std::locale::global(previous_); }
+private:
+    std::locale previous_;
+};
+}
+
+TEST(SeedUppercase, PreservesSingleCharacterLocaleSemantics)
+{
+    RestoreLocale restore;
+    std::locale::global(std::locale(std::locale(), new DistinctRangeUppercase));
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    const auto result = aligner.align("acgtactg", selector);
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(expected, result);
+}
 
 TEST(DISABLED_ExtendingAlignmentSuffix, UniquelyMappingQuery_AlignmentExtended)
 {

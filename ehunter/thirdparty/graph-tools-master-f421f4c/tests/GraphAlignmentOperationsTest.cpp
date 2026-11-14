@@ -166,3 +166,25 @@ TEST(ProjectingLinearAlignmentOntoPath, TypicalLinearAlignment_GraphAlignment)
 
     ASSERT_EQ(expected_graph_alignment, graph_alignment);
 }
+
+TEST(ProjectingLinearAlignmentOntoPath, BoundaryInsertionsAndZeroLengthOperationsStayOnTheLeft)
+{
+    Graph graph = makeStrGraph("AAAAA", "CAG", string(150, 'T'));
+    Path path(&graph, 0, { 0, 1, 1, 2 }, 139);
+    Alignment linear(0, "5M3I0X3M0D3M136M");
+    ASSERT_EQ(linear.queryLength(), 150);
+    const auto projected = projectAlignmentOntoGraph(linear, path);
+    const auto expected = decodeGraphAlignment(0, "0[5M3I0X]1[3M0D]1[3M]2[136M]", &graph);
+    EXPECT_EQ(projected, expected);
+}
+
+TEST(ConstructingGraphAlignment, PathRemainsUnchangedForLvalueAndMovedArguments)
+{
+    Graph graph = makeStrGraph(string(200, 'A'), "CAG", string(200, 'T'));
+    Path path(&graph, 0, { 0 }, 150);
+    const Path original = path;
+    GraphAlignment fromLvalue(path, { Alignment(0, "150M") });
+    GraphAlignment fromMoved(std::move(path), { Alignment(0, "150M") });
+    EXPECT_EQ(path, original);
+    EXPECT_EQ(fromLvalue, fromMoved);
+}

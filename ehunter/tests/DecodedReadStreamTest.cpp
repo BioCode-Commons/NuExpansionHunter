@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 
+#include <algorithm>
 #include <cstdint>
+#include <cctype>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -9,9 +11,116 @@
 #include <boost/filesystem.hpp>
 
 #include "sample/DecodedReadStream.hh"
+#include "core/HtsHelpers.hh"
 
 namespace
 {
+TEST(HtsReadParts, MatchesScalarDecoderForAllPackedBasesAndQualityBoundaries)
+{
+    // Exercise all 16 BAM symbols, both nibbles, odd lengths, and the inclusive
+    // quality cutoff (including absent BAM qualities, represented as 255).
+    const std::vector<uint8_t> qualities = { 0, 19, 20, 21, 40, 255 };
+    for (unsigned packed = 0; packed != 256; ++packed)
+    {
+        for (const auto firstQuality : qualities)
+        {
+            for (const auto secondQuality : qualities)
+            {
+                const uint8_t sequence[] = { static_cast<uint8_t>(packed), static_cast<uint8_t>(255 - packed) };
+                const uint8_t quality[] = { firstQuality, secondQuality, firstQuality };
+                for (int length = 1; length <= 3; ++length)
+                {
+                    std::string expected;
+                    for (int base = 0; base < length; ++base)
+                    {
+                        const char value = seq_nt16_str[bam_seqi(sequence, base)];
+                        expected += quality[base] <= 20 ? static_cast<char>(std::tolower(value)) : value;
+                    }
+                    const auto read = ehunter::htshelpers::decodeReadParts(
+                        "packed-bases", BAM_FPAIRED | BAM_FREAD1 | BAM_FREVERSE, length, sequence, quality);
+                    ASSERT_EQ(read.sequence(), expected);
+                    ASSERT_EQ(read.fragmentId(), "packed-bases");
+                    ASSERT_TRUE(read.isFirstMate());
+                    ASSERT_TRUE(read.isReversed());
+                }
+            }
+        }
+    }
+}
+
+std::string scalarReadBases(int32_t length, const uint8_t* sequence, const uint8_t* qualities)
+{
+    std::string expected;
+    for (int32_t index = 0; index < length; ++index)
+    {
+        const char base = seq_nt16_str[bam_seqi(sequence, index)];
+        expected += qualities[index] <= 20 ? static_cast<char>(std::tolower(base)) : base;
+    }
+    return expected;
+}
+
+TEST(HtsReadParts, VectorChunksMatchAllPackedBytesAndAllUnsignedQualities)
+{
+    // Two vector chunks plus an odd scalar tail. Every packed byte occurs
+    // against every unsigned quality, including all high-bit values.
+    const int32_t length = 65;
+    std::vector<uint8_t> sequence((length + 1) / 2);
+    std::vector<uint8_t> qualities(length);
+    for (unsigned packed = 0; packed < 256; ++packed)
+    {
+        std::fill(sequence.begin(), sequence.end(), static_cast<uint8_t>(packed));
+        for (unsigned quality = 0; quality < 256; ++quality)
+        {
+            for (int32_t index = 0; index < length; ++index)
+                qualities[index] = static_cast<uint8_t>(quality + 37 * index);
+            const uint32_t flags = BAM_FPAIRED | (packed % 2 ? BAM_FREAD1 : BAM_FREAD2)
+                | (quality % 2 ? BAM_FREVERSE : 0);
+            const auto read = ehunter::htshelpers::decodeReadParts(
+                "vector-bases", flags, length, sequence.data(), qualities.data());
+            ASSERT_EQ(read.sequence(), scalarReadBases(length, sequence.data(), qualities.data()));
+            ASSERT_EQ(read.fragmentId(), "vector-bases");
+            ASSERT_EQ(read.isFirstMate(), bool(flags & BAM_FREAD1));
+            ASSERT_EQ(read.isReversed(), bool(flags & BAM_FREVERSE));
+        }
+    }
+}
+
+TEST(HtsReadParts, VectorBoundariesAndMisalignedInputsMatchScalarOracle)
+{
+    for (const int32_t length : { 1, 2, 15, 16, 17, 31, 32, 33, 63, 64, 65, 127, 128, 129, 149, 150, 151, 255, 256, 257 })
+    {
+        for (std::size_t offset = 0; offset < 32; ++offset)
+        {
+            // Allocate exactly through the last logical input byte. Sanitized
+            // builds can therefore detect an accidental full-vector tail load.
+            std::vector<uint8_t> sequence(offset + (length + 1) / 2);
+            const std::size_t qualityOffset = 31 - offset;
+            std::vector<uint8_t> qualities(qualityOffset + length);
+            for (std::size_t i = offset; i < sequence.size(); ++i)
+                sequence[i] = static_cast<uint8_t>(i * 73 + offset * 17);
+            for (std::size_t i = qualityOffset; i < qualities.size(); ++i)
+                qualities[i] = static_cast<uint8_t>(i * 31 + offset * 19);
+            const auto* packed = sequence.data() + offset;
+            const auto* quality = qualities.data() + qualityOffset;
+            const auto read = ehunter::htshelpers::decodeReadParts(
+                "unaligned-bases", BAM_FPAIRED | BAM_FREAD1, length, packed, quality);
+            ASSERT_EQ(read.sequence(), scalarReadBases(length, packed, quality));
+        }
+    }
+}
+
+#ifdef EH_READ_DECODE_TEST_INSTRUMENT_SIMD
+TEST(HtsReadParts, InstrumentedVectorActivationMatchesRuntimeDispatch)
+{
+    const uint8_t packed[33] = {};
+    const uint8_t qualities[65] = {};
+    const auto before = ehunter::htshelpers::detail::readDecodeSimdBlocksForTesting();
+    ehunter::htshelpers::decodeReadParts("activation", BAM_FREAD1, 65, packed, qualities);
+    const auto blocks = ehunter::htshelpers::detail::readDecodeSimdBlocksForTesting() - before;
+    EXPECT_EQ(blocks, ehunter::htshelpers::detail::readDecodeSimdSupportedForTesting() ? 2u : 0u);
+}
+#endif
+
 struct RecordSnapshot
 {
     int32_t contig, mateContig;
@@ -92,15 +201,27 @@ protected:
         return mask;
     }
 
-    StreamRun run(unsigned workers, const ehunter::GenomeMask& mask, bool catchError = false)
+    StreamRun run(unsigned workers, const ehunter::GenomeMask& mask, bool catchError = false, bool undecoded = false)
     {
         ehunter::htshelpers::HtsFileStreamer source(input_.string(), reference_.string(), 0);
         ehunter::DecodedReadStream stream(source, mask, workers);
         StreamRun result;
         try
         {
-            while (auto record = stream.next())
-                result.records.push_back(snapshot(*record));
+            if (undecoded)
+            {
+                while (const auto* raw = stream.nextUndecoded())
+                    result.records.push_back(snapshot({ raw->core.tid, raw->core.mtid,
+                        raw->core.pos, raw->core.mpos,
+                        ehunter::htshelpers::decodeReadParts(bam_get_qname(raw), raw->core.flag,
+                            raw->core.l_qseq, bam_get_seq(raw), bam_get_qual(raw)) }));
+                EXPECT_FALSE(stream.nextUndecoded());
+            }
+            else
+            {
+                while (auto record = stream.next())
+                    result.records.push_back(snapshot(*record));
+            }
             // Repeated EOF must not restart a batch or duplicate the final item.
             EXPECT_FALSE(stream.next());
             result.peakCache = stream.peakWorkerCacheBytes();
@@ -118,6 +239,51 @@ protected:
     boost::filesystem::path directory_, input_, reference_;
     std::ofstream output_;
 };
+
+TEST_F(DecodedReadStreamTest, UndecodedSelectionPreserves150bpRecordsAndFiltering)
+{
+    const std::string sequence = std::string(75, 'A') + std::string(75, 'N');
+    const std::string quality = std::string(75, '5') + std::string(75, '6');
+    for (unsigned index = 0; index < 64; ++index)
+    {
+        const auto flags = BAM_FPAIRED | ((index % 2) ? BAM_FREAD1 : BAM_FREAD2)
+            | ((index % 3) ? 0 : BAM_FREVERSE);
+        // Reverse positions, cross-contig mates and repeated names must retain
+        // exactly the same selected order and metadata for later pairing.
+        add("repeat-" + std::to_string(index % 5), flags, index % 2, 800 - index,
+            (index + 1) % 2, 900 - index, sequence, index % 2 ? quality : "*");
+        add("secondary", flags | BAM_FSECONDARY, 0, index, 0, 700, sequence);
+    }
+    add("unplaced", BAM_FPAIRED | BAM_FUNMAP, -1, 0, 0, 100, sequence);
+    add("after-stop", BAM_FPAIRED, 0, 100, 0, 200, sequence);
+    finish();
+    const auto expected = run(0, broadMask());
+    const auto actual = run(0, broadMask(), false, true);
+    EXPECT_EQ(actual.records, expected.records);
+    EXPECT_EQ(actual.records.size(), 64u);
+    EXPECT_EQ(actual.peakCache, 0u);
+}
+
+TEST_F(DecodedReadStreamTest, UndecodedSelectionPreservesEmptyQueryError)
+{
+    add("valid", BAM_FPAIRED, 0, 100, 0, 200, std::string(150, 'A'));
+    add("empty", BAM_FPAIRED, 0, 101, 0, 200, "*");
+    finish();
+    const auto expected = run(0, broadMask(), true);
+    const auto actual = run(0, broadMask(), true, true);
+    EXPECT_EQ(actual.records, expected.records);
+    EXPECT_FALSE(actual.error.empty());
+    EXPECT_EQ(actual.error, expected.error);
+}
+
+TEST_F(DecodedReadStreamTest, UndecodedSelectionRequiresSynchronousStream)
+{
+    add("valid", BAM_FPAIRED, 0, 100, 0, 200, std::string(150, 'A'));
+    finish();
+    const auto actual = run(1, broadMask(), true, true);
+    EXPECT_TRUE(actual.records.empty());
+    EXPECT_EQ(actual.error, "Undecoded streaming requires synchronous read preprocessing");
+}
 
 TEST_F(DecodedReadStreamTest, PreservesQualityThresholdAmbiguousBasesFlagsAndCoordinates)
 {
@@ -224,6 +390,101 @@ TEST_F(DecodedReadStreamTest, EmptyAndFullyFilteredStreamsFinish)
     input.close();
     for (const unsigned workers : { 0u, 1u, 4u })
         EXPECT_TRUE(run(workers, broadMask()).records.empty());
+}
+
+TEST_F(DecodedReadStreamTest, MaskSelectionPreservesBinBoundariesUnsortedReadsAndRemoteMates)
+{
+    ehunter::GenomeMask mask;
+    mask.addRegion(0, 1024, 1024);
+    mask.addRegion(1, 3072, 3072);
+    const auto flags = BAM_FPAIRED | BAM_FREAD1;
+    add("outside-first", flags, 0, 1023, 1, 2047, "ACGT");
+    add("outside-same-bins", flags, 0, 1022, 1, 2046, "ACGT");
+    add("negative-mate", flags, 0, 1000, -1, -1, "ACGT");
+    add("boundary-left", flags, 0, 1024, 1, 2047, "ACGT");
+    add("boundary-right", flags, 0, 2047, 1, 2047, "ACGT");
+    add("past-boundary", flags, 0, 2048, 1, 2047, "ACGT");
+    add("remote-selected", flags, 0, 100, 1, 3072, "ACGT");
+    add("far-remote-selected", flags, 1, 5000, 0, 1024, "ACGT");
+    add("after-bin", flags, 1, 4096, 0, 0, "ACGT");
+    add("remote-outside-boundary", flags, 1, 3071, 0, 0, "ACGT");
+    add("later-unsorted-selected", flags, 0, 1024, -1, -1, "ACGT");
+    finish();
+    const std::vector<RecordSnapshot> expected = {
+        { 0, 1, 1024, 2047, "boundary-left", "ACGT", true, false },
+        { 0, 1, 2047, 2047, "boundary-right", "ACGT", true, false },
+        { 0, 1, 100, 3072, "remote-selected", "ACGT", true, false },
+        { 1, 0, 5000, 1024, "far-remote-selected", "ACGT", true, false },
+        { 0, -1, 1024, -1, "later-unsorted-selected", "ACGT", true, false }
+    };
+    for (const unsigned workers : { 0u, 1u, 2u, 4u })
+    {
+        SCOPED_TRACE(workers);
+        EXPECT_EQ(run(workers, mask).records, expected);
+    }
+}
+
+TEST_F(DecodedReadStreamTest, SynchronousSelectionObservesMaskChangesBetweenNextCalls)
+{
+    ehunter::GenomeMask mask;
+    mask.addRegion(0, 0, 0);
+    add("first-via-mate", BAM_FPAIRED | BAM_FREAD1, 0, 2048, 0, 0, "ACGT");
+    add("newly-covered", BAM_FPAIRED | BAM_FREAD2, 0, 2049, 0, 4096, "TGCA");
+    finish();
+    ehunter::htshelpers::HtsFileStreamer source(input_.string(), reference_.string(), 0);
+    ehunter::DecodedReadStream stream(source, mask, 0);
+    const auto* first = stream.next();
+    ASSERT_NE(first, nullptr);
+    EXPECT_EQ(first->read.fragmentId(), "first-via-mate");
+    mask.addRegion(0, 2048, 2048);
+    const auto* second = stream.next();
+    ASSERT_NE(second, nullptr);
+    EXPECT_EQ(second->read.fragmentId(), "newly-covered");
+    EXPECT_FALSE(stream.next());
+}
+
+TEST_F(DecodedReadStreamTest, SelectedReadShortCircuitsInvalidPreparedMateMask)
+{
+    graphtools::BlobBuilder builder;
+    std::vector<ehunter::PreparedContigIntervals> roots(2);
+    roots[0].mask = builder.append(uint64_t(1));
+    roots[1].mask = { 4096, 1 }; // Invalid only if this mate's mask is queried.
+    const auto rootsSlice = builder.append(roots);
+    ehunter::GenomeMask mask;
+    mask.usePrepared({ builder.bytes.data(), builder.bytes.size() }, rootsSlice);
+    add("unpaired-read-selected", 0, 0, 0, 1, 0, "ACGT");
+    add("paired-read-selected", BAM_FPAIRED | BAM_FREAD1, 0, 1, 1, 0, "ACGT");
+    finish();
+    for (const unsigned workers : { 0u, 1u, 2u })
+    {
+        SCOPED_TRACE(workers);
+        const auto actual = run(workers, mask, true);
+        ASSERT_TRUE(actual.error.empty());
+        ASSERT_EQ(actual.records.size(), 1u);
+        EXPECT_EQ(actual.records.front().name, "paired-read-selected");
+    }
+}
+
+TEST_F(DecodedReadStreamTest, InvalidMateMaskStillFailsBeforeUnpairedFiltering)
+{
+    graphtools::BlobBuilder builder;
+    std::vector<ehunter::PreparedContigIntervals> roots(2);
+    roots[0].mask = builder.append(uint64_t(1));
+    roots[1].mask = { 4096, 1 };
+    const auto rootsSlice = builder.append(roots);
+    ehunter::GenomeMask mask;
+    mask.usePrepared({ builder.bytes.data(), builder.bytes.size() }, rootsSlice);
+    add("valid-prefix", BAM_FPAIRED | BAM_FREAD1, 0, 1, 0, 0, "ACGT");
+    add("unpaired-with-bad-mate-mask", 0, 0, 2048, 1, 0, "ACGT");
+    finish();
+    for (const unsigned workers : { 0u, 1u, 2u })
+    {
+        SCOPED_TRACE(workers);
+        const auto actual = run(workers, mask, true);
+        ASSERT_EQ(actual.records.size(), 1u);
+        EXPECT_EQ(actual.records.front().name, "valid-prefix");
+        EXPECT_EQ(actual.error, "Invalid mapped array range or alignment");
+    }
 }
 
 TEST_F(DecodedReadStreamTest, LargeRecordFallbackDrainsEarlierBatchesAndResumes)

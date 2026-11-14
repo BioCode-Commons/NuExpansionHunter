@@ -76,6 +76,25 @@ TEST(InitializingGraphAlignment, IncompatiblePath_ExceptionThrown)
     }
 }
 
+TEST(InitializingGraphAlignment, MovedAndCopiedInputsPreserveContentAndValidation)
+{
+    Graph graph = makeStrGraph("AAAA", "CG", "TTTT");
+    Path path(&graph, 1, { 0, 1, 1, 2 }, 3);
+    vector<Alignment> alignments = {
+        Alignment(1, "1S1M1X1M"), Alignment(0, "2M"), Alignment(0, "1M1I1M"), Alignment(0, "1D2M1S")
+    };
+    const GraphAlignment copied(path, alignments);
+    EXPECT_EQ(copied.path(), path);
+    EXPECT_EQ(copied.alignments(), alignments);
+    const GraphAlignment moved(std::move(path), std::move(alignments));
+    EXPECT_EQ(moved, copied);
+    EXPECT_EQ(moved.generateCigar(), "0[1S1M1X1M]1[2M]1[1M1I1M]2[1D2M1S]");
+
+    Path invalidPath(&graph, 1, { 0 }, 3);
+    vector<Alignment> invalidAlignments { Alignment(1, "3M") };
+    EXPECT_THROW(GraphAlignment(std::move(invalidPath), std::move(invalidAlignments)), std::logic_error);
+}
+
 TEST(GettingNumMatchesInGraphAlignment, TypicalGraphAlignment_GotNumMatches)
 {
     Graph graph = makeDeletionGraph("AAAA", "TTGG", "TTTT");

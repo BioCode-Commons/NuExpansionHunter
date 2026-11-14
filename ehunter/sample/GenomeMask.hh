@@ -22,6 +22,7 @@
 #pragma once
 
 #include "graphutils/MappedData.hh"
+#include "sample/PreparedIntervals.hh"
 #include <string>
 #include <vector>
 
@@ -33,8 +34,30 @@ namespace ehunter
 class GenomeMask
 {
 public:
+    // Accept an unsigned coordinate so computing a bin never shifts a negative
+    // signed value. Query callers reject negative coordinates first.
+    static constexpr uint64_t binIndex(uint64_t position) { return position >> 10; }
+
     void addRegion(int32_t contigId, int64_t start, int64_t stop);
-    bool query(int32_t contigId, int64_t pos) const;
+    bool query(int32_t contigId, int64_t pos) const
+    {
+        if (contigId < 0 || pos < 0)
+            return false;
+        if (prepared_.data)
+        {
+            if (uint64_t(contigId) >= roots_.count)
+                return false;
+            const auto mask = prepared_.array<PreparedContigIntervals>(roots_)[contigId].mask;
+            const auto bin = binIndex(static_cast<uint64_t>(pos));
+            return bin / 64 < mask.count
+                && (prepared_.array<uint64_t>(mask)[bin / 64] & (uint64_t(1) << (bin % 64)));
+        }
+        if (contigId >= static_cast<int>(mask_.size()))
+            return false;
+        const contigMask& cmask = mask_[contigId];
+        const size_t bin = binIndex(static_cast<uint64_t>(pos));
+        return bin < cmask.size() && cmask[bin];
+    }
     void usePrepared(graphtools::MappedBytes bytes, graphtools::Slice roots)
     {
         prepared_ = bytes;

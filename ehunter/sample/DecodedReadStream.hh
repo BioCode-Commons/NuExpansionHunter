@@ -40,6 +40,11 @@ public:
     // Borrowed until next() is called again or the stream is destroyed. The
     // caller may move the owned Read out, but must not retain this pointer.
     DecodedStreamRecord* next();
+    // Synchronous equivalent of next(), retaining the selected BAM payload in
+    // the input reader. This lets pairing/routing reject a second record before
+    // allocating its Read. Borrowed until either next method is called again.
+    // Empty names/queries still raise the same error as eager decoding.
+    const bam1_t* nextUndecoded();
     std::size_t peakWorkerCacheBytes() const;
     std::size_t synchronousLargeRecords() const { return largeRecords_; }
 

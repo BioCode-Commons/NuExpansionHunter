@@ -63,6 +63,26 @@ namespace dagAligner
             alignMatrix_.init(queryBegin, queryEnd, targetBegin, targetEnd, edgeMap);
         }
 
+        // Instantiated only by matrices supporting a proven cost lower bound.
+        // Ordinary/scoring-specific aligners retain the original five-argument
+        // init contract and do not instantiate this member template.
+        template <typename QueryIt, typename TargetIt>
+        void __attribute((noinline)) alignWithMinimumCost(
+            QueryIt queryBegin, QueryIt queryEnd, TargetIt targetBegin, TargetIt targetEnd,
+            const EdgeMap& edgeMap, int minimumCost)
+        {
+            alignMatrix_.init(queryBegin, queryEnd, targetBegin, targetEnd, edgeMap, minimumCost);
+        }
+
+        template <typename QueryIt, typename TargetIt>
+        void __attribute((noinline)) alignWithCostGuidance(
+            QueryIt queryBegin, QueryIt queryEnd, TargetIt targetBegin, TargetIt targetEnd,
+            const EdgeMap& edgeMap, int provenMinimumCost, int preferredInitialBudget)
+        {
+            alignMatrix_.init(
+                queryBegin, queryEnd, targetBegin, targetEnd, edgeMap, provenMinimumCost, preferredInitialBudget);
+        }
+
         struct Step
         {
             Cigar::OpCode operation_;
@@ -106,7 +126,7 @@ namespace dagAligner
                     start.push_back(Cigar::Operation(Cigar::SOFT_CLIP, softClip));
                 }
 
-                if (!backtrackPath<true>(edgeMap, start, firstNodeId, q, t, cigars))
+                if (!backtrackPath<true>(edgeMap, std::move(start), firstNodeId, q, t, cigars))
                 {
                     // ran out of cigars buffer
                     return bestScore;
@@ -153,9 +173,9 @@ namespace dagAligner
                 start.push_back(Cigar::Operation(Cigar::SOFT_CLIP, softClip));
             }
 
-            backtrackPath<false>(edgeMap, start, firstNodeId, q, t, ret);
+            backtrackPath<false>(edgeMap, std::move(start), firstNodeId, q, t, ret);
             alignMatrix_.template nextBestAlign<localAlign>(bestCell + 1, secondBestScore);
-            return ret.front();
+            return std::move(ret.front());
         }
 
     private:
@@ -244,10 +264,9 @@ namespace dagAligner
 
         template <bool exploreAllPaths>
         bool backtrackPath(
-            const EdgeMap& edgeMap, const Cigar& base, std::size_t lastNodeId, int q, int t,
+            const EdgeMap& edgeMap, Cigar ret, std::size_t lastNodeId, int q, int t,
             std::vector<Cigar>& cigars) const
         {
-            Cigar ret = base;
             while (-1 != t)
             {
                 const std::size_t curNodeId = edgeMap.getNodeId(t);
@@ -312,7 +331,7 @@ namespace dagAligner
             {
                 return false;
             }
-            cigars.push_back(ret);
+            cigars.push_back(std::move(ret));
             return true;
         }
 
