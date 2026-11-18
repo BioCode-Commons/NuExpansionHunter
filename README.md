@@ -19,8 +19,8 @@ and a realigned BAM with the same header and the same multiset of decoded record
 [Performance and identity](docs/07_Performance.md). See also the
 [verification documentation](ehunter/verification/README.md).
 
-In the current version of NuExpansionHunter, we focus only on the streaming mode of the 
-original ExpansionHunter. For the seeking mode, we recommend users to run the original version by Illumina.
+In the current version of NuExpansionHunter, we focus only on the **streaming mode** of the 
+original ExpansionHunter. For the **seeking mode**, we recommend users to run the original version by Illumina.
 
 ## Quick start
 
