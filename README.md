@@ -12,12 +12,15 @@ NuExpansionHunter aims to estimate sizes of such repeats by performing a targete
 search through a BAM/CRAM file for reads that span, flank, and are fully
 contained in each repeat.
 
-NuExpansionHunter is a modified version of Illumina ExpansionHunter v5.0.0. For every
+NuExpansionHunter is a reimplementation version of Illumina ExpansionHunter v5.0.0. For every
 input on which v5.0.0 has defined behaviour, it writes the same VCF and JSON bytes
 and a realigned BAM with the same header and the same multiset of decoded records
 (record order and compression differ), with the exceptions listed in
 [Performance and identity](docs/07_Performance.md). See also the
 [verification documentation](ehunter/verification/README.md).
+
+In the current version of NuExpansionHunter, we focus only on the streaming mode of the 
+original ExpansionHunter. For the seeking mode, we recommend users to run the original version by Illumina.
 
 ## Quick start
 
