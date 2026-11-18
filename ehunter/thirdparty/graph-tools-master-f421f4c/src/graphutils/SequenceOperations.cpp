@@ -17,6 +17,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: reference-symbol expansion detection is available to callers.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphutils/SequenceOperations.hh"
 
@@ -119,7 +124,7 @@ static bool checkIfNucleotideReferenceSymbol(char symbol)
     return (symbol == 'A') || (symbol == 'C') || (symbol == 'T') || (symbol == 'G');
 }
 
-static bool hasExpandableSymbols(const std::string& s)
+bool hasExpandableReferenceSymbols(const std::string& s)
 {
     static const struct ExpandableSyms
     {
@@ -176,7 +181,7 @@ string const& expandReferenceSymbol(char symbol)
 
 void expandReferenceSequence(const string& sequence, vector<string>& expanded_sequences)
 {
-    if (!hasExpandableSymbols(sequence))
+    if (!hasExpandableReferenceSymbols(sequence))
     {
         expanded_sequences = { sequence };
         return;

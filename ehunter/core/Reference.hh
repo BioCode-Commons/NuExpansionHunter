@@ -20,6 +20,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: FASTA references expose their source path.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -62,6 +67,7 @@ class FastaReference : public Reference
 public:
     explicit FastaReference(const std::string& referencePath, const ReferenceContigInfo& contigInfo);
     ~FastaReference();
+    const std::string& path() const { return referencePath_; }
 
     std::string getSequence(const std::string& contigIndex, int64_t start, int64_t end) const override;
     std::string getSequence(const GenomicRegion& region) const override;

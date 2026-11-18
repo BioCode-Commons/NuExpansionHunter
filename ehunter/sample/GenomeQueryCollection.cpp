@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: query collections construct indexes from catalogs and reuse prepared masks.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "sample/GenomeQueryCollection.hh"
 
@@ -30,29 +35,29 @@ namespace ehunter
 
 namespace
 {
-void initializeGenomeMask(GenomeMask& genomeMask, vector<unique_ptr<locus::LocusAnalyzer>>& locusAnalyzers)
+void addRegions(GenomeMask& mask, const LocusSpecification& locus)
 {
-    for (auto& locusAnalyzer : locusAnalyzers)
-    {
-        const LocusSpecification& locusSpec = locusAnalyzer->locusSpec();
-
-        for (const auto& region : locusSpec.targetReadExtractionRegions())
-        {
-            genomeMask.addRegion(region.contigIndex(), region.start(), region.end());
-        }
-
-        for (const auto& region : locusSpec.offtargetReadExtractionRegions())
-        {
-            genomeMask.addRegion(region.contigIndex(), region.start(), region.end());
-        }
-    }
+    for (const auto& region : locus.targetReadExtractionRegions())
+        mask.addRegion(region.contigIndex(), region.start(), region.end());
+    for (const auto& region : locus.offtargetReadExtractionRegions())
+        mask.addRegion(region.contigIndex(), region.start(), region.end());
 }
 }
 
-GenomeQueryCollection::GenomeQueryCollection(vector<unique_ptr<LocusAnalyzer>>& locusAnalyzers)
-    : analyzerFinder(locusAnalyzers)
+GenomeQueryCollection::GenomeQueryCollection(const RegionCatalog& catalog, unsigned workers)
+    : analyzerFinder(catalog, workers, &targetRegionMask)
 {
-    initializeGenomeMask(targetRegionMask, locusAnalyzers);
+}
+
+GenomeQueryCollection::GenomeQueryCollection(
+    vector<unique_ptr<LocusAnalyzer>>& locusAnalyzers, const RegionCatalog* catalog)
+    : analyzerFinder(locusAnalyzers, catalog)
+{
+    if (catalog && catalog->mappedBytes().data)
+        targetRegionMask.usePrepared(catalog->mappedBytes(), catalog->preparedIntervals());
+    else
+        for (const auto& analyzer : locusAnalyzers)
+            addRegions(targetRegionMask, analyzer->locusSpec());
 }
 
 }

@@ -17,6 +17,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: paths accept transferable node vectors and support implicit moves.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -40,8 +45,7 @@ public:
     typedef std::vector<NodeId>::const_iterator const_iterator;
 
     /// Checks if the inputs define a well-formed path.
-    Path(const Graph* graph_raw_ptr, int32_t start_position, const std::vector<NodeId>& nodes, int32_t end_position);
-    ~Path() = default;
+    Path(const Graph* graph_raw_ptr, int32_t start_position, std::vector<NodeId> nodes, int32_t end_position);
 
     bool operator==(const Path& other) const;
     bool operator<(const Path& path) const;

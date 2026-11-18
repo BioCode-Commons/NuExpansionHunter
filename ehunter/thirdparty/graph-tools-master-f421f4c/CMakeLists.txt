@@ -1,3 +1,8 @@
+#
+# Modified by NuExpansionHunter contributors, 2026.
+# This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: tests reuse available GoogleTest targets.
+# Modifications are licensed under the Apache License, Version 2.0.
+#
 cmake_minimum_required(VERSION 3.5.0)
 
 project(graphtools CXX)
@@ -58,6 +63,11 @@ target_compile_features(graphtools PRIVATE cxx_range_for)
 if (BUILD_TESTS)
     enable_testing()
     # Download and unpack googletest at configure time
-    include(GetGoogleTest)
+    if (TARGET GTest::GTest AND TARGET GTest::Main)
+        add_library(gtest ALIAS GTest::GTest)
+        add_library(gtest_main ALIAS GTest::Main)
+    else ()
+        include(GetGoogleTest)
+    endif ()
     add_subdirectory(tests)
 endif (BUILD_TESTS)

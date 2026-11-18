@@ -20,6 +20,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: variant specifications expose shared owned or mapped data through a common interface.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "locus/VariantSpecification.hh"
 
@@ -33,27 +38,27 @@ namespace ehunter
 
 void VariantSpecification::assertConsistency() const
 {
-    const bool variantIsRepeat = classification_.type == VariantType::kRepeat;
-    const bool variantIsDeletionOrSwap = classification_.type == VariantType::kSmallVariant
-        && (classification_.subtype == VariantSubtype::kDeletion || classification_.subtype == VariantSubtype::kSwap
-            || classification_.subtype == VariantSubtype::kSMN);
+    const auto kind = classification();
+    const bool variantIsRepeat = kind.type == VariantType::kRepeat;
+    const bool variantIsDeletionOrSwap = kind.type == VariantType::kSmallVariant
+        && (kind.subtype == VariantSubtype::kDeletion || kind.subtype == VariantSubtype::kSwap
+            || kind.subtype == VariantSubtype::kSMN);
     const bool variantIsInsertion
-        = classification_.type == VariantType::kSmallVariant && classification_.subtype == VariantSubtype::kInsertion;
+        = kind.type == VariantType::kSmallVariant && kind.subtype == VariantSubtype::kInsertion;
 
     bool variantIsValid = false;
 
     if (variantIsRepeat)
     {
-        variantIsValid = classification_.subtype == VariantSubtype::kCommonRepeat
-            || classification_.subtype == VariantSubtype::kRareRepeat;
+        variantIsValid = kind.subtype == VariantSubtype::kCommonRepeat || kind.subtype == VariantSubtype::kRareRepeat;
     }
     else if (variantIsDeletionOrSwap)
     {
-        variantIsValid = optionalRefNode_ != boost::none;
+        variantIsValid = optionalRefNode() != boost::none;
     }
     else if (variantIsInsertion)
     {
-        variantIsValid = optionalRefNode_ == boost::none;
+        variantIsValid = optionalRefNode() == boost::none;
     }
 
     if (!variantIsValid)

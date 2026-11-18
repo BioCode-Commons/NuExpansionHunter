@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: VCF records are sorted and serialized in ordered parallel blocks.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -31,6 +36,8 @@
 #include "core/Reference.hh"
 #include "locus/LocusFindings.hh"
 #include "locus/LocusSpecification.hh"
+
+namespace ctpl { class thread_pool; }
 
 namespace ehunter
 {
@@ -67,20 +74,27 @@ class VcfWriter
 public:
     VcfWriter(
         std::string sampleId, Reference& reference, const RegionCatalog& regionCatalog,
-        const SampleFindings& sampleFindings);
+        const SampleFindings& sampleFindings, unsigned threads = 1, ctpl::thread_pool* shared = nullptr);
 
     friend std::ostream& operator<<(std::ostream& out, VcfWriter& vcfWriter);
 
 private:
     void writeHeader(std::ostream& out);
     void writeBody(std::ostream& out);
-    using LocusIndexAndVariantId = std::pair<unsigned, std::string>;
-    const std::vector<LocusIndexAndVariantId> getSortedIdPairs();
+    struct OutputVariant
+    {
+        size_t locus;
+        VariantSpecification specification;
+        VariantFindings* findings;
+    };
+    std::vector<OutputVariant> sortedVariants() const;
 
     std::string sampleId_;
     Reference& reference_;
     const RegionCatalog& regionCatalog_;
     const SampleFindings& sampleFindings_;
+    unsigned threads_;
+    ctpl::thread_pool* shared_;
 };
 
 std::ostream& operator<<(std::ostream& out, VcfWriter& vcfWriter);

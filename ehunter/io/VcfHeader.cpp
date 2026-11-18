@@ -18,8 +18,14 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: VCF field descriptions are collected in parallel blocks and merged in order.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "io/VcfHeader.hh"
+#include "core/OrderedBlocks.hh"
 
 #include <memory>
 
@@ -31,6 +37,7 @@ namespace ehunter
 
 void FieldDescriptionWriter::addCommonFields()
 {
+    if (block_ && block_->count({FieldType::kInfo, "VARID"})) return;
     const string kVaridFieldDescription = "Variant identifier as specified in the variant catalog";
     tryAddingFieldDescription(FieldType::kInfo, "VARID", "1", "String", kVaridFieldDescription);
     tryAddingFieldDescription(FieldType::kFormat, "GT", "1", "String", "Genotype");
@@ -41,14 +48,9 @@ void FieldDescriptionWriter::addCommonFields()
         "The overall locus depth is below 10x or number of reads spanning one or both breakends is below 5");
 }
 
-void FieldDescriptionWriter::visit(const RepeatFindings* repeatFindingsPtr)
+void FieldDescriptionWriter::addRepeatFields()
 {
-    addCommonFields();
-    if (!repeatFindingsPtr->optionalGenotype())
-    {
-        return;
-    }
-
+    if (block_ && block_->count({FieldType::kFormat, "REPCN"})) return;
     tryAddingFieldDescription(FieldType::kInfo, "SVTYPE", "1", "String", "Type of structural variant");
     tryAddingFieldDescription(FieldType::kInfo, "END", "1", "Integer", "End position of the variant");
     tryAddingFieldDescription(FieldType::kInfo, "REF", "1", "Integer", "Reference copy number");
@@ -75,6 +77,17 @@ void FieldDescriptionWriter::visit(const RepeatFindings* repeatFindingsPtr)
 
     const string kAdirFieldDescription = "Number of in-repeat reads consistent with the allele";
     tryAddingFieldDescription(FieldType::kFormat, "ADIR", "1", "String", kAdirFieldDescription);
+}
+
+void FieldDescriptionWriter::visit(const RepeatFindings* repeatFindingsPtr)
+{
+    addCommonFields();
+    if (!repeatFindingsPtr->optionalGenotype())
+    {
+        return;
+    }
+
+    addRepeatFields();
 
     const auto repeatNodeId = variantSpec_.nodes().front();
     const string& repeatUnit = locusSpec_.regionGraph().nodeSeq(repeatNodeId);
@@ -121,16 +134,18 @@ void FieldDescriptionWriter::tryAddingFieldDescription(
     FieldType fieldType, const string& id, const string& number, const string& contentType, const string& description)
 {
     const auto key = std::make_pair(fieldType, id);
-    if (fieldDescriptions_.find(key) == fieldDescriptions_.end())
+    auto& fields = block_ ? *block_ : fieldDescriptions_;
+    if (fields.find(key) == fields.end())
     {
         FieldDescription fieldDescription(fieldType, id, number, contentType, description);
-        fieldDescriptions_.emplace(std::make_pair(key, std::move(fieldDescription)));
+        fields.emplace(key, std::move(fieldDescription));
     }
 }
 
 void FieldDescriptionWriter::dumpTo(FieldDescriptionCatalog& descriptionCatalog)
 {
-    descriptionCatalog.insert(fieldDescriptions_.begin(), fieldDescriptions_.end());
+    const auto& fields = block_ ? *block_ : fieldDescriptions_;
+    descriptionCatalog.insert(fields.begin(), fields.end());
 }
 
 FieldDescription::FieldDescription(
@@ -143,28 +158,29 @@ FieldDescription::FieldDescription(
 {
 }
 
-void outputVcfHeader(const RegionCatalog& locusCatalog, const SampleFindings& sampleFindings, ostream& out)
+void outputVcfHeader(const RegionCatalog& locusCatalog, const SampleFindings& sampleFindings, ostream& out, unsigned threads, ctpl::thread_pool* shared)
 {
     out << "##fileformat=VCFv4.1\n";
 
     FieldDescriptionCatalog fieldDescriptionCatalog;
 
-    const unsigned locusCount(sampleFindings.size());
-    for (unsigned locusIndex(0); locusIndex < locusCount; ++locusIndex)
-    {
-        const LocusSpecification& locusSpec = locusCatalog[locusIndex];
-        const LocusFindings& locusFindings = sampleFindings[locusIndex];
-
-        for (const auto& variantIdAndFindings : locusFindings.findingsForEachVariant)
+    auto describe = [&](int, size_t begin, size_t end) {
+        FieldDescriptionCatalog block;
+        for (size_t index = begin; index < end; ++index)
         {
-            const string& variantId = variantIdAndFindings.first;
-            const VariantSpecification& variantSpec = locusSpec.getVariantSpecById(variantId);
-
-            FieldDescriptionWriter descriptionWriter(locusSpec, variantSpec);
-            variantIdAndFindings.second->accept(&descriptionWriter);
-            descriptionWriter.dumpTo(fieldDescriptionCatalog);
+            const auto locus = locusCatalog[index];
+            for (const auto& variant : sampleFindings[index].findingsForEachVariant)
+            {
+                const auto spec = locus.getVariantSpecById(variant.first);
+                FieldDescriptionWriter writer(locus, spec, block);
+                variant.second->accept(&writer);
+            }
         }
-    }
+        return block;
+    };
+    orderedBlocks(sampleFindings.size(), 1024, threads, describe, [&](const FieldDescriptionCatalog& block) {
+        fieldDescriptionCatalog.insert(block.begin(), block.end());
+    }, shared);
 
     for (const auto& fieldIdAndDescription : fieldDescriptionCatalog)
     {

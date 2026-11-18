@@ -17,6 +17,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: tests compare vector base runs across ambiguity symbols and span boundaries.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphutils/BaseMatching.hh"
 
@@ -49,4 +54,29 @@ TEST(MatchingStrings, TypicalStrings_Matched)
     EXPECT_TRUE(checkIfReferenceAndQuerySequencesMatch("RRTCS", "AaTCG"));
     EXPECT_FALSE(checkIfReferenceAndQuerySequencesMatch("WG", "CG"));
     EXPECT_FALSE(checkIfReferenceAndQuerySequencesMatch("CC", "CCC"));
+}
+
+TEST(BaseMatching, VectorRunsPreserveAmbiguitiesCaseAndEveryBoundary)
+{
+    const std::string alphabet = "ACGTacgtBDHKMNRSVWYbdhkmnrsvwy?!";
+    for (size_t length = 0; length <= 49; ++length)
+    {
+        std::string reference(length, 'G'), query(length, 'g');
+        EXPECT_EQ(graphtools::matchingBaseRun<false>(reference.data(), query.data(), length), length);
+        EXPECT_EQ(graphtools::matchingBaseRun<true>(reference.data(), query.data(), length), length);
+        for (size_t i = 0; i < length; ++i)
+        {
+            for (char r : alphabet)
+            for (char q : alphabet)
+            {
+                reference[i] = r;
+                query[i] = q;
+                const bool matches = graphtools::checkIfReferenceBaseMatchesQueryBase(r, q);
+                ASSERT_EQ(graphtools::matchingBaseRun<false>(reference.data(), query.data(), length), matches ? length : i);
+                ASSERT_EQ(graphtools::matchingBaseRun<true>(reference.data(), query.data(), length), matches ? length : length - i - 1);
+            }
+            reference[i] = 'G';
+            query[i] = 'g';
+        }
+    }
 }

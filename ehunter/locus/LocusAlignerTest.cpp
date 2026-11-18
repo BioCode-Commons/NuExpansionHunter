@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: tests check shared-read reorientation against owned-read alignment.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "locus/LocusAligner.hh"
 
@@ -80,6 +85,27 @@ TEST(AligningReads, ReadPairFromOppositeStrand_Aligned)
     ASSERT_EQ(expectedMateAlign, *alignedPair.second);
     ASSERT_FALSE(read.isReversed());
     ASSERT_TRUE(mate.isReversed());
+}
+
+TEST(AligningReads, SharedReadIsCopiedOnlyWhenReoriented)
+{
+    const Read read(ReadId("frag1", MateNumber::kFirstMate), "GGTAAT", true);
+    const Read mate(ReadId("frag1", MateNumber::kSecondMate), "GGCGGC", false);
+    Read ownedRead = read, ownedMate = mate;
+    auto graph = makeRegionGraph(decodeFeaturesFromRegex("ATATTA(C)*GGCGGC"));
+    auto aligner = makeStrAligner(&graph);
+    graphtools::AlignerSelector selector(graphtools::AlignerType::DAG_ALIGNER);
+    auto expected = aligner.alignMates(ownedRead, &ownedMate, selector);
+    optional<Read> reversedRead, reversedMate;
+    auto result = aligner.alignSharedMates(read, &mate, reversedRead, reversedMate, selector);
+    ASSERT_TRUE(expected.first && expected.second);
+    EXPECT_EQ(expected, result);
+    ASSERT_TRUE(reversedRead);
+    EXPECT_EQ(ownedRead, *reversedRead);
+    EXPECT_FALSE(reversedMate);
+    EXPECT_EQ(ownedMate, mate);
+    EXPECT_EQ("GGTAAT", read.sequence());
+    EXPECT_TRUE(read.isReversed());
 }
 
 TEST(AligningReads, NotLocallyPlasedReads_NotAligned)

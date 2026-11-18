@@ -17,6 +17,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: graph alignments can transfer owned paths and node-alignment buffers.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -46,11 +51,14 @@ public:
     typedef size_t size_type;
     typedef std::vector<Alignment> NodeAlignments;
     typedef NodeAlignments::const_iterator const_iterator;
-    GraphAlignment(const Path& path, const std::vector<Alignment>& alignments)
-        : path_(path)
-        , alignments_(alignments)
+    GraphAlignment(const Path& path, NodeAlignments alignments)
+        : GraphAlignment(std::move(alignments), Path(path))
     {
-        assertValidity();
+    }
+
+    static GraphAlignment fromOwnedPath(Path&& path, NodeAlignments alignments)
+    {
+        return GraphAlignment(std::move(alignments), std::move(path));
     }
 
     uint32_t queryLength() const;
@@ -86,6 +94,11 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const GraphAlignment& graph_alignment);
 
 private:
+    GraphAlignment(NodeAlignments&& alignments, Path&& path)
+        : path_(std::move(path)), alignments_(std::move(alignments))
+    {
+        assertValidity();
+    }
     void assertValidity() const;
     Path path_;
     std::vector<Alignment> alignments_;

@@ -18,8 +18,14 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: purity scoring supports borrowed repeat permutations and threshold checks.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
+#include "graphutils/MappedData.hh"
 #include <string>
 #include <vector>
 
@@ -30,12 +36,21 @@ class WeightedPurityCalculator
 {
 public:
     WeightedPurityCalculator(const std::string& repeatUnit);
+    explicit WeightedPurityCalculator(graphtools::CatalogRange<graphtools::TextView> prepared)
+        : prepared_(std::move(prepared))
+    {
+        if (prepared_.empty())
+            throw std::invalid_argument("Missing prepared repeat permutations");
+    }
+    const std::vector<std::string>& permutations() const { return repeatUnits_; }
     double score(const std::string& querySequence) const;
+    bool scoreAtLeast(const std::string& querySequence, double cutoff) const;
 
 private:
-    double score(const std::string& repeatUnit, const std::string& querySequence) const;
+    double score(graphtools::TextView repeatUnit, const std::string& querySequence) const;
     std::vector<std::string> computeCircularPermutations(std::string sequence) const;
     std::vector<std::string> repeatUnits_;
+    graphtools::CatalogRange<graphtools::TextView> prepared_;
 };
 
 }

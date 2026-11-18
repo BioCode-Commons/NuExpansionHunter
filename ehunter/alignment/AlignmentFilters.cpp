@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: local-placement checks borrow optional alignments by const reference.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "alignment/AlignmentFilters.hh"
 
@@ -43,7 +48,7 @@ namespace ehunter
 {
 
 bool checkIfLocallyPlacedReadPair(
-    boost::optional<GraphAlignment> readAlignment, boost::optional<GraphAlignment> mateAlignment,
+    const boost::optional<GraphAlignment>& readAlignment, const boost::optional<GraphAlignment>& mateAlignment,
     int kMinNonRepeatAlignmentScore)
 {
     int nonRepeatAlignmentScore = 0;

@@ -1,3 +1,5 @@
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: destructive iterators explicitly default their copy constructor.
 #if !defined(sparsepp_h_guard_)
 #define sparsepp_h_guard_
 
@@ -912,6 +914,8 @@ public:
             advance_past_end();                 // in case cur->begin() == cur->end()
         }
     }
+
+    Two_d_destructive_iterator(const Two_d_destructive_iterator &other) = default;
 
     // Arithmetic: we just do arithmetic on pos.  We don't even need to
     // do bounds checking, since STL doesn't consider that its job.  :-)

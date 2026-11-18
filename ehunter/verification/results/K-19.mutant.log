@@ -1,0 +1,166 @@
+CBMC version 6.11.0 (cbmc-6.11.0) 64-bit x86_64 linux
+Type-checking K-19_base_run
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+SAT checker: instance is SATISFIABLE
+Running propositional reduction
+SAT checker: instance is UNSATISFIABLE
+
+** Results:
+../simd/x86_models.h function _mm_and_si128
+[_mm_and_si128.array_bounds.1] line 57 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.2] line 57 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.3] line 57 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.4] line 57 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.5] line 57 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.6] line 57 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.overflow.1] line 57 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_cmpeq_epi8
+[_mm_cmpeq_epi8.array_bounds.1] line 58 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm_cmpeq_epi8.array_bounds.2] line 58 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm_cmpeq_epi8.array_bounds.3] line 58 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm_cmpeq_epi8.array_bounds.4] line 58 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm_cmpeq_epi8.array_bounds.5] line 58 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm_cmpeq_epi8.array_bounds.6] line 58 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm_cmpeq_epi8.overflow.1] line 58 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_loadu_si128
+[_mm_loadu_si128.precondition_instance.1] line 50 memcpy src/dst overlap: SUCCESS
+[_mm_loadu_si128.precondition_instance.2] line 50 memcpy source region readable: SUCCESS
+[_mm_loadu_si128.precondition_instance.3] line 50 memcpy destination region writeable: SUCCESS
+
+../simd/x86_models.h function _mm_movemask_epi8
+[_mm_movemask_epi8.array_bounds.1] line 59 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm_movemask_epi8.array_bounds.2] line 59 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm_movemask_epi8.overflow.1] line 59 arithmetic overflow on signed shl in ((signed int)a.b[(signed long int)i] >> 7) << i: SUCCESS
+[_mm_movemask_epi8.overflow.2] line 59 arithmetic overflow on signed + in i + 1: SUCCESS
+[_mm_movemask_epi8.undefined-shift.1] line 59 shift distance is negative in ((signed int)a.b[(signed long int)i] >> 7) << i: SUCCESS
+[_mm_movemask_epi8.undefined-shift.2] line 59 shift distance too large in ((signed int)a.b[(signed long int)i] >> 7) << i: SUCCESS
+[_mm_movemask_epi8.undefined-shift.3] line 59 shift operand is negative in ((signed int)a.b[(signed long int)i] >> 7) << i: SUCCESS
+
+../simd/x86_models.h function _mm_or_si128
+[_mm_or_si128.array_bounds.1] line 56 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm_or_si128.array_bounds.2] line 56 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm_or_si128.array_bounds.3] line 56 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm_or_si128.array_bounds.4] line 56 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm_or_si128.array_bounds.5] line 56 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm_or_si128.array_bounds.6] line 56 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm_or_si128.overflow.1] line 56 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_set1_epi8
+[_mm_set1_epi8.array_bounds.1] line 52 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm_set1_epi8.array_bounds.2] line 52 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm_set1_epi8.overflow.1] line 52 arithmetic overflow on signed + in i + 1: SUCCESS
+
+mutant:graphutils/BaseMatchingKernels.hh function bm_matching_base_run
+[bm_matching_base_run.unwind.0] line 64 unwinding assertion loop 0: SUCCESS
+[bm_matching_base_run.bit_count.1] line 82 count leading zeros is undefined for value zero in __builtin_clz(other): SUCCESS
+[bm_matching_base_run.bit_count.2] line 82 count trailing zeros is undefined for value zero in __builtin_ctz(other): SUCCESS
+[bm_matching_base_run.overflow.1] line 82 arithmetic overflow on signed - in __builtin_clz(other) - 16: SUCCESS
+[bm_matching_base_run.array_bounds.1] line 108 array 'bm_code_match' upper bound in bm_code_match[(signed long int)referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]]: SUCCESS
+[bm_matching_base_run.array_bounds.2] line 108 array 'bm_code_match'[] upper bound in bm_code_match[(signed long int)referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]][(signed long int)queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.1] line 108 dereference failure: pointer NULL in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.2] line 108 dereference failure: pointer invalid in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.3] line 108 dereference failure: deallocated dynamic object in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.4] line 108 dereference failure: dead object in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.5] line 108 dereference failure: pointer outside object bounds in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.6] line 108 dereference failure: invalid integer address in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.7] line 108 dereference failure: pointer NULL in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.8] line 108 dereference failure: pointer invalid in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.9] line 108 dereference failure: deallocated dynamic object in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.10] line 108 dereference failure: dead object in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.11] line 108 dereference failure: pointer outside object bounds in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.12] line 108 dereference failure: invalid integer address in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.13] line 108 dereference failure: pointer NULL in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.14] line 108 dereference failure: pointer invalid in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.15] line 108 dereference failure: deallocated dynamic object in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.16] line 108 dereference failure: dead object in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.17] line 108 dereference failure: pointer outside object bounds in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.18] line 108 dereference failure: invalid integer address in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run.pointer_dereference.19] line 108 dereference failure: pointer NULL in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.20] line 108 dereference failure: pointer invalid in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.21] line 108 dereference failure: deallocated dynamic object in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.22] line 108 dereference failure: dead object in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.23] line 108 dereference failure: pointer outside object bounds in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run.pointer_dereference.24] line 108 dereference failure: invalid integer address in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+
+mutant:graphutils/BaseMatchingKernels.hh function bm_matching_base_run_reference
+[bm_matching_base_run_reference.array_bounds.1] line 51 array 'bm_code_match' upper bound in bm_code_match[(signed long int)referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]]: SUCCESS
+[bm_matching_base_run_reference.array_bounds.2] line 51 array 'bm_code_match'[] upper bound in bm_code_match[(signed long int)referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]][(signed long int)queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.1] line 51 dereference failure: pointer NULL in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.2] line 51 dereference failure: pointer invalid in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.3] line 51 dereference failure: deallocated dynamic object in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.4] line 51 dereference failure: dead object in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.5] line 51 dereference failure: pointer outside object bounds in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.6] line 51 dereference failure: invalid integer address in reference[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.7] line 51 dereference failure: pointer NULL in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.8] line 51 dereference failure: pointer invalid in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.9] line 51 dereference failure: deallocated dynamic object in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.10] line 51 dereference failure: dead object in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.11] line 51 dereference failure: pointer outside object bounds in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.12] line 51 dereference failure: invalid integer address in referenceCodes[(signed long int)(uint8_t)reference[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.13] line 51 dereference failure: pointer NULL in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.14] line 51 dereference failure: pointer invalid in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.15] line 51 dereference failure: deallocated dynamic object in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.16] line 51 dereference failure: dead object in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.17] line 51 dereference failure: pointer outside object bounds in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.18] line 51 dereference failure: invalid integer address in query[(signed long int)pos]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.19] line 51 dereference failure: pointer NULL in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.20] line 51 dereference failure: pointer invalid in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.21] line 51 dereference failure: deallocated dynamic object in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.22] line 51 dereference failure: dead object in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.23] line 51 dereference failure: pointer outside object bounds in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+[bm_matching_base_run_reference.pointer_dereference.24] line 51 dereference failure: invalid integer address in queryCodes[(signed long int)(uint8_t)query[(signed long int)pos]]: SUCCESS
+
+<builtin-library-memcpy> function memcpy
+[memcpy.pointer.1] line 33 same object violation in (const unsigned char *)(const void *)p >= (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.1] line 33 pointer relation: pointer NULL in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.2] line 33 pointer relation: pointer invalid in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.3] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.4] line 33 pointer relation: dead object in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.5] line 33 pointer relation: pointer outside object bounds in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.6] line 33 pointer relation: invalid integer address in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.7] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.8] line 33 pointer relation: dead object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.2] line 34 same object violation in (const unsigned char *)(void *)r.b >= (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.9] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.10] line 34 pointer relation: dead object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.11] line 34 pointer relation: pointer NULL in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.12] line 34 pointer relation: pointer invalid in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.13] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.14] line 34 pointer relation: dead object in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.15] line 34 pointer relation: pointer outside object bounds in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.16] line 34 pointer relation: invalid integer address in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+
+K-19_base_run.c function check_once
+[check_once.overflow.1] line 36 arithmetic overflow on signed + in i + 1: SUCCESS
+[check_once.array_bounds.1] line 38 array 'reference' lower bound in reference[(signed long int)i]: SUCCESS
+[check_once.array_bounds.2] line 38 array 'reference' upper bound in reference[(signed long int)i]: SUCCESS
+[check_once.array_bounds.3] line 39 array 'query' lower bound in query[(signed long int)i]: SUCCESS
+[check_once.array_bounds.4] line 39 array 'query' upper bound in query[(signed long int)i]: SUCCESS
+[check_once.overflow.2] line 41 arithmetic overflow on signed + in reverse + 1: SUCCESS
+[check_once.assertion.1] line 43 assertion bm_matching_base_run(reference, query, length, reverse, 1, gt_reference_codes, gt_query_codes) == bm_matching_base_run_reference(reference, query, length, reverse, gt_reference_codes, gt_query_codes): FAILURE
+
+K-19_base_run.c function main
+[main.overflow.4] line 50 arithmetic overflow on signed + in r + 1: SUCCESS
+[main.overflow.3] line 51 arithmetic overflow on signed + in q + 1: SUCCESS
+[main.array_bounds.1] line 52 array 'bm_code_match' lower bound in bm_code_match[(signed long int)r]: SUCCESS
+[main.array_bounds.2] line 52 array 'bm_code_match' upper bound in bm_code_match[(signed long int)r]: SUCCESS
+[main.array_bounds.3] line 52 array 'bm_code_match'[] lower bound in bm_code_match[(signed long int)r][(signed long int)q]: SUCCESS
+[main.array_bounds.4] line 52 array 'bm_code_match'[] upper bound in bm_code_match[(signed long int)r][(signed long int)q]: SUCCESS
+[main.array_bounds.5] line 52 array 'gt_code_match' lower bound in gt_code_match[(signed long int)(5 * r + q)]: SUCCESS
+[main.array_bounds.6] line 52 array 'gt_code_match' upper bound in gt_code_match[(signed long int)(5 * r + q)]: SUCCESS
+[main.assertion.1] line 52 assertion bm_code_match[r][q] == gt_code_match[5 * r + q]: SUCCESS
+[main.overflow.1] line 52 arithmetic overflow on signed * in 5 * r: SUCCESS
+[main.overflow.2] line 52 arithmetic overflow on signed + in 5 * r + q: SUCCESS
+[main.overflow.5] line 53 arithmetic overflow on signed + in round + 1l: SUCCESS
+
+** 1 of 127 failed (2 iterations)
+VERIFICATION FAILED

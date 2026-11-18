@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: VCF field descriptions are collected in parallel blocks and merged in order.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -27,6 +32,8 @@
 
 #include "locus/LocusFindings.hh"
 #include "locus/LocusSpecification.hh"
+
+namespace ctpl { class thread_pool; }
 
 namespace ehunter
 {
@@ -63,6 +70,10 @@ public:
     {
     }
 
+    FieldDescriptionWriter(const LocusSpecification& locusSpec, const VariantSpecification& variantSpec,
+                           FieldDescriptionCatalog& block)
+        : locusSpec_(locusSpec), variantSpec_(variantSpec), block_(&block) {}
+
     ~FieldDescriptionWriter() = default;
 
     void visit(const RepeatFindings* repeatFindingsPtr) override;
@@ -76,13 +87,16 @@ public:
 
 private:
     void addCommonFields();
+    void addRepeatFields();
 
     const LocusSpecification& locusSpec_;
     const VariantSpecification& variantSpec_;
     FieldDescriptionCatalog fieldDescriptions_;
+    FieldDescriptionCatalog* block_ = nullptr;
 };
 
-void outputVcfHeader(const RegionCatalog& regionCatalog, const SampleFindings& sampleFindings, std::ostream& out);
+void outputVcfHeader(const RegionCatalog& regionCatalog, const SampleFindings& sampleFindings, std::ostream& out,
+                     unsigned threads = 1, ctpl::thread_pool* shared = nullptr);
 
 std::ostream& operator<<(std::ostream& out, FieldType fieldType);
 std::ostream& operator<<(std::ostream& out, const FieldDescription& fieldDescription);

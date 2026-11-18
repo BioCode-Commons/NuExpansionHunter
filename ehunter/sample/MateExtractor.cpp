@@ -18,10 +18,18 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: mate retrieval batches queries while preserving query results.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "sample/MateExtractor.hh"
 
+#include <map>
+#include <memory>
 #include <stdexcept>
+#include <unordered_map>
 
 #include "core/HtsHelpers.hh"
 
@@ -143,6 +151,124 @@ optional<Read> MateExtractor::extractMate(
     hts_itr_destroy(htsRegionPtr_);
 
     return optional<Read>();
+}
+
+// Contract [K-34]
+// Ensures:  for every query set, batched recovery returns what one extractMate call per read returns.
+// Reference: extractMate.
+void MateExtractor::extractMates(std::vector<MateQuery>& queries)
+{
+    using Coordinate = std::pair<int32_t, hts_pos_t>;
+    using PendingQueries = std::multimap<Coordinate, MateQuery*>;
+    PendingQueries pending;
+    std::unordered_multimap<string, PendingQueries::iterator> byFragment;
+    std::vector<string> regions;
+
+    for (auto& query : queries)
+    {
+        const auto& stats = *query.alignmentStats;
+        const int32_t tid = stats.isMateMapped ? stats.mateChromId : stats.chromId;
+        const int32_t start = stats.isMateMapped ? stats.matePos : stats.pos;
+
+        // Negative values denote HTSlib's non-coordinate queries. Keep their
+        // single-query semantics; they cannot be represented as genomic points.
+        if (tid < 0 || start < 0)
+        {
+            query.mate = extractMate(*query.read, stats, query.mateStats);
+            continue;
+        }
+
+        // Validate each query with the same API as extractMate. In particular,
+        // the multi-region API must not silently skip an unindexed reference.
+        std::unique_ptr<hts_itr_t, decltype(&hts_itr_destroy)> check(
+            sam_itr_queryi(htsIndexPtr_, tid, start, static_cast<hts_pos_t>(start) + 1), &hts_itr_destroy);
+        if (!check)
+        {
+            const string region = contigInfo_.getContigName(tid) + ":" + std::to_string(start) + "-"
+                + std::to_string(static_cast<hts_pos_t>(start) + 1);
+            throw std::logic_error("Unable to jump to " + region + " to recover a mate");
+        }
+
+        const auto entry = pending.emplace(Coordinate(tid, start), &query);
+        byFragment.emplace(query.read->fragmentId(), entry);
+    }
+
+    if (pending.empty())
+    {
+        return;
+    }
+
+    // Query the exact union of the original one-base intervals. Quoting the
+    // reference name also supports names containing colons.
+    for (auto it = pending.begin(); it != pending.end(); it = pending.upper_bound(it->first))
+    {
+        const auto& coordinate = it->first;
+        const string position = std::to_string(coordinate.second + 1);
+        regions.push_back("{" + contigInfo_.getContigName(coordinate.first) + "}:" + position + "-" + position);
+    }
+    std::vector<char*> regionPointers;
+    for (auto& region : regions)
+    {
+        regionPointers.push_back(&region[0]);
+    }
+    // Single-region CRAM queries set a decoder-level range, even when the
+    // iterator is only used for validation. Clear it before the multi-region
+    // iterator applies its own interval union. This uses the public HTSlib API.
+    {
+        std::unique_ptr<hts_itr_t, decltype(&hts_itr_destroy)> reset(
+            sam_itr_queryi(htsIndexPtr_, HTS_IDX_START, 0, 0), &hts_itr_destroy);
+        if (!reset)
+        {
+            throw std::logic_error("Unable to reset input before recovering mates");
+        }
+    }
+    std::unique_ptr<hts_itr_t, decltype(&hts_itr_destroy)> iterator(
+        sam_itr_regarray(htsIndexPtr_, htsHeaderPtr_, regionPointers.data(), regionPointers.size()), &hts_itr_destroy);
+    if (!iterator)
+    {
+        throw std::logic_error("Unable to query regions to recover mates");
+    }
+
+    while (!pending.empty() && sam_itr_next(htsFilePtr_, iterator.get(), htsAlignmentPtr_) >= 0)
+    {
+        if (!isPrimaryAlignment(htsAlignmentPtr_))
+        {
+            continue;
+        }
+        const int32_t tid = htsAlignmentPtr_->core.tid;
+        const hts_pos_t begin = htsAlignmentPtr_->core.pos;
+        const hts_pos_t end = bam_endpos(htsAlignmentPtr_);
+        const auto active = pending.lower_bound(Coordinate(tid, begin));
+        if (active == pending.end() || active->first.first != tid || active->first.second >= end)
+        {
+            continue;
+        }
+
+        // Decode every primary record that an unfinished original query would
+        // inspect, preserving sequence/quality decoding and input validation.
+        Read mate = decodeRead(htsAlignmentPtr_);
+        const auto matches = byFragment.equal_range(mate.fragmentId());
+        auto it = matches.first;
+        while (it != matches.second)
+        {
+            const auto position = it->second->first;
+            auto& query = *it->second->second;
+            if (position.first == tid && position.second >= begin && position.second < end
+                && query.read->mateNumber() != mate.mateNumber())
+            {
+                // HTSlib returns records in file order, so this is the same
+                // first matching primary mate as the individual query.
+                query.mate = mate;
+                query.mateStats = decodeAlignmentStats(htsAlignmentPtr_);
+                pending.erase(it->second);
+                it = byFragment.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
 }
 
 }

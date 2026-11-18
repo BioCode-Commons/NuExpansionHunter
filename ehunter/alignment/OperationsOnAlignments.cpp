@@ -18,10 +18,18 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: canonical alignment supports skipping repeated unchanged intersections and an explicit reference fold.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "alignment/OperationsOnAlignments.hh"
 
+#include "core/VerifyPolicy.hh"
+
 #include <cassert>
+#include <stdexcept>
 #include <list>
 
 #include <boost/optional.hpp>
@@ -111,14 +119,15 @@ int getNumNonrepeatMatchesDownstream(NodeId nodeId, GraphAlignment alignment)
     return numMatches;
 }
 
-int scoreAlignmentToNonloopNodes(graphtools::GraphAlignment alignment, LinearAlignmentParameters parameters)
+int scoreAlignmentToNonloopNodes(const graphtools::GraphAlignment& alignment, LinearAlignmentParameters parameters)
 {
     int score = 0;
     const Graph& graph = *alignment.path().graphRawPtr();
     for (int nodeIndex = 0; nodeIndex != (int)alignment.size(); ++nodeIndex)
     {
         NodeId nodeId = alignment.path().getNodeIdByIndex(nodeIndex);
-        if (graph.successors(nodeId).find(nodeId) == graph.successors(nodeId).end())
+        const auto successors = graph.successors(nodeId);
+        if (successors.find(nodeId) == successors.end())
         {
             score += scoreAlignment(
                 alignment[nodeIndex], parameters.matchScore, parameters.mismatchScore, parameters.gapOpenScore);
@@ -147,7 +156,14 @@ int countFullOverlaps(NodeId nodeId, GraphAlignment alignment)
     return numFullOverlaps;
 }
 
-GraphAlignment computeCanonicalAlignment(const list<GraphAlignment>& alignments)
+// Contract [K-21]
+// Requires: alignments is not empty, and each alignment has one node alignment per node of its path.
+// Ensures:  computeCanonicalAlignment(alignments) == computeCanonicalAlignmentReference(alignments).
+// Reference: computeCanonicalAlignmentReference, the fold of ExpansionHunter v5.0.0, which runs every step.
+// Argument: a step reads its second operand only through its path (GreedyAlignmentIntersector takes a
+// Path), so it is a function step(canonical, path). If step(c, p) == c, a following element with the same
+// path p gives step(c, p) == c again; skipping it leaves the result unchanged. Sortedness is not needed.
+GraphAlignment computeCanonicalAlignmentReference(const list<GraphAlignment>& alignments)
 {
     assert(!alignments.empty());
 
@@ -160,7 +176,7 @@ GraphAlignment computeCanonicalAlignment(const list<GraphAlignment>& alignments)
 
     for (const auto& alignment : alignments)
     {
-        GreedyAlignmentIntersector alignmentIntersector(*canonicalAlignment, alignment);
+        GreedyAlignmentIntersector alignmentIntersector(*canonicalAlignment, alignment.path());
         canonicalAlignment = alignmentIntersector.intersect();
 
         if (!canonicalAlignment)
@@ -170,6 +186,50 @@ GraphAlignment computeCanonicalAlignment(const list<GraphAlignment>& alignments)
     }
 
     return *canonicalAlignment;
+}
+
+static GraphAlignment computeCanonicalAlignmentSkipping(const list<GraphAlignment>& alignments)
+{
+    assert(!alignments.empty());
+
+    if (alignments.size() == 1)
+    {
+        return alignments.front();
+    }
+
+    boost::optional<GraphAlignment> canonicalAlignment = alignments.front();
+
+    // After a step that left the canonical alignment unchanged, skip the
+    // following elements with the same path (contract above).
+    const graphtools::Path* previousPath = nullptr;
+    bool previousChanged = true;
+    for (const auto& alignment : alignments)
+    {
+        if (previousPath && !previousChanged && alignment.path() == *previousPath)
+            continue;
+        GreedyAlignmentIntersector alignmentIntersector(*canonicalAlignment, alignment.path());
+        boost::optional<GraphAlignment> intersection = alignmentIntersector.intersect();
+
+        if (!intersection)
+        {
+            return alignments.front();
+        }
+        previousChanged = !(*intersection == *canonicalAlignment);
+        previousPath = &alignment.path();
+        canonicalAlignment = std::move(intersection);
+    }
+
+    return std::move(*canonicalAlignment);
+}
+
+GraphAlignment computeCanonicalAlignment(const list<GraphAlignment>& alignments)
+{
+    if (!verify::kFoldSkip)
+        return computeCanonicalAlignmentReference(alignments);
+    GraphAlignment result = computeCanonicalAlignmentSkipping(alignments);
+    if (verify::kShadow && !(result == computeCanonicalAlignmentReference(alignments)))
+        throw std::logic_error("Canonical alignment differs from the step-by-step reference");
+    return result;
 }
 
 }

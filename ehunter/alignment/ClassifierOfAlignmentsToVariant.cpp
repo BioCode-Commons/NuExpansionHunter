@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: variant classification accepts borrowed node ranges.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "alignment/ClassifierOfAlignmentsToVariant.hh"
 
@@ -35,7 +40,7 @@ using std::vector;
 namespace ehunter
 {
 
-static string encode(const vector<NodeId>& nodeIds)
+static string encode(graphtools::CatalogRange<NodeId> nodeIds)
 {
     vector<string> encoding;
     for (auto nodeId : nodeIds)
@@ -49,23 +54,27 @@ static string encode(const vector<NodeId>& nodeIds)
 const NodeId ClassifierOfAlignmentsToVariant::kInvalidNodeId = std::numeric_limits<NodeId>::max();
 
 ClassifierOfAlignmentsToVariant::ClassifierOfAlignmentsToVariant(vector<NodeId> targetNodes)
-    : targetNodes_(std::move(targetNodes))
+    : ClassifierOfAlignmentsToVariant(graphtools::CatalogRange<NodeId>::fromVector(targetNodes))
 {
-    if (targetNodes_.empty())
+}
+
+ClassifierOfAlignmentsToVariant::ClassifierOfAlignmentsToVariant(graphtools::CatalogRange<NodeId> targetNodes)
+{
+    if (targetNodes.empty())
     {
         throw std::logic_error("Cannot create a node bundle without nodes");
     }
 
-    for (int index = 1; index != static_cast<int>(targetNodes_.size()); ++index)
+    for (int index = 1; index != static_cast<int>(targetNodes.size()); ++index)
     {
-        if (targetNodes_[index] != targetNodes_[index - 1] + 1)
+        if (targetNodes[index] != targetNodes[index - 1] + 1)
         {
-            throw std::logic_error("Bundle " + encode(targetNodes_) + " must contain ordered and consecutive nodes");
+            throw std::logic_error("Bundle " + encode(targetNodes) + " must contain ordered and consecutive nodes");
         }
     }
 
-    firstBundleNode_ = targetNodes_.front();
-    lastBundleNode_ = targetNodes_.back();
+    firstBundleNode_ = targetNodes.front();
+    lastBundleNode_ = targetNodes.back();
 }
 
 void ClassifierOfAlignmentsToVariant::classify(const graphtools::GraphAlignment& graphAlignment)

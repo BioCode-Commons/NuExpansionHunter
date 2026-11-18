@@ -17,6 +17,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: alignment supports cost guidance and transfers traceback CIGAR buffers.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -36,6 +41,8 @@ namespace graphalign
 
 namespace dagAligner
 {
+    struct BudgetSearch;
+
     /**
      * Performs global alignment of query against DAG of target nodes.
      * \param clipFront true instructs to represent insertions at the start of CIGAR as soft clips
@@ -61,6 +68,17 @@ namespace dagAligner
         align(QueryIt queryBegin, QueryIt queryEnd, TargetIt targetBegin, TargetIt targetEnd, const EdgeMap& edgeMap)
         {
             alignMatrix_.init(queryBegin, queryEnd, targetBegin, targetEnd, edgeMap);
+        }
+
+        template <typename QueryIt, typename TargetIt>
+        void __attribute((noinline)) alignWithCostGuidance(
+            QueryIt queryBegin, QueryIt queryEnd, TargetIt targetBegin, TargetIt targetEnd,
+            const EdgeMap& edgeMap, int provenMinimumCost, int preferredInitialBudget,
+            BudgetSearch* search = nullptr)
+        {
+            alignMatrix_.init(
+                queryBegin, queryEnd, targetBegin, targetEnd, edgeMap, provenMinimumCost, preferredInitialBudget,
+                search);
         }
 
         struct Step
@@ -106,7 +124,7 @@ namespace dagAligner
                     start.push_back(Cigar::Operation(Cigar::SOFT_CLIP, softClip));
                 }
 
-                if (!backtrackPath<true>(edgeMap, start, firstNodeId, q, t, cigars))
+                if (!backtrackPath<true>(edgeMap, std::move(start), firstNodeId, q, t, cigars))
                 {
                     // ran out of cigars buffer
                     return bestScore;
@@ -153,9 +171,9 @@ namespace dagAligner
                 start.push_back(Cigar::Operation(Cigar::SOFT_CLIP, softClip));
             }
 
-            backtrackPath<false>(edgeMap, start, firstNodeId, q, t, ret);
+            backtrackPath<false>(edgeMap, std::move(start), firstNodeId, q, t, ret);
             alignMatrix_.template nextBestAlign<localAlign>(bestCell + 1, secondBestScore);
-            return ret.front();
+            return std::move(ret.front());
         }
 
     private:
@@ -244,10 +262,9 @@ namespace dagAligner
 
         template <bool exploreAllPaths>
         bool backtrackPath(
-            const EdgeMap& edgeMap, const Cigar& base, std::size_t lastNodeId, int q, int t,
+            const EdgeMap& edgeMap, Cigar ret, std::size_t lastNodeId, int q, int t,
             std::vector<Cigar>& cigars) const
         {
-            Cigar ret = base;
             while (-1 != t)
             {
                 const std::size_t curNodeId = edgeMap.getNodeId(t);
@@ -312,7 +329,7 @@ namespace dagAligner
             {
                 return false;
             }
-            cigars.push_back(ret);
+            cigars.push_back(std::move(ret));
             return true;
         }
 

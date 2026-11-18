@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: repeat analysis supports prepared variants, evidence-row counts, and parallel genotype grids.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "locus/RepeatAnalyzer.hh"
 
@@ -57,7 +62,9 @@ void RepeatAnalyzer::processMates(
     alignmentStatsCalculator_.inspect(mateAlignment);
 }
 
-unique_ptr<VariantFindings> RepeatAnalyzer::analyze(const LocusStats& stats)
+unique_ptr<VariantFindings> RepeatAnalyzer::analyze(const LocusStats& stats) { return analyze(stats, nullptr); }
+
+unique_ptr<VariantFindings> RepeatAnalyzer::analyze(const LocusStats& stats, ctpl::thread_pool* gridWorkers)
 {
     optional<RepeatGenotype> repeatGenotype = boost::none;
     auto genotypeFilter = GenotypeFilter();
@@ -65,7 +72,7 @@ unique_ptr<VariantFindings> RepeatAnalyzer::analyze(const LocusStats& stats)
     CountTable countsOfFlankingReads;
     CountTable countsOfInrepeatReads;
 
-    if (stats.meanReadLength() == 0 || stats.depth() < genotyperParams_.minLocusCoverage)
+    if (stats.meanReadLength() == 0 || stats.depth() < genotyperParameters().minLocusCoverage)
     {
         genotypeFilter = genotypeFilter | GenotypeFilter::kLowDepth;
     }
@@ -73,8 +80,8 @@ unique_ptr<VariantFindings> RepeatAnalyzer::analyze(const LocusStats& stats)
     {
         // const double haplotypeDepth = stats.alleleCount() == AlleleCount::kTwo ? stats.depth() / 2 : stats.depth();
         const int minBreakpointSpanningReads = stats.alleleCount() == AlleleCount::kTwo
-            ? genotyperParams_.minBreakpointSpanningReads
-            : (genotyperParams_.minBreakpointSpanningReads / 2);
+            ? genotyperParameters().minBreakpointSpanningReads
+            : (genotyperParameters().minBreakpointSpanningReads / 2);
 
         GraphVariantAlignmentStats alignmentStats = alignmentStatsCalculator_.getStats();
         if (alignmentStats.numReadsSpanningRightBreakpoint() < minBreakpointSpanningReads
@@ -94,11 +101,12 @@ unique_ptr<VariantFindings> RepeatAnalyzer::analyze(const LocusStats& stats)
         countsOfInrepeatReads = countAligns(StrAlign::Type::kInRepeat, alignMatrix_);
 
         repeatGenotype = strgt::genotype(
-            stats.alleleCount(), repeatUnit_.length(), stats.meanReadLength(), stats.medianFragLength(), alignMatrix_);
+            stats.alleleCount(), repeatUnit_.length(), stats.meanReadLength(), stats.medianFragLength(), alignMatrix_, gridWorkers);
     }
 
     unique_ptr<VariantFindings> variantFindingsPtr(new RepeatFindings(
-        countsOfSpanningReads, countsOfFlankingReads, countsOfInrepeatReads, stats.alleleCount(), repeatGenotype,
+        std::move(countsOfSpanningReads), std::move(countsOfFlankingReads), std::move(countsOfInrepeatReads),
+        stats.alleleCount(), repeatGenotype,
         genotypeFilter));
     return variantFindingsPtr;
 }

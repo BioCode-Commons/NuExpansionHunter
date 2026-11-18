@@ -1,0 +1,86 @@
+CBMC version 6.11.0 (cbmc-6.11.0) 64-bit x86_64 linux
+Type-checking K-03_fused_row
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+SAT checker: instance is UNSATISFIABLE
+
+** Results:
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_align_lane
+[dp_align_lane.overflow.1] line 84 arithmetic overflow on signed + in (signed int)vpPrevious + (signed int)penalty: SUCCESS
+[dp_align_lane.pointer_dereference.1] line 85 dereference failure: pointer NULL in *g: SUCCESS
+[dp_align_lane.pointer_dereference.2] line 85 dereference failure: pointer invalid in *g: SUCCESS
+[dp_align_lane.pointer_dereference.3] line 85 dereference failure: deallocated dynamic object in *g: SUCCESS
+[dp_align_lane.pointer_dereference.4] line 85 dereference failure: dead object in *g: SUCCESS
+[dp_align_lane.pointer_dereference.5] line 85 dereference failure: pointer outside object bounds in *g: SUCCESS
+[dp_align_lane.pointer_dereference.6] line 85 dereference failure: invalid integer address in *g: SUCCESS
+[dp_align_lane.pointer_dereference.7] line 85 dereference failure: pointer NULL in *g: SUCCESS
+[dp_align_lane.pointer_dereference.8] line 85 dereference failure: pointer invalid in *g: SUCCESS
+[dp_align_lane.pointer_dereference.9] line 85 dereference failure: deallocated dynamic object in *g: SUCCESS
+[dp_align_lane.pointer_dereference.10] line 85 dereference failure: dead object in *g: SUCCESS
+[dp_align_lane.pointer_dereference.11] line 85 dereference failure: pointer outside object bounds in *g: SUCCESS
+[dp_align_lane.pointer_dereference.12] line 85 dereference failure: invalid integer address in *g: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_consolidate_lane
+[dp_consolidate_lane.pointer_dereference.1] line 92 dereference failure: pointer NULL in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.2] line 92 dereference failure: pointer invalid in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.3] line 92 dereference failure: deallocated dynamic object in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.4] line 92 dereference failure: dead object in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.5] line 92 dereference failure: pointer outside object bounds in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.6] line 92 dereference failure: invalid integer address in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.7] line 92 dereference failure: pointer NULL in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.8] line 92 dereference failure: pointer invalid in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.9] line 92 dereference failure: deallocated dynamic object in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.10] line 92 dereference failure: dead object in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.11] line 92 dereference failure: pointer outside object bounds in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.12] line 92 dereference failure: invalid integer address in *v: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_deletion_lane
+[dp_deletion_lane.overflow.1] line 75 arithmetic overflow on signed + in (signed int)ep + (signed int)gapExt: SUCCESS
+[dp_deletion_lane.overflow.2] line 76 arithmetic overflow on signed + in (signed int)vp + (signed int)gapOpen: SUCCESS
+[dp_deletion_lane.overflow.3] line 76 arithmetic overflow on signed + in (signed int)vp + (signed int)gapOpen + (signed int)gapExt: SUCCESS
+[dp_deletion_lane.pointer_dereference.1] line 78 dereference failure: pointer NULL in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.2] line 78 dereference failure: pointer invalid in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.3] line 78 dereference failure: deallocated dynamic object in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.4] line 78 dereference failure: dead object in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.5] line 78 dereference failure: pointer outside object bounds in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.6] line 78 dereference failure: invalid integer address in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.7] line 78 dereference failure: pointer NULL in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.8] line 78 dereference failure: pointer invalid in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.9] line 78 dereference failure: deallocated dynamic object in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.10] line 78 dereference failure: dead object in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.11] line 78 dereference failure: pointer outside object bounds in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.12] line 78 dereference failure: invalid integer address in *e: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_fused_lane
+[dp_fused_lane.overflow.1] line 64 arithmetic overflow on signed + in (signed int)ep + (signed int)gapExt: SUCCESS
+[dp_fused_lane.overflow.2] line 65 arithmetic overflow on signed + in (signed int)vp + (signed int)gapOpen: SUCCESS
+[dp_fused_lane.overflow.3] line 65 arithmetic overflow on signed + in (signed int)vp + (signed int)gapOpen + (signed int)gapExt: SUCCESS
+[dp_fused_lane.overflow.4] line 67 arithmetic overflow on signed + in (signed int)vpPrevious + (signed int)penalty: SUCCESS
+[dp_fused_lane.pointer_dereference.1] line 68 dereference failure: pointer NULL in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.2] line 68 dereference failure: pointer invalid in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.3] line 68 dereference failure: deallocated dynamic object in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.4] line 68 dereference failure: dead object in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.5] line 68 dereference failure: pointer outside object bounds in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.6] line 68 dereference failure: invalid integer address in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.7] line 69 dereference failure: pointer NULL in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.8] line 69 dereference failure: pointer invalid in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.9] line 69 dereference failure: deallocated dynamic object in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.10] line 69 dereference failure: dead object in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.11] line 69 dereference failure: pointer outside object bounds in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.12] line 69 dereference failure: invalid integer address in *v: SUCCESS
+
+K-03_fused_row.c function check_once
+[check_once.assertion.1] line 40 assertion fusedE == e: SUCCESS
+[check_once.assertion.2] line 41 assertion fusedV == v: SUCCESS
+
+K-03_fused_row.c function main
+[main.overflow.1] line 46 arithmetic overflow on signed + in round + 1l: SUCCESS
+
+** 0 of 59 failed (1 iterations)
+VERIFICATION SUCCESSFUL

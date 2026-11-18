@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: read decoding exposes packed-array inputs and SIMD decoding with a scalar reference.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "core/HtsHelpers.hh"
 
@@ -25,9 +30,18 @@
 #include <cctype>
 #include <cstdint>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
+#if defined(__aarch64__) && defined(__ARM_NEON)
+#include <arm_neon.h>
+#elif defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+#include <immintrin.h>
+#endif
+
+#include "core/ReadDecodeKernels.hh"
+#include "core/VerifyPolicy.hh"
 #include "spdlog/spdlog.h"
 
 using std::pair;
@@ -110,35 +124,76 @@ public:
 
 static Cache_seq_nt16_str_lc seq_nt16_str_lc;
 
+namespace
+{
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+bool readDecodeAvx2Supported()
+{
+    if (verify::kNoAvx2)
+        return false;
+    static const bool supported = __builtin_cpu_supports("avx2");
+    return supported;
+}
+#endif
+}
+
+
 Read decodeRead(bam1_t* htsAlignPtr)
 {
-    const uint32_t samFlag = htsAlignPtr->core.flag;
+    return decodeReadParts(bam_get_qname(htsAlignPtr), htsAlignPtr->core.flag, htsAlignPtr->core.l_qseq,
+        bam_get_seq(htsAlignPtr), bam_get_qual(htsAlignPtr));
+}
+
+Read decodeReadParts(const char* qname, uint32_t samFlag, int32_t readLength,
+    const uint8_t* htsSeqPtr, const uint8_t* htsQualPtr)
+{
     const bool isFirstMate = samFlag & BAM_FREAD1;
     const bool isReversed = samFlag & BAM_FREVERSE;
 
-    const char* qname(bam_get_qname(htsAlignPtr));
     MateNumber mateNumber = isFirstMate ? MateNumber::kFirstMate : MateNumber::kSecondMate;
     ReadId readId(qname, mateNumber);
 
+    return { std::move(readId), decodeReadBases(readLength, htsSeqPtr, htsQualPtr), isReversed };
+}
+
+// Contract [K-22]
+// Requires: readLength >= 0; htsSeqPtr holds (readLength + 1) / 2 packed bytes and htsQualPtr readLength qualities.
+// Ensures:  the result equals decodeReadBasesReference(readLength, htsSeqPtr, htsQualPtr); no byte beyond
+//           htsSeqPtr[(readLength + 1) / 2) or htsQualPtr[readLength) is read.
+// Reference: decodeReadBasesReference, ExpansionHunter v5.0.0's per-base loop in decodeRead.
+string decodeReadBasesReference(int32_t readLength, const uint8_t* htsSeqPtr, const uint8_t* htsQualPtr)
+{
     string bases;
+    bases.resize(readLength);
+    rd_decode_reference(readLength, htsSeqPtr, htsQualPtr, &bases[0], seq_nt16_str, seq_nt16_str_lc.data);
+    return bases;
+}
 
+static string decodeReadBasesOptimized(int32_t readLength, const uint8_t* htsSeqPtr, const uint8_t* htsQualPtr)
+{
+    string bases;
+    bases.resize(readLength);
+    int32_t index = 0;
+    if (readLength >= 32 && !verify::kScalarOnly)
     {
-        // Decode bases and convert low-quality bases to lowercase:
-        static const uint8_t lowBaseQualityCutoff(20);
-
-        const uint8_t* htsSeqPtr = bam_get_seq(htsAlignPtr);
-        const uint8_t* htsQualPtr = bam_get_qual(htsAlignPtr);
-        const int32_t readLength = htsAlignPtr->core.l_qseq;
-        bases.resize(readLength);
-
-        for (int32_t index = 0; index < readLength; ++index)
-        {
-            const char* converter((htsQualPtr[index] <= lowBaseQualityCutoff) ? seq_nt16_str_lc.data : seq_nt16_str);
-            bases[index] = converter[bam_seqi(htsSeqPtr, index)];
-        }
+#if defined(__aarch64__) && defined(__ARM_NEON)
+        index = rd_decode_neon_blocks(readLength, htsSeqPtr, htsQualPtr, &bases[0], seq_nt16_str);
+#elif defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+        if (readDecodeAvx2Supported())
+            index = rd_decode_avx2_blocks(readLength, htsSeqPtr, htsQualPtr, &bases[0], seq_nt16_str);
+#endif
     }
+    // Complete vector blocks never read beyond the actual BAM arrays.
+    rd_decode_tail(index, readLength, htsSeqPtr, htsQualPtr, &bases[0], seq_nt16_str, seq_nt16_str_lc.data);
+    return bases;
+}
 
-    return { std::move(readId), std::move(bases), isReversed };
+string decodeReadBases(int32_t readLength, const uint8_t* htsSeqPtr, const uint8_t* htsQualPtr)
+{
+    string bases = decodeReadBasesOptimized(readLength, htsSeqPtr, htsQualPtr);
+    if (verify::kShadow && bases != decodeReadBasesReference(readLength, htsSeqPtr, htsQualPtr))
+        throw std::logic_error("Read decoding differs from the per-base reference");
+    return bases;
 }
 
 ReferenceContigInfo decodeContigInfo(bam_hdr_t* htsHeaderPtr)

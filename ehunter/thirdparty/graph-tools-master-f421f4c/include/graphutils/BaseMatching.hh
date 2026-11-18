@@ -17,12 +17,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: matching base runs use scalar or SIMD kernels.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
 #include <array>
 #include <cassert>
 #include <string>
+
+#include "graphutils/VerifyPolicy.hh"
+
+#if defined(__SSE2__) && (defined(__GNUC__) || defined(__clang__))
+#include <emmintrin.h>
+#elif defined(__aarch64__) && defined(__ARM_NEON)
+#include <arm_neon.h>
+#endif
+#include "graphutils/BaseMatchingKernels.hh"
 
 namespace graphtools
 {
@@ -135,6 +149,14 @@ inline bool checkIfReferenceBaseCodeMatchesQueryBaseCode(codes::BaseCode referen
 inline bool checkIfReferenceBaseMatchesQueryBase(char referenceBase, char queryBase)
 {
     return checkIfReferenceBaseCodeMatchesQueryBaseCode(encodeReferenceBase(referenceBase), encodeQueryBase(queryBase));
+}
+
+// Count a matching prefix or suffix of two equally long spans (kernel K-19, BaseMatchingKernels.hh).
+template <bool reverse>
+inline size_t matchingBaseRun(const char* reference, const char* query, size_t length)
+{
+    return bm_matching_base_run(reference, query, length, reverse, !verify::kScalarOnly,
+        codes::kReferenceBaseEncodingTable.data(), codes::kQueryBaseEncodingTable.data());
 }
 
 /**

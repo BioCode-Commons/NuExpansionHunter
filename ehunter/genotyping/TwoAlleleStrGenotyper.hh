@@ -20,6 +20,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: candidate grids support parallel scoring with shared fragment contributions and ordered likelihood reduction.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -29,6 +34,8 @@
 
 #include "genotyping/FragLogliks.hh"
 #include "genotyping/RepeatGenotype.hh"
+
+namespace ctpl { class thread_pool; }
 
 namespace ehunter
 {
@@ -46,12 +53,17 @@ public:
     {
     }
 
-    RepeatGenotype genotype(const std::unordered_set<int>& alleleSizeCandidates);
+    RepeatGenotype genotype(const std::unordered_set<int>& alleleSizeCandidates, ctpl::thread_pool* gridWorkers = nullptr);
 
 private:
     using ReadIndexAndNumMotifs = std::pair<int, int>;
 
     RepeatGenotype getMostLikelyGenotype(const std::unordered_set<int>& alleleSizeCandidates);
+    RepeatGenotype scoreGrid(const std::unordered_set<int>& candidates, ctpl::thread_pool& workers);
+    struct FragmentGroups;
+    double score(int shortSize, int longSize, const std::vector<double>& shortValues,
+                 const std::vector<double>& longValues, const FragmentGroups* groups = nullptr,
+                 std::vector<double>* values = nullptr) const;
     double getShortAndLongAlleleLoglik(int shortAlleleSize, int longAlleleSize);
     double getLongAndShortAlleleLoglik(int longAlleleSize, int shortAlleleSize);
 

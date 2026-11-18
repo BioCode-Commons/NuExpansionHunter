@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: alignment computation and output are separate and shared reads are copied only for reorientation.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -46,16 +51,33 @@ public:
     using AlignedPair = std::pair<OptionalAlign, OptionalAlign>;
     using AlignWriterPtr = std::shared_ptr<graphtools::AlignmentWriter>;
 
-    LocusAligner(std::string locusId, GraphPtr graph, const HeuristicParameters& params, AlignWriterPtr writer);
+    LocusAligner(
+        graphtools::TextView locusId, GraphPtr graph, const HeuristicParameters& params, AlignWriterPtr writer,
+        uint64_t archiveSlot = 0);
 
     /// \param[in,out] alignerSelector A per-thread alignment workspace which mutates during alignment
     ///
     AlignedPair align(Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector);
 
-private:
-    OptionalAlign align(Read& read, graphtools::AlignerSelector& alignerSelector) const;
+    // Computes the same pair result without writing output. Concurrent calls
+    // require distinct mutable reads and independently constructed selectors.
+    // Returned alignments borrow the graph supplied to this aligner.
+    AlignedPair alignMates(Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector) const;
 
-    std::string locusId_;
+    // Forward reads can be shared across loci. A reverse-oriented read is
+    // copied into its corresponding empty output and stays available for evidence.
+    AlignedPair alignSharedMates(const Read& read, const Read* mate, boost::optional<Read>& reversedRead,
+        boost::optional<Read>& reversedMate, graphtools::AlignerSelector& alignerSelector) const;
+
+    // Emit a result with the reads in their post-alignment orientation. The
+    // caller must honor the writer's lifetime and serialization contract.
+    void writeAlignedPair(const Read& read, const Read* mate, const AlignedPair& alignedPair) const;
+
+private:
+    template <typename Writable>
+    OptionalAlign alignRead(const Read& read, Writable writable, graphtools::AlignerSelector& alignerSelector) const;
+
+    graphtools::TextView locusId_;
     graphtools::GappedGraphAligner aligner_;
     OrientationPredictor orientationPredictor_;
     AlignWriterPtr writer_;

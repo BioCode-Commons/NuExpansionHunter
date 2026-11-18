@@ -18,12 +18,16 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: graph tokens are parsed by direct delimiter and alphabet checks.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
 #include <iostream>
 #include <memory>
-#include <regex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -54,16 +58,7 @@ std::vector<std::string> tokenizeRegex(const std::string& regex);
 class TokenParser
 {
 public:
-    TokenParser();
-
     FeatureTypeAndSequences parse(const std::string& token) const;
-
-private:
-    std::regex skippableRepeatRegex_;
-    std::regex unskippableRepeatRegex_;
-    std::regex insertionOrDeletionRegex_;
-    std::regex swapRegex_;
-    std::regex interruptionRegex_;
 };
 
 struct GraphBlueprintFeature

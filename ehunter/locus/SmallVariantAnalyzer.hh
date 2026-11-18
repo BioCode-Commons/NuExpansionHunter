@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: small-variant analysis accesses prepared variant nodes and genotyper parameters.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -54,6 +59,18 @@ public:
     }
 
     ~SmallVariantAnalyzer() = default;
+
+    SmallVariantAnalyzer(
+        VariantSpecification variant, const graphtools::Graph& graph, const GenotyperParameters& params)
+        : VariantAnalyzer(variant, graph, params)
+        , variantSubtype_(variant.classification().subtype)
+        , optionalRefNode_(variant.optionalRefNode())
+        , alignmentClassifier_(nodeIds())
+        , alignmentStatsCalculator_(nodeIds())
+        , allelePresenceChecker_(params.errorRate, params.likelihoodRatioThreshold)
+    {
+        assert(nodeIds().size() <= 2);
+    }
 
     std::unique_ptr<VariantFindings> analyze(const LocusStats& stats) override;
 

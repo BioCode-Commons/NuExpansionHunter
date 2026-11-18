@@ -15,7 +15,11 @@
 *  limitations under the License.
 *
 *********************************************************/
-
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: clear_queue initializes its queue-entry pointer.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #ifndef __ctpl_stl_thread_pool_H__
 #define __ctpl_stl_thread_pool_H__
@@ -120,7 +124,7 @@ namespace ctpl {
 
         // empty the queue
         void clear_queue() {
-            std::function<void(int id)> * _f;
+            std::function<void(int id)> * _f = nullptr;
             while (this->q.pop(_f))
                 delete _f; // empty the queue
         }

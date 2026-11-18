@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: query collections construct indexes from catalogs and reuse prepared masks.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -30,10 +35,13 @@ namespace ehunter
 // Aggregates various methods for querying genome
 struct GenomeQueryCollection
 {
-    GenomeQueryCollection(std::vector<std::unique_ptr<locus::LocusAnalyzer>>& locusAnalyzers);
+    GenomeQueryCollection(
+        std::vector<std::unique_ptr<locus::LocusAnalyzer>>& locusAnalyzers, const RegionCatalog* catalog = nullptr);
 
+    explicit GenomeQueryCollection(const RegionCatalog& catalog, unsigned workers = 1);
+
+    GenomeMask targetRegionMask; // Constructed before the finder populates both indexes.
     AnalyzerFinder analyzerFinder; // Analyzers searchable by targeted region
-    GenomeMask targetRegionMask; // Marks targeted regions to enable fast read screening
 };
 
 }

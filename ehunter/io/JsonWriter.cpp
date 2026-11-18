@@ -18,11 +18,18 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: JSON output serializes ordered locus blocks with optional shared workers.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "io/JsonWriter.hh"
+#include "core/OrderedBlocks.hh"
 
-#include <iomanip>
+#include <algorithm>
 #include <sstream>
+#include <utility>
 #include <vector>
 
 #include <boost/algorithm/string/join.hpp>
@@ -49,61 +56,109 @@ std::ostream& operator<<(std::ostream& out, JsonWriter& jsonWriter)
 
 JsonWriter::JsonWriter(
     const SampleParameters& sampleParams, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
-    const SampleFindings& sampleFindings)
+    const SampleFindings& sampleFindings, unsigned threads, ctpl::thread_pool* shared)
     : sampleParams_(sampleParams)
     , contigInfo_(contigInfo)
     , regionCatalog_(regionCatalog)
     , sampleFindings_(sampleFindings)
+    , threads_(std::max(1u, threads))
+    , shared_(shared)
 {
 }
 
+// Contract [K-33]
+// Ensures:  for every catalog and set of findings, the bytes equal v5.0.0's whole-document writer
+//           (verification/reference/io/JsonWriter_v5.hh; tests/JsonWriterTest.cpp).
 void JsonWriter::write(std::ostream& out)
 {
     Json sampleParametersRecord;
     sampleParametersRecord["SampleId"] = sampleParams_.id();
     sampleParametersRecord["Sex"] = streamToString(sampleParams_.sex());
 
-    Json resultsRecord;
-    const unsigned locusCount(sampleFindings_.size());
-    for (unsigned locusIndex(0); locusIndex < locusCount; ++locusIndex)
-    {
-        const LocusSpecification& locusSpec = regionCatalog_[locusIndex];
-        const LocusFindings& locusFindings = sampleFindings_[locusIndex];
-        const std::string& locusId(locusSpec.locusId());
-
-        Json locusRecord;
-        locusRecord["LocusId"] = locusId;
-        locusRecord["Coverage"] = locusFindings.stats.depth();
-        locusRecord["ReadLength"] = locusFindings.stats.meanReadLength();
-        locusRecord["FragmentLength"] = locusFindings.stats.medianFragLength();
-        locusRecord["AlleleCount"] = static_cast<int>(locusFindings.stats.alleleCount());
-
-        Json variantRecords;
-        for (const auto& variantIdAndFindings : locusFindings.findingsForEachVariant)
+    // Keep only borrowed IDs and indexes for ordering. The catalog owns these
+    // strings for the entire write, including when it is memory mapped.
+    using LocusOutputEntry = std::pair<graphtools::TextView, size_t>;
+    vector<LocusOutputEntry> loci;
+    loci.reserve(sampleFindings_.size());
+    for (size_t i = 0; i < sampleFindings_.size(); ++i)
+        loci.emplace_back(regionCatalog_[i].locusId(), i);
+    std::sort(
+        loci.begin(), loci.end(), [](const LocusOutputEntry& left, const LocusOutputEntry& right)
         {
-            const string& variantId = variantIdAndFindings.first;
-            const VariantSpecification& variantSpec = locusSpec.getVariantSpecById(variantId);
+            const int order = left.first.compare(right.first);
+            return order < 0 || (order == 0 && left.second > right.second);
+        });
 
-            VariantJsonWriter variantWriter(contigInfo_, locusSpec, variantSpec);
-            variantIdAndFindings.second->accept(&variantWriter);
-            variantRecords[variantId] = variantWriter.record();
-        }
-
-        if (!variantRecords.empty())
-        {
-            locusRecord["Variants"] = variantRecords;
-        }
-        resultsRecord[locusId] = locusRecord;
-    }
-
-    Json sampleRecords;
-    if (!resultsRecord.empty())
+    // Match v5.0.0's whole-document bytes for strings, floating point values
+    // and nested records by using its serializer and adjusting indentation.
+    auto writeRecord = [](std::ostream& out, const Json& record, size_t indentation)
     {
-        sampleRecords["LocusResults"] = resultsRecord;
-    }
-    sampleRecords["SampleParameters"] = sampleParametersRecord;
+        const string encoded = record.dump(2);
+        const string padding(indentation, ' ');
+        size_t start = 0;
+        for (size_t end = encoded.find('\n'); end != string::npos; end = encoded.find('\n', start))
+        {
+            out.write(encoded.data() + start, end - start + 1);
+            out.write(padding.data(), padding.size());
+            start = end + 1;
+        }
+        out.write(encoded.data() + start, encoded.size() - start);
+    };
 
-    out << std::setw(2) << sampleRecords << std::endl;
+    out.width(0);
+    out << "{\n";
+    if (!loci.empty())
+        out << "  \"LocusResults\": {\n";
+    auto format = [&](int, size_t begin, size_t end) {
+        std::ostringstream buffer;
+        for (size_t position = begin; position < end; ++position)
+        {
+            // Match v5.0.0's final-entry rule for duplicate catalog IDs.
+            // Sorting equal IDs by descending index selects that entry.
+            if (position && loci[position].first == loci[position - 1].first)
+                continue;
+            const size_t locusIndex = loci[position].second;
+            const LocusSpecification& locusSpec = regionCatalog_[locusIndex];
+            const LocusFindings& locusFindings = sampleFindings_[locusIndex];
+            const std::string& locusId(locusSpec.locusId());
+
+            Json locusRecord;
+            locusRecord["LocusId"] = locusId;
+            locusRecord["Coverage"] = locusFindings.stats.depth();
+            locusRecord["ReadLength"] = locusFindings.stats.meanReadLength();
+            locusRecord["FragmentLength"] = locusFindings.stats.medianFragLength();
+            locusRecord["AlleleCount"] = static_cast<int>(locusFindings.stats.alleleCount());
+
+            Json variantRecords;
+            for (const auto& variantIdAndFindings : locusFindings.findingsForEachVariant)
+            {
+                const string& variantId = variantIdAndFindings.first;
+                const VariantSpecification& variantSpec = locusSpec.getVariantSpecById(variantId);
+
+                VariantJsonWriter variantWriter(contigInfo_, locusSpec, variantSpec);
+                variantIdAndFindings.second->accept(&variantWriter);
+                variantRecords[variantId] = variantWriter.takeRecord();
+            }
+
+            if (!variantRecords.empty())
+            {
+                locusRecord["Variants"] = std::move(variantRecords);
+            }
+            if (position != 0)
+                buffer << ",\n";
+            buffer << "    " << Json(locusId).dump() << ": ";
+            writeRecord(buffer, locusRecord, 4);
+        }
+        return buffer.str();
+    };
+    orderedBlocks(loci.size(), 256, threads_, format,
+        [&](const string& block) { out.write(block.data(), block.size()); }, shared_);
+
+    if (!loci.empty())
+        out << "\n  },\n";
+    out << "  \"SampleParameters\": ";
+    writeRecord(out, sampleParametersRecord, 2);
+    out << "\n}" << std::endl;
 }
 
 static string encodeGenotype(const RepeatGenotype& genotype)

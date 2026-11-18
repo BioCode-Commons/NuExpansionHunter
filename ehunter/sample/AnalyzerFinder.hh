@@ -19,8 +19,17 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: locus lookup supports prepared interval indexes, coordinate sweeps, and inline pairing results.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
+
+#include <array>
+#include "absl/container/inlined_vector.h"
+#include <functional>
 
 #include <memory>
 #include <unordered_map>
@@ -31,6 +40,7 @@
 #include "core/Read.hh"
 #include "locus/LocusAnalyzer.hh"
 #include "sample/GenomeMask.hh"
+#include "sample/PreparedIntervals.hh"
 
 namespace ehunter
 {
@@ -58,6 +68,8 @@ struct AnalyzerBundle
     size_t locusIndex;
 };
 
+using StreamingBundles = absl::InlinedVector<AnalyzerBundle, 2>;
+
 void processAnalyzerBundleReadPair(
     locus::LocusAnalyzer& locusAnalyzer, locus::RegionType regionType, AnalyzerInputType inputType, Read& read,
     Read& mate, graphtools::AlignerSelector& alignerSelector);
@@ -66,21 +78,62 @@ void processAnalyzerBundleReadPair(
 class AnalyzerFinder
 {
 public:
-    AnalyzerFinder(std::vector<std::unique_ptr<locus::LocusAnalyzer>>& locusAnalyzers);
+    AnalyzerFinder(
+        std::vector<std::unique_ptr<locus::LocusAnalyzer>>& locusAnalyzers, const RegionCatalog* catalog = nullptr);
+
+    explicit AnalyzerFinder(const RegionCatalog& catalog, unsigned workers = 1, GenomeMask* mask = nullptr);
 
     // Retrieves analyzers appropriate for the given read pair
     std::vector<AnalyzerBundle> query(
         int32_t readContigId, int64_t readStart, int64_t readEnd, int32_t mateContigId, int64_t mateStart,
         int64_t mateEnd) const;
+    // Same result as query(), in an inline container for the pairing lanes.
+    StreamingBundles queryPair(int32_t readContigId, int64_t readStart, int64_t readEnd,
+        int32_t mateContigId, int64_t mateStart, int64_t mateEnd) const;
 
     // Retrieves analyzers appropriate for the given read
     std::vector<AnalyzerBundle> query(int32_t readContigId, int64_t readStart, int64_t readEnd) const;
 
+    // Current alignments advance in coordinate order; mate coordinates need not.
+    std::vector<AnalyzerBundle> queryStreaming(
+        int32_t readContigId, int64_t readStart, int64_t readEnd, int32_t mateContigId, int64_t mateStart,
+        int64_t mateEnd);
+
 private:
+    AnalyzerFinder(size_t count, const std::function<LocusSpecification(size_t)>& getLocus, const RegionCatalog* catalog,
+                   unsigned workers, GenomeMask* mask);
     using AnalyzerIntervalTree = IntervalTree<std::size_t, AnalyzerBundle>;
     using AnalyzerIntervalTrees = std::unordered_map<int32_t, AnalyzerIntervalTree>;
 
     AnalyzerIntervalTrees intervalTrees_;
+    graphtools::MappedBytes prepared_;
+    graphtools::Slice preparedRoots_ { 0, 0 };
+    const PreparedContigIntervals* preparedRoot(int32_t contig) const;
+    void queryPrepared(graphtools::Slice tree, uint64_t start, uint64_t end, std::vector<AnalyzerBundle>& result) const;
+    struct SweepInterval
+    {
+        std::size_t start, stop, rank;
+        AnalyzerBundle bundle;
+    };
+    struct Sweep
+    {
+        std::vector<SweepInterval> intervals;
+        graphtools::CatalogRange<PreparedInterval> prepared;
+        std::vector<std::size_t> active;
+        std::vector<std::size_t> matching;
+        std::size_t next = 0;
+        int64_t position = -1;
+        size_t size() const { return prepared.empty() ? intervals.size() : prepared.size(); }
+        SweepInterval at(size_t i) const
+        {
+            if (prepared.empty())
+                return intervals[i];
+            const auto interval = prepared[i];
+            return { size_t(interval.start), size_t(interval.stop), size_t(interval.rank),
+                     AnalyzerBundle(static_cast<locus::RegionType>(interval.regionType), interval.locus) };
+        }
+    };
+    std::unordered_map<int32_t, Sweep> sweeps_;
 };
 
 }

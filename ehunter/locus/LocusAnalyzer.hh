@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: locus evidence is separated from alignment computation and supports prepared catalogs and parallel genotyping.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -56,21 +61,30 @@ enum class RegionType
 
 using AlignWriterPtr = std::shared_ptr<graphtools::AlignmentWriter>;
 
-class LocusAnalyzer
+class LocusEvidence
 {
 public:
     using Align = graphtools::GraphAlignment;
+    using AlignedPair = LocusAligner::AlignedPair;
     using Node = graphtools::NodeId;
 
-    LocusAnalyzer(LocusSpecification locusSpec, const HeuristicParameters& params, AlignWriterPtr writer);
+    explicit LocusEvidence(LocusSpecification spec);
 
-    const std::string& locusId() const { return locusSpec_.locusId(); }
+    graphtools::TextView locusId() const { return locusSpec_.locusId(); }
     const LocusSpecification& locusSpec() const { return locusSpec_; }
 
-    void processMates(Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector);
-    LocusFindings analyze(Sex sampleSex, boost::optional<double> genomeWideDepth);
+    void consumeEvidence(const Read& read, const Read* mate, RegionType regionType, const AlignedPair& alignedPair);
+    LocusFindings analyze(Sex sampleSex, boost::optional<double> genomeWideDepth, ctpl::thread_pool* gridWorkers = nullptr);
 
     const boost::optional<IrrPairFinder>& irrPairFinder() const { return irrPairFinder_; }
+    // Evidence rows of all variants; orders the genotyping work.
+    uint64_t evidenceRows() const
+    {
+        uint64_t rows = 0;
+        for (const auto& analyzer : variantAnalyzers_)
+            rows += analyzer->evidenceRows();
+        return rows;
+    }
     void addIrrPairFinder(std::string motif);
 
     void addRepeatAnalyzer(std::string variantId, Node nodeId);
@@ -78,15 +92,37 @@ public:
         std::string variantId, VariantSubtype subtype, std::vector<Node> nodes, boost::optional<Node> refNode);
 
 private:
-    void processOntargetMates(Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector);
+    void consumeOntargetMates(const Read& read, const Read* mate, const AlignedPair& alignedPair);
     void processOfftargetMates(const Read& read, const Read& mate);
     void runVariantAnalysis(const Read& read, const Align& readAlign, const Read& mate, const Align& mateAlign);
 
     LocusSpecification locusSpec_;
-    LocusAligner aligner_;
     LocusStatsCalculator statsCalc_;
     boost::optional<IrrPairFinder> irrPairFinder_;
     std::vector<std::unique_ptr<VariantAnalyzer>> variantAnalyzers_;
+};
+
+class LocusAnalyzer : public LocusEvidence
+{
+public:
+    LocusAnalyzer(LocusSpecification locusSpec, const HeuristicParameters& params, AlignWriterPtr writer,
+                  uint64_t archiveSlot = 0);
+
+    void processMates(Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector);
+
+    // Concurrent computation is safe only with task-private reads and a
+    // separately constructed selector per worker. No evidence or output is
+    // changed here; offtarget computation leaves the reads unchanged.
+    AlignedPair computeMates(
+        Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector) const;
+
+    // Consume in original input order for this locus, using the same oriented
+    // reads and region type passed to computeMates. The analyzer and its graph
+    // must outlive all outstanding computations and returned alignments.
+    void consumeMates(Read& read, Read* mate, RegionType regionType, const AlignedPair& alignedPair);
+    void writeAlignedMates(const Read& read, const Read* mate, RegionType regionType, const AlignedPair& alignedPair) const;
+private:
+    LocusAligner aligner_;
 };
 
 }

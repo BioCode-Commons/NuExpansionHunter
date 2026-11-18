@@ -19,8 +19,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: graphs implement mapped storage, borrowed views, and revision tracking for mutations.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphcore/Graph.hh"
+
+#include <atomic>
+#include <limits>
 
 #include <stdexcept>
 
@@ -34,6 +42,33 @@ using std::vector;
 namespace graphtools
 {
 
+uint64_t Graph::nextAlignmentRevision()
+{
+    static std::atomic<uint64_t> next(1);
+    uint64_t value = next.load(std::memory_order_relaxed);
+    do
+    {
+        // Never recycle an identity, even if this otherwise unreachable limit
+        // is reached. Only construction/mutation touches the shared counter.
+        if (value == std::numeric_limits<uint64_t>::max())
+            throw std::overflow_error("Graph alignment revision exhausted");
+    } while (!next.compare_exchange_weak(value, value + 1, std::memory_order_relaxed));
+    return value;
+}
+
+void Graph::swap(Graph& other) noexcept
+{
+    using std::swap;
+    swap(mapped_, other.mapped_);
+    swap(mappedGraph_, other.mappedGraph_);
+    swap(graphId_, other.graphId_);
+    swap(nodes_, other.nodes_);
+    swap(edge_labels_, other.edge_labels_);
+    swap(adjacency_list_, other.adjacency_list_);
+    swap(reverse_adjacency_list_, other.reverse_adjacency_list_);
+    swap(alignmentRevision_, other.alignmentRevision_);
+}
+
 void Graph::init(size_t numnodes_)
 {
     nodes_.resize(numnodes_);
@@ -43,7 +78,7 @@ void Graph::init(size_t numnodes_)
 
 void Graph::assertNodeExists(NodeId node_id) const
 {
-    if (node_id >= nodes_.size())
+    if (node_id >= numNodes())
     {
         throw std::logic_error("Node with id " + to_string(node_id) + " does not exist");
     }
@@ -66,39 +101,82 @@ void assertValidSequence(string const& seq)
     }
 }
 
-const string& Graph::nodeName(NodeId node_id) const
+TextView Graph::nodeName(NodeId node_id) const
 {
     assertNodeExists(node_id);
-    return nodes_[node_id].name;
+    return mapped_.data ? mapped_.text(mappedNode(node_id).name) : TextView(nodes_[node_id].name);
 }
 void Graph::setNodeName(NodeId node_id, const std::string& node_name)
 {
+    assertMutable();
     assertNodeExists(node_id);
+    alignmentRevision_ = nextAlignmentRevision();
     nodes_[node_id].name = node_name;
 }
 
-const string& Graph::nodeSeq(const NodeId node_id) const
+TextView Graph::nodeSeq(const NodeId node_id) const
 {
     assertNodeExists(node_id);
-    return nodes_[node_id].sequence;
+    return mapped_.data ? mapped_.text(mappedNode(node_id).sequence) : TextView(nodes_[node_id].sequence);
 }
 
-const vector<string>& Graph::nodeSeqExpansion(NodeId node_id) const
+size_t Graph::nodeSeqLength(const NodeId node_id) const
 {
     assertNodeExists(node_id);
-    return nodes_[node_id].sequence_expansion;
+    if (!mapped_.data)
+        return nodes_[node_id].sequence.size();
+    const auto sequence = mappedNode(node_id).sequence;
+    // Preserve the same mapped bounds checks as nodeSeq().
+    mapped_.array<char>(sequence);
+    return sequence.count;
+}
+
+CatalogRange<TextView> Graph::nodeSeqExpansion(NodeId node_id) const
+{
+    assertNodeExists(node_id);
+    if (mapped_.data)
+    {
+        const auto strings = mappedNode(node_id).expansions;
+        return CatalogRange<TextView>(
+            mapped_.data, strings.count,
+            [](const void* base, size_t i, const void* aux, size_t)
+            {
+                const auto slice = static_cast<const Slice*>(aux)[i];
+                return TextView(static_cast<const char*>(base) + slice.offset, slice.count);
+            },
+            mapped_.array<Slice>(strings), mapped_.size, mapped_.owner);
+    }
+    const auto& node = nodes_[node_id];
+    const auto& strings = node.sequence_expansion;
+    if (strings.empty() && !node.sequence.empty())
+    {
+        // A nondegenerate node has exactly one expansion, identical to its
+        // owned sequence. Uninitialized nodes retain their empty range.
+        return CatalogRange<TextView>(&node.sequence, 1,
+            [](const void* base, size_t, const void*, size_t) { return TextView(*static_cast<const string*>(base)); });
+    }
+    return CatalogRange<TextView>(
+        &strings, strings.size(), [](const void* base, size_t i, const void*, size_t)
+        { return TextView((*static_cast<const vector<string>*>(base))[i]); });
 }
 
 void Graph::setNodeSeq(NodeId node_id, const string& sequence)
 {
+    assertMutable();
     assertNodeExists(node_id);
     assertValidSequence(sequence);
-    nodes_[node_id].sequence = sequence;
-    expandReferenceSequence(sequence, nodes_[node_id].sequence_expansion);
+    alignmentRevision_ = nextAlignmentRevision();
+    auto& node = nodes_[node_id];
+    node.sequence = sequence;
+    if (sequence.empty() || hasExpandableReferenceSymbols(sequence))
+        expandReferenceSequence(sequence, node.sequence_expansion);
+    else
+        std::vector<std::string>().swap(node.sequence_expansion);
 }
 
 void Graph::addEdge(NodeId source_id, NodeId sink_id)
 {
+    assertMutable();
     assertNodeExists(source_id);
     assertNodeExists(sink_id);
 
@@ -114,6 +192,7 @@ void Graph::addEdge(NodeId source_id, NodeId sink_id)
     }
 
     NodeIdPair node_id_pair = std::make_pair(source_id, sink_id);
+    alignmentRevision_ = nextAlignmentRevision();
     edge_labels_[node_id_pair];
 
     adjacency_list_[source_id].emplace(sink_id);
@@ -124,20 +203,35 @@ bool Graph::hasEdge(NodeId source_id, NodeId sink_id) const
 {
     assertNodeExists(source_id);
     assertNodeExists(sink_id);
-    NodeIdPair node_id_pair(source_id, sink_id);
-    return edge_labels_.find(node_id_pair) != edge_labels_.end();
+    if (mapped_.data)
+    {
+        const auto slice = mappedNode(source_id).successors;
+        const auto* ids = mapped_.array<NodeId>(slice);
+        return std::find(ids, ids + slice.count, sink_id) != ids + slice.count;
+    }
+    return edge_labels_.find(NodeIdPair(source_id, sink_id)) != edge_labels_.end();
 }
 
 void Graph::addLabelToEdge(NodeId source_id, NodeId sink_id, const std::string& label)
 {
+    assertMutable();
     NodeIdPair node_pair = std::make_pair(source_id, sink_id);
     assertEdgeExists(node_pair);
+    alignmentRevision_ = nextAlignmentRevision();
     edge_labels_[node_pair].insert(label);
 }
 
 SortedLabels Graph::allLabels() const
 {
     SortedLabels labels;
+    if (mapped_.data)
+    {
+        for (const auto& edge :
+             CatalogRange<MappedEdge>::fromArray(mapped_.array<MappedEdge>(mappedGraph_->edges), numEdges()))
+            for (const auto& label : edgeLabels(edge.from, edge.to))
+                labels.insert(label);
+        return labels;
+    }
     for (const auto& single_edge_labels_ : edge_labels_)
     {
         labels.insert(single_edge_labels_.second.begin(), single_edge_labels_.second.end());
@@ -145,15 +239,51 @@ SortedLabels Graph::allLabels() const
     return labels;
 }
 
-const Labels& Graph::edgeLabels(NodeId source_id, NodeId sink_id) const
+CatalogRange<TextView> Graph::edgeLabels(NodeId source_id, NodeId sink_id) const
 {
+    if (mapped_.data)
+    {
+        for (size_t i = 0; i < numEdges(); ++i)
+        {
+            const auto& edge = mapped_.array<MappedEdge>(mappedGraph_->edges)[i];
+            if (edge.from != source_id || edge.to != sink_id)
+                continue;
+            return { mapped_.data,
+                     edge.labels.count,
+                     [](const void* base, size_t i, const void* aux, size_t)
+                     {
+                         const auto slice = static_cast<const Slice*>(aux)[i];
+                         return TextView(static_cast<const char*>(base) + slice.offset, slice.count);
+                     },
+                     mapped_.array<Slice>(edge.labels),
+                     mapped_.size,
+                     mapped_.owner };
+        }
+        throw std::out_of_range("Missing mapped graph edge");
+    }
     NodeIdPair node_id_pair = std::make_pair(source_id, sink_id);
-    return edge_labels_.at(node_id_pair);
+    const auto& labels = edge_labels_.at(node_id_pair);
+    return { &labels, labels.size(), [](const void* base, size_t i, const void*, size_t)
+             {
+                 auto it = static_cast<const Labels*>(base)->begin();
+                 std::advance(it, i);
+                 return TextView(*it);
+             } };
 }
 
 std::set<NodeIdPair> Graph::edgesWithLabel(const std::string& label) const
 {
     std::set<NodeIdPair> result;
+    if (mapped_.data)
+    {
+        for (size_t i = 0; i < numEdges(); ++i)
+        {
+            const auto& edge = mapped_.array<MappedEdge>(mappedGraph_->edges)[i];
+            if (edgeLabels(edge.from, edge.to).count(label))
+                result.emplace(edge.from, edge.to);
+        }
+        return result;
+    }
     for (const auto& pair : edge_labels_)
     {
         if (pair.second.count(label))
@@ -166,21 +296,100 @@ std::set<NodeIdPair> Graph::edgesWithLabel(const std::string& label) const
 
 void Graph::eraseLabel(const std::string& label)
 {
+    assertMutable();
+    alignmentRevision_ = nextAlignmentRevision();
     for (auto& pair : edge_labels_)
     {
         pair.second.erase(label);
     }
 }
 
-const set<NodeId>& Graph::successors(NodeId node_id) const
+CatalogRange<NodeId> Graph::successors(NodeId node_id) const
 {
-    assertNodeExists(node_id);
-    return adjacency_list_[node_id];
+    return successorsImpl(node_id, true);
 }
 
-const std::set<NodeId>& Graph::predecessors(NodeId node_id) const
+CatalogRange<NodeId> Graph::successorsBorrowed(NodeId node_id) const
+{
+    return successorsImpl(node_id, false);
+}
+
+CatalogRange<NodeId> Graph::successorsImpl(NodeId node_id, bool retainOwner) const
 {
     assertNodeExists(node_id);
-    return reverse_adjacency_list_[node_id];
+    if (mapped_.data)
+    {
+        const auto slice = mappedNode(node_id).successors;
+        return CatalogRange<NodeId>::fromArray(
+            mapped_.array<NodeId>(slice), slice.count, retainOwner ? mapped_.owner : std::shared_ptr<const void>());
+    }
+    return CatalogRange<NodeId>::fromContainer(adjacency_list_[node_id]);
+}
+
+CatalogRange<NodeId> Graph::predecessors(NodeId node_id) const
+{
+    return predecessorsImpl(node_id, true);
+}
+
+CatalogRange<NodeId> Graph::predecessorsBorrowed(NodeId node_id) const
+{
+    return predecessorsImpl(node_id, false);
+}
+
+CatalogRange<NodeId> Graph::predecessorsImpl(NodeId node_id, bool retainOwner) const
+{
+    assertNodeExists(node_id);
+    if (mapped_.data)
+    {
+        const auto slice = mappedNode(node_id).predecessors;
+        return CatalogRange<NodeId>::fromArray(
+            mapped_.array<NodeId>(slice), slice.count, retainOwner ? mapped_.owner : std::shared_ptr<const void>());
+    }
+    return CatalogRange<NodeId>::fromContainer(reverse_adjacency_list_[node_id]);
+}
+
+void Graph::assertMutable() const
+{
+    if (mapped_.data)
+        throw std::logic_error("A prepared graph is immutable");
+}
+
+Slice Graph::freeze(BlobBuilder& out) const
+{
+    std::vector<MappedNode> nodes;
+    std::vector<MappedEdge> edges;
+    for (NodeId node = 0; node < numNodes(); ++node)
+    {
+        const auto name = out.text(nodeName(node));
+        const auto sequence = nodeSeq(node);
+        const auto sequenceSlice = out.text(sequence);
+        // A nondegenerate node's one expansion is its sequence: refer to the
+        // same bytes instead of storing them twice.
+        std::vector<Slice> expansions;
+        for (auto text : nodeSeqExpansion(node))
+            expansions.push_back(text == sequence ? sequenceSlice : out.text(text));
+        std::vector<NodeId> next = successors(node), previous = predecessors(node);
+        nodes.push_back({ name, sequenceSlice, out.append(expansions), out.append(next), out.append(previous) });
+        for (auto successor : next)
+        {
+            std::vector<Slice> labels;
+            for (const auto& label : edgeLabels(node, successor))
+                labels.push_back(out.text(label));
+            edges.push_back({ node, successor, out.append(labels) });
+        }
+    }
+    return out.append(MappedGraph { out.append(nodes), out.append(edges), out.text(graphId()) });
+}
+
+Graph Graph::mapped(MappedBytes bytes, Slice record)
+{
+    if (record.count != 1)
+        throw std::runtime_error("Invalid mapped graph record");
+    Graph graph;
+    graph.mapped_ = bytes;
+    graph.mappedGraph_ = bytes.array<MappedGraph>(record);
+    bytes.array<MappedNode>(graph.mappedGraph_->nodes);
+    bytes.array<MappedEdge>(graph.mappedGraph_->edges);
+    return graph;
 }
 }

@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: alignment statistics accept borrowed variant-node ranges.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "alignment/GraphVariantAlignmentStats.hh"
 
@@ -35,7 +40,7 @@ using std::list;
 using std::string;
 using std::vector;
 
-static string encode(const vector<NodeId>& nodeIds)
+static string encode(graphtools::CatalogRange<NodeId> nodeIds)
 {
     vector<string> encoding;
     for (auto nodeId : nodeIds)
@@ -47,23 +52,28 @@ static string encode(const vector<NodeId>& nodeIds)
 }
 
 GraphVariantAlignmentStatsCalculator::GraphVariantAlignmentStatsCalculator(std::vector<graphtools::NodeId> variantNodes)
-    : variantNodes_(std::move(variantNodes))
+    : GraphVariantAlignmentStatsCalculator(graphtools::CatalogRange<NodeId>::fromVector(variantNodes))
 {
-    if (variantNodes_.empty())
+}
+
+GraphVariantAlignmentStatsCalculator::GraphVariantAlignmentStatsCalculator(
+    graphtools::CatalogRange<NodeId> variantNodes)
+{
+    if (variantNodes.empty())
     {
         throw std::logic_error("Cannot create a node bundle without nodes");
     }
 
-    for (int index = 1; index != static_cast<int>(variantNodes_.size()); ++index)
+    for (int index = 1; index != static_cast<int>(variantNodes.size()); ++index)
     {
-        if (variantNodes_[index] != variantNodes_[index - 1] + 1)
+        if (variantNodes[index] != variantNodes[index - 1] + 1)
         {
-            throw std::logic_error("Bundle " + encode(variantNodes_) + " must contain ordered and consecutive nodes");
+            throw std::logic_error("Bundle " + encode(variantNodes) + " must contain ordered and consecutive nodes");
         }
     }
 
-    firstVariantNode_ = variantNodes_.front();
-    lastVariantNode_ = variantNodes_.back();
+    firstVariantNode_ = variantNodes.front();
+    lastVariantNode_ = variantNodes.back();
 }
 
 void GraphVariantAlignmentStatsCalculator::inspect(const GraphAlignment& alignment)

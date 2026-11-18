@@ -20,6 +20,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: fragment likelihoods are cached as vectors indexed by allele size.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "genotyping/FragLogliks.hh"
 
@@ -42,30 +47,26 @@ namespace ehunter
 namespace strgt
 {
 
-double FragLogliks::getLoglik(int fragIndex, int alleleMotifCount)
+const std::vector<double>& FragLogliks::forAllele(int alleleMotifCount)
 {
-    const FragIndexAndNumMotifs index = { fragIndex, alleleMotifCount };
-    auto queryResult = fragLogliksBySize_.find(index);
-    if (queryResult != fragLogliksBySize_.end())
-    {
-        return queryResult->second;
-    }
+    const auto cached = fragLogliksBySize_.find(alleleMotifCount);
+    if (cached != fragLogliksBySize_.end())
+        return cached->second;
 
-    int readIndex = 2 * fragIndex;
-    int mateIndex = readIndex + 1;
-    assert(mateIndex < alignMatrix_.numReads());
-    const auto& readAlign = alignMatrix_.getAlign(readIndex, alleleMotifCount);
-    const auto& mateAlign = alignMatrix_.getAlign(mateIndex, alleleMotifCount);
-
-    const double loglik = computeLoglik(readAlign, mateAlign, alleleMotifCount);
-    fragLogliksBySize_[index] = loglik;
-    return loglik;
-}
-
-double FragLogliks::computeLoglik(const StrAlign& readAlign, const StrAlign& mateAlign, int alleleMotifCount) const
-{
     const int numPossibleStarts = alleleMotifCount * motifLen_ + fragLen_ + 1;
     const int numPossibleOrigins = numPossibleStarts * numPossibleStarts / 2;
+    const double logPossibleOrigins = std::log(numPossibleOrigins);
+    std::vector<double> values;
+    values.reserve(numFrags());
+    for (int read = 0; read < alignMatrix_.numReads(); read += 2)
+        values.push_back(computeLoglik(alignMatrix_.getAlign(read, alleleMotifCount),
+            alignMatrix_.getAlign(read + 1, alleleMotifCount), alleleMotifCount, logPossibleOrigins));
+    return fragLogliksBySize_.emplace(alleleMotifCount, std::move(values)).first->second;
+}
+
+double FragLogliks::computeLoglik(const StrAlign& readAlign, const StrAlign& mateAlign, int alleleMotifCount,
+                                  double logPossibleOrigins) const
+{
     int numOriginsForThisFrag = 1;
 
     if (readAlign.type() != StrAlign::Type::kInRepeat && mateAlign.type() == StrAlign::Type::kInRepeat)
@@ -93,7 +94,7 @@ double FragLogliks::computeLoglik(const StrAlign& readAlign, const StrAlign& mat
 
     const double readAlignLoglik = readAlign.score() * std::log(1.3) - 2 * readLen_ * std::log(2.0);
     const double mateAlignLoglik = mateAlign.score() * std::log(1.3) - 2 * readLen_ * std::log(2.0);
-    return std::log(numOriginsForThisFrag) - std::log(numPossibleOrigins) + readAlignLoglik + mateAlignLoglik;
+    return std::log(numOriginsForThisFrag) - logPossibleOrigins + readAlignLoglik + mateAlignLoglik;
 }
 
 }

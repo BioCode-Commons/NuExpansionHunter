@@ -17,8 +17,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: tests cover mutable graph lengths and nonthrowing path moves.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphcore/Path.hh"
+#include <type_traits>
 
 #include "gtest/gtest.h"
 
@@ -115,6 +121,26 @@ TEST(GettingPathsequence, TypicalPathOnStrGraph_sequenceReturned)
     Graph graph = makeStrGraph("TTT", "AT", "CCCCC");
     Path path(&graph, 1, { 0, 1, 1, 2 }, 0);
     EXPECT_EQ("TTATAT", path.seq());
+}
+
+TEST(GettingPathBoundsOnNodeByIndex, LengthQueriesTrackMutableGraphAndRetainValidation)
+{
+    Graph graph = makeStrGraph("AAAA", "CG", "TTTT");
+    Path path(&graph, 1, { 0, 1, 1, 2 }, 3);
+    EXPECT_EQ(path.length(), 10u);
+    graph.setNodeSeq(1, "CGTGA");
+    EXPECT_EQ(path.getEndPositionOnNodeByIndex(1), 5);
+    EXPECT_EQ(path.getNodeOverlapLengthByIndex(2), 5u);
+    EXPECT_EQ(path.length(), 16u);
+    EXPECT_EQ(path.getDistanceFromPathStart(2, 1), 14);
+    path.removeEndNode();
+    EXPECT_EQ(path.endPosition(), 5);
+    EXPECT_EQ(path.length(), 13u);
+
+    // Length access must still validate endpoints after external graph edits.
+    graph.setNodeSeq(1, "C");
+    EXPECT_THROW(path.shiftEndAlongNode(0), std::logic_error);
+    EXPECT_THROW(Path(&graph, 2, { 1 }, 2), std::logic_error);
 }
 
 TEST(CheckingIfPathOverlapsNode, TypicalPath_OverlapChecked)
@@ -581,3 +607,8 @@ TEST(ComparingPaths, TypicalPaths_Compared)
         EXPECT_FALSE(path_a == path_b);
     }
 }
+
+static_assert(std::is_nothrow_move_constructible<graphtools::Path>::value,
+              "Moving a completed graph path must transfer its node vector");
+static_assert(std::is_nothrow_move_assignable<graphtools::Path>::value,
+              "Reassigning a graph path must transfer its node vector");

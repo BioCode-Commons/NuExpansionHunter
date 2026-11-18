@@ -18,10 +18,18 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: VCF records are sorted and serialized in ordered parallel blocks.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "io/VcfWriter.hh"
+#include "core/OrderedBlocks.hh"
 
+#include <algorithm>
 #include <deque>
+#include <iterator>
 #include <memory>
 #include <stdexcept>
 #include <utility>
@@ -71,7 +79,7 @@ void writeBodyHeader(const string& sampleName, ostream& out)
 
 std::ostream& operator<<(std::ostream& out, VcfWriter& vcfWriter)
 {
-    outputVcfHeader(vcfWriter.regionCatalog_, vcfWriter.sampleFindings_, out);
+    outputVcfHeader(vcfWriter.regionCatalog_, vcfWriter.sampleFindings_, out, vcfWriter.threads_, vcfWriter.shared_);
     writeBodyHeader(vcfWriter.sampleId_, out);
     vcfWriter.writeBody(out);
     return out;
@@ -79,63 +87,73 @@ std::ostream& operator<<(std::ostream& out, VcfWriter& vcfWriter)
 
 VcfWriter::VcfWriter(
     std::string sampleId, Reference& reference, const RegionCatalog& regionCatalog,
-    const SampleFindings& sampleFindings)
+    const SampleFindings& sampleFindings, unsigned threads, ctpl::thread_pool* shared)
     : sampleId_(std::move(sampleId))
     , reference_(reference)
     , regionCatalog_(regionCatalog)
     , sampleFindings_(sampleFindings)
+    , threads_(std::max(1u, threads))
+    , shared_(shared && shared->size() ? shared : nullptr)
 {
 }
 
+// Contract [K-33]
+// Ensures:  for every catalog and set of findings, the bytes equal v5.0.0's serial VCF body and VcfHeader::dumpTo.
 void VcfWriter::writeBody(ostream& out)
 {
-    const std::vector<VcfWriter::LocusIndexAndVariantId>& ids = VcfWriter::getSortedIdPairs();
+    const auto variants = sortedVariants();
 
-    for (const auto& pair : ids)
-    {
-        const unsigned locusIndex = pair.first;
-        const LocusSpecification& locusSpec = regionCatalog_[locusIndex];
-        const LocusFindings& locusFindings = sampleFindings_[locusIndex];
-
-        const string& variantId = pair.second;
-        const VariantSpecification& variantSpec = locusSpec.getVariantSpecById(variantId);
-        const auto& variantFindings = locusFindings.findingsForEachVariant.at(variantId);
-
-        const double locusDepth = locusFindings.stats.depth();
-        VariantVcfWriter variantWriter(reference_, locusSpec, locusDepth, variantSpec, out);
-        variantFindings->accept(&variantWriter);
-    }
+    const auto* fasta = dynamic_cast<const FastaReference*>(&reference_);
+    const size_t grain = 256;
+    const size_t workers = fasta ? std::min<size_t>(threads_, (variants.size() + grain - 1) / grain) : 1;
+    std::vector<std::unique_ptr<FastaReference>> handles(shared_ ? static_cast<size_t>(shared_->size()) : workers);
+    auto format = [&](int worker, size_t begin, size_t end) {
+        if (workers > 1 && !handles[worker])
+            handles[worker].reset(new FastaReference(fasta->path(), reference_.contigInfo()));
+        Reference& reference = handles[worker] ? *handles[worker] : reference_;
+        std::ostringstream buffer;
+        for (size_t i = begin; i < end; ++i)
+        {
+            const auto& variant = variants[i];
+            const auto locusSpec = regionCatalog_[variant.locus];
+            const auto depth = sampleFindings_[variant.locus].stats.depth();
+            VariantVcfWriter variantWriter(reference, locusSpec, depth, variant.specification, buffer);
+            variant.findings->accept(&variantWriter);
+        }
+        return buffer.str();
+    };
+    orderedBlocks(variants.size(), grain, workers, format,
+        [&](const std::string& block) { out.write(block.data(), block.size()); }, shared_);
 }
 
-const std::vector<VcfWriter::LocusIndexAndVariantId> VcfWriter::getSortedIdPairs()
+std::vector<VcfWriter::OutputVariant> VcfWriter::sortedVariants() const
 {
-    using VariantTuple = std::tuple<int32_t, int64_t, int64_t, LocusIndexAndVariantId>;
-    std::vector<VariantTuple> tuples;
-
-    const unsigned locusCount(sampleFindings_.size());
-    for (unsigned locusIndex(0); locusIndex < locusCount; ++locusIndex)
-    {
-        const LocusSpecification& locusSpec = regionCatalog_[locusIndex];
-        const LocusFindings& locusFindings = sampleFindings_[locusIndex];
-
-        for (const auto& variantIdAndFindings : locusFindings.findingsForEachVariant)
+    std::vector<OutputVariant> variants;
+    variants.reserve(sampleFindings_.size());
+    auto collect = [&](int, size_t begin, size_t end) {
+        std::vector<OutputVariant> block;
+        block.reserve(end - begin);
+        for (size_t locus = begin; locus < end; ++locus)
         {
-            const string& variantId = variantIdAndFindings.first;
-            const VariantSpecification& variantSpec = locusSpec.getVariantSpecById(variantId);
-            tuples.emplace_back(
-                variantSpec.referenceLocus().contigIndex(), variantSpec.referenceLocus().start(),
-                variantSpec.referenceLocus().end(), LocusIndexAndVariantId(locusIndex, variantId));
+            const auto spec = regionCatalog_[locus];
+            for (const auto& entry : sampleFindings_[locus].findingsForEachVariant)
+                block.push_back({locus, spec.getVariantSpecById(entry.first), entry.second.get()});
         }
-    }
-
-    std::sort(tuples.begin(), tuples.end());
-    std::vector<VcfWriter::LocusIndexAndVariantId> idPairs;
-    for (const auto& t : tuples)
-    {
-        idPairs.emplace_back(std::get<3>(t));
-    }
-
-    return idPairs;
+        return block;
+    };
+    orderedBlocks(sampleFindings_.size(), 1024, threads_, collect, [&](std::vector<OutputVariant> block) {
+        variants.insert(variants.end(), std::make_move_iterator(block.begin()), std::make_move_iterator(block.end()));
+    }, shared_);
+    const auto less = [](const OutputVariant& left, const OutputVariant& right) {
+        const auto& a = left.specification.referenceLocus();
+        const auto& b = right.specification.referenceLocus();
+        if (a != b) return a < b;
+        if (left.locus != right.locus) return left.locus < right.locus;
+        return left.specification.id().compare(right.specification.id()) < 0;
+    };
+    if (!std::is_sorted(variants.begin(), variants.end(), less))
+        std::sort(variants.begin(), variants.end(), less);
+    return variants;
 }
 
 static string createRepeatAlleleSymbol(int repeatSize) { return "<STR" + std::to_string(repeatSize) + ">"; }

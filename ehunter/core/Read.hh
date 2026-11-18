@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: reverse complementation transfers the sequence buffer.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -26,6 +31,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include <boost/functional/hash.hpp>
 
@@ -110,7 +116,7 @@ public:
 
     void reverseComplement()
     {
-        sequence_ = graphtools::reverseComplement(sequence_);
+        sequence_ = graphtools::reverseComplement(std::move(sequence_));
         isReversed_ = !isReversed_;
     }
 

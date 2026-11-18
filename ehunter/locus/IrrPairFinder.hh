@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: in-repeat pair detection accepts borrowed motifs and prepared permutations.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include <string>
 
@@ -32,12 +37,20 @@ class IrrPairFinder
 {
 public:
     explicit IrrPairFinder(std::string motif);
+    IrrPairFinder(graphtools::TextView motif, graphtools::CatalogRange<graphtools::TextView> permutations)
+        : borrowedMotif_(motif)
+        , borrowed_(true)
+        , purityCalculator_(std::move(permutations))
+    {
+    }
 
-    const std::string& targetMotif() const { return targetMotif_; }
+    graphtools::TextView targetMotif() const { return borrowed_ ? borrowedMotif_ : graphtools::TextView(targetMotif_); }
     bool check(const std::string& read, const std::string& mate) const;
 
 private:
     std::string targetMotif_;
+    graphtools::TextView borrowedMotif_;
+    bool borrowed_ = false;
     WeightedPurityCalculator purityCalculator_;
     double purityCutoff_ = 0.90;
 };

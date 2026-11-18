@@ -20,6 +20,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: fragment likelihoods are cached as vectors indexed by allele size.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -46,19 +51,18 @@ public:
         assert(alignMatrix_.numReads() % 2 == 0);
     }
     int numFrags() const { return alignMatrix_.numReads() / 2; }
-    double getLoglik(int fragIndex, int alleleMotifCount);
+    const std::vector<double>& forAllele(int alleleMotifCount);
+    double getLoglik(int fragIndex, int alleleMotifCount) { return forAllele(alleleMotifCount).at(fragIndex); }
 
 private:
-    using FragIndex = int;
-    using FragIndexAndNumMotifs = std::pair<FragIndex, int>;
-
-    double computeLoglik(const StrAlign& readAlign, const StrAlign& mateAlign, int alleleMotifCount) const;
+    double computeLoglik(const StrAlign& readAlign, const StrAlign& mateAlign, int alleleMotifCount,
+                         double logPossibleOrigins) const;
 
     int motifLen_;
     int readLen_;
     int fragLen_;
     const AlignMatrix& alignMatrix_;
-    std::unordered_map<FragIndexAndNumMotifs, double> fragLogliksBySize_;
+    std::unordered_map<int, std::vector<double>> fragLogliksBySize_;
 };
 
 }

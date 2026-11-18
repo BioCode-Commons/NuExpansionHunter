@@ -1,0 +1,318 @@
+CBMC version 6.11.0 (cbmc-6.11.0) 64-bit x86_64 linux
+Type-checking K-03_rows
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+SAT checker: instance is UNSATISFIABLE
+
+** Results:
+../simd/x86_models.h function _mm_add_epi16
+[_mm_add_epi16.overflow.1] line 54 arithmetic overflow on signed + in (signed int)return_value_m_get16 + (signed int)return_value_m_get16$0: SUCCESS
+[_mm_add_epi16.overflow.2] line 54 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_loadu_si128
+[_mm_loadu_si128.precondition_instance.1] line 50 memcpy src/dst overlap: SUCCESS
+[_mm_loadu_si128.precondition_instance.2] line 50 memcpy source region readable: SUCCESS
+[_mm_loadu_si128.precondition_instance.3] line 50 memcpy destination region writeable: SUCCESS
+
+../simd/x86_models.h function _mm_max_epi16
+[_mm_max_epi16.overflow.1] line 55 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_set1_epi16
+[_mm_set1_epi16.overflow.1] line 53 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_storeu_si128
+[_mm_storeu_si128.precondition_instance.1] line 51 memcpy src/dst overlap: SUCCESS
+[_mm_storeu_si128.precondition_instance.2] line 51 memcpy source region readable: SUCCESS
+[_mm_storeu_si128.precondition_instance.3] line 51 memcpy destination region writeable: SUCCESS
+
+../simd/x86_models.h function m_get16
+[m_get16.overflow.1] line 39 arithmetic overflow on signed * in 2 * lane: SUCCESS
+[m_get16.overflow.2] line 39 arithmetic overflow on signed + in 2 * lane + 1: SUCCESS
+[m_get16.overflow.3] line 39 arithmetic overflow on signed shl in (signed int)b[(signed long int)(2 * lane + 1)] << 8: SUCCESS
+[m_get16.pointer_dereference.1] line 39 dereference failure: pointer NULL in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.2] line 39 dereference failure: pointer invalid in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.3] line 39 dereference failure: deallocated dynamic object in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.4] line 39 dereference failure: dead object in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.5] line 39 dereference failure: pointer outside object bounds in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.6] line 39 dereference failure: invalid integer address in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.7] line 39 dereference failure: pointer NULL in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.8] line 39 dereference failure: pointer invalid in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.9] line 39 dereference failure: deallocated dynamic object in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.10] line 39 dereference failure: dead object in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.11] line 39 dereference failure: pointer outside object bounds in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.12] line 39 dereference failure: invalid integer address in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.undefined-shift.1] line 39 shift operand is negative in (signed int)b[(signed long int)(2 * lane + 1)] << 8: SUCCESS
+
+../simd/x86_models.h function m_set16
+[m_set16.overflow.1] line 42 arithmetic overflow on signed * in 2 * lane: SUCCESS
+[m_set16.pointer_dereference.1] line 42 dereference failure: pointer NULL in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.2] line 42 dereference failure: pointer invalid in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.3] line 42 dereference failure: deallocated dynamic object in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.4] line 42 dereference failure: dead object in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.5] line 42 dereference failure: pointer outside object bounds in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.6] line 42 dereference failure: invalid integer address in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.overflow.2] line 43 arithmetic overflow on signed * in 2 * lane: SUCCESS
+[m_set16.overflow.3] line 43 arithmetic overflow on signed + in 2 * lane + 1: SUCCESS
+[m_set16.pointer_dereference.7] line 43 dereference failure: pointer NULL in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.8] line 43 dereference failure: pointer invalid in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.9] line 43 dereference failure: deallocated dynamic object in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.10] line 43 dereference failure: dead object in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.11] line 43 dereference failure: pointer outside object bounds in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.12] line 43 dereference failure: invalid integer address in b[(signed long int)(2 * lane + 1)]: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_align_lane
+[dp_align_lane.overflow.1] line 84 arithmetic overflow on signed + in (signed int)vpPrevious + (signed int)penalty: SUCCESS
+[dp_align_lane.pointer_dereference.1] line 85 dereference failure: pointer NULL in *g: SUCCESS
+[dp_align_lane.pointer_dereference.2] line 85 dereference failure: pointer invalid in *g: SUCCESS
+[dp_align_lane.pointer_dereference.3] line 85 dereference failure: deallocated dynamic object in *g: SUCCESS
+[dp_align_lane.pointer_dereference.4] line 85 dereference failure: dead object in *g: SUCCESS
+[dp_align_lane.pointer_dereference.5] line 85 dereference failure: pointer outside object bounds in *g: SUCCESS
+[dp_align_lane.pointer_dereference.6] line 85 dereference failure: invalid integer address in *g: SUCCESS
+[dp_align_lane.pointer_dereference.7] line 85 dereference failure: pointer NULL in *g: SUCCESS
+[dp_align_lane.pointer_dereference.8] line 85 dereference failure: pointer invalid in *g: SUCCESS
+[dp_align_lane.pointer_dereference.9] line 85 dereference failure: deallocated dynamic object in *g: SUCCESS
+[dp_align_lane.pointer_dereference.10] line 85 dereference failure: dead object in *g: SUCCESS
+[dp_align_lane.pointer_dereference.11] line 85 dereference failure: pointer outside object bounds in *g: SUCCESS
+[dp_align_lane.pointer_dereference.12] line 85 dereference failure: invalid integer address in *g: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_align_row_reference
+[dp_align_row_reference.overflow.2] line 121 arithmetic overflow on signed + in i + 1: SUCCESS
+[dp_align_row_reference.overflow.1] line 122 arithmetic overflow on signed - in i - 1: SUCCESS
+[dp_align_row_reference.pointer_dereference.1] line 122 dereference failure: pointer NULL in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_align_row_reference.pointer_dereference.2] line 122 dereference failure: pointer invalid in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_align_row_reference.pointer_dereference.3] line 122 dereference failure: deallocated dynamic object in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_align_row_reference.pointer_dereference.4] line 122 dereference failure: dead object in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_align_row_reference.pointer_dereference.5] line 122 dereference failure: pointer outside object bounds in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_align_row_reference.pointer_dereference.6] line 122 dereference failure: invalid integer address in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_align_row_reference.pointer_dereference.7] line 122 dereference failure: pointer NULL in penalties[(signed long int)i]: SUCCESS
+[dp_align_row_reference.pointer_dereference.8] line 122 dereference failure: pointer invalid in penalties[(signed long int)i]: SUCCESS
+[dp_align_row_reference.pointer_dereference.9] line 122 dereference failure: deallocated dynamic object in penalties[(signed long int)i]: SUCCESS
+[dp_align_row_reference.pointer_dereference.10] line 122 dereference failure: dead object in penalties[(signed long int)i]: SUCCESS
+[dp_align_row_reference.pointer_dereference.11] line 122 dereference failure: pointer outside object bounds in penalties[(signed long int)i]: SUCCESS
+[dp_align_row_reference.pointer_dereference.12] line 122 dereference failure: invalid integer address in penalties[(signed long int)i]: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_align_row_sse2
+[dp_align_row_sse2.overflow.1] line 306 arithmetic overflow on signed - in n - i: SUCCESS
+[dp_align_row_sse2.overflow.2] line 306 arithmetic overflow on signed + in i + 8: SUCCESS
+[dp_align_row_sse2.overflow.3] line 306 arithmetic overflow on signed - in n - i: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_consolidate_lane
+[dp_consolidate_lane.pointer_dereference.1] line 92 dereference failure: pointer NULL in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.2] line 92 dereference failure: pointer invalid in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.3] line 92 dereference failure: deallocated dynamic object in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.4] line 92 dereference failure: dead object in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.5] line 92 dereference failure: pointer outside object bounds in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.6] line 92 dereference failure: invalid integer address in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.7] line 92 dereference failure: pointer NULL in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.8] line 92 dereference failure: pointer invalid in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.9] line 92 dereference failure: deallocated dynamic object in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.10] line 92 dereference failure: dead object in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.11] line 92 dereference failure: pointer outside object bounds in *v: SUCCESS
+[dp_consolidate_lane.pointer_dereference.12] line 92 dereference failure: invalid integer address in *v: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_consolidate_row_reference
+[dp_consolidate_row_reference.overflow.1] line 127 arithmetic overflow on signed + in i + 1: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.1] line 128 dereference failure: pointer NULL in g[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.2] line 128 dereference failure: pointer invalid in g[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.3] line 128 dereference failure: deallocated dynamic object in g[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.4] line 128 dereference failure: dead object in g[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.5] line 128 dereference failure: pointer outside object bounds in g[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.6] line 128 dereference failure: invalid integer address in g[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.7] line 128 dereference failure: pointer NULL in e[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.8] line 128 dereference failure: pointer invalid in e[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.9] line 128 dereference failure: deallocated dynamic object in e[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.10] line 128 dereference failure: dead object in e[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.11] line 128 dereference failure: pointer outside object bounds in e[(signed long int)i]: SUCCESS
+[dp_consolidate_row_reference.pointer_dereference.12] line 128 dereference failure: invalid integer address in e[(signed long int)i]: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_consolidate_row_sse2
+[dp_consolidate_row_sse2.overflow.1] line 306 arithmetic overflow on signed - in n - i: SUCCESS
+[dp_consolidate_row_sse2.overflow.2] line 306 arithmetic overflow on signed + in i + 8: SUCCESS
+[dp_consolidate_row_sse2.overflow.3] line 306 arithmetic overflow on signed - in n - i: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_deletion_lane
+[dp_deletion_lane.overflow.1] line 75 arithmetic overflow on signed + in (signed int)ep + (signed int)gapExt: SUCCESS
+[dp_deletion_lane.overflow.2] line 76 arithmetic overflow on signed + in (signed int)vp + (signed int)gapOpen: SUCCESS
+[dp_deletion_lane.overflow.3] line 76 arithmetic overflow on signed + in (signed int)vp + (signed int)gapOpen + (signed int)gapExt: SUCCESS
+[dp_deletion_lane.pointer_dereference.1] line 78 dereference failure: pointer NULL in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.2] line 78 dereference failure: pointer invalid in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.3] line 78 dereference failure: deallocated dynamic object in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.4] line 78 dereference failure: dead object in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.5] line 78 dereference failure: pointer outside object bounds in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.6] line 78 dereference failure: invalid integer address in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.7] line 78 dereference failure: pointer NULL in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.8] line 78 dereference failure: pointer invalid in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.9] line 78 dereference failure: deallocated dynamic object in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.10] line 78 dereference failure: dead object in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.11] line 78 dereference failure: pointer outside object bounds in *e: SUCCESS
+[dp_deletion_lane.pointer_dereference.12] line 78 dereference failure: invalid integer address in *e: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_deletion_row_reference
+[dp_deletion_row_reference.overflow.1] line 115 arithmetic overflow on signed + in i + 1: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.1] line 116 dereference failure: pointer NULL in ep[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.2] line 116 dereference failure: pointer invalid in ep[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.3] line 116 dereference failure: deallocated dynamic object in ep[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.4] line 116 dereference failure: dead object in ep[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.5] line 116 dereference failure: pointer outside object bounds in ep[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.6] line 116 dereference failure: invalid integer address in ep[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.7] line 116 dereference failure: pointer NULL in vp[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.8] line 116 dereference failure: pointer invalid in vp[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.9] line 116 dereference failure: deallocated dynamic object in vp[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.10] line 116 dereference failure: dead object in vp[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.11] line 116 dereference failure: pointer outside object bounds in vp[(signed long int)i]: SUCCESS
+[dp_deletion_row_reference.pointer_dereference.12] line 116 dereference failure: invalid integer address in vp[(signed long int)i]: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_deletion_row_sse2
+[dp_deletion_row_sse2.overflow.1] line 306 arithmetic overflow on signed + in (signed int)gapOpen + (signed int)gapExt: SUCCESS
+[dp_deletion_row_sse2.overflow.2] line 306 arithmetic overflow on signed - in n - i: SUCCESS
+[dp_deletion_row_sse2.overflow.3] line 306 arithmetic overflow on signed + in i + 8: SUCCESS
+[dp_deletion_row_sse2.overflow.4] line 306 arithmetic overflow on signed - in n - i: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_fused_lane
+[dp_fused_lane.overflow.1] line 64 arithmetic overflow on signed + in (signed int)ep + (signed int)gapExt: SUCCESS
+[dp_fused_lane.overflow.2] line 65 arithmetic overflow on signed + in (signed int)vp + (signed int)gapOpen: SUCCESS
+[dp_fused_lane.overflow.3] line 65 arithmetic overflow on signed + in (signed int)vp + (signed int)gapOpen + (signed int)gapExt: SUCCESS
+[dp_fused_lane.overflow.4] line 67 arithmetic overflow on signed + in (signed int)vpPrevious + (signed int)penalty: SUCCESS
+[dp_fused_lane.pointer_dereference.1] line 68 dereference failure: pointer NULL in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.2] line 68 dereference failure: pointer invalid in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.3] line 68 dereference failure: deallocated dynamic object in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.4] line 68 dereference failure: dead object in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.5] line 68 dereference failure: pointer outside object bounds in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.6] line 68 dereference failure: invalid integer address in *e: SUCCESS
+[dp_fused_lane.pointer_dereference.7] line 69 dereference failure: pointer NULL in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.8] line 69 dereference failure: pointer invalid in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.9] line 69 dereference failure: deallocated dynamic object in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.10] line 69 dereference failure: dead object in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.11] line 69 dereference failure: pointer outside object bounds in *v: SUCCESS
+[dp_fused_lane.pointer_dereference.12] line 69 dereference failure: invalid integer address in *v: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_fused_row_reference
+[dp_fused_row_reference.overflow.2] line 108 arithmetic overflow on signed + in i + 1: SUCCESS
+[dp_fused_row_reference.overflow.1] line 109 arithmetic overflow on signed - in i - 1: SUCCESS
+[dp_fused_row_reference.pointer_dereference.1] line 109 dereference failure: pointer NULL in ep[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.2] line 109 dereference failure: pointer invalid in ep[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.3] line 109 dereference failure: deallocated dynamic object in ep[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.4] line 109 dereference failure: dead object in ep[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.5] line 109 dereference failure: pointer outside object bounds in ep[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.6] line 109 dereference failure: invalid integer address in ep[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.7] line 109 dereference failure: pointer NULL in vp[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.8] line 109 dereference failure: pointer invalid in vp[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.9] line 109 dereference failure: deallocated dynamic object in vp[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.10] line 109 dereference failure: dead object in vp[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.11] line 109 dereference failure: pointer outside object bounds in vp[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.12] line 109 dereference failure: invalid integer address in vp[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.13] line 109 dereference failure: pointer NULL in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.14] line 109 dereference failure: pointer invalid in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.15] line 109 dereference failure: deallocated dynamic object in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.16] line 109 dereference failure: dead object in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.17] line 109 dereference failure: pointer outside object bounds in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.18] line 109 dereference failure: invalid integer address in vp[(signed long int)(i - 1)]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.19] line 109 dereference failure: pointer NULL in penalties[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.20] line 109 dereference failure: pointer invalid in penalties[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.21] line 109 dereference failure: deallocated dynamic object in penalties[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.22] line 109 dereference failure: dead object in penalties[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.23] line 109 dereference failure: pointer outside object bounds in penalties[(signed long int)i]: SUCCESS
+[dp_fused_row_reference.pointer_dereference.24] line 109 dereference failure: invalid integer address in penalties[(signed long int)i]: SUCCESS
+
+ehunter/thirdparty/graph-tools-master-f421f4c/include/graphalign/dagAligner/DpKernels.hh function dp_fused_row_sse2
+[dp_fused_row_sse2.overflow.1] line 306 arithmetic overflow on signed + in (signed int)gapOpen + (signed int)gapExt: SUCCESS
+[dp_fused_row_sse2.overflow.2] line 306 arithmetic overflow on signed - in n - i: SUCCESS
+[dp_fused_row_sse2.overflow.3] line 306 arithmetic overflow on signed + in i + 8: SUCCESS
+[dp_fused_row_sse2.overflow.4] line 306 arithmetic overflow on signed - in n - i: SUCCESS
+
+<builtin-library-memcpy> function memcpy
+[memcpy.pointer.1] line 33 same object violation in (const unsigned char *)(const void *)p >= (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.3] line 33 same object violation in (const unsigned char *)(const void *)a.b >= (const unsigned char *)(void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.1] line 33 pointer relation: pointer NULL in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.2] line 33 pointer relation: pointer invalid in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.3] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.4] line 33 pointer relation: dead object in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.5] line 33 pointer relation: pointer outside object bounds in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.6] line 33 pointer relation: invalid integer address in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.7] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.8] line 33 pointer relation: dead object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.17] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.18] line 33 pointer relation: dead object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.19] line 33 pointer relation: pointer NULL in (const unsigned char *)(void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.20] line 33 pointer relation: pointer invalid in (const unsigned char *)(void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.21] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.22] line 33 pointer relation: dead object in (const unsigned char *)(void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.23] line 33 pointer relation: pointer outside object bounds in (const unsigned char *)(void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.24] line 33 pointer relation: invalid integer address in (const unsigned char *)(void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.2] line 34 same object violation in (const unsigned char *)(void *)r.b >= (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.4] line 34 same object violation in (const unsigned char *)(void *)p >= (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.9] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.10] line 34 pointer relation: dead object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.11] line 34 pointer relation: pointer NULL in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.12] line 34 pointer relation: pointer invalid in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.13] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.14] line 34 pointer relation: dead object in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.15] line 34 pointer relation: pointer outside object bounds in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.16] line 34 pointer relation: invalid integer address in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.25] line 34 pointer relation: pointer NULL in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.26] line 34 pointer relation: pointer invalid in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.27] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.28] line 34 pointer relation: dead object in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.29] line 34 pointer relation: pointer outside object bounds in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.30] line 34 pointer relation: invalid integer address in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.31] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.32] line 34 pointer relation: dead object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+
+K-03_rows.c function check_once
+[check_once.overflow.1] line 45 arithmetic overflow on signed + in i + 1: SUCCESS
+[check_once.array_bounds.1] line 47 array 'epRow' lower bound in epRow[(signed long int)i]: SUCCESS
+[check_once.array_bounds.2] line 47 array 'epRow' upper bound in epRow[(signed long int)i]: SUCCESS
+[check_once.array_bounds.3] line 48 array 'penalties' lower bound in penalties[(signed long int)i]: SUCCESS
+[check_once.array_bounds.4] line 48 array 'penalties' upper bound in penalties[(signed long int)i]: SUCCESS
+[check_once.overflow.2] line 50 arithmetic overflow on signed + in i + 1: SUCCESS
+[check_once.array_bounds.5] line 51 array 'vpRow' lower bound in vpRow[(signed long int)i]: SUCCESS
+[check_once.array_bounds.6] line 51 array 'vpRow' upper bound in vpRow[(signed long int)i]: SUCCESS
+[check_once.overflow.3] line 58 arithmetic overflow on signed + in i + 1: SUCCESS
+[check_once.array_bounds.7] line 59 array 'e' lower bound in e[(signed long int)i]: SUCCESS
+[check_once.array_bounds.8] line 59 array 'e' upper bound in e[(signed long int)i]: SUCCESS
+[check_once.array_bounds.9] line 59 array 'eRef' lower bound in eRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.10] line 59 array 'eRef' upper bound in eRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.11] line 59 array 'v' lower bound in v[(signed long int)i]: SUCCESS
+[check_once.array_bounds.12] line 59 array 'v' upper bound in v[(signed long int)i]: SUCCESS
+[check_once.array_bounds.13] line 59 array 'vRef' lower bound in vRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.14] line 59 array 'vRef' upper bound in vRef[(signed long int)i]: SUCCESS
+[check_once.assertion.1] line 59 assertion e[i] == eRef[i] && v[i] == vRef[i]: SUCCESS
+[check_once.overflow.4] line 62 arithmetic overflow on signed + in i + 1: SUCCESS
+[check_once.array_bounds.15] line 64 array 'eRef' lower bound in eRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.16] line 64 array 'eRef' upper bound in eRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.17] line 64 array 'e' lower bound in e[(signed long int)i]: SUCCESS
+[check_once.array_bounds.18] line 64 array 'e' upper bound in e[(signed long int)i]: SUCCESS
+[check_once.array_bounds.19] line 65 array 'gRef' lower bound in gRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.20] line 65 array 'gRef' upper bound in gRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.21] line 65 array 'g' lower bound in g[(signed long int)i]: SUCCESS
+[check_once.array_bounds.22] line 65 array 'g' upper bound in g[(signed long int)i]: SUCCESS
+[check_once.array_bounds.23] line 66 array 'vRef' lower bound in vRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.24] line 66 array 'vRef' upper bound in vRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.25] line 66 array 'v' lower bound in v[(signed long int)i]: SUCCESS
+[check_once.array_bounds.26] line 66 array 'v' upper bound in v[(signed long int)i]: SUCCESS
+[check_once.overflow.5] line 74 arithmetic overflow on signed + in i + 1: SUCCESS
+[check_once.array_bounds.27] line 75 array 'e' lower bound in e[(signed long int)i]: SUCCESS
+[check_once.array_bounds.28] line 75 array 'e' upper bound in e[(signed long int)i]: SUCCESS
+[check_once.array_bounds.29] line 75 array 'eRef' lower bound in eRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.30] line 75 array 'eRef' upper bound in eRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.31] line 75 array 'g' lower bound in g[(signed long int)i]: SUCCESS
+[check_once.array_bounds.32] line 75 array 'g' upper bound in g[(signed long int)i]: SUCCESS
+[check_once.array_bounds.33] line 75 array 'gRef' lower bound in gRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.34] line 75 array 'gRef' upper bound in gRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.35] line 75 array 'v' lower bound in v[(signed long int)i]: SUCCESS
+[check_once.array_bounds.36] line 75 array 'v' upper bound in v[(signed long int)i]: SUCCESS
+[check_once.array_bounds.37] line 75 array 'vRef' lower bound in vRef[(signed long int)i]: SUCCESS
+[check_once.array_bounds.38] line 75 array 'vRef' upper bound in vRef[(signed long int)i]: SUCCESS
+[check_once.assertion.2] line 75 assertion e[i] == eRef[i] && g[i] == gRef[i] && v[i] == vRef[i]: SUCCESS
+
+K-03_rows.c function main
+[main.overflow.1] line 86 arithmetic overflow on signed + in round + 1l: SUCCESS
+
+** 0 of 259 failed (1 iterations)
+VERIFICATION SUCCESSFUL

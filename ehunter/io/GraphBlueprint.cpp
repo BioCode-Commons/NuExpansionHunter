@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: graph tokens are parsed by direct delimiter and alphabet checks.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "io/GraphBlueprint.hh"
 
@@ -107,48 +112,35 @@ vector<string> tokenizeRegex(const string& regex)
     return tokens;
 }
 
-TokenParser::TokenParser()
-    : skippableRepeatRegex_("^\\([ACGTBDHKMNSRVWY]+\\)\\*$")
-    , unskippableRepeatRegex_("^\\([ACGTBDHKMNSRVWY]+\\)\\+$")
-    , insertionOrDeletionRegex_("^\\([ACGTBDHKMNSRVWY]+\\)\\?$")
-    , swapRegex_("^\\([ACGTBDHKMNSRVWY]+\\|[ACGTBDHKMNSRVWY]+\\)$")
-    , interruptionRegex_("^[ACGTBDHKMNSRVWY]+$")
-{
-}
-
+// Contract [K-29]
+// Ensures:  the parser accepts exactly the language of v5.0.0's five regular expressions (interruption, skippable
+//           and unskippable repeat, insertion or deletion, swap) and yields the same type and sequences.
+// Reference: the five expressions, kept in GraphBlueprintTest as the executable check.
 FeatureTypeAndSequences TokenParser::parse(const string& token) const
 {
-    if (std::regex_match(token, insertionOrDeletionRegex_))
-    {
-        auto sequence = token.substr(1, token.size() - 3);
-        return { GraphBlueprintFeatureType::kInsertionOrDeletion, { sequence } };
-    }
-    else if (std::regex_match(token, skippableRepeatRegex_))
-    {
-        auto sequence = token.substr(1, token.size() - 3);
-        return { GraphBlueprintFeatureType::kSkippableRepeat, { sequence } };
-    }
-    else if (std::regex_match(token, unskippableRepeatRegex_))
-    {
-        auto sequence = token.substr(1, token.size() - 3);
-        return { GraphBlueprintFeatureType::kUnskippableRepeat, { sequence } };
-    }
-    else if (std::regex_match(token, swapRegex_))
-    {
-        auto sequence = token.substr(1, token.size() - 2);
-        int pipePosition = sequence.find('|');
-        auto firstAllele = sequence.substr(0, pipePosition);
-        auto secondAllele = sequence.substr(pipePosition + 1);
-        return { GraphBlueprintFeatureType::kSwap, { firstAllele, secondAllele } };
-    }
-    else if (std::regex_match(token, interruptionRegex_))
-    {
+    static const char bases[] = "ACGTBDHKMNSRVWY";
+    const size_t n = token.size();
+    if (n && token.find_first_not_of(bases) == string::npos)
         return { GraphBlueprintFeatureType::kInterruption, { token } };
-    }
-    else
+    if (n >= 4 && token.front() == '(')
     {
-        throw std::logic_error("Could not parse the token " + token);
+        const auto delimiter = token.find_first_not_of(bases, 1);
+        if (delimiter == n - 2 && token[delimiter] == ')')
+        {
+            const auto sequence = token.substr(1, n - 3);
+            switch (token.back())
+            {
+            case '?': return { GraphBlueprintFeatureType::kInsertionOrDeletion, { sequence } };
+            case '*': return { GraphBlueprintFeatureType::kSkippableRepeat, { sequence } };
+            case '+': return { GraphBlueprintFeatureType::kUnskippableRepeat, { sequence } };
+            }
+        }
+        if (delimiter > 1 && delimiter < n - 2 && token[delimiter] == '|' && token.back() == ')'
+            && token.find_first_not_of(bases, delimiter + 1) == n - 1)
+            return { GraphBlueprintFeatureType::kSwap,
+                     { token.substr(1, delimiter - 1), token.substr(delimiter + 1, n - delimiter - 2) } };
     }
+    throw std::logic_error("Could not parse the token " + token);
 }
 
 std::ostream& operator<<(std::ostream& out, GraphBlueprintFeatureType tokenType)

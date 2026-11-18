@@ -19,6 +19,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: catalog loading supports parallel parsing of complete locus objects.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -33,6 +38,7 @@ namespace ehunter
 {
 
 RegionCatalog loadLocusCatalogFromDisk(
-    const std::string& catalogPath, const HeuristicParameters& heuristicParams, const Reference& reference);
+    const std::string& catalogPath, const HeuristicParameters& heuristicParams, const Reference& reference,
+    unsigned threads = 1);
 
 }

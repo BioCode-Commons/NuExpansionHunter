@@ -18,9 +18,15 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: streaming exposes physical BAM ranges and borrowed record fields with htslib fallback.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -60,6 +66,29 @@ public:
 
     bool trySeekingToNextPrimaryAlignment();
 
+    // Physical BAM ranges include all records, even records discarded by the
+    // primary filter. Index offsets are hints until the preceding scan reaches
+    // the exact virtual offset at a record boundary.
+    std::vector<int64_t> bamRangeStarts(unsigned workers = 1) const;
+    std::unique_ptr<HtsFileStreamer> independentReader() const;
+    int64_t virtualOffset() const;
+    void seekVirtualOffset(int64_t offset);
+    bool nextPhysicalRecord();
+    struct StreamingRecord
+    {
+        int32_t tid, mtid;
+        hts_pos_t pos, mpos;
+        uint32_t flag;
+        int32_t length;
+        const char* name;
+        const uint8_t* sequence;
+        const uint8_t* quality;
+    };
+    // The returned fields borrow the current block or HTS record until the next
+    // stream operation. Use this view directly instead of currentAlignment().
+    bool nextStreamingRecord(StreamingRecord& record);
+    bool currentIsPrimary() const;
+
     int32_t currentReadContigId() const { return htsAlignmentPtr_->core.tid; }
     hts_pos_t currentReadPosition() const { return htsAlignmentPtr_->core.pos; }
     int32_t currentReadLength() const;
@@ -71,6 +100,8 @@ public:
     bool isStreamingAlignedReads() const;
 
     Read decodeRead() const;
+    // Borrowed until the next seek; asynchronous users must copy needed fields.
+    const bam1_t* currentAlignment() const { return htsAlignmentPtr_; }
 
 private:
     enum class Status

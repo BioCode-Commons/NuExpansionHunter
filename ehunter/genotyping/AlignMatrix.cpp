@@ -18,11 +18,17 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: alignment rows share a flat cell array with row offsets and best-alignment indexes.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "genotyping/AlignMatrix.hh"
 
 #include <algorithm>
 #include <cassert>
+#include <stdexcept>
 
 #include <numeric>
 
@@ -42,22 +48,43 @@ AlignMatrix::AlignMatrix(int strNode)
 
 StrAlign AlignMatrix::getAlign(int readIndex, int alleleSize) const
 {
-    if (readIndex >= static_cast<int>(alignScoreMatrix_.size()))
+    if (readIndex >= numReads())
     {
         throw std::runtime_error("Encountered invalid alignment matrix index " + std::to_string(readIndex));
     }
 
-    if (alleleSize < static_cast<int>(alignScoreMatrix_[readIndex].size()))
+    const auto begin = rowBegin_[readIndex];
+    const auto end = rowBegin_[readIndex + 1];
+    if (alleleSize < static_cast<int>(end - begin))
     {
-        return alignScoreMatrix_[readIndex][alleleSize];
+        return cells_[begin + alleleSize];
     }
     else
     {
-        assert(!alignScoreMatrix_[readIndex].empty());
-        return alignScoreMatrix_[readIndex].back();
+        assert(end != begin);
+        return cells_[end - 1];
     }
 }
 
+void AlignMatrix::closeRow(size_t first, size_t bestIndex)
+{
+    if (cells_.size() > std::numeric_limits<uint32_t>::max())
+        throw std::length_error("Alignment matrix exceeds its cell index range");
+    if (bestIndex > std::numeric_limits<uint16_t>::max())
+        throw std::length_error("Alignment matrix row exceeds its best-alignment index range");
+    // assign() rather than push_back() on the empty array: GCC 11 reports a
+    // false stringop-overflow in Boost's reallocation for the latter.
+    if (rowBegin_.empty())
+        rowBegin_.assign(1, static_cast<uint32_t>(first));
+    rowBegin_.push_back(static_cast<uint32_t>(cells_.size()));
+    bestIndex_.push_back(static_cast<uint16_t>(bestIndex));
+}
+
+// Contract [K-25]
+// Requires: a row's best index fits 16 bits and the locus holds fewer than 2^32 cells (closeRow throws otherwise).
+// Ensures:  under the abstraction that maps (cells, row offsets, best index) to v5.0.0's vector of rows, every
+//           operation gives the same abstract state and return value as v5's AlignMatrix.
+// Reference: verification/reference/genotyping/AlignMatrix (v5.0.0 text).
 void AlignMatrix::add(const GraphAlignment& read, const GraphAlignment& mate)
 {
     const int numMotifsInRead = std::count(read.path().begin(), read.path().end(), strNode_);
@@ -72,40 +99,45 @@ void AlignMatrix::add(const GraphAlignment& read, const GraphAlignment& mate)
 
 void AlignMatrix::add(const graphtools::GraphAlignment& graphAlign)
 {
-    vector<StrAlign> strAligns;
     const int numMotifsInAlign = std::count(graphAlign.path().begin(), graphAlign.path().end(), strNode_);
     StrAlign alignToMostConsistentAllele = alignmentCalculator_.findConsistentAlignment(numMotifsInAlign, graphAlign);
 
-    bestAlignsByRead_.push_back(alignToMostConsistentAllele);
-
-    for (int numMotifs = numMotifsInAlign - 1; numMotifs != -1; --numMotifs)
+    const size_t first = cells_.size();
+    try
     {
-        StrAlign align = alignmentCalculator_.findConsistentAlignment(numMotifs, graphAlign);
-        strAligns.emplace_back(align);
-    }
-    std::reverse(strAligns.begin(), strAligns.end());
-    strAligns.emplace_back(alignToMostConsistentAllele);
-    StrAlign previousAlign = strAligns.back();
-    for (int numMotifs = numMotifsInAlign + 1;; ++numMotifs)
-    {
-        StrAlign align = alignmentCalculator_.findConsistentAlignment(numMotifs, graphAlign);
-        if (align.type() == previousAlign.type() && align.score() == previousAlign.score())
+        for (int numMotifs = numMotifsInAlign - 1; numMotifs != -1; --numMotifs)
         {
-            break;
+            StrAlign align = alignmentCalculator_.findConsistentAlignment(numMotifs, graphAlign);
+            cells_.emplace_back(align);
         }
-        strAligns.emplace_back(align);
-        previousAlign = align;
+        std::reverse(cells_.begin() + first, cells_.end());
+        cells_.emplace_back(alignToMostConsistentAllele);
+        StrAlign previousAlign = cells_.back();
+        for (int numMotifs = numMotifsInAlign + 1;; ++numMotifs)
+        {
+            StrAlign align = alignmentCalculator_.findConsistentAlignment(numMotifs, graphAlign);
+            if (align.type() == previousAlign.type() && align.score() == previousAlign.score())
+            {
+                break;
+            }
+            cells_.emplace_back(align);
+            previousAlign = align;
+        }
+        closeRow(first, static_cast<size_t>(numMotifsInAlign));
     }
-
-    alignScoreMatrix_.emplace_back(strAligns);
+    catch (...)
+    {
+        cells_.erase(cells_.begin() + first, cells_.end());
+        throw;
+    }
 }
 
 int AlignMatrix::getMaxMotifCount() const
 {
     int maxMotifCount = 0;
-    for (const auto& readAligns : alignScoreMatrix_)
+    for (int readIndex = 0; readIndex != numReads(); ++readIndex)
     {
-        const int maxMotifsInAlign = static_cast<int>(readAligns.size()) - 1;
+        const int maxMotifsInAlign = rowSize(readIndex) - 1;
         if (maxMotifsInAlign > maxMotifCount)
         {
             maxMotifCount = maxMotifsInAlign;
@@ -115,32 +147,30 @@ int AlignMatrix::getMaxMotifCount() const
     return maxMotifCount;
 }
 
-StrAlign AlignMatrix::getBestAlign(int readIndex) const { return bestAlignsByRead_[readIndex]; }
-
 std::ostream& operator<<(std::ostream& out, const AlignMatrix& matrix)
 {
-    const auto& alignsByRead = matrix.matrix();
-
-    const unsigned alignCount(alignsByRead.size());
+    const unsigned alignCount(matrix.numReads());
     std::vector<unsigned> alignIndexes(alignCount);
     std::iota(alignIndexes.begin(), alignIndexes.end(), 0);
 
     // Sort alignIndexes to canonicalize the alignmatrix output
     std::sort(
         alignIndexes.begin(), alignIndexes.end(),
-        [&alignsByRead](const unsigned ai, const unsigned bi) -> bool
+        [&matrix](const unsigned ai, const unsigned bi) -> bool
         {
-            const auto& a(alignsByRead[ai]);
-            const auto& b(alignsByRead[bi]);
-            if (a.size() < b.size())
+            const StrAlign* a = matrix.rowData(ai);
+            const StrAlign* b = matrix.rowData(bi);
+            const unsigned aSize = matrix.rowSize(ai);
+            const unsigned bSize = matrix.rowSize(bi);
+            if (aSize < bSize)
             {
                 return true;
             }
-            if (b.size() < a.size())
+            if (bSize < aSize)
             {
                 return false;
             }
-            for (unsigned i(0); i < a.size(); ++i)
+            for (unsigned i(0); i < aSize; ++i)
             {
                 if (a[i] < b[i])
                 {
@@ -178,10 +208,10 @@ std::ostream& operator<<(std::ostream& out, const AlignMatrix& matrix)
     for (unsigned origAlignIndex(0); origAlignIndex < alignCount; ++origAlignIndex)
     {
         const unsigned alignIndex(alignIndexes[origAlignIndex]);
-        const auto& aligns(alignsByRead[alignIndex]);
-        for (const StrAlign& align : aligns)
+        const StrAlign* aligns = matrix.rowData(alignIndex);
+        for (int i = 0; i != matrix.rowSize(alignIndex); ++i)
         {
-            dumpStrAlign(align);
+            dumpStrAlign(aligns[i]);
         }
         out << "\n";
     }
@@ -192,15 +222,13 @@ std::ostream& operator<<(std::ostream& out, const AlignMatrix& matrix)
 void addIrrPairsIfPossibleExpansion(int maxMotifsInRead, AlignMatrix& alignMatrix, int numIrrPairs)
 {
     // Find highest-scoring in-repeat read
-    assert(alignMatrix.bestAlignsByRead_.size() == alignMatrix.alignScoreMatrix_.size());
-
     const int longIrrLowerBound = static_cast<int>(0.90 * maxMotifsInRead);
 
     int topIrrIndex = -1;
     int topIrrScore = -1;
     for (int readIndex = 0; readIndex != alignMatrix.numReads(); ++readIndex)
     {
-        const StrAlign& align = alignMatrix.bestAlignsByRead_[readIndex];
+        const StrAlign align = alignMatrix.getBestAlign(readIndex);
         const bool isLongIrr = align.type() == StrAlign::Type::kInRepeat && align.numMotifs() >= longIrrLowerBound;
 
         if (isLongIrr && align.score() > topIrrScore)
@@ -215,21 +243,30 @@ void addIrrPairsIfPossibleExpansion(int maxMotifsInRead, AlignMatrix& alignMatri
         return;
     }
 
-    StrAlign irrTopAlign = alignMatrix.bestAlignsByRead_[topIrrIndex];
-    vector<StrAlign> irrAligns = alignMatrix.alignScoreMatrix_[topIrrIndex];
+    const vector<StrAlign> irrAligns(
+        alignMatrix.rowData(topIrrIndex), alignMatrix.rowData(topIrrIndex) + alignMatrix.rowSize(topIrrIndex));
+    const size_t irrBest = alignMatrix.bestIndex_[topIrrIndex];
 
     for (int newIrrIndex = 0; newIrrIndex != 2 * numIrrPairs; ++newIrrIndex)
     {
-        alignMatrix.bestAlignsByRead_.push_back(irrTopAlign);
-        alignMatrix.alignScoreMatrix_.push_back(irrAligns);
+        const size_t first = alignMatrix.cells_.size();
+        alignMatrix.cells_.insert(alignMatrix.cells_.end(), irrAligns.begin(), irrAligns.end());
+        alignMatrix.closeRow(first, irrBest);
     }
 }
 
 void AlignMatrix::remove(int readIndex)
 {
     assert(readIndex < numReads());
-    bestAlignsByRead_.erase(bestAlignsByRead_.begin() + readIndex);
-    alignScoreMatrix_.erase(alignScoreMatrix_.begin() + readIndex);
+    const uint32_t begin = rowBegin_[readIndex];
+    const uint32_t length = rowBegin_[readIndex + 1] - begin;
+    cells_.erase(cells_.begin() + begin, cells_.begin() + begin + length);
+    rowBegin_.erase(rowBegin_.begin() + readIndex + 1);
+    for (size_t row = readIndex + 1; row < rowBegin_.size(); ++row)
+        rowBegin_[row] -= length;
+    bestIndex_.erase(bestIndex_.begin() + readIndex);
+    if (bestIndex_.empty())
+        rowBegin_.clear();
 }
 
 }

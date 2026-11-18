@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: genome masks use unsigned bin indexes and support mapped masks with negative-coordinate guards.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "GenomeMask.hh"
 
@@ -25,25 +30,6 @@
 
 namespace ehunter
 {
-
-namespace
-{
-inline size_t binPos(int64_t pos)
-{
-    static const int binSizeLog2 = 10;
-    return pos >> binSizeLog2;
-}
-}
-
-bool GenomeMask::query(int32_t contigId, int64_t pos) const
-{
-    if (contigId >= static_cast<int>(mask_.size()))
-    {
-        return false;
-    }
-    const contigMask& cmask = mask_[contigId];
-    return ((binPos(pos) < cmask.size()) && cmask[binPos(pos)]);
-}
 
 void GenomeMask::addRegion(int32_t contigId, int64_t start, int64_t stop)
 {
@@ -56,12 +42,12 @@ void GenomeMask::addRegion(int32_t contigId, int64_t start, int64_t stop)
         mask_.resize(contigId + 1);
     }
     contigMask& cmask = mask_[contigId];
-    const auto stopBin = binPos(stop);
+    const size_t stopBin = binIndex(static_cast<uint64_t>(stop));
     if (stopBin >= cmask.size())
     {
         cmask.resize(stopBin + 1);
     }
-    for (auto bin = binPos(start); bin <= stopBin; ++bin)
+    for (size_t bin = binIndex(static_cast<uint64_t>(start)); bin <= stopBin; ++bin)
     {
         cmask[bin] = true;
     }

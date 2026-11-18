@@ -17,6 +17,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: the standard limits header is included explicitly.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
+
+#include <limits>
 
 #include "graphcore/GraphCoordinates.hh"
 #include "graphutils/PairHashing.hh"

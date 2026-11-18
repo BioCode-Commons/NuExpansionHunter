@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: variant classification accepts borrowed node ranges.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -38,6 +43,12 @@ public:
     static const graphtools::NodeId kInvalidNodeId;
 
     ClassifierOfAlignmentsToVariant(std::vector<graphtools::NodeId> targetNodes);
+    ClassifierOfAlignmentsToVariant(graphtools::CatalogRange<graphtools::NodeId> targetNodes);
+    ClassifierOfAlignmentsToVariant(std::initializer_list<graphtools::NodeId> nodes)
+        : ClassifierOfAlignmentsToVariant(
+              graphtools::CatalogRange<graphtools::NodeId>::fromArray(nodes.begin(), nodes.size()))
+    {
+    }
 
     void classify(const graphtools::GraphAlignment& graphAlignment);
 
@@ -47,7 +58,6 @@ public:
     int numBypassingReads() const { return numBypassingReads_; }
 
 private:
-    std::vector<graphtools::NodeId> targetNodes_;
     graphtools::NodeId firstBundleNode_;
     graphtools::NodeId lastBundleNode_;
 

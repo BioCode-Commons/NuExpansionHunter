@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: genotyping accepts an optional worker pool for candidate-grid scoring.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -27,6 +32,8 @@
 #include "genotyping/AlignMatrix.hh"
 #include "genotyping/RepeatGenotype.hh"
 
+namespace ctpl { class thread_pool; }
+
 namespace ehunter
 {
 namespace strgt
@@ -34,7 +41,8 @@ namespace strgt
 
 std::unordered_set<int> getAlleleCandidates(int readLen, int motifLen, const AlignMatrix& alignMatrix);
 
-RepeatGenotype genotype(AlleleCount alleleCount, int motifLen, int readLen, int fragLen, AlignMatrix& alignMatrix);
+RepeatGenotype genotype(AlleleCount alleleCount, int motifLen, int readLen, int fragLen, AlignMatrix& alignMatrix,
+                        ctpl::thread_pool* gridWorkers = nullptr);
 
 }
 }

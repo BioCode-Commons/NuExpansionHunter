@@ -18,18 +18,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: seed searches use rolling encoded k-mers, borrowed path views, and optional locale snapshots.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphalign/GappedAligner.hh"
 
 #include <algorithm>
+#include <limits>
+#include <locale>
 #include <stdexcept>
 
-#include <boost/algorithm/string.hpp>
 #include <boost/optional.hpp>
 
 #include "graphalign/GraphAlignmentOperations.hh"
 #include "graphalign/LinearAlignmentOperations.hh"
 #include "graphcore/PathOperations.hh"
+#include "graphutils/VerifyPolicy.hh"
 
 using boost::optional;
 using std::list;
@@ -101,7 +108,9 @@ list<GraphAlignment> GappedGraphAligner::align(const string& query, AlignerSelec
 {
     try
     {
-        optional<AlignmentSeed> optional_seed = searchForAlignmentSeed(query);
+        const auto* seedFacet = alignerSelector.seedSearchFacet();
+        optional<AlignmentSeed> optional_seed
+            = seedFacet ? searchForAlignmentSeed(query, seedFacet) : searchForAlignmentSeed(query);
 
         if (optional_seed)
         {
@@ -112,7 +121,7 @@ list<GraphAlignment> GappedGraphAligner::align(const string& query, AlignerSelec
             trimSuffixNearNodeEdge(seed_affix_trim_len_, kMinPathLength, seed_path);
             const int trimmed_prefix_len = trimPrefixNearNodeEdge(seed_affix_trim_len_, kMinPathLength, seed_path);
             return extendSeedToFullAlignments(
-                seed_path, query, seed_start_on_query + trimmed_prefix_len, alignerSelector);
+                std::move(seed_path), query, seed_start_on_query + trimmed_prefix_len, alignerSelector);
         }
         else
         {
@@ -125,21 +134,113 @@ list<GraphAlignment> GappedGraphAligner::align(const string& query, AlignerSelec
     }
 }
 
+// Seed search advances to the right end of an extended path. That end cannot
+// precede the original kmer's end: extending left changes its start and length
+// by opposite amounts. A cursor can therefore encode visited windows in one
+// forward pass, while preserving the search's original skip and tie rules.
+class SeedKmerCursor
+{
+public:
+    SeedKmerCursor(const string& query, size_t kmer_length, size_t encoded_length)
+        : query_(query)
+        , kmer_length_(kmer_length)
+        , encoded_length_(encoded_length)
+        , mask_(static_cast<uint32_t>((uint64_t(1) << (2 * encoded_length)) - 1))
+    {
+    }
+
+    bool seek(size_t position)
+    {
+        // Preserve numPaths' original length validation before examining bases.
+        // The index constructor, unlike the size_t search setting, has validated
+        // the encoder width. Use that width for the mask even when no window fits.
+        if (kmer_length_ != encoded_length_)
+        {
+            return false;
+        }
+        // Skipped characters precede the next window and cannot affect its key.
+        scanned_ = std::max(scanned_, position);
+        while (scanned_ < position + kmer_length_)
+        {
+            const char base = query_[scanned_++];
+            uint32_t bits = 0;
+            switch (base)
+            {
+            case 'A': break;
+            case 'C': bits = 1; break;
+            case 'G': bits = 2; break;
+            case 'T': bits = 3; break;
+            default:
+                valid_suffix_ = 0;
+                key_ = (key_ << 2) & mask_;
+                continue;
+            }
+            key_ = ((key_ << 2) | bits) & mask_;
+            valid_suffix_ = std::min(kmer_length_, valid_suffix_ + 1);
+        }
+        return valid_suffix_ == kmer_length_;
+    }
+
+    uint32_t key() const { return key_; }
+
+private:
+    const string& query_;
+    const size_t kmer_length_;
+    const size_t encoded_length_;
+    const uint32_t mask_;
+    size_t scanned_ = 0;
+    size_t valid_suffix_ = 0;
+    uint32_t key_ = 0;
+};
+
+static void uppercaseSeedQuery(string& query, const std::ctype<char>& facet)
+{
+    // The classic facet applies the same translation to a range and to each
+    // individual byte. Custom facets may override those operations separately.
+    static const auto* classic = &std::use_facet<std::ctype<char>>(std::locale::classic());
+    if (&facet == classic)
+        facet.toupper(&query[0], &query[0] + query.size());
+    else
+        for (char& base : query)
+            base = facet.toupper(base);
+}
+
 optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignmentSeed(const string& query) const
 {
+    return searchForAlignmentSeed(query, nullptr);
+}
+
+optional<GappedGraphAligner::AlignmentSeed>
+// Contract [K-16]
+// Requires: the global locale does not change after the selector captured it.
+// Ensures:  for all queries and indexes, the chosen seed (path, query offset) equals v5.0.0's searchForAlignmentSeed.
+GappedGraphAligner::searchForAlignmentSeed(const string& query, const std::ctype<char>* snapshotFacet) const
+{
     string upperQuery = query;
-    boost::to_upper(upperQuery);
+    if (!upperQuery.empty())
+    {
+        if (snapshotFacet)
+            uppercaseSeedQuery(upperQuery, *snapshotFacet);
+        else
+        {
+            const std::locale locale;
+            uppercaseSeedQuery(upperQuery, std::use_facet<std::ctype<char>>(locale));
+        }
+    }
 
     optional<GappedGraphAligner::AlignmentSeed> optional_seed;
+    size_t seed_length = 0;
 
     bool found_multipath_kmer = false;
     size_t kmer_start_position = 0;
+    SeedKmerCursor unique_cursor(upperQuery, kmer_len_, kmer_index_.kmerLength());
     while (kmer_start_position + kmer_len_ <= upperQuery.length())
     {
-        const string kmer = upperQuery.substr(kmer_start_position, static_cast<size_t>(kmer_len_));
+        const auto paths = unique_cursor.seek(kmer_start_position)
+            ? kmer_index_.findEncodedPaths(unique_cursor.key()) : KmerIndex::PathView();
 
         // Initiate seed construction from a unique kmer
-        auto num_kmer_paths = kmer_index_.numPaths(kmer);
+        auto num_kmer_paths = paths.size();
         if (num_kmer_paths > 1)
         {
             found_multipath_kmer = true;
@@ -147,16 +248,17 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
 
         if (num_kmer_paths == 1)
         {
-            const Path kmer_path = kmer_index_.getPaths(kmer).front();
             // This call updates kmer_start_position to the start of the extended path
-            Path extended_path = extendPathMatching(kmer_path, upperQuery, kmer_start_position);
+            Path extended_path = extendPathMatching(paths[0], upperQuery, kmer_start_position);
+            const size_t extended_length = extended_path.length();
 
-            if (!optional_seed || extended_path.length() > optional_seed->path.length())
+            if (!optional_seed || extended_length > seed_length)
             {
-                optional_seed = AlignmentSeed(extended_path, kmer_start_position);
+                optional_seed = AlignmentSeed(std::move(extended_path), kmer_start_position);
+                seed_length = extended_length;
             }
 
-            kmer_start_position += extended_path.length();
+            kmer_start_position += extended_length;
         }
         else
         {
@@ -172,29 +274,33 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
     // If the search for unique kmer failed, consider kmers that correspond to multiple paths
     const int kMaxPathCount = 10;
     kmer_start_position = 0;
+    SeedKmerCursor multipath_cursor(upperQuery, kmer_len_, kmer_index_.kmerLength());
     while (kmer_start_position + kmer_len_ <= upperQuery.length())
     {
-        const string kmer = upperQuery.substr(kmer_start_position, static_cast<size_t>(kmer_len_));
+        const auto paths = multipath_cursor.seek(kmer_start_position)
+            ? kmer_index_.findEncodedPaths(multipath_cursor.key()) : KmerIndex::PathView();
 
-        const int numPaths = kmer_index_.numPaths(kmer);
+        const int numPaths = paths.size();
         if (0 < numPaths && numPaths <= kMaxPathCount)
         {
             size_t longest_kmer_path_extension = 0;
             size_t kmer_start_position_for_longest_extension = 0;
-            for (const Path& kmer_path : kmer_index_.getPaths(kmer))
+            for (size_t path_index = 0; path_index < paths.size(); ++path_index)
             {
                 size_t kmer_start_position_for_kmer_path = kmer_start_position;
-                Path extended_path = extendPathMatching(kmer_path, upperQuery, kmer_start_position_for_kmer_path);
+                Path extended_path = extendPathMatching(paths[path_index], upperQuery, kmer_start_position_for_kmer_path);
+                const size_t extended_length = extended_path.length();
 
-                if (longest_kmer_path_extension < extended_path.length())
+                if (longest_kmer_path_extension < extended_length)
                 {
-                    longest_kmer_path_extension = extended_path.length();
+                    longest_kmer_path_extension = extended_length;
                     kmer_start_position_for_longest_extension = kmer_start_position_for_kmer_path;
                 }
 
-                if (!optional_seed || extended_path.length() > optional_seed->path.length())
+                if (!optional_seed || extended_length > seed_length)
                 {
-                    optional_seed = AlignmentSeed(extended_path, kmer_start_position_for_kmer_path);
+                    optional_seed = AlignmentSeed(std::move(extended_path), kmer_start_position_for_kmer_path);
+                    seed_length = extended_length;
                 }
             }
 
@@ -209,10 +315,27 @@ optional<GappedGraphAligner::AlignmentSeed> GappedGraphAligner::searchForAlignme
     return optional_seed;
 }
 
+// Contract [K-17]
+// Requires (fast path): the seed covers the whole query on one node.
+// Ensures:  the single full-length match equals the general prefix/suffix extension below for the same seed.
+// Reference: the general extension (EH_VERIFY_FAST_PATHS=OFF).
 list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
     Path seed_path, const string& query, size_t seed_start_on_query, AlignerSelector& alignerSelector) const
 {
     assert(seed_path.length() > 1);
+
+    // A full-query seed inside one node has no unaligned ends. The two
+    // artificial one-base matches below would merge back into this same CIGAR.
+    if (verify::kFastPaths && seed_start_on_query == 0 && seed_path.numNodes() == 1 && query.size() >= 2
+        && query.size() <= size_t(std::numeric_limits<int32_t>::max()) && seed_path.length() == query.size())
+    {
+        std::vector<Alignment> projected;
+        projected.emplace_back(seed_path.startPosition(),
+            list<Operation>{Operation(OperationType::kMatch, static_cast<uint32_t>(query.size()))});
+        list<GraphAlignment> matches;
+        matches.push_back(GraphAlignment::fromOwnedPath(std::move(seed_path), std::move(projected)));
+        return matches;
+    }
 
     // Generate prefix extensions
     list<PathAndAlignment> prefix_extensions;
@@ -232,7 +355,8 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
         query_prefix_len = 1;
         Path prefix_path = seed_path;
         prefix_path.shrinkEndBy(prefix_path.length() - 1);
-        prefix_extensions = { make_pair(prefix_path, Alignment(0, "1M")) };
+        prefix_extensions.emplace_back(
+            std::move(prefix_path), Alignment(0, { Operation(OperationType::kMatch, 1) }));
         seed_path.shrinkStartBy(1);
     }
 
@@ -253,19 +377,25 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
         // suffix_extensions we create a 1bp suffix artificially.
         Path suffix_path = seed_path;
         suffix_path.shrinkStartBy(suffix_path.length() - 1);
-        suffix_extensions = { make_pair(suffix_path, Alignment(0, "1M")) };
+        suffix_extensions.emplace_back(
+            std::move(suffix_path), Alignment(0, { Operation(OperationType::kMatch, 1) }));
         seed_path.shrinkEndBy(1);
     }
 
     // Merge alignments together
-    list<PathAndAlignment> top_paths_and_alignments;
+    const size_t seed_length = seed_path.length();
+    list<GraphAlignment> top_graph_alignments;
     for (PathAndAlignment& prefix_path_and_alignment : prefix_extensions)
     {
         Path& prefix_path = prefix_path_and_alignment.first;
         Path prefix_plus_seed_path = concatenatePaths(prefix_path, seed_path);
+        const int32_t prefix_plus_seed_length = prefix_plus_seed_path.length();
 
         Alignment& prefix_alignment = prefix_path_and_alignment.second;
-        Alignment kmer_alignment(prefix_alignment.referenceLength(), to_string(seed_path.length()) + "M");
+        // Preserve the CIGAR parser's range error for unusually long paths.
+        Alignment kmer_alignment = seed_length <= static_cast<size_t>(std::numeric_limits<int>::max())
+            ? Alignment(prefix_alignment.referenceLength(), { Operation(OperationType::kMatch, seed_length) })
+            : Alignment(prefix_alignment.referenceLength(), to_string(seed_length) + "M");
         Alignment prefix_plus_kmer_alignment = mergeAlignments(prefix_alignment, kmer_alignment);
 
         for (PathAndAlignment& suffix_path_and_alignment : suffix_extensions)
@@ -274,18 +404,10 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
             Alignment& suffix_alignment = suffix_path_and_alignment.second;
             Path full_path = concatenatePaths(prefix_plus_seed_path, suffix_path);
 
-            suffix_alignment.setReferenceStart(prefix_plus_seed_path.length());
+            suffix_alignment.setReferenceStart(prefix_plus_seed_length);
             Alignment full_alignment = mergeAlignments(prefix_plus_kmer_alignment, suffix_alignment);
-            top_paths_and_alignments.push_back(make_pair(full_path, full_alignment));
+            top_graph_alignments.push_back(projectAlignmentOntoGraph(std::move(full_alignment), std::move(full_path)));
         }
-    }
-
-    list<GraphAlignment> top_graph_alignments;
-    for (PathAndAlignment& path_and_alignment : top_paths_and_alignments)
-    {
-        Path& path = path_and_alignment.first;
-        Alignment& alignment = path_and_alignment.second;
-        top_graph_alignments.push_back(projectAlignmentOntoGraph(alignment, path));
     }
 
     top_graph_alignments.sort();

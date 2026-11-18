@@ -18,14 +18,23 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: JSON output serializes ordered locus blocks with optional shared workers.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
+
+#include <utility>
 
 #include "core/Parameters.hh"
 #include "locus/LocusFindings.hh"
 #include "locus/LocusSpecification.hh"
 
 #include "thirdparty/json/json.hpp"
+
+namespace ctpl { class thread_pool; }
 
 namespace ehunter
 {
@@ -46,6 +55,7 @@ public:
     void visit(const RepeatFindings* repeatFindingsPtr) override;
     void visit(const SmallVariantFindings* smallVariantFindingsPtr) override;
     nlohmann::json record() const { return record_; }
+    nlohmann::json takeRecord() { return std::move(record_); }
 
 private:
     const ReferenceContigInfo& contigInfo_;
@@ -59,7 +69,7 @@ class JsonWriter
 public:
     JsonWriter(
         const SampleParameters& sampleParams, const ReferenceContigInfo& contigInfo, const RegionCatalog& regionCatalog,
-        const SampleFindings& sampleFindings);
+        const SampleFindings& sampleFindings, unsigned threads = 1, ctpl::thread_pool* shared = nullptr);
 
     void write(std::ostream& out);
 
@@ -68,6 +78,8 @@ private:
     const ReferenceContigInfo& contigInfo_;
     const RegionCatalog& regionCatalog_;
     const SampleFindings& sampleFindings_;
+    unsigned threads_;
+    ctpl::thread_pool* shared_;
 };
 
 std::ostream& operator<<(std::ostream& out, JsonWriter& jsonWriter);

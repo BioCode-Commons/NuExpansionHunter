@@ -17,6 +17,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: sequence utilities expose reference-symbol expansion detection.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -78,5 +83,6 @@ std::string const& expandReferenceSymbol(char reference_symbol);
  * @param sequence Reference sequence to expand
  * @return All nucleotide sequences matching the input sequence
  */
+bool hasExpandableReferenceSymbols(const std::string& sequence);
 void expandReferenceSequence(const std::string& sequence, std::vector<std::string>& target);
 }

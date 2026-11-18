@@ -17,6 +17,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: edge maps construct contiguous node spans and record linear-chain metadata.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -35,6 +40,7 @@
 #define BOOST_RESULT_OF_USE_DECLTYPE
 
 #include <boost/range/adaptor/transformed.hpp>
+#include <numeric>
 
 namespace graphalign
 {
@@ -63,8 +69,78 @@ namespace dagAligner
         std::vector<std::size_t> index_;
 
         OffsetEdges prevOffsets_;
+        bool linearChain_ = false;
+        bool orderedSpans_ = false;
+
+        // The normal unrolled DAG consists of nonempty node spans. Fill their
+        // interior offsets as contiguous ranges, rather than three push_backs
+        // per reference base. Keep the general constructor for other inputs.
+        // Contract [K-06]
+        // Ensures:  for every edge list it accepts, offsetNodeIds_, index_ and prevOffsets_ equal those of the general
+        //           constructor loop below; hasLinearChain holds exactly when every row's only predecessor is the previous row.
+        // Reference: the general constructor loop of reset() (v5.0.0 text).
+        bool initializeNodeSpans(
+            const std::vector<std::pair<int, int>>& edges, const std::vector<NodeId>& nodeIds)
+        {
+            const int length = edges.back().second;
+            if (length <= 0)
+                return false;
+            const size_t first = edges.front() == std::make_pair(-1, 0) ? 1 : 0;
+            size_t nodeCount = 1;
+            int previousTarget = 0;
+            bool simpleChain = true;
+            for (size_t i = first; i + 1 < edges.size(); ++i)
+            {
+                const auto& edge = edges[i];
+                if (edge.second <= 0 || edge.second >= length || edge.second < previousTarget
+                    || edge.first < -1 || edge.first >= edge.second)
+                    return false;
+                simpleChain = simpleChain && edge.first == edge.second - 1 && edge.second != previousTarget;
+                if (edge.second != previousTarget)
+                    ++nodeCount;
+                previousTarget = edge.second;
+            }
+            if (nodeCount != nodeIds.size())
+                return false;
+
+            orderedSpans_ = true;
+            linearChain_ = simpleChain;
+            offsetNodeIds_.resize(length);
+            index_.resize(size_t(length) + 1);
+            prevOffsets_.resize(size_t(length) + (edges.size() - first - 1) - (nodeCount - 1));
+            prevOffsets_[0] = -1;
+            index_[0] = 0;
+            size_t nextPredecessor = 1, node = 0, edgeIndex = first;
+            int start = 0;
+            while (true)
+            {
+                const int end = edges[edgeIndex].second;
+                std::fill(offsetNodeIds_.begin() + start, offsetNodeIds_.begin() + end, nodeIds[node]);
+                std::iota(
+                    prevOffsets_.begin() + nextPredecessor,
+                    prevOffsets_.begin() + nextPredecessor + (end - start - 1), start);
+                std::iota(index_.begin() + start + 1, index_.begin() + end + 1, nextPredecessor);
+                nextPredecessor += end - start - 1;
+                if (end == length)
+                    return true;
+                do
+                {
+                    prevOffsets_[nextPredecessor++] = edges[edgeIndex++].first;
+                } while (edges[edgeIndex].second == end);
+                start = end;
+                ++node;
+            }
+        }
 
     public:
+        EdgeMap() = default;
+
+        size_t retainedCapacityBytes() const
+        {
+            return offsetNodeIds_.capacity() * sizeof(NodeId) + index_.capacity() * sizeof(std::size_t)
+                + prevOffsets_.capacity() * sizeof(int);
+        }
+
         EdgeMap(
             const OffsetNodeIds& offsetNodeIds, const std::vector<std::size_t>& index,
             const std::vector<int>& prevOffsets)
@@ -90,11 +166,46 @@ namespace dagAligner
          */
         EdgeMap(const std::vector<std::pair<int, int>>& edges, const std::vector<NodeId>& nodeIds)
         {
+            reset(edges, nodeIds);
+        }
+
+        void reset(const std::vector<std::pair<int, int>>& edges, const std::vector<NodeId>& nodeIds)
+        {
+            offsetNodeIds_.clear();
+            index_.clear();
+            prevOffsets_.clear();
+            linearChain_ = orderedSpans_ = false;
             typedef std::vector<std::pair<int, int>> Edges;
             if (edges.back().second != edges.back().first)
             {
                 throw std::invalid_argument(
                     "last pair of offsets must point to itself and last character in the graph");
+            }
+            if (edges.size() == 1 && nodeIds.size() == 1 && edges.back().second > 0)
+            {
+                const auto length = std::size_t(edges.back().second);
+                // Same offsets as the general constructor, with no graph
+                // junctions or temporary closing entry. These contiguous
+                // fills are also suitable for compiler vectorization.
+                offsetNodeIds_.assign(length, nodeIds.front());
+                index_.resize(length + 1);
+                std::iota(index_.begin(), index_.end(), std::size_t(0));
+                prevOffsets_.resize(length);
+                std::iota(prevOffsets_.begin(), prevOffsets_.end(), -1);
+                linearChain_ = orderedSpans_ = true;
+                return;
+            }
+            if (initializeNodeSpans(edges, nodeIds))
+                return;
+            // The closing marker already gives the target length. Reserve for
+            // all per-base entries and the temporary closing edge, which is
+            // removed below, rather than repeatedly growing three vectors.
+            if (edges.back().second >= 0)
+            {
+                const auto length = std::size_t(edges.back().second);
+                offsetNodeIds_.reserve(length);
+                index_.reserve(length + 2);
+                prevOffsets_.reserve(length + edges.size() + 1);
             }
             std::vector<NodeId>::const_iterator nodeIdIt = nodeIds.begin();
 
@@ -164,6 +275,9 @@ namespace dagAligner
         }
 
         std::size_t getNodeId(std::size_t t) const { return offsetNodeIds_.at(t); }
+        bool hasOrderedNodeSpans(std::size_t length) const { return orderedSpans_ && length == offsetNodeIds_.size(); }
+
+        bool hasLinearChain(std::size_t length) const { return linearChain_ && length == offsetNodeIds_.size(); }
 
         friend std::ostream& operator<<(std::ostream& os, const EdgeMap& edgeMap)
         {
@@ -195,6 +309,9 @@ namespace dagAligner
         std::size_t rowLen_;
         typedef std::vector<Score> Matrix;
         Matrix matrix_;
+        // Target rows in use. A fill that stops early limits the rows that
+        // endpoint scans visit; cells of later rows are never read.
+        std::size_t rows_ = 0;
 
     public:
         PaddedAlignMatrix()
@@ -203,12 +320,14 @@ namespace dagAligner
         {
         }
 
-        void reset(std::size_t qLen, std::size_t tLen)
+        void reset(std::size_t qLen, std::size_t tLen, bool fillInterior = true)
         {
             // + 1 for gap row and gap column
             rowLen_ = qLen + 1;
+            rows_ = tLen;
             matrix_.resize(paddedRowLen() * (tLen + 1));
-            std::fill(matrix_.begin() + 1, matrix_.end(), SCORE_MIN);
+            const auto end = fillInterior ? matrix_.end() : matrix_.begin() + paddedRowLen();
+            std::fill(matrix_.begin() + 1, end, SCORE_MIN);
         }
 
         int paddedRowLen() const { return 1 + (rowLen_ - 1 + pad - 1) / pad * pad; }
@@ -225,14 +344,16 @@ namespace dagAligner
         typedef Matrix::const_iterator const_iterator;
         const_iterator cellOneOne() const { return matrix_.begin() + 1 + paddedRowLen(); }
         const_iterator begin() const { return matrix_.begin(); }
-        const_iterator end() const { return matrix_.end() - paddedRowLen() + rowLen(); }
-        const_iterator last(int q) const { return matrix_.end() - paddedRowLen() + q + 1; }
+        void limitRows(std::size_t rows) { rows_ = rows; }
+        const_iterator storageEnd() const { return matrix_.begin() + paddedRowLen() * (rows_ + 1); }
+        const_iterator end() const { return storageEnd() - paddedRowLen() + rowLen(); }
+        const_iterator last(int q) const { return storageEnd() - paddedRowLen() + q + 1; }
         // find best alignment after the line indicated by start iterator
         const_iterator nextBestAlign(const_iterator start, int q, Score& bestScore) const
         {
             const_iterator rowStart = begin()
                 + (std::distance(begin(), start) + paddedRowLen() - 1 - q - 1) / paddedRowLen() * paddedRowLen();
-            if (matrix_.end() == rowStart)
+            if (storageEnd() == rowStart)
             {
                 // current line is the end, no more good scores
                 return end();

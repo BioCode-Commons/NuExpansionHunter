@@ -17,12 +17,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: paths transfer node vectors and use length-only graph queries.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphcore/Path.hh"
 
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
+#include <utility>
 
 using std::logic_error;
 using std::ostream;
@@ -57,8 +63,7 @@ bool Path::isNodePositionValid(const NodeId node_id, const int32_t position) con
     {
         return false;
     }
-    const string& node_seq = graph_raw_ptr_->nodeSeq(node_id);
-    return (unsigned)position <= node_seq.length();
+    return (unsigned)position <= graph_raw_ptr_->nodeSeqLength(node_id);
 }
 
 void Path::assertNonEmpty() const
@@ -137,11 +142,11 @@ string Path::encode() const
     return path_encoding;
 }
 
-Path::Path(const Graph* graph_raw_ptr, int32_t start_position, const vector<NodeId>& nodes, int32_t end_position)
+Path::Path(const Graph* graph_raw_ptr, int32_t start_position, vector<NodeId> nodes, int32_t end_position)
     : graph_raw_ptr_(graph_raw_ptr)
     , start_position_(start_position)
     , end_position_(end_position)
-    , nodes_(nodes)
+    , nodes_(std::move(nodes))
 {
     try
     {
@@ -179,13 +184,13 @@ int32_t Path::getEndPositionOnNodeByIndex(size_t node_index) const
         return endPosition();
     }
 
-    return graphRawPtr()->nodeSeq(nodes_[node_index]).length();
+    return graphRawPtr()->nodeSeqLength(nodes_[node_index]);
 }
 
 size_t Path::getNodeOverlapLengthByIndex(size_t node_index) const
 {
     assertThatIndexIsValid(static_cast<int32_t>(node_index));
-    const size_t node_length = graphRawPtr()->nodeSeq(nodes_[node_index]).length();
+    const size_t node_length = graphRawPtr()->nodeSeqLength(nodes_[node_index]);
     auto length_on_node = (int32_t)node_length; // This is the length of all intermediate nodes.
 
     const bool is_first_node = node_index == 0;
@@ -217,7 +222,7 @@ int32_t Path::getDistanceFromPathStart(const NodeId node, const int32_t offset) 
         const auto node_id = nodes_[nodeIndex];
         const int32_t node_start = nodeIndex == 0 ? start_position_ : 0;
         const int32_t node_end
-            = (nodeIndex + 1) == nodeCount ? end_position_ : (int32_t)graph_raw_ptr_->nodeSeq(node_id).size() - 1;
+            = (nodeIndex + 1) == nodeCount ? end_position_ : (int32_t)graph_raw_ptr_->nodeSeqLength(node_id) - 1;
 
         if (node_id == node && offset >= node_start && offset <= node_end)
         {
@@ -249,7 +254,7 @@ size_t Path::length() const
 
 string Path::getNodeSeq(const size_t node_index) const
 {
-    const string& sequence = graph_raw_ptr_->nodeSeq(nodes_[node_index]);
+    const auto sequence = graph_raw_ptr_->nodeSeq(nodes_[node_index]);
 
     if (node_index == 0)
     {
@@ -273,7 +278,7 @@ string Path::seq() const
     const size_t nodeCount(numNodes());
     for (size_t node_index = 0; node_index != nodeCount; ++node_index)
     {
-        const std::string& node_seq(graph_raw_ptr_->nodeSeq(nodes_[node_index]));
+        const auto node_seq(graph_raw_ptr_->nodeSeq(nodes_[node_index]));
         if ((node_index == 0) or ((node_index + 1) == nodeCount))
         {
             const size_t pos((node_index == 0) ? start_position_ : 0);
@@ -321,7 +326,7 @@ void Path::shiftEndAlongNode(const int32_t shift_len)
 void Path::extendStartToNode(const NodeId node_id)
 {
     nodes_.insert(nodes_.begin(), node_id);
-    const auto new_node_seq_len = static_cast<int32_t>(graph_raw_ptr_->nodeSeq(node_id).length());
+    const auto new_node_seq_len = static_cast<int32_t>(graph_raw_ptr_->nodeSeqLength(node_id));
     start_position_ = new_node_seq_len;
 
     try
@@ -399,7 +404,7 @@ void Path::extendEndToNode(const NodeId node_id)
 void Path::extendEndToIncludeNode(const NodeId node_id)
 {
     nodes_.push_back(node_id);
-    const auto new_node_seq_len = static_cast<int32_t>(graph_raw_ptr_->nodeSeq(node_id).length());
+    const auto new_node_seq_len = static_cast<int32_t>(graph_raw_ptr_->nodeSeqLength(node_id));
     end_position_ = new_node_seq_len;
 
     try
@@ -416,7 +421,7 @@ void Path::removeEndNode()
 {
     nodes_.erase(nodes_.end() - 1);
     NodeId new_last_node_id = nodes_.back();
-    auto new_last_node_len = static_cast<int32_t>(graph_raw_ptr_->nodeSeq(new_last_node_id).length());
+    auto new_last_node_len = static_cast<int32_t>(graph_raw_ptr_->nodeSeqLength(new_last_node_id));
     end_position_ = new_last_node_len;
 
     try

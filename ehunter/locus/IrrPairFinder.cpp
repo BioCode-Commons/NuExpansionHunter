@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: in-repeat pair detection short-circuits purity threshold checks.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "locus/IrrPairFinder.hh"
 
@@ -38,9 +43,7 @@ IrrPairFinder::IrrPairFinder(string motif)
 
 bool IrrPairFinder::check(const string& read, const string& mate) const
 {
-    const bool isFirstReadIrr = purityCalculator_.score(read) >= purityCutoff_;
-    const bool isSecondReadIrr = purityCalculator_.score(mate) >= purityCutoff_;
-    return isFirstReadIrr && isSecondReadIrr;
+    return purityCalculator_.scoreAtLeast(read, purityCutoff_) && purityCalculator_.scoreAtLeast(mate, purityCutoff_);
 }
 
 }

@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: alignment intersection takes a path as its second operand and counts repeat visits without temporary lists.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "alignment/GreedyAlignmentIntersector.hh"
 
@@ -67,7 +72,7 @@ void GreedyAlignmentIntersector::initialize()
 
 bool GreedyAlignmentIntersector::checkIfAlignmentEndReached(int firstPathIndex, int secondPathIndex)
 {
-    return firstPathIndex == (int)firstAlignment_.size() || secondPathIndex == (int)secondAlignment_.size();
+    return firstPathIndex == (int)firstAlignment_.size() || secondPathIndex == (int)secondPath_.numNodes();
 }
 
 bool GreedyAlignmentIntersector::tryAdvancingIndexesToCommonNode()
@@ -108,9 +113,16 @@ bool GreedyAlignmentIntersector::checkIfCommonNodeIsLoop() const
 void GreedyAlignmentIntersector::advanceIndexesToMatchRemainingIterations()
 {
     const NodeId loopNodeId = firstPath_.getNodeIdByIndex(nodeIndexOfIntersectionStartOnFirstPath_);
-    // TODO: Move getIndexesOfNode to path class;
-    const int numIterationsMadeByFirstPath = firstAlignment_.getIndexesOfNode(loopNodeId).size();
-    const int numIterationsMadeBySecondPath = secondAlignment_.getIndexesOfNode(loopNodeId).size();
+    // Keep the same alignment-index iteration and checked Path access as
+    // getIndexesOfNode, but only count: no temporary list is needed here.
+    const auto countIterations = [loopNodeId](const graphtools::Path& path, size_t size) {
+        size_t count = 0;
+        for (int32_t index = 0; index != static_cast<int32_t>(size); ++index)
+            count += path.getNodeIdByIndex(static_cast<size_t>(index)) == loopNodeId;
+        return static_cast<int>(count);
+    };
+    const int numIterationsMadeByFirstPath = countIterations(firstPath_, firstAlignment_.size());
+    const int numIterationsMadeBySecondPath = countIterations(secondPath_, secondPath_.numNodes());
 
     if (numIterationsMadeByFirstPath < numIterationsMadeBySecondPath)
     {

@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: local-placement checks borrow optional alignments by const reference.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -42,8 +47,8 @@ namespace ehunter
  * @return true if the alignment score to non-repeat nodes exceeds the threshold
  */
 bool checkIfLocallyPlacedReadPair(
-    boost::optional<graphtools::GraphAlignment> readAlignment,
-    boost::optional<graphtools::GraphAlignment> mateAlignment, int kMinNonRepeatAlignmentScore);
+    const boost::optional<graphtools::GraphAlignment>& readAlignment,
+    const boost::optional<graphtools::GraphAlignment>& mateAlignment, int kMinNonRepeatAlignmentScore);
 
 // Checks if alignment upstream of a given node is high quality
 bool checkIfUpstreamAlignmentIsGood(graphtools::NodeId nodeId, graphtools::GraphAlignment alignment);

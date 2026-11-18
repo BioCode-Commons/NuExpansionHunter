@@ -18,11 +18,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: gapped alignment supports prepared k-mer archives and an analysis-local locale snapshot.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
 #include <cstdint>
 #include <list>
+#include <locale>
 #include <string>
 #include <utility>
 
@@ -52,6 +58,8 @@ class AlignerSelector
 {
     std::shared_ptr<PinnedPathAligner> ptrPathAligner_;
     mutable std::shared_ptr<PinnedDagAligner> ptrDagAligner_;
+    boost::optional<std::locale> seedSearchLocale_;
+    const std::ctype<char>* seedSearchFacet_ = nullptr;
 
 public:
     explicit AlignerSelector(
@@ -74,6 +82,20 @@ public:
                 "AlignerType " + std::to_string(static_cast<int>(alignerType)) + " is not available");
         }
     }
+
+    // Optional analysis-local snapshot. Configure before using this worker's
+    // selector; do not change it concurrently with alignment. Default selectors
+    // continue consulting the current global locale for every seed search.
+    void setSeedSearchLocale(const std::locale& locale)
+    {
+        // Resolve first so a missing facet cannot invalidate an existing cache.
+        const auto* facet = &std::use_facet<std::ctype<char>>(locale);
+        seedSearchLocale_ = locale;
+        seedSearchFacet_ = facet;
+    }
+
+    // Borrowed from the owned locale; no per-read locale/refcount operation.
+    const std::ctype<char>* seedSearchFacet() const noexcept { return seedSearchFacet_; }
 
     std::list<PathAndAlignment>
     suffixAlign(const Path& seed_path, const std::string& query_piece, size_t extension_len, int& score) const
@@ -104,11 +126,13 @@ public:
      * @param padding_len: Elongate paths by this much during path kmer extension step to allow for gaps
      * @param seed_affix_trim_len: Trim length for the prefix and suffix (=affix) of the path
      */
-    GappedGraphAligner(const Graph* graph_ptr, size_t kmer_len, size_t padding_len, size_t seed_affix_trim_len)
+    GappedGraphAligner(
+        const Graph* graph_ptr, size_t kmer_len, size_t padding_len, size_t seed_affix_trim_len,
+        std::shared_ptr<const KmerIndexArchive> archive = {}, uint64_t slot = 0)
         : kmer_len_(kmer_len)
         , padding_len_(padding_len)
         , seed_affix_trim_len_(seed_affix_trim_len)
-        , kmer_index_(*graph_ptr, kmer_len)
+        , kmer_index_(*graph_ptr, kmer_len, false, std::move(archive), slot)
     {
     }
 
@@ -175,5 +199,7 @@ private:
 
     // Performs a search for an alignment seed
     boost::optional<AlignmentSeed> searchForAlignmentSeed(const std::string& query) const;
+    boost::optional<AlignmentSeed>
+    searchForAlignmentSeed(const std::string& query, const std::ctype<char>* snapshotFacet) const;
 };
 }

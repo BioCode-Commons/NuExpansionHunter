@@ -1,3 +1,5 @@
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: interval trees expose local intervals, child pointers, and center coordinates.
 #ifndef __INTERVAL_TREE_EH_H
 #define __INTERVAL_TREE_EH_H
 
@@ -236,6 +238,11 @@ public:
         }
         return true;
     }
+
+    const interval_vector& localIntervals() const { return intervals; }
+    const IntervalTree* leftChild() const { return left.get(); }
+    const IntervalTree* rightChild() const { return right.get(); }
+    Scalar centerCoordinate() const { return center; }
 
     template <class UnaryFunction>
     void visit_all(UnaryFunction f) const {

@@ -17,6 +17,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: blank alignment output accepts borrowed locus identifiers.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphio/AlignmentWriter.hh"
 
@@ -32,8 +37,8 @@ namespace graphtools
 {
 
 void BlankAlignmentWriter::write(
-    const std::string& /*locusId*/, const std::string& /*fragmentName*/, const std::string& /*query*/,
-    bool /*isFirstMate*/, bool /*isReversed*/, bool /*isMateReversed*/, const GraphAlignment& /*alignment*/)
+    TextView /*locusId*/, const std::string& /*fragmentName*/, const std::string& /*query*/, bool /*isFirstMate*/,
+    bool /*isReversed*/, bool /*isMateReversed*/, const GraphAlignment& /*alignment*/)
 {
 }
 }

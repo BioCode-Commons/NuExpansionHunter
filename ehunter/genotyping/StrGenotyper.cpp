@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: genotyping accepts an optional worker pool for candidate-grid scoring.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "genotyping/StrGenotyper.hh"
 
@@ -85,11 +90,12 @@ vector<double> getTopFragLogliks(FragLogliks& loglikCalc, const unordered_set<in
     const double negInf = std::numeric_limits<double>::lowest();
     vector<double> topFragLogliks(loglikCalc.numFrags(), negInf);
 
-    for (int fragIndex = 0; fragIndex != loglikCalc.numFrags(); ++fragIndex)
+    for (const int alleleSize : alleleCandidates)
     {
-        for (const int alleleSize : alleleCandidates)
+        const auto& likelihoods = loglikCalc.forAllele(alleleSize);
+        for (size_t fragIndex = 0; fragIndex < likelihoods.size(); ++fragIndex)
         {
-            const double fragLoglik = loglikCalc.getLoglik(fragIndex, alleleSize);
+            const double fragLoglik = likelihoods[fragIndex];
             if (fragLoglik > topFragLogliks[fragIndex])
             {
                 topFragLogliks[fragIndex] = fragLoglik;
@@ -100,7 +106,8 @@ vector<double> getTopFragLogliks(FragLogliks& loglikCalc, const unordered_set<in
     return topFragLogliks;
 }
 
-RepeatGenotype genotype(AlleleCount alleleCount, int motifLen, int readLen, int fragLen, AlignMatrix& alignMatrix)
+RepeatGenotype genotype(AlleleCount alleleCount, int motifLen, int readLen, int fragLen, AlignMatrix& alignMatrix,
+                        ctpl::thread_pool* gridWorkers)
 {
     filter(alignMatrix);
     FragLogliks fragLoglikCalc(motifLen, readLen, fragLen, &alignMatrix);
@@ -110,7 +117,7 @@ RepeatGenotype genotype(AlleleCount alleleCount, int motifLen, int readLen, int 
     if (alleleCount == AlleleCount::kTwo)
     {
         TwoAlleleGenotyper genotyper(motifLen, fragLen, std::move(topFragLogliks), &fragLoglikCalc);
-        return genotyper.genotype(candidateAlleleSizes);
+        return genotyper.genotype(candidateAlleleSizes, gridWorkers);
     }
     else
     {

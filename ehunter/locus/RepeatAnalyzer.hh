@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: repeat analysis supports prepared variants, evidence-row counts, and parallel genotype grids.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -56,19 +61,30 @@ public:
 
     ~RepeatAnalyzer() override = default;
 
-    const std::string& repeatUnit() const { return repeatUnit_; }
+    RepeatAnalyzer(VariantSpecification variant, const graphtools::Graph& graph, const GenotyperParameters& params)
+        : VariantAnalyzer(variant, graph, params)
+        , repeatUnit_(graph.nodeSeq(nodeIds().front()))
+        , alignmentStatsCalculator_(nodeIds())
+        , countOfInrepeatReadPairs_(0)
+        , alignMatrix_(nodeIds().front())
+    {
+    }
+
+    graphtools::TextView repeatUnit() const { return repeatUnit_; }
     void addInrepeatReadPair() { countOfInrepeatReadPairs_++; }
 
     void processMates(
         const Read& read, const graphtools::GraphAlignment& readAlignment, const Read& mate,
         const graphtools::GraphAlignment& mateAlignment) override;
 
+    uint64_t evidenceRows() const override { return uint64_t(alignMatrix_.numReads()); }
     std::unique_ptr<VariantFindings> analyze(const LocusStats& stats) override;
+    std::unique_ptr<VariantFindings> analyze(const LocusStats& stats, ctpl::thread_pool* gridWorkers) override;
 
 private:
-    graphtools::NodeId repeatNodeId() const { return nodeIds_.front(); }
+    graphtools::NodeId repeatNodeId() const { return nodeIds().front(); }
 
-    const std::string repeatUnit_;
+    const graphtools::TextView repeatUnit_;
     GraphVariantAlignmentStatsCalculator alignmentStatsCalculator_;
 
     int countOfInrepeatReadPairs_;

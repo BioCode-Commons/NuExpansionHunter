@@ -19,6 +19,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: mate recovery uses batched queries.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "sample/HtsSeekingSampleAnalysis.hh"
 
@@ -87,6 +92,7 @@ bool checkIfMatesWereMappedNearby(const LinearAlignmentStats& alignmentStats)
 void recoverMates(
     htshelpers::MateExtractor& mateExtractor, AlignmentStatsCatalog& alignmentStatsCatalog, ReadPairs& readPairs)
 {
+    vector<htshelpers::MateQuery> queries;
     for (auto& fragmentIdAndReadPair : readPairs)
     {
         ReadPair& readPair = fragmentIdAndReadPair.second;
@@ -107,18 +113,22 @@ void recoverMates(
 
         if (!checkIfMatesWereMappedNearby(alignmentStats))
         {
-            LinearAlignmentStats mateStats;
-            optional<Read> optionalMate = mateExtractor.extractMate(read, alignmentStats, mateStats);
-            if (optionalMate)
-            {
-                const Read& mate = *optionalMate;
-                alignmentStatsCatalog.emplace(std::make_pair(mate.readId(), alignmentStats));
-                readPairs.AddMateToExistingRead(mate);
-            }
-            else
-            {
-                spdlog::warn("Could not recover the mate of {}", read.readId());
-            }
+            queries.push_back({ &read, &alignmentStats, boost::none, {} });
+        }
+    }
+
+    mateExtractor.extractMates(queries);
+    // Preserve the original insertion order in both caller-owned containers.
+    for (auto& query : queries)
+    {
+        if (query.mate)
+        {
+            alignmentStatsCatalog.emplace(std::make_pair(query.mate->readId(), *query.alignmentStats));
+            readPairs.AddMateToExistingRead(std::move(*query.mate));
+        }
+        else
+        {
+            spdlog::warn("Could not recover the mate of {}", query.read->readId());
         }
     }
 }
@@ -297,7 +307,8 @@ void processLocus(
 
             spdlog::info("Analyzing {}", locusId);
             vector<unique_ptr<LocusAnalyzer>> locusAnalyzers;
-            auto analyzer(make_unique<LocusAnalyzer>(locusSpec, heuristicParams, alignmentWriter));
+            auto analyzer(
+                make_unique<LocusAnalyzer>(locusSpec, heuristicParams, alignmentWriter, uint64_t(locusIndex) * 2 + 1));
             locusAnalyzers.emplace_back(std::move(analyzer));
             AnalyzerFinder analyzerFinder(locusAnalyzers);
 

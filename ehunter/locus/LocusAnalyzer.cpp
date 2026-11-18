@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: locus evidence is separated from alignment computation and supports prepared catalogs and parallel genotyping.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "locus/LocusAnalyzer.hh"
 
@@ -40,9 +45,15 @@ namespace ehunter
 namespace locus
 {
 
-LocusAnalyzer::LocusAnalyzer(LocusSpecification locusSpec, const HeuristicParameters& params, AlignWriterPtr writer)
+LocusAnalyzer::LocusAnalyzer(
+    LocusSpecification locusSpec, const HeuristicParameters& params, AlignWriterPtr writer, uint64_t archiveSlot)
+    : LocusEvidence(std::move(locusSpec))
+    , aligner_(this->locusSpec().locusId(), &this->locusSpec().regionGraph(), params, std::move(writer), archiveSlot)
+{
+}
+
+LocusEvidence::LocusEvidence(LocusSpecification locusSpec)
     : locusSpec_(std::move(locusSpec))
-    , aligner_(locusSpec_.locusId(), &locusSpec_.regionGraph(), params, std::move(writer))
     , statsCalc_(locusSpec_.typeOfChromLocusLocatedOn(), locusSpec_.regionGraph())
 {
     for (const auto& variantSpec : locusSpec_.variantSpecs())
@@ -61,16 +72,27 @@ LocusAnalyzer::LocusAnalyzer(LocusSpecification locusSpec, const HeuristicParame
                         = "Region " + locusSpec_.locusId() + " must not have more than one rare repeat";
                     throw std::logic_error(message);
                 }
-                addIrrPairFinder(motif);
+                if (locusSpec_.isPrepared())
+                    irrPairFinder_ = IrrPairFinder(motif, variantSpec.purityPermutations());
+                else
+                    addIrrPairFinder(motif);
             }
 
-            addRepeatAnalyzer(variantSpec.id(), repeatNodeId);
+            if (locusSpec_.isPrepared())
+                variantAnalyzers_.emplace_back(make_unique<RepeatAnalyzer>(
+                    variantSpec, locusSpec_.regionGraph(), locusSpec_.genotyperParameters()));
+            else
+                addRepeatAnalyzer(variantSpec.id(), repeatNodeId);
         }
         else if (variantSpec.classification().type == VariantType::kSmallVariant)
         {
-            addSmallVariantAnalyzer(
-                variantSpec.id(), variantSpec.classification().subtype, variantSpec.nodes(),
-                variantSpec.optionalRefNode());
+            if (locusSpec_.isPrepared())
+                variantAnalyzers_.emplace_back(make_unique<SmallVariantAnalyzer>(
+                    variantSpec, locusSpec_.regionGraph(), locusSpec_.genotyperParameters()));
+            else
+                addSmallVariantAnalyzer(
+                    variantSpec.id(), variantSpec.classification().subtype, variantSpec.nodes(),
+                    variantSpec.optionalRefNode());
         }
         else
         {
@@ -84,9 +106,40 @@ LocusAnalyzer::LocusAnalyzer(LocusSpecification locusSpec, const HeuristicParame
 void LocusAnalyzer::processMates(
     Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector)
 {
+    auto alignedPair = computeMates(read, mate, regionType, alignerSelector);
+    consumeMates(read, mate, regionType, alignedPair);
+}
+
+LocusAnalyzer::AlignedPair LocusAnalyzer::computeMates(
+    Read& read, Read* mate, RegionType regionType, graphtools::AlignerSelector& alignerSelector) const
+{
     if (regionType == RegionType::kTarget)
     {
-        processOntargetMates(read, mate, alignerSelector);
+        return aligner_.alignMates(read, mate, alignerSelector);
+    }
+    return {};
+}
+
+void LocusAnalyzer::consumeMates(
+    Read& read, Read* mate, RegionType regionType, const AlignedPair& alignedPair)
+{
+    writeAlignedMates(read, mate, regionType, alignedPair);
+    consumeEvidence(read, mate, regionType, alignedPair);
+}
+
+void LocusAnalyzer::writeAlignedMates(
+    const Read& read, const Read* mate, RegionType regionType, const AlignedPair& alignedPair) const
+{
+    if (regionType == RegionType::kTarget)
+        aligner_.writeAlignedPair(read, mate, alignedPair);
+}
+
+void LocusEvidence::consumeEvidence(
+    const Read& read, const Read* mate, RegionType regionType, const AlignedPair& alignedPair)
+{
+    if (regionType == RegionType::kTarget)
+    {
+        consumeOntargetMates(read, mate, alignedPair);
     }
     else if (mate)
     {
@@ -94,10 +147,8 @@ void LocusAnalyzer::processMates(
     }
 }
 
-void LocusAnalyzer::processOntargetMates(Read& read, Read* mate, graphtools::AlignerSelector& alignerSelector)
+void LocusEvidence::consumeOntargetMates(const Read& read, const Read* mate, const AlignedPair& alignedPair)
 {
-    auto alignedPair = aligner_.align(read, mate, alignerSelector);
-
     const bool neitherMateAligned = !alignedPair.first && !alignedPair.second;
     const bool bothMatesAligned = alignedPair.first && alignedPair.second;
 
@@ -123,7 +174,7 @@ void LocusAnalyzer::processOntargetMates(Read& read, Read* mate, graphtools::Ali
     }
 }
 
-void LocusAnalyzer::processOfftargetMates(const Read& read, const Read& mate)
+void LocusEvidence::processOfftargetMates(const Read& read, const Read& mate)
 {
     if (!irrPairFinder_)
     {
@@ -152,7 +203,7 @@ void LocusAnalyzer::processOfftargetMates(const Read& read, const Read& mate)
     }
 }
 
-LocusFindings LocusAnalyzer::analyze(Sex sampleSex, boost::optional<double> genomeWideDepth)
+LocusFindings LocusEvidence::analyze(Sex sampleSex, boost::optional<double> genomeWideDepth, ctpl::thread_pool* gridWorkers)
 {
     LocusFindings locusFindings(statsCalc_.estimate(sampleSex));
     if (genomeWideDepth && locusSpec_.requiresGenomeWideDepth())
@@ -162,7 +213,7 @@ LocusFindings LocusAnalyzer::analyze(Sex sampleSex, boost::optional<double> geno
 
     for (auto& variantAnalyzer : variantAnalyzers_)
     {
-        std::unique_ptr<VariantFindings> variantFindingsPtr = variantAnalyzer->analyze(locusFindings.stats);
+        std::unique_ptr<VariantFindings> variantFindingsPtr = variantAnalyzer->analyze(locusFindings.stats, gridWorkers);
         const string& variantId = variantAnalyzer->variantId();
         locusFindings.findingsForEachVariant.emplace(variantId, std::move(variantFindingsPtr));
     }
@@ -170,15 +221,15 @@ LocusFindings LocusAnalyzer::analyze(Sex sampleSex, boost::optional<double> geno
     return locusFindings;
 }
 
-void LocusAnalyzer::addIrrPairFinder(std::string motif) { irrPairFinder_ = IrrPairFinder(std::move(motif)); }
+void LocusEvidence::addIrrPairFinder(std::string motif) { irrPairFinder_ = IrrPairFinder(std::move(motif)); }
 
-void LocusAnalyzer::addRepeatAnalyzer(std::string variantId, graphtools::NodeId nodeId)
+void LocusEvidence::addRepeatAnalyzer(std::string variantId, graphtools::NodeId nodeId)
 {
     variantAnalyzers_.emplace_back(make_unique<RepeatAnalyzer>(
         std::move(variantId), locusSpec_.regionGraph(), nodeId, locusSpec_.genotyperParameters()));
 }
 
-void LocusAnalyzer::addSmallVariantAnalyzer(
+void LocusEvidence::addSmallVariantAnalyzer(
     string variantId, VariantSubtype subtype, vector<NodeId> nodes, optional<NodeId> refNode)
 {
     variantAnalyzers_.emplace_back(make_unique<SmallVariantAnalyzer>(
@@ -186,7 +237,7 @@ void LocusAnalyzer::addSmallVariantAnalyzer(
         locusSpec_.genotyperParameters()));
 }
 
-void LocusAnalyzer::runVariantAnalysis(
+void LocusEvidence::runVariantAnalysis(
     const Read& read, const LocusAnalyzer::Align& readAlign, const Read& mate, const LocusAnalyzer::Align& mateAlign)
 {
     for (auto& analyzer : variantAnalyzers_)

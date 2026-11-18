@@ -1,0 +1,418 @@
+CBMC version 6.11.0 (cbmc-6.11.0) 64-bit x86_64 linux
+Type-checking K-22_read_decode
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Starting Bounded Model Checking
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+SAT checker: instance is UNSATISFIABLE
+
+** Results:
+../simd/x86_models.h function _mm256_and_si256
+[_mm256_and_si256.array_bounds.1] line 88 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_and_si256.array_bounds.2] line 88 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_and_si256.array_bounds.3] line 88 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_and_si256.array_bounds.4] line 88 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_and_si256.array_bounds.5] line 88 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_and_si256.array_bounds.6] line 88 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_and_si256.overflow.1] line 88 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm256_broadcastsi128_si256
+[_mm256_broadcastsi128_si256.precondition_instance.1] line 82 memcpy src/dst overlap: SUCCESS
+[_mm256_broadcastsi128_si256.precondition_instance.2] line 82 memcpy source region readable: SUCCESS
+[_mm256_broadcastsi128_si256.precondition_instance.3] line 82 memcpy destination region writeable: SUCCESS
+[_mm256_broadcastsi128_si256.precondition_instance.4] line 82 memcpy src/dst overlap: SUCCESS
+[_mm256_broadcastsi128_si256.precondition_instance.5] line 82 memcpy source region readable: SUCCESS
+[_mm256_broadcastsi128_si256.precondition_instance.6] line 82 memcpy destination region writeable: SUCCESS
+
+../simd/x86_models.h function _mm256_castsi128_si256
+[_mm256_castsi128_si256.precondition_instance.1] line 85 memcpy src/dst overlap: SUCCESS
+[_mm256_castsi128_si256.precondition_instance.2] line 85 memcpy source region readable: SUCCESS
+[_mm256_castsi128_si256.precondition_instance.3] line 85 memcpy destination region writeable: SUCCESS
+[_mm256_castsi128_si256.precondition_instance.4] line 85 memset destination region writeable: SUCCESS
+
+../simd/x86_models.h function _mm256_cmpeq_epi8
+[_mm256_cmpeq_epi8.array_bounds.1] line 90 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_cmpeq_epi8.array_bounds.2] line 90 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_cmpeq_epi8.array_bounds.3] line 90 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_cmpeq_epi8.array_bounds.4] line 90 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_cmpeq_epi8.array_bounds.5] line 90 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_cmpeq_epi8.array_bounds.6] line 90 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_cmpeq_epi8.overflow.1] line 90 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm256_inserti128_si256
+[_mm256_inserti128_si256.overflow.1] line 87 arithmetic overflow on signed * in 16 * (imm & 1): SUCCESS
+[_mm256_inserti128_si256.overflow.2] line 87 arithmetic overflow on signed * in 16 * (imm & 1): SUCCESS
+[_mm256_inserti128_si256.overflow.3] line 87 arithmetic overflow on signed * in 16 * (imm & 1): SUCCESS
+[_mm256_inserti128_si256.overflow.4] line 87 arithmetic overflow on signed * in 16 * (imm & 1): SUCCESS
+[_mm256_inserti128_si256.precondition_instance.1] line 87 memcpy src/dst overlap: SUCCESS
+[_mm256_inserti128_si256.precondition_instance.2] line 87 memcpy source region readable: SUCCESS
+[_mm256_inserti128_si256.precondition_instance.3] line 87 memcpy destination region writeable: SUCCESS
+
+../simd/x86_models.h function _mm256_loadu_si256
+[_mm256_loadu_si256.precondition_instance.1] line 77 memcpy src/dst overlap: SUCCESS
+[_mm256_loadu_si256.precondition_instance.2] line 77 memcpy source region readable: SUCCESS
+[_mm256_loadu_si256.precondition_instance.3] line 77 memcpy destination region writeable: SUCCESS
+
+../simd/x86_models.h function _mm256_or_si256
+[_mm256_or_si256.array_bounds.1] line 89 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_or_si256.array_bounds.2] line 89 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_or_si256.array_bounds.3] line 89 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_or_si256.array_bounds.4] line 89 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_or_si256.array_bounds.5] line 89 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_or_si256.array_bounds.6] line 89 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_or_si256.overflow.1] line 89 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm256_set1_epi8
+[_mm256_set1_epi8.array_bounds.1] line 80 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_set1_epi8.array_bounds.2] line 80 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_set1_epi8.overflow.1] line 80 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm256_setzero_si256
+[_mm256_setzero_si256.precondition_instance.1] line 79 memset destination region writeable: SUCCESS
+
+../simd/x86_models.h function _mm256_shuffle_epi8
+[_mm256_shuffle_epi8.array_bounds.1] line 100 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_shuffle_epi8.array_bounds.2] line 100 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_shuffle_epi8.array_bounds.3] line 100 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_shuffle_epi8.array_bounds.4] line 100 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_shuffle_epi8.array_bounds.5] line 100 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_shuffle_epi8.array_bounds.6] line 100 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_shuffle_epi8.array_bounds.7] line 100 array 'a'.b lower bound in a.b[(signed long int)((i & 16) + ((signed int)c.b[(signed long int)i] & 15))]: SUCCESS
+[_mm256_shuffle_epi8.array_bounds.8] line 100 array 'a'.b upper bound in a.b[(signed long int)((i & 16) + ((signed int)c.b[(signed long int)i] & 15))]: SUCCESS
+[_mm256_shuffle_epi8.overflow.1] line 100 arithmetic overflow on signed + in (i & 16) + ((signed int)c.b[(signed long int)i] & 15): SUCCESS
+[_mm256_shuffle_epi8.overflow.2] line 100 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm256_storeu_si256
+[_mm256_storeu_si256.precondition_instance.1] line 78 memcpy src/dst overlap: SUCCESS
+[_mm256_storeu_si256.precondition_instance.2] line 78 memcpy source region readable: SUCCESS
+[_mm256_storeu_si256.precondition_instance.3] line 78 memcpy destination region writeable: SUCCESS
+
+../simd/x86_models.h function _mm256_subs_epu8
+[_mm256_subs_epu8.array_bounds.1] line 94 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.array_bounds.2] line 94 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.array_bounds.3] line 94 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.array_bounds.4] line 94 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.array_bounds.5] line 94 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.array_bounds.6] line 94 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.array_bounds.7] line 94 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.array_bounds.8] line 94 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.array_bounds.9] line 94 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.array_bounds.10] line 94 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.overflow.1] line 94 arithmetic overflow on signed - in (signed int)a.b[(signed long int)i] - (signed int)c.b[(signed long int)i]: SUCCESS
+[_mm256_subs_epu8.overflow.2] line 94 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_and_si128
+[_mm_and_si128.array_bounds.1] line 57 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.2] line 57 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.3] line 57 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.4] line 57 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.5] line 57 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.array_bounds.6] line 57 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm_and_si128.overflow.1] line 57 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_loadu_si128
+[_mm_loadu_si128.precondition_instance.1] line 50 memcpy src/dst overlap: SUCCESS
+[_mm_loadu_si128.precondition_instance.2] line 50 memcpy source region readable: SUCCESS
+[_mm_loadu_si128.precondition_instance.3] line 50 memcpy destination region writeable: SUCCESS
+
+../simd/x86_models.h function _mm_set1_epi8
+[_mm_set1_epi8.array_bounds.1] line 52 array 'r'.b lower bound in r.b[(signed long int)i]: SUCCESS
+[_mm_set1_epi8.array_bounds.2] line 52 array 'r'.b upper bound in r.b[(signed long int)i]: SUCCESS
+[_mm_set1_epi8.overflow.1] line 52 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_srli_epi16
+[_mm_srli_epi16.overflow.1] line 63 arithmetic overflow on signed + in i + 1: SUCCESS
+[_mm_srli_epi16.undefined-shift.1] line 63 shift distance is negative in (signed int)(uint16_t)return_value_m_get16 >> count: SUCCESS
+[_mm_srli_epi16.undefined-shift.2] line 63 shift distance too large in (signed int)(uint16_t)return_value_m_get16 >> count: SUCCESS
+
+../simd/x86_models.h function _mm_unpackhi_epi8
+[_mm_unpackhi_epi8.array_bounds.1] line 67 array 'r'.b lower bound in r.b[(signed long int)(2 * i)]: SUCCESS
+[_mm_unpackhi_epi8.array_bounds.2] line 67 array 'r'.b upper bound in r.b[(signed long int)(2 * i)]: SUCCESS
+[_mm_unpackhi_epi8.array_bounds.3] line 67 array 'a'.b lower bound in a.b[(signed long int)(8 + i)]: SUCCESS
+[_mm_unpackhi_epi8.array_bounds.4] line 67 array 'a'.b upper bound in a.b[(signed long int)(8 + i)]: SUCCESS
+[_mm_unpackhi_epi8.array_bounds.5] line 67 array 'r'.b lower bound in r.b[(signed long int)(2 * i + 1)]: SUCCESS
+[_mm_unpackhi_epi8.array_bounds.6] line 67 array 'r'.b upper bound in r.b[(signed long int)(2 * i + 1)]: SUCCESS
+[_mm_unpackhi_epi8.array_bounds.7] line 67 array 'c'.b lower bound in c.b[(signed long int)(8 + i)]: SUCCESS
+[_mm_unpackhi_epi8.array_bounds.8] line 67 array 'c'.b upper bound in c.b[(signed long int)(8 + i)]: SUCCESS
+[_mm_unpackhi_epi8.overflow.1] line 67 arithmetic overflow on signed * in 2 * i: SUCCESS
+[_mm_unpackhi_epi8.overflow.2] line 67 arithmetic overflow on signed + in 8 + i: SUCCESS
+[_mm_unpackhi_epi8.overflow.3] line 67 arithmetic overflow on signed + in 2 * i + 1: SUCCESS
+[_mm_unpackhi_epi8.overflow.4] line 67 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function _mm_unpacklo_epi8
+[_mm_unpacklo_epi8.array_bounds.1] line 66 array 'r'.b lower bound in r.b[(signed long int)(2 * i)]: SUCCESS
+[_mm_unpacklo_epi8.array_bounds.2] line 66 array 'r'.b upper bound in r.b[(signed long int)(2 * i)]: SUCCESS
+[_mm_unpacklo_epi8.array_bounds.3] line 66 array 'a'.b lower bound in a.b[(signed long int)i]: SUCCESS
+[_mm_unpacklo_epi8.array_bounds.4] line 66 array 'a'.b upper bound in a.b[(signed long int)i]: SUCCESS
+[_mm_unpacklo_epi8.array_bounds.5] line 66 array 'r'.b lower bound in r.b[(signed long int)(2 * i + 1)]: SUCCESS
+[_mm_unpacklo_epi8.array_bounds.6] line 66 array 'r'.b upper bound in r.b[(signed long int)(2 * i + 1)]: SUCCESS
+[_mm_unpacklo_epi8.array_bounds.7] line 66 array 'c'.b lower bound in c.b[(signed long int)i]: SUCCESS
+[_mm_unpacklo_epi8.array_bounds.8] line 66 array 'c'.b upper bound in c.b[(signed long int)i]: SUCCESS
+[_mm_unpacklo_epi8.overflow.1] line 66 arithmetic overflow on signed * in 2 * i: SUCCESS
+[_mm_unpacklo_epi8.overflow.2] line 66 arithmetic overflow on signed + in 2 * i + 1: SUCCESS
+[_mm_unpacklo_epi8.overflow.3] line 66 arithmetic overflow on signed + in i + 1: SUCCESS
+
+../simd/x86_models.h function m_get16
+[m_get16.overflow.1] line 39 arithmetic overflow on signed * in 2 * lane: SUCCESS
+[m_get16.overflow.2] line 39 arithmetic overflow on signed + in 2 * lane + 1: SUCCESS
+[m_get16.overflow.3] line 39 arithmetic overflow on signed shl in (signed int)b[(signed long int)(2 * lane + 1)] << 8: SUCCESS
+[m_get16.pointer_dereference.1] line 39 dereference failure: pointer NULL in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.2] line 39 dereference failure: pointer invalid in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.3] line 39 dereference failure: deallocated dynamic object in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.4] line 39 dereference failure: dead object in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.5] line 39 dereference failure: pointer outside object bounds in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.6] line 39 dereference failure: invalid integer address in b[(signed long int)(2 * lane)]: SUCCESS
+[m_get16.pointer_dereference.7] line 39 dereference failure: pointer NULL in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.8] line 39 dereference failure: pointer invalid in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.9] line 39 dereference failure: deallocated dynamic object in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.10] line 39 dereference failure: dead object in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.11] line 39 dereference failure: pointer outside object bounds in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.pointer_dereference.12] line 39 dereference failure: invalid integer address in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_get16.undefined-shift.1] line 39 shift operand is negative in (signed int)b[(signed long int)(2 * lane + 1)] << 8: SUCCESS
+
+../simd/x86_models.h function m_set16
+[m_set16.overflow.1] line 42 arithmetic overflow on signed * in 2 * lane: SUCCESS
+[m_set16.pointer_dereference.1] line 42 dereference failure: pointer NULL in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.2] line 42 dereference failure: pointer invalid in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.3] line 42 dereference failure: deallocated dynamic object in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.4] line 42 dereference failure: dead object in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.5] line 42 dereference failure: pointer outside object bounds in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.pointer_dereference.6] line 42 dereference failure: invalid integer address in b[(signed long int)(2 * lane)]: SUCCESS
+[m_set16.overflow.2] line 43 arithmetic overflow on signed * in 2 * lane: SUCCESS
+[m_set16.overflow.3] line 43 arithmetic overflow on signed + in 2 * lane + 1: SUCCESS
+[m_set16.pointer_dereference.7] line 43 dereference failure: pointer NULL in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.8] line 43 dereference failure: pointer invalid in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.9] line 43 dereference failure: deallocated dynamic object in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.10] line 43 dereference failure: dead object in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.11] line 43 dereference failure: pointer outside object bounds in b[(signed long int)(2 * lane + 1)]: SUCCESS
+[m_set16.pointer_dereference.12] line 43 dereference failure: invalid integer address in b[(signed long int)(2 * lane + 1)]: SUCCESS
+
+ehunter/core/ReadDecodeKernels.hh function rd_decode_avx2_blocks
+[rd_decode_avx2_blocks.overflow.1] line 81 arithmetic overflow on signed - in length - 32: SUCCESS
+[rd_decode_avx2_blocks.overflow.2] line 81 arithmetic overflow on signed + in index + 32: SUCCESS
+
+ehunter/core/ReadDecodeKernels.hh function rd_decode_reference
+[rd_decode_reference.overflow.2] line 34 arithmetic overflow on signed + in index + 1: SUCCESS
+[rd_decode_reference.pointer_dereference.1] line 36 dereference failure: pointer NULL in qualities[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.2] line 36 dereference failure: pointer invalid in qualities[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.3] line 36 dereference failure: deallocated dynamic object in qualities[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.4] line 36 dereference failure: dead object in qualities[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.5] line 36 dereference failure: pointer outside object bounds in qualities[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.6] line 36 dereference failure: invalid integer address in qualities[(signed long int)index]: SUCCESS
+[rd_decode_reference.overflow.1] line 37 arithmetic overflow on signed shl in (~index & 1) << 2: SUCCESS
+[rd_decode_reference.pointer_dereference.7] line 37 dereference failure: pointer NULL in bases[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.8] line 37 dereference failure: pointer invalid in bases[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.9] line 37 dereference failure: deallocated dynamic object in bases[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.10] line 37 dereference failure: dead object in bases[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.11] line 37 dereference failure: pointer outside object bounds in bases[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.12] line 37 dereference failure: invalid integer address in bases[(signed long int)index]: SUCCESS
+[rd_decode_reference.pointer_dereference.13] line 37 dereference failure: pointer NULL in packed[(signed long int)(index >> 1)]: SUCCESS
+[rd_decode_reference.pointer_dereference.14] line 37 dereference failure: pointer invalid in packed[(signed long int)(index >> 1)]: SUCCESS
+[rd_decode_reference.pointer_dereference.15] line 37 dereference failure: deallocated dynamic object in packed[(signed long int)(index >> 1)]: SUCCESS
+[rd_decode_reference.pointer_dereference.16] line 37 dereference failure: dead object in packed[(signed long int)(index >> 1)]: SUCCESS
+[rd_decode_reference.pointer_dereference.17] line 37 dereference failure: pointer outside object bounds in packed[(signed long int)(index >> 1)]: SUCCESS
+[rd_decode_reference.pointer_dereference.18] line 37 dereference failure: invalid integer address in packed[(signed long int)(index >> 1)]: SUCCESS
+[rd_decode_reference.pointer_dereference.19] line 37 dereference failure: pointer NULL in converter[(signed long int)((signed int)packed[(signed long int)(index >> 1)] >> ((~index & 1) << 2) & 0xF)]: SUCCESS
+[rd_decode_reference.pointer_dereference.20] line 37 dereference failure: pointer invalid in converter[(signed long int)((signed int)packed[(signed long int)(index >> 1)] >> ((~index & 1) << 2) & 0xF)]: SUCCESS
+[rd_decode_reference.pointer_dereference.21] line 37 dereference failure: deallocated dynamic object in converter[(signed long int)((signed int)packed[(signed long int)(index >> 1)] >> ((~index & 1) << 2) & 0xF)]: SUCCESS
+[rd_decode_reference.pointer_dereference.22] line 37 dereference failure: dead object in converter[(signed long int)((signed int)packed[(signed long int)(index >> 1)] >> ((~index & 1) << 2) & 0xF)]: SUCCESS
+[rd_decode_reference.pointer_dereference.23] line 37 dereference failure: pointer outside object bounds in converter[(signed long int)((signed int)packed[(signed long int)(index >> 1)] >> ((~index & 1) << 2) & 0xF)]: SUCCESS
+[rd_decode_reference.pointer_dereference.24] line 37 dereference failure: invalid integer address in converter[(signed long int)((signed int)packed[(signed long int)(index >> 1)] >> ((~index & 1) << 2) & 0xF)]: SUCCESS
+[rd_decode_reference.undefined-shift.1] line 37 shift operand is negative in (~index & 1) << 2: SUCCESS
+[rd_decode_reference.undefined-shift.2] line 37 shift distance is negative in (signed int)packed[(signed long int)(index >> 1)] >> ((~index & 1) << 2): SUCCESS
+[rd_decode_reference.undefined-shift.3] line 37 shift distance too large in (signed int)packed[(signed long int)(index >> 1)] >> ((~index & 1) << 2): SUCCESS
+
+ehunter/core/ReadDecodeKernels.hh function rd_decode_tail
+[rd_decode_tail.overflow.1] line 48 arithmetic overflow on signed - in length - 1: SUCCESS
+[rd_decode_tail.overflow.4] line 48 arithmetic overflow on signed + in index + 2: SUCCESS
+[rd_decode_tail.pointer_dereference.1] line 50 dereference failure: pointer NULL in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.2] line 50 dereference failure: pointer invalid in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.3] line 50 dereference failure: deallocated dynamic object in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.4] line 50 dereference failure: dead object in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.5] line 50 dereference failure: pointer outside object bounds in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.6] line 50 dereference failure: invalid integer address in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.7] line 51 dereference failure: pointer NULL in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.8] line 51 dereference failure: pointer invalid in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.9] line 51 dereference failure: deallocated dynamic object in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.10] line 51 dereference failure: dead object in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.11] line 51 dereference failure: pointer outside object bounds in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.12] line 51 dereference failure: invalid integer address in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.overflow.2] line 52 arithmetic overflow on signed + in index + 1: SUCCESS
+[rd_decode_tail.pointer_dereference.13] line 52 dereference failure: pointer NULL in qualities[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.14] line 52 dereference failure: pointer invalid in qualities[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.15] line 52 dereference failure: deallocated dynamic object in qualities[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.16] line 52 dereference failure: dead object in qualities[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.17] line 52 dereference failure: pointer outside object bounds in qualities[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.18] line 52 dereference failure: invalid integer address in qualities[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.19] line 53 dereference failure: pointer NULL in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.20] line 53 dereference failure: pointer invalid in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.21] line 53 dereference failure: deallocated dynamic object in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.22] line 53 dereference failure: dead object in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.23] line 53 dereference failure: pointer outside object bounds in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.24] line 53 dereference failure: invalid integer address in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.25] line 53 dereference failure: pointer NULL in first[(signed long int)((signed int)pair >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.26] line 53 dereference failure: pointer invalid in first[(signed long int)((signed int)pair >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.27] line 53 dereference failure: deallocated dynamic object in first[(signed long int)((signed int)pair >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.28] line 53 dereference failure: dead object in first[(signed long int)((signed int)pair >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.29] line 53 dereference failure: pointer outside object bounds in first[(signed long int)((signed int)pair >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.30] line 53 dereference failure: invalid integer address in first[(signed long int)((signed int)pair >> 4)]: SUCCESS
+[rd_decode_tail.overflow.3] line 54 arithmetic overflow on signed + in index + 1: SUCCESS
+[rd_decode_tail.pointer_dereference.31] line 54 dereference failure: pointer NULL in bases[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.32] line 54 dereference failure: pointer invalid in bases[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.33] line 54 dereference failure: deallocated dynamic object in bases[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.34] line 54 dereference failure: dead object in bases[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.35] line 54 dereference failure: pointer outside object bounds in bases[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.36] line 54 dereference failure: invalid integer address in bases[(signed long int)(index + 1)]: SUCCESS
+[rd_decode_tail.pointer_dereference.37] line 54 dereference failure: pointer NULL in second[(signed long int)((signed int)pair & 15)]: SUCCESS
+[rd_decode_tail.pointer_dereference.38] line 54 dereference failure: pointer invalid in second[(signed long int)((signed int)pair & 15)]: SUCCESS
+[rd_decode_tail.pointer_dereference.39] line 54 dereference failure: deallocated dynamic object in second[(signed long int)((signed int)pair & 15)]: SUCCESS
+[rd_decode_tail.pointer_dereference.40] line 54 dereference failure: dead object in second[(signed long int)((signed int)pair & 15)]: SUCCESS
+[rd_decode_tail.pointer_dereference.41] line 54 dereference failure: pointer outside object bounds in second[(signed long int)((signed int)pair & 15)]: SUCCESS
+[rd_decode_tail.pointer_dereference.42] line 54 dereference failure: invalid integer address in second[(signed long int)((signed int)pair & 15)]: SUCCESS
+[rd_decode_tail.pointer_dereference.43] line 58 dereference failure: pointer NULL in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.44] line 58 dereference failure: pointer invalid in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.45] line 58 dereference failure: deallocated dynamic object in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.46] line 58 dereference failure: dead object in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.47] line 58 dereference failure: pointer outside object bounds in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.48] line 58 dereference failure: invalid integer address in qualities[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.49] line 59 dereference failure: pointer NULL in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.50] line 59 dereference failure: pointer invalid in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.51] line 59 dereference failure: deallocated dynamic object in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.52] line 59 dereference failure: dead object in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.53] line 59 dereference failure: pointer outside object bounds in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.54] line 59 dereference failure: invalid integer address in bases[(signed long int)index]: SUCCESS
+[rd_decode_tail.pointer_dereference.55] line 59 dereference failure: pointer NULL in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.56] line 59 dereference failure: pointer invalid in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.57] line 59 dereference failure: deallocated dynamic object in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.58] line 59 dereference failure: dead object in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.59] line 59 dereference failure: pointer outside object bounds in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.60] line 59 dereference failure: invalid integer address in packed[(signed long int)(index / 2)]: SUCCESS
+[rd_decode_tail.pointer_dereference.61] line 59 dereference failure: pointer NULL in converter[(signed long int)((signed int)packed[(signed long int)(index / 2)] >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.62] line 59 dereference failure: pointer invalid in converter[(signed long int)((signed int)packed[(signed long int)(index / 2)] >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.63] line 59 dereference failure: deallocated dynamic object in converter[(signed long int)((signed int)packed[(signed long int)(index / 2)] >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.64] line 59 dereference failure: dead object in converter[(signed long int)((signed int)packed[(signed long int)(index / 2)] >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.65] line 59 dereference failure: pointer outside object bounds in converter[(signed long int)((signed int)packed[(signed long int)(index / 2)] >> 4)]: SUCCESS
+[rd_decode_tail.pointer_dereference.66] line 59 dereference failure: invalid integer address in converter[(signed long int)((signed int)packed[(signed long int)(index / 2)] >> 4)]: SUCCESS
+
+<builtin-library-memcpy> function memcpy
+[memcpy.pointer.1] line 33 same object violation in (const unsigned char *)(const void *)a.b >= (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.3] line 33 same object violation in (const unsigned char *)(const void *)a.b >= (const unsigned char *)(void *)(r.b + (signed long int)16) + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.5] line 33 same object violation in (const unsigned char *)(const void *)a.b >= (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.7] line 33 same object violation in (const unsigned char *)(const void *)c.b >= (const unsigned char *)(void *)(r.b + (signed long int)(16 * (imm & 1))) + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.9] line 33 same object violation in (const unsigned char *)(const void *)p >= (const unsigned char *)(void *)r.b + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer.11] line 33 same object violation in (const unsigned char *)(const void *)a.b >= (const unsigned char *)(void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer.13] line 33 same object violation in (const unsigned char *)(const void *)p >= (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.1] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.2] line 33 pointer relation: dead object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.3] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.4] line 33 pointer relation: dead object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.9] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.10] line 33 pointer relation: dead object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.11] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)(r.b + (signed long int)16) + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.12] line 33 pointer relation: dead object in (const unsigned char *)(void *)(r.b + (signed long int)16) + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.17] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.18] line 33 pointer relation: dead object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.19] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.20] line 33 pointer relation: dead object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.25] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)c.b: SUCCESS
+[memcpy.pointer_arithmetic.26] line 33 pointer relation: dead object in (const unsigned char *)(const void *)c.b: SUCCESS
+[memcpy.pointer_arithmetic.27] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)(r.b + (signed long int)(16 * (imm & 1))) + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.28] line 33 pointer relation: dead object in (const unsigned char *)(void *)(r.b + (signed long int)(16 * (imm & 1))) + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.29] line 33 pointer relation: pointer outside object bounds in (const unsigned char *)(void *)(r.b + (signed long int)(16 * (imm & 1))) + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.35] line 33 pointer relation: pointer NULL in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.36] line 33 pointer relation: pointer invalid in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.37] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.38] line 33 pointer relation: dead object in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.39] line 33 pointer relation: pointer outside object bounds in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.40] line 33 pointer relation: invalid integer address in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.41] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.42] line 33 pointer relation: dead object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.51] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.52] line 33 pointer relation: dead object in (const unsigned char *)(const void *)a.b: SUCCESS
+[memcpy.pointer_arithmetic.53] line 33 pointer relation: pointer NULL in (const unsigned char *)(void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.54] line 33 pointer relation: pointer invalid in (const unsigned char *)(void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.55] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.56] line 33 pointer relation: dead object in (const unsigned char *)(void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.57] line 33 pointer relation: pointer outside object bounds in (const unsigned char *)(void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.58] line 33 pointer relation: invalid integer address in (const unsigned char *)(void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.67] line 33 pointer relation: pointer NULL in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.68] line 33 pointer relation: pointer invalid in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.69] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.70] line 33 pointer relation: dead object in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.71] line 33 pointer relation: pointer outside object bounds in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.72] line 33 pointer relation: invalid integer address in (const unsigned char *)(const void *)p: SUCCESS
+[memcpy.pointer_arithmetic.73] line 33 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.74] line 33 pointer relation: dead object in (const unsigned char *)(void *)r.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.2] line 34 same object violation in (const unsigned char *)(void *)r.b >= (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.4] line 34 same object violation in (const unsigned char *)(void *)(r.b + (signed long int)16) >= (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.6] line 34 same object violation in (const unsigned char *)(void *)r.b >= (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.8] line 34 same object violation in (const unsigned char *)(void *)(r.b + (signed long int)(16 * (imm & 1))) >= (const unsigned char *)(const void *)c.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer.10] line 34 same object violation in (const unsigned char *)(void *)r.b >= (const unsigned char *)(const void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer.12] line 34 same object violation in (const unsigned char *)(void *)p >= (const unsigned char *)(const void *)a.b + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer.14] line 34 same object violation in (const unsigned char *)(void *)r.b >= (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.5] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.6] line 34 pointer relation: dead object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.7] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.8] line 34 pointer relation: dead object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.13] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)(r.b + (signed long int)16): SUCCESS
+[memcpy.pointer_arithmetic.14] line 34 pointer relation: dead object in (const unsigned char *)(void *)(r.b + (signed long int)16): SUCCESS
+[memcpy.pointer_arithmetic.15] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.16] line 34 pointer relation: dead object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.21] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.22] line 34 pointer relation: dead object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.23] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.24] line 34 pointer relation: dead object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.30] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)(r.b + (signed long int)(16 * (imm & 1))): SUCCESS
+[memcpy.pointer_arithmetic.31] line 34 pointer relation: dead object in (const unsigned char *)(void *)(r.b + (signed long int)(16 * (imm & 1))): SUCCESS
+[memcpy.pointer_arithmetic.32] line 34 pointer relation: pointer outside object bounds in (const unsigned char *)(void *)(r.b + (signed long int)(16 * (imm & 1))): SUCCESS
+[memcpy.pointer_arithmetic.33] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)c.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.34] line 34 pointer relation: dead object in (const unsigned char *)(const void *)c.b + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.43] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.44] line 34 pointer relation: dead object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.45] line 34 pointer relation: pointer NULL in (const unsigned char *)(const void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.46] line 34 pointer relation: pointer invalid in (const unsigned char *)(const void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.47] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.48] line 34 pointer relation: dead object in (const unsigned char *)(const void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.49] line 34 pointer relation: pointer outside object bounds in (const unsigned char *)(const void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.50] line 34 pointer relation: invalid integer address in (const unsigned char *)(const void *)p + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.59] line 34 pointer relation: pointer NULL in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.60] line 34 pointer relation: pointer invalid in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.61] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.62] line 34 pointer relation: dead object in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.63] line 34 pointer relation: pointer outside object bounds in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.64] line 34 pointer relation: invalid integer address in (const unsigned char *)(void *)p: SUCCESS
+[memcpy.pointer_arithmetic.65] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.66] line 34 pointer relation: dead object in (const unsigned char *)(const void *)a.b + (signed long int)(size_t)32: SUCCESS
+[memcpy.pointer_arithmetic.75] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.76] line 34 pointer relation: dead object in (const unsigned char *)(void *)r.b: SUCCESS
+[memcpy.pointer_arithmetic.77] line 34 pointer relation: pointer NULL in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.78] line 34 pointer relation: pointer invalid in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.79] line 34 pointer relation: deallocated dynamic object in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.80] line 34 pointer relation: dead object in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.81] line 34 pointer relation: pointer outside object bounds in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+[memcpy.pointer_arithmetic.82] line 34 pointer relation: invalid integer address in (const unsigned char *)(const void *)p + (signed long int)(size_t)16: SUCCESS
+
+K-22_read_decode.c function check_once
+[check_once.overflow.1] line 42 arithmetic overflow on signed + in i + 1: SUCCESS
+[check_once.array_bounds.1] line 43 array 'packed' lower bound in packed[(signed long int)i]: SUCCESS
+[check_once.array_bounds.2] line 43 array 'packed' upper bound in packed[(signed long int)i]: SUCCESS
+[check_once.overflow.2] line 44 arithmetic overflow on signed + in i + 1: SUCCESS
+[check_once.array_bounds.3] line 45 array 'qualities' lower bound in qualities[(signed long int)i]: SUCCESS
+[check_once.array_bounds.4] line 45 array 'qualities' upper bound in qualities[(signed long int)i]: SUCCESS
+[check_once.assertion.1] line 50 assertion index == 32: SUCCESS
+[check_once.overflow.3] line 53 arithmetic overflow on signed + in i + 1: SUCCESS
+[check_once.array_bounds.5] line 54 array 'bases' lower bound in bases[(signed long int)i]: SUCCESS
+[check_once.array_bounds.6] line 54 array 'bases' upper bound in bases[(signed long int)i]: SUCCESS
+[check_once.array_bounds.7] line 54 array 'expected' lower bound in expected[(signed long int)i]: SUCCESS
+[check_once.array_bounds.8] line 54 array 'expected' upper bound in expected[(signed long int)i]: SUCCESS
+[check_once.assertion.2] line 54 assertion bases[i] == expected[i]: SUCCESS
+
+K-22_read_decode.c function main
+[main.overflow.1] line 65 arithmetic overflow on signed + in round + 1l: SUCCESS
+
+** 0 of 351 failed (1 iterations)
+VERIFICATION SUCCESSFUL

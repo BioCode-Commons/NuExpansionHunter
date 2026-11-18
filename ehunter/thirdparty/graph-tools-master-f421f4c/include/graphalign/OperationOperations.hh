@@ -17,17 +17,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: operation consistency checks accept internal borrowed string slices.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphalign/Operation.hh"
 
 #include <cstdint>
 #include <utility>
 
+#include <boost/utility/string_ref.hpp>
+
 namespace graphtools
 {
 
 // Returns true if a given operation is consistent with the given query and reference sequences
 bool checkConsistency(const Operation& operation, const std::string& reference, const std::string& query);
+
+namespace detail
+{
+    // Internal non-owning slices; the public string API remains unambiguous.
+    bool checkOperationConsistency(
+        const Operation& operation, boost::string_ref reference, boost::string_ref query);
+}
 
 using OperationPair = std::pair<Operation, Operation>;
 

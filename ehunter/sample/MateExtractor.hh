@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: mate extraction exposes batched queries and their results.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -40,6 +45,16 @@ namespace ehunter
 
 namespace htshelpers
 {
+// A query borrows the input read and its alignment statistics for the duration
+// of extractMates. Results stay in input order.
+struct MateQuery
+{
+    const Read* read;
+    const LinearAlignmentStats* alignmentStats;
+    boost::optional<Read> mate;
+    LinearAlignmentStats mateStats;
+};
+
 class MateExtractor
 {
 public:
@@ -48,6 +63,8 @@ public:
 
     boost::optional<Read>
     extractMate(const Read& read, const LinearAlignmentStats& alignmentStats, LinearAlignmentStats& mateStats);
+
+    void extractMates(std::vector<MateQuery>& queries);
 
 private:
     void openFile();

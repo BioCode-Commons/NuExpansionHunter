@@ -18,10 +18,16 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: variant analyzers support retained prepared data, evidence-row counts, and optional genotyping workers.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
 #include <memory>
+
 #include <string>
 #include <vector>
 
@@ -33,6 +39,9 @@
 #include "core/Parameters.hh"
 #include "core/Read.hh"
 #include "locus/VariantFindings.hh"
+#include "locus/VariantSpecification.hh"
+
+namespace ctpl { class thread_pool; }
 
 namespace ehunter
 {
@@ -50,6 +59,16 @@ public:
     {
     }
     virtual ~VariantAnalyzer() = default;
+    VariantAnalyzer(VariantSpecification variant, const graphtools::Graph& graph, const GenotyperParameters& params)
+        : graph_(graph)
+        , preparedVariant_(std::move(variant))
+        , preparedGenotyper_(&params)
+    {
+        preparedVariant_->requirePreparedAddress(&params, sizeof(params));
+    }
+
+    // Read rows of evidence retained until genotyping; orders the genotyping work.
+    virtual uint64_t evidenceRows() const { return 0; }
 
     virtual void processMates(
         const Read& read, const graphtools::GraphAlignment& readAlignment, const Read& mate,
@@ -58,15 +77,30 @@ public:
 
     virtual std::unique_ptr<VariantFindings> analyze(const LocusStats& stats) = 0;
 
-    const std::string& variantId() const { return variantId_; }
+    virtual std::unique_ptr<VariantFindings> analyze(const LocusStats& stats, ctpl::thread_pool*) { return analyze(stats); }
+
+    graphtools::TextView variantId() const
+    {
+        return preparedVariant_ ? preparedVariant_->id() : graphtools::TextView(variantId_);
+    }
     const graphtools::Graph& graph() const { return graph_; }
-    const std::vector<graphtools::NodeId>& nodeIds() const { return nodeIds_; }
+    graphtools::CatalogRange<graphtools::NodeId> nodeIds() const
+    {
+        return preparedVariant_ ? preparedVariant_->nodes()
+                                : graphtools::CatalogRange<graphtools::NodeId>::fromVector(nodeIds_);
+    }
+    const GenotyperParameters& genotyperParameters() const
+    {
+        return preparedGenotyper_ ? *preparedGenotyper_ : genotyperParams_;
+    }
 
 protected:
     std::string variantId_;
     const graphtools::Graph& graph_;
     std::vector<graphtools::NodeId> nodeIds_;
     GenotyperParameters genotyperParams_;
+    boost::optional<VariantSpecification> preparedVariant_;
+    const GenotyperParameters* preparedGenotyper_ = nullptr;
 };
 
 }

@@ -20,6 +20,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: locus catalogs support shared owned data, compact mapped layouts, and indexed lookup.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -31,6 +36,8 @@
 
 #include <boost/optional.hpp>
 
+#include "absl/container/flat_hash_map.h"
+#include "absl/strings/string_view.h"
 #include "graphcore/Graph.hh"
 #include "thirdparty/json/json.hpp"
 
@@ -45,55 +52,254 @@ namespace ehunter
 using RegionId = std::string;
 using NodeToRegionAssociation = std::unordered_map<graphtools::NodeId, GenomicRegion>;
 
+struct MappedProjection
+{
+    graphtools::NodeId node;
+    uint32_t reserved;
+    GenomicRegion region;
+};
+struct MappedLocus
+{
+    graphtools::Slice id, targets, offtargets, graph, variants, projections;
+    ChromType chromosomeType;
+    uint32_t reserved;
+    GenotyperParameters genotyper;
+};
+
 class LocusSpecification
 {
 public:
+    LocusSpecification(graphtools::MappedBytes bytes, const MappedLocus* record);
     LocusSpecification(
         RegionId locusId, ChromType typeOfChromLocusLocatedOn, std::vector<GenomicRegion> targetReadExtractionRegions,
         graphtools::Graph regionGraph, NodeToRegionAssociation referenceRegions, GenotyperParameters genotyperParams);
 
-    const RegionId& locusId() const { return locusId_; }
-    ChromType typeOfChromLocusLocatedOn() const { return typeOfChromLocusLocatedOn_; }
+    graphtools::TextView locusId() const
+    {
+        return record_ ? mapped_.text(record_->id) : graphtools::TextView(owned_->id);
+    }
+    ChromType typeOfChromLocusLocatedOn() const { return record_ ? record_->chromosomeType : owned_->chromosomeType; }
     /*
      * List of all regions in the reference this graph describes
      * i.e. where we expect relevant reads to align
      */
-    const std::vector<GenomicRegion>& targetReadExtractionRegions() const { return targetReadExtractionRegions_; }
+    graphtools::CatalogRange<GenomicRegion> targetReadExtractionRegions() const
+    {
+        if (record_)
+            return graphtools::CatalogRange<GenomicRegion>::fromArray(
+                mapped_.array<GenomicRegion>(record_->targets), record_->targets.count, mapped_.owner);
+        return graphtools::CatalogRange<GenomicRegion>::fromVector(owned_->targets, owned_);
+    }
     /*
      * List of regions that additional relevant reads might be found
      * Require filtering or special considerations
      */
-    const std::vector<GenomicRegion>& offtargetReadExtractionRegions() const { return offtargetReadExtractionRegions_; }
+    graphtools::CatalogRange<GenomicRegion> offtargetReadExtractionRegions() const
+    {
+        if (record_)
+            return graphtools::CatalogRange<GenomicRegion>::fromArray(
+                mapped_.array<GenomicRegion>(record_->offtargets), record_->offtargets.count, mapped_.owner);
+        return graphtools::CatalogRange<GenomicRegion>::fromVector(owned_->offtargets, owned_);
+    }
     void setOfftargetReadExtractionRegions(const std::vector<GenomicRegion>& offtargetReadExtractionRegions)
     {
-        offtargetReadExtractionRegions_ = offtargetReadExtractionRegions;
+        writable().offtargets = offtargetReadExtractionRegions;
     }
 
-    const graphtools::Graph& regionGraph() const { return regionGraph_; }
-    const GenotyperParameters& genotyperParameters() const { return parameters_; }
-    const std::vector<VariantSpecification>& variantSpecs() const { return variantSpecs_; }
+    const graphtools::Graph& regionGraph() const& { return record_ ? mappedGraph_ : owned_->graph; }
+    graphtools::Graph regionGraph() const&& { return record_ ? mappedGraph_ : owned_->graph; }
+    const GenotyperParameters& genotyperParameters() const& { return record_ ? record_->genotyper : owned_->genotyper; }
+    GenotyperParameters genotyperParameters() const&& { return record_ ? record_->genotyper : owned_->genotyper; }
+    bool isPrepared() const { return record_ != nullptr; }
+    graphtools::CatalogRange<VariantSpecification> variantSpecs() const;
 
     void addVariantSpecification(
         std::string id, VariantClassification classification, GenomicRegion referenceLocus,
         std::vector<graphtools::NodeId> nodes, boost::optional<graphtools::NodeId> optionalRefNode);
 
-    const VariantSpecification& getVariantSpecById(const std::string& variantSpecId) const;
+    VariantSpecification getVariantSpecById(const std::string& variantSpecId) const;
 
-    const NodeToRegionAssociation& referenceProjectionOfNodes() const { return referenceRegions_; }
+    graphtools::CatalogRange<std::pair<graphtools::NodeId, GenomicRegion>> referenceProjectionOfNodes() const;
+    MappedLocus freeze(graphtools::BlobBuilder& out) const;
 
     bool requiresGenomeWideDepth() const;
 
 private:
-    std::string locusId_;
-    ChromType typeOfChromLocusLocatedOn_;
-    std::vector<GenomicRegion> targetReadExtractionRegions_;
-    std::vector<GenomicRegion> offtargetReadExtractionRegions_;
-    graphtools::Graph regionGraph_;
-    std::vector<VariantSpecification> variantSpecs_;
-    NodeToRegionAssociation referenceRegions_;
-    GenotyperParameters parameters_;
+    friend class RegionCatalog;
+    struct Owned
+    {
+        std::string id;
+        ChromType chromosomeType;
+        std::vector<GenomicRegion> targets, offtargets;
+        graphtools::Graph graph;
+        std::vector<VariantSpecification> variants;
+        NodeToRegionAssociation projections;
+        GenotyperParameters genotyper;
+    };
+    Owned& writable();
+    std::shared_ptr<Owned> owned_;
+    graphtools::MappedBytes mapped_;
+    const MappedLocus* record_ = nullptr;
+    graphtools::Graph mappedGraph_;
 };
 
-using RegionCatalog = std::vector<LocusSpecification>;
+// The mapped mode keeps just a descriptor: no vector of locus/graph objects is
+// reconstructed. A small value handle is produced when a locus is visited.
+class RegionCatalog
+{
+public:
+    RegionCatalog() = default;
+    RegionCatalog(const RegionCatalog&) = default;
+    RegionCatalog(RegionCatalog&&) = default;
+    RegionCatalog& operator=(RegionCatalog other)
+    {
+        owned_.swap(other.owned_);
+        ownedIds_.swap(other.ownedIds_);
+        std::swap(mapped_, other.mapped_);
+        std::swap(loci_, other.loci_);
+        std::swap(ids_, other.ids_);
+        std::swap(intervals_, other.intervals_);
+        owner_.swap(other.owner_);
+        storage_.swap(other.storage_);
+        return *this;
+    }
+    RegionCatalog(std::initializer_list<LocusSpecification> loci)
+    {
+        for (const auto& locus : loci)
+            push_back(locus);
+    }
+    RegionCatalog(
+        graphtools::MappedBytes bytes, graphtools::Slice loci,
+        std::shared_ptr<const graphtools::KmerIndexArchive> owner, graphtools::Slice ids, graphtools::Slice intervals)
+        : mapped_(bytes)
+        , loci_(loci)
+        , ids_(ids)
+        , intervals_(intervals)
+        , owner_(std::move(owner))
+    {
+        mapped_.owner = owner_;
+        mapped_.array<MappedLocus>(loci_);
+    }
+    // A compact in-memory catalog: the frozen layout of a prepared catalog held
+    // in one buffer, without a k-mer archive. The catalog keeps the buffer
+    // alive. Locus handles carry a non-owning alias of it (no control block),
+    // so copying a handle on a hot path touches no shared reference count;
+    // handles must not outlive this catalog and its copies.
+    RegionCatalog(std::shared_ptr<const char> storage, size_t size, graphtools::Slice loci, graphtools::Slice ids,
+                  graphtools::Slice intervals)
+        : mapped_(storage.get(), size, std::shared_ptr<const void>(std::shared_ptr<const void>(), storage.get()))
+        , loci_(loci)
+        , ids_(ids)
+        , intervals_(intervals)
+        , storage_(std::move(storage))
+    {
+        mapped_.array<MappedLocus>(loci_);
+    }
+    size_t size() const { return mapped_.data ? loci_.count : owned_.size(); }
+    bool empty() const { return size() == 0; }
+    LocusSpecification operator[](size_t index) const
+    {
+        if (index >= size())
+            throw std::out_of_range("Catalog locus index");
+        return mapped_.data ? LocusSpecification(mapped_, mapped_.array<MappedLocus>(loci_) + index) : owned_[index];
+    }
+    auto begin() const -> graphtools::CatalogRange<LocusSpecification>::iterator { return range().begin(); }
+    auto end() const -> graphtools::CatalogRange<LocusSpecification>::iterator { return range().end(); }
+    void reserve(size_t size)
+    {
+        requireOwned();
+        owned_.reserve(size);
+        ownedIds_.reserve(size);
+    }
+    void push_back(LocusSpecification locus)
+    {
+        requireOwned();
+        owned_.push_back(std::move(locus));
+        // The shared locus backing owns its immutable ID, including across
+        // catalog copies and vector reallocations. Duplicate IDs keep the
+        // first index, matching prepared catalogs and BAM lookup semantics.
+        try
+        {
+            const auto id = owned_.back().locusId();
+            ownedIds_.emplace(absl::string_view(id.data(), id.size()), owned_.size() - 1);
+        }
+        catch (...)
+        {
+            owned_.pop_back();
+            throw;
+        }
+    }
+    void emplace_back(LocusSpecification locus) { push_back(std::move(locus)); }
+    void clear(unsigned workers);
+    graphtools::MappedBytes mappedBytes() const { return mapped_; }
+    graphtools::Slice preparedIntervals() const { return intervals_; }
+    size_t findLocusIndex(graphtools::TextView id) const
+    {
+        if (!mapped_.data)
+            return ownedIds_.at(absl::string_view(id.data(), id.size()));
+        if (!ids_.count || (ids_.count & (ids_.count - 1)))
+            throw std::runtime_error("Invalid mapped locus table");
+        const auto* table = mapped_.array<uint64_t>(ids_);
+        uint64_t bucket = graphtools::hashText(id) & (ids_.count - 1);
+        for (uint64_t probe = 0; probe < ids_.count; ++probe)
+        {
+            const auto slot = table[bucket];
+            if (!slot)
+                throw std::out_of_range("Unknown catalog locus");
+            if (slot > size())
+                throw std::runtime_error("Invalid mapped locus ID");
+            if (mapped_.text(mapped_.array<MappedLocus>(loci_)[slot - 1].id) == id)
+                return slot - 1;
+            bucket = (bucket + 1) & (ids_.count - 1);
+        }
+        throw std::runtime_error("Mapped locus table has no empty slot");
+    }
+    const std::shared_ptr<const graphtools::KmerIndexArchive>& archive() const { return owner_; }
+    size_t nodeCount(size_t locus) const
+    {
+        if (!mapped_.data)
+            return owned_.at(locus).regionGraph().numNodes();
+        const auto& record = mapped_.array<MappedLocus>(loci_)[locus];
+        return mapped_.array<graphtools::MappedGraph>(record.graph)->nodes.count;
+    }
+    boost::optional<GenomicRegion> referenceRegion(size_t locus, graphtools::NodeId node) const
+    {
+        if (mapped_.data)
+        {
+            const auto slice = mapped_.array<MappedLocus>(loci_)[locus].projections;
+            const auto* values = mapped_.array<MappedProjection>(slice);
+            for (uint64_t i = 0; i < slice.count; ++i)
+                if (values[i].node == node)
+                    return values[i].region;
+        }
+        else
+        {
+            const auto& projections = owned_.at(locus).owned_->projections;
+            const auto entry = projections.find(node);
+            if (entry != projections.end())
+                return entry->second;
+        }
+        return boost::none;
+    }
+
+private:
+    graphtools::CatalogRange<LocusSpecification> range() const
+    {
+        return { this, size(), [](const void* p, size_t i, const void*, size_t)
+                 { return (*static_cast<const RegionCatalog*>(p))[i]; } };
+    }
+    void requireOwned() const
+    {
+        if (mapped_.data)
+            throw std::logic_error("Prepared catalog is immutable");
+    }
+    std::vector<LocusSpecification> owned_;
+    absl::flat_hash_map<absl::string_view, size_t> ownedIds_;
+    graphtools::MappedBytes mapped_;
+    graphtools::Slice loci_ { 0, 0 };
+    graphtools::Slice ids_ { 0, 0 }, intervals_ { 0, 0 };
+    std::shared_ptr<const graphtools::KmerIndexArchive> owner_;
+    std::shared_ptr<const char> storage_;
+};
 
 }

@@ -20,6 +20,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: the reported version identifies the derivative release and its upstream base.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -28,6 +33,6 @@
 namespace ehunter
 {
 
-const std::string kProgramVersion = "ExpansionHunter v5.0.0";
+const std::string kProgramVersion = "NuExpansionHunter v1.0.0 (based on ExpansionHunter v5.0.0)";
 
 }

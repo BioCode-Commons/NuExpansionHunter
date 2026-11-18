@@ -19,6 +19,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: count tables support move construction and assignment.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -42,6 +47,7 @@ public:
     explicit CountTable(std::map<int32_t, int32_t> elementsToCounts)
         : elementsToCounts_(std::move(elementsToCounts)) {};
     CountTable(const CountTable& other) = default;
+    CountTable(CountTable&& other) = default;
 
     void clear() { elementsToCounts_.clear(); }
 
@@ -51,6 +57,7 @@ public:
     std::vector<int32_t> getElementsWithNonzeroCounts() const;
 
     CountTable& operator=(const CountTable& other);
+    CountTable& operator=(CountTable&& other);
     bool operator==(const CountTable& other) const { return elementsToCounts_ == other.elementsToCounts_; }
 
 private:

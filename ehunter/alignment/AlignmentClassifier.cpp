@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: repeat flanks are populated from graph neighbor ranges.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include <map>
 #include <string>
@@ -67,10 +72,12 @@ ostream& operator<<(ostream& os, const AlignmentType& read_class)
 RepeatAlignmentClassifier::RepeatAlignmentClassifier(const graphtools::Graph& graph, int32_t repeat_node_id)
     : repeat_node_id_(repeat_node_id)
 {
-    left_flank_node_ids_ = graph.predecessors(repeat_node_id_);
+    const auto predecessors = graph.predecessors(repeat_node_id_);
+    left_flank_node_ids_.insert(predecessors.begin(), predecessors.end());
     left_flank_node_ids_.erase(repeat_node_id_);
 
-    right_flank_node_ids_ = graph.successors(repeat_node_id_);
+    const auto successors = graph.successors(repeat_node_id_);
+    right_flank_node_ids_.insert(successors.begin(), successors.end());
     right_flank_node_ids_.erase(repeat_node_id_);
 }
 

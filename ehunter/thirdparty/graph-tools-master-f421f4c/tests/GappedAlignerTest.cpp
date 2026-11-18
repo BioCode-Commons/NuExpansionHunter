@@ -17,10 +17,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: tests cover locale snapshots and scalar uppercase-facet semantics.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphalign/GappedAligner.hh"
 
 #include "gtest/gtest.h"
+#include <locale>
+#include <memory>
+#include <utility>
 
 #include "graphalign/GraphAlignmentOperations.hh"
 #include "graphalign/LinearAlignment.hh"
@@ -33,6 +41,98 @@ using std::make_pair;
 using std::string;
 
 using namespace graphtools;
+
+namespace
+{
+class DistinctRangeUppercase : public std::ctype<char>
+{
+protected:
+    char do_toupper(char value) const override { return std::ctype<char>::do_toupper(value); }
+    const char* do_toupper(char* begin, const char* end) const override
+    {
+        while (begin != end)
+            *begin++ = 'N';
+        return end;
+    }
+};
+
+class RestoreLocale
+{
+public:
+    RestoreLocale() : previous_(std::locale()) { }
+    ~RestoreLocale() { std::locale::global(previous_); }
+private:
+    std::locale previous_;
+};
+
+class AllNUppercase : public std::ctype<char>
+{
+protected:
+    char do_toupper(char) const override { return 'N'; }
+};
+}
+
+TEST(SeedUppercase, PreservesSingleCharacterLocaleSemantics)
+{
+    RestoreLocale restore;
+    std::locale::global(std::locale(std::locale(), new DistinctRangeUppercase));
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    const auto result = aligner.align("acgtactg", selector);
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(expected, result);
+}
+
+TEST(SeedUppercase, UncachedSelectorObservesGlobalChangesAfterConstruction)
+{
+    RestoreLocale restore;
+    std::locale::global(std::locale::classic());
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(selector.seedSearchFacet(), nullptr);
+    EXPECT_EQ(aligner.align("acgtactg", selector), expected);
+
+    std::locale::global(std::locale(std::locale::classic(), new AllNUppercase));
+    EXPECT_TRUE(aligner.align("acgtactg", selector).empty());
+    std::locale::global(std::locale::classic());
+    EXPECT_EQ(aligner.align("acgtactg", selector), expected);
+}
+
+TEST(SeedUppercase, SnapshotRetainsCapturedCustomGlobalBehavior)
+{
+    RestoreLocale restore;
+    std::locale::global(std::locale(std::locale::classic(), new AllNUppercase));
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    AlignerSelector snapshot(AlignerType::DAG_ALIGNER);
+    {
+        const std::locale captured;
+        snapshot.setSeedSearchLocale(captured);
+    }
+    std::locale::global(std::locale::classic());
+    EXPECT_TRUE(aligner.align("acgtactg", snapshot).empty());
+
+    AlignerSelector fresh(AlignerType::DAG_ALIGNER);
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(aligner.align("acgtactg", fresh), expected);
+}
+
+TEST(SeedUppercase, SnapshotPreservesScalarRatherThanRangeFacetSemantics)
+{
+    Graph graph(1);
+    graph.setNodeSeq(0, "ACGTACTG");
+    GappedGraphAligner aligner(&graph, 3, 1, 0);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    selector.setSeedSearchLocale(std::locale(std::locale::classic(), new DistinctRangeUppercase));
+    const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
+    EXPECT_EQ(aligner.align("acgtactg", selector), expected);
+}
 
 TEST(DISABLED_ExtendingAlignmentSuffix, UniquelyMappingQuery_AlignmentExtended)
 {

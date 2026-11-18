@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: alignment intersection takes a path as its second operand and counts repeat visits without temporary lists.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -28,15 +33,17 @@
 namespace ehunter
 {
 
+// Intersects an alignment with a path. The second operand is a path, not an alignment: a step of the
+// canonical fold depends only on the running alignment and the path of the next alignment (K-21).
+// For a GraphAlignment a, intersecting with a.path() is v5.0.0's intersection with a, because every
+// alignment has one node alignment per path node.
 class GreedyAlignmentIntersector
 {
 public:
-    GreedyAlignmentIntersector(
-        const graphtools::GraphAlignment& firstAlignment, const graphtools::GraphAlignment& secondAlignment)
+    GreedyAlignmentIntersector(const graphtools::GraphAlignment& firstAlignment, const graphtools::Path& secondPath)
         : firstAlignment_(firstAlignment)
-        , secondAlignment_(secondAlignment)
         , firstPath_(firstAlignment.path())
-        , secondPath_(secondAlignment.path())
+        , secondPath_(secondPath)
     {
         initialize();
     }
@@ -55,7 +62,6 @@ private:
     boost::optional<graphtools::GraphAlignment> softclipFirstAlignmentToIntersection() const;
 
     const graphtools::GraphAlignment& firstAlignment_;
-    const graphtools::GraphAlignment& secondAlignment_;
     const graphtools::Path& firstPath_;
     const graphtools::Path& secondPath_;
 

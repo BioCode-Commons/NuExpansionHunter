@@ -18,8 +18,16 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: filtering compacts surviving read pairs in the flat alignment matrix.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "genotyping/AlignMatrixFiltering.hh"
+
+#include <algorithm>
+#include <utility>
 
 namespace ehunter
 {
@@ -66,24 +74,62 @@ void filter(AlignMatrix& aligns)
         return;
     }
 
-    for (int readIndex = aligns.numReads() - 1; readIndex != -1; --readIndex)
+    // Read pairs produce an even row count, but public remove() can leave an
+    // odd count in a release build. For odd counts, use v5.0.0's reverse
+    // traversal, including its handling of a surviving unpaired tail.
+    if (aligns.numReads() % 2 != 0)
     {
-        if (aligns.getBestAlign(readIndex).numIndels() == 0)
+        for (int readIndex = aligns.numReads() - 1; readIndex != -1; --readIndex)
+        {
+            if (aligns.getBestAlign(readIndex).numIndels() == 0)
+                continue;
+            if (readIndex % 2 == 0)
+            {
+                aligns.remove(readIndex + 1);
+                aligns.remove(readIndex);
+            }
+            else
+            {
+                aligns.remove(readIndex);
+                aligns.remove(readIndex - 1);
+                --readIndex;
+            }
+        }
+        return;
+    }
+
+    // Retain surviving pairs in their original order, compacting rows forward
+    // in place: a destination never passes its source.
+    int retained = 0;
+    size_t written = 0;
+    const int numReads = aligns.numReads();
+    for (int readIndex = 0; readIndex != numReads; readIndex += 2)
+    {
+        if (aligns.getBestAlign(readIndex).numIndels() != 0 || aligns.getBestAlign(readIndex + 1).numIndels() != 0)
         {
             continue;
         }
 
-        if (readIndex % 2 == 0)
-        {
-            aligns.remove(readIndex + 1);
-            aligns.remove(readIndex);
-        }
-        else
-        {
-            aligns.remove(readIndex);
-            aligns.remove(readIndex - 1);
-            --readIndex;
-        }
+        const uint32_t begin = aligns.rowBegin_[readIndex];
+        const uint32_t end = aligns.rowBegin_[readIndex + 2];
+        const uint32_t mateBegin = aligns.rowBegin_[readIndex + 1];
+        if (written != begin)
+            std::copy(aligns.cells_.begin() + begin, aligns.cells_.begin() + end, aligns.cells_.begin() + written);
+        aligns.rowBegin_[retained] = static_cast<uint32_t>(written);
+        aligns.rowBegin_[retained + 1] = static_cast<uint32_t>(written + (mateBegin - begin));
+        aligns.bestIndex_[retained] = aligns.bestIndex_[readIndex];
+        aligns.bestIndex_[retained + 1] = aligns.bestIndex_[readIndex + 1];
+        written += end - begin;
+        retained += 2;
+    }
+    aligns.cells_.erase(aligns.cells_.begin() + written, aligns.cells_.end());
+    aligns.bestIndex_.erase(aligns.bestIndex_.begin() + retained, aligns.bestIndex_.end());
+    if (retained == 0)
+        aligns.rowBegin_.clear();
+    else
+    {
+        aligns.rowBegin_[retained] = static_cast<uint32_t>(written);
+        aligns.rowBegin_.erase(aligns.rowBegin_.begin() + retained + 1, aligns.rowBegin_.end());
     }
 }
 

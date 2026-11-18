@@ -17,14 +17,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: consistency checks borrow string slices and alignment merging constructs one operation list.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphalign/LinearAlignmentOperations.hh"
 
+#include <algorithm>
 #include <iostream>
 #include <list>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include "graphalign/OperationOperations.hh"
 
@@ -34,6 +41,23 @@ using std::string;
 
 namespace graphtools
 {
+
+namespace
+{
+    boost::string_ref checkedSlice(const string& sequence, size_t position, size_t count)
+    {
+        if (position > sequence.size())
+        {
+            // Keep std::string::substr's exception type and message for the
+            // malformed ranges that can survive v5.0.0's uint32 span check.
+            sequence.substr(position, count);
+        }
+        const char* begin = sequence.data();
+        if (position != 0)
+            begin += position;
+        return boost::string_ref(begin, std::min(count, sequence.size() - position));
+    }
+}
 
 bool checkConsistency(const Alignment& alignment, const string& reference, const string& query)
 {
@@ -51,10 +75,10 @@ bool checkConsistency(const Alignment& alignment, const string& reference, const
 
     for (const auto& operation : alignment)
     {
-        const string query_piece = query.substr(query_pos, operation.queryLength());
-        const string reference_piece = reference.substr(ref_pos, operation.referenceLength());
+        const auto query_piece = checkedSlice(query, query_pos, operation.queryLength());
+        const auto reference_piece = checkedSlice(reference, ref_pos, operation.referenceLength());
 
-        if (!checkConsistency(operation, reference_piece, query_piece))
+        if (!detail::checkOperationConsistency(operation, reference_piece, query_piece))
         {
             return false;
         }
@@ -122,26 +146,23 @@ Alignment mergeAlignments(const Alignment& first_alignment, const Alignment& sec
         throw std::logic_error(msg.str());
     }
 
-    list<Operation> first_alignment_operations = first_alignment.operations();
-    list<Operation> second_alignment_operations = second_alignment.operations();
-
-    if (first_alignment_operations.back().type() == second_alignment_operations.front().type())
+    list<Operation> operations;
+    auto first_end = first_alignment.end();
+    auto second_begin = second_alignment.begin();
+    if (first_alignment.back().type() == second_alignment.front().type())
     {
-        const Operation last_operation_of_first_alignment = first_alignment_operations.back();
-        first_alignment_operations.pop_back();
-
-        const Operation first_operations_of_second_alignment = second_alignment_operations.front();
-        second_alignment_operations.pop_front();
-
-        uint32_t merged_operation_length
-            = last_operation_of_first_alignment.length() + first_operations_of_second_alignment.length();
-
-        first_alignment_operations.emplace_back(last_operation_of_first_alignment.type(), merged_operation_length);
+        --first_end;
+        operations.insert(operations.end(), first_alignment.begin(), first_end);
+        const uint32_t merged_length = first_end->length() + second_begin->length();
+        operations.emplace_back(first_end->type(), merged_length);
+        ++second_begin;
     }
-
-    first_alignment_operations.splice(first_alignment_operations.end(), second_alignment_operations);
-
-    return Alignment(first_alignment.referenceStart(), first_alignment_operations);
+    else
+    {
+        operations.insert(operations.end(), first_alignment.begin(), first_end);
+    }
+    operations.insert(operations.end(), second_begin, second_alignment.end());
+    return Alignment(first_alignment.referenceStart(), std::move(operations));
 }
 
 int32_t scoreAlignment(const Alignment& alignment, int32_t match_score, int32_t mismatch_score, int32_t gap_score)

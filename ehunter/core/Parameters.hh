@@ -18,9 +18,17 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: parameters include codec thread budgets, BAM queue limits, and prepared catalog settings.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
+#include "graphalign/KmerIndex.hh"
 
+#include <algorithm>
+#include <cstddef>
 #include <fstream>
 #include <memory>
 #include <sstream>
@@ -112,6 +120,7 @@ private:
 class HeuristicParameters
 {
 public:
+    std::shared_ptr<const graphtools::KmerIndexArchive> catalogIndexes;
     HeuristicParameters(
         int regionExtensionLength, int qualityCutoffForGoodBaseCall, bool skipUnaligned,
         const graphtools::AlignerType alignerType, int kmerLenForAlignment = 14, int paddingLength = 10,
@@ -170,6 +179,9 @@ public:
         InputPaths inputPaths, OutputPaths outputPaths, SampleParameters sample, HeuristicParameters heuristics,
         AnalysisMode analysisMode, LogLevel logLevel, const int initThreadCount, const bool initDisableBamletOutput)
         : threadCount(initThreadCount)
+        , decodeThreadCount(std::min(initThreadCount, analysisMode == AnalysisMode::kStreaming ? std::max(4, initThreadCount / 4) : 12))
+        , encodeThreadCount(analysisMode == AnalysisMode::kStreaming ? std::min(initThreadCount, std::max(2, initThreadCount / 4)) : initThreadCount)
+        , bamletQueueBytes(std::size_t(initThreadCount >= 16 ? 16 : 8) * 1024 * 1024)
         , disableBamletOutput(initDisableBamletOutput)
         , inputPaths_(std::move(inputPaths))
         , outputPaths_(std::move(outputPaths))
@@ -187,8 +199,17 @@ public:
     AnalysisMode analysisMode() const { return analysisMode_; }
     LogLevel logLevel() const { return logLevel_; }
 
+    // Compute workers; I/O pools and coordinator threads are additional.
     int threadCount;
+    // Larger streaming runs reserve one codec worker per four compute workers.
+    int decodeThreadCount;
+    int encodeThreadCount;
+    // Queued BAM records only: automatic streaming budgets are 8 or 16 MiB.
+    // Explicit 0 is unbounded. This is not a process RAM limit.
+    std::size_t bamletQueueBytes;
     bool disableBamletOutput;
+    std::string catalogCache;
+    bool prepareCatalogCache = false;
 
 private:
     InputPaths inputPaths_;

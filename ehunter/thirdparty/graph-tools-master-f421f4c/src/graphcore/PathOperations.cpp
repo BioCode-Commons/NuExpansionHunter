@@ -18,6 +18,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: path extension borrows graph neighbors and uses SIMD matching runs.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphcore/PathOperations.hh"
 
@@ -53,7 +58,7 @@ list<Path> extendPathStart(const Path& path, int32_t extension_len)
     }
     else
     {
-        const set<NodeId> pred_node_ids = path.graphRawPtr()->predecessors(start_node_id);
+        const auto pred_node_ids = path.graphRawPtr()->predecessorsBorrowed(start_node_id);
         const int32_t leftover_length = extension_len - path.startPosition();
         for (NodeId pred_node_id : pred_node_ids)
         {
@@ -85,7 +90,7 @@ list<Path> extendPathEnd(const Path& path, int32_t extension_len)
     }
     else
     {
-        const set<NodeId> succ_node_ids = path.graphRawPtr()->successors(end_node_id);
+        const auto succ_node_ids = path.graphRawPtr()->successorsBorrowed(end_node_id);
         const int32_t leftover_length = extension_len - max_extension_at_end_node;
         for (NodeId succ_node_id : succ_node_ids)
         {
@@ -112,7 +117,7 @@ list<Path> extendPath(const Path& path, int32_t start_extension_len, int32_t end
     return extended_paths;
 }
 
-Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
+Path extendPathEndMatching(const Path& path, const std::string& query, size_t qpos)
 {
     const Graph& graph = *path.graphRawPtr();
     size_t pos_in_query = qpos + path.length();
@@ -125,19 +130,21 @@ Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
     while (moved)
     {
         moved = false;
-        const std::string& node_sequence = graph.nodeSeq(node_in_graph);
+        const auto node_sequence = graph.nodeSeq(node_in_graph);
 
-        while (pos_in_query < query.size() && pos_in_node < node_sequence.size()
-               && checkIfReferenceBaseMatchesQueryBase(node_sequence.at(pos_in_node), query.at(pos_in_query)))
+        if (pos_in_query < query.size() && pos_in_node < node_sequence.size())
         {
-            moved = true;
-            ++pos_in_node;
-            ++pos_in_query;
+            const size_t limit = std::min(query.size() - pos_in_query, node_sequence.size() - pos_in_node);
+            const size_t matched = matchingBaseRun<false>(node_sequence.data() + pos_in_node,
+                                                          query.data() + pos_in_query, limit);
+            pos_in_node += matched;
+            pos_in_query += matched;
+            moved = matched != 0;
         }
 
         if (pos_in_node >= node_sequence.size())
         {
-            const auto& successors = graph.successors(node_in_graph);
+            const auto& successors = graph.successorsBorrowed(node_in_graph);
 
             size_t num_longest_matches = 0;
             size_t current_longest_match = 0;
@@ -151,14 +158,10 @@ Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
 
             for (auto successor : successors)
             {
-                size_t pos_in_successor = 0;
-                const std::string& successor_sequence = graph.nodeSeq(successor);
-                while (pos_in_successor < successor_min_size && pos_in_query + pos_in_successor < query.size()
-                       && checkIfReferenceBaseMatchesQueryBase(
-                              successor_sequence.at(pos_in_successor), query[pos_in_query + pos_in_successor]))
-                {
-                    ++pos_in_successor;
-                }
+                const auto successor_sequence = graph.nodeSeq(successor);
+                const size_t limit = pos_in_query < query.size() ? std::min(successor_min_size, query.size() - pos_in_query) : 0;
+                const size_t pos_in_successor = limit
+                    ? matchingBaseRun<false>(successor_sequence.data(), query.data() + pos_in_query, limit) : 0;
 
                 if (pos_in_successor > current_longest_match)
                 {
@@ -184,10 +187,10 @@ Path extendPathEndMatching(Path path, const std::string& query, size_t qpos)
             moved = true;
         }
     }
-    return Path{ &graph, path.startPosition(), nodes, static_cast<int32_t>(pos_in_node) };
+    return Path{ &graph, path.startPosition(), std::move(nodes), static_cast<int32_t>(pos_in_node) };
 }
 
-Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in_query)
+Path extendPathStartMatching(const Path& path, const std::string& query, size_t& pos_in_query)
 {
     const Graph& graph = *path.graphRawPtr();
     NodeId node_in_graph = path.nodeIds().front();
@@ -200,19 +203,25 @@ Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in
     {
         moved = false;
 
-        const std::string& node_sequence = graph.nodeSeq(node_in_graph);
+        const auto node_sequence = graph.nodeSeq(node_in_graph);
 
-        while (pos_in_query > 0 && pos_in_node > 0
-               && checkIfReferenceBaseMatchesQueryBase(node_sequence.at(pos_in_node - 1), query.at(pos_in_query - 1)))
+        if (pos_in_query && pos_in_node)
         {
-            moved = true;
-            --pos_in_node;
-            --pos_in_query;
+            // Public callers can pass an invalid starting position, or mutate
+            // the graph after constructing the path. Preserve checked access.
+            if (pos_in_node > node_sequence.size()) node_sequence.at(pos_in_node - 1);
+            if (pos_in_query > query.size()) query.at(pos_in_query - 1);
+            const size_t limit = std::min(pos_in_node, pos_in_query);
+            const size_t matched = matchingBaseRun<true>(node_sequence.data() + pos_in_node - limit,
+                                                         query.data() + pos_in_query - limit, limit);
+            pos_in_node -= matched;
+            pos_in_query -= matched;
+            moved = matched != 0;
         }
 
         if (pos_in_node == 0)
         {
-            const auto& predecessors = graph.predecessors(node_in_graph);
+            const auto& predecessors = graph.predecessorsBorrowed(node_in_graph);
 
             size_t num_longest_matches = 0;
             size_t current_longest_match = 0;
@@ -225,17 +234,12 @@ Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in
             }
             for (auto predecessor : predecessors)
             {
-                const std::string& predecessor_sequence = graph.nodeSeq(predecessor);
-                size_t pos_in_predecessor = predecessor_sequence.size();
-                size_t match_length = 0;
-                while (pos_in_predecessor > (predecessor_sequence.size() - predecessor_min_size)
-                       && pos_in_query - match_length > 0
-                       && checkIfReferenceBaseMatchesQueryBase(
-                              predecessor_sequence.at(pos_in_predecessor - 1), query[pos_in_query - match_length - 1]))
-                {
-                    --pos_in_predecessor;
-                    ++match_length;
-                }
+                const auto predecessor_sequence = graph.nodeSeq(predecessor);
+                const size_t limit = std::min(predecessor_min_size, pos_in_query);
+                if (limit && pos_in_query > query.size()) query.at(pos_in_query - 1);
+                const size_t match_length = limit
+                    ? matchingBaseRun<true>(predecessor_sequence.data() + predecessor_sequence.size() - limit,
+                                            query.data() + pos_in_query - limit, limit) : 0;
 
                 if (match_length > current_longest_match)
                 {
@@ -263,12 +267,15 @@ Path extendPathStartMatching(Path path, const std::string& query, size_t& pos_in
         }
     }
 
-    return Path{ &graph, static_cast<int32_t>(pos_in_node), nodes, path.endPosition() };
+    return Path{ &graph, static_cast<int32_t>(pos_in_node), std::move(nodes), path.endPosition() };
 }
 
-Path extendPathMatching(Path path, const std::string& query, size_t& pos_in_query)
+Path extendPathMatching(const Path& path, const std::string& query, size_t& pos_in_query)
 {
-    return extendPathStartMatching(extendPathEndMatching(std::move(path), query, pos_in_query), query, pos_in_query);
+    // Extending left from the first query base cannot add a base or a node.
+    auto extended = extendPathEndMatching(path, query, pos_in_query);
+    if (pos_in_query == 0) return extended;
+    return extendPathStartMatching(extended, query, pos_in_query);
 }
 
 vector<string> splitSequenceByPath(const Path& path, const string& sequence)
@@ -512,7 +519,7 @@ Path mergePaths(Path const& p1, Path const& p2)
         end = p2.endPosition();
     }
     assert(start >= 0 && end >= 0);
-    return Path(p1.graphRawPtr(), start, nodes, end);
+    return Path(p1.graphRawPtr(), start, std::move(nodes), end);
 }
 
 /**
@@ -748,7 +755,7 @@ bool checkIfBookended(const Path& first_path, const Path& second_path)
     }
 
     const Graph& graph = *first_path.graphRawPtr();
-    const auto& successors = graph.successors(first_path_end_node);
+    const auto& successors = graph.successorsBorrowed(first_path_end_node);
     const bool are_ends_on_neighboring_nodes = successors.find(second_path_start_node) != successors.end();
     const auto first_paths_last_node_length = static_cast<int>(graph.nodeSeq(first_path_end_node).length());
     const bool is_first_path_ends_at_node_end = first_path.endPosition() == first_paths_last_node_length;
@@ -789,6 +796,6 @@ Path concatenatePaths(const Path& first_path, const Path& second_path)
         merged_node_ids.insert(merged_node_ids.end(), second_path.nodeIds().begin(), second_path.nodeIds().end());
     }
 
-    return Path(first_path.graphRawPtr(), first_path.startPosition(), merged_node_ids, second_path.endPosition());
+    return Path(first_path.graphRawPtr(), first_path.startPosition(), std::move(merged_node_ids), second_path.endPosition());
 }
 }

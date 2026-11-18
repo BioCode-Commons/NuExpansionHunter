@@ -17,6 +17,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: tests cover copied and moved alignment inputs and validation.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphalign/GraphAlignment.hh"
 
@@ -74,6 +79,25 @@ TEST(InitializingGraphAlignment, IncompatiblePath_ExceptionThrown)
         vector<Alignment> alignments = { Alignment(2, "2M"), Alignment(1, "4M"), Alignment(0, "3M") };
         EXPECT_ANY_THROW(GraphAlignment(path, alignments));
     }
+}
+
+TEST(InitializingGraphAlignment, MovedAndCopiedInputsPreserveContentAndValidation)
+{
+    Graph graph = makeStrGraph("AAAA", "CG", "TTTT");
+    Path path(&graph, 1, { 0, 1, 1, 2 }, 3);
+    vector<Alignment> alignments = {
+        Alignment(1, "1S1M1X1M"), Alignment(0, "2M"), Alignment(0, "1M1I1M"), Alignment(0, "1D2M1S")
+    };
+    const GraphAlignment copied(path, alignments);
+    EXPECT_EQ(copied.path(), path);
+    EXPECT_EQ(copied.alignments(), alignments);
+    const GraphAlignment moved(std::move(path), std::move(alignments));
+    EXPECT_EQ(moved, copied);
+    EXPECT_EQ(moved.generateCigar(), "0[1S1M1X1M]1[2M]1[1M1I1M]2[1D2M1S]");
+
+    Path invalidPath(&graph, 1, { 0 }, 3);
+    vector<Alignment> invalidAlignments { Alignment(1, "3M") };
+    EXPECT_THROW(GraphAlignment(std::move(invalidPath), std::move(invalidAlignments)), std::logic_error);
 }
 
 TEST(GettingNumMatchesInGraphAlignment, TypicalGraphAlignment_GotNumMatches)

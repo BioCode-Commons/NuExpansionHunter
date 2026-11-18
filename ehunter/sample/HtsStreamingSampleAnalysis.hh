@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: streaming analysis accepts a separate input-decompression worker count.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -37,6 +42,6 @@ namespace ehunter
 
 SampleFindings htsStreamingSampleAnalysis(
     const InputPaths& inputPaths, Sex sampleSex, const HeuristicParameters& heuristicParams, const int threadCount,
-    const RegionCatalog& regionCatalog, locus::AlignWriterPtr alignmentWriter);
+    const RegionCatalog& regionCatalog, locus::AlignWriterPtr alignmentWriter, unsigned decodeThreadCount);
 
 }

@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: read decoding exposes packed-array inputs and SIMD decoding with a scalar reference.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -40,6 +45,11 @@ namespace htshelpers
 LinearAlignmentStats decodeAlignmentStats(bam1_t* htsAlignPtr);
 bool isPrimaryAlignment(bam1_t* htsAlignPtr);
 Read decodeRead(bam1_t* htsAlignPtr);
+std::string decodeReadBases(int32_t readLength, const uint8_t* packedSequence, const uint8_t* qualities);
+// v5.0.0's per-base decoding loop, the reference of decodeReadBases.
+std::string decodeReadBasesReference(int32_t readLength, const uint8_t* packedSequence, const uint8_t* qualities);
+Read decodeReadParts(const char* qname, uint32_t samFlag, int32_t readLength,
+    const uint8_t* packedSequence, const uint8_t* qualities);
 ReferenceContigInfo decodeContigInfo(bam_hdr_t* htsHeaderPtr);
 
 } // namespace htshelpers

@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: tests cover confidence-interval boundaries and parallel-grid equivalence.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "genotyping/StrGenotyper.hh"
 
@@ -28,8 +33,11 @@
 #include "graphalign/GraphAlignment.hh"
 #include "graphalign/GraphAlignmentOperations.hh"
 
+#include "core/ThreadPool.hh"
 #include "genotyping/AlignMatrix.hh"
+#include "genotyping/OneAlleleStrGenotyper.hh"
 #include "genotyping/RepeatGenotype.hh"
+#include "genotyping/TwoAlleleStrGenotyper.hh"
 #include "io/GraphBlueprint.hh"
 #include "io/RegionGraph.hh"
 
@@ -84,4 +92,75 @@ TEST(GenotypingStrWithTwoAlleles, TypicalReads_Computed)
     expectedGt.setShortAlleleSizeInUnitsCi(2, 17);
     expectedGt.setLongAlleleSizeInUnitsCi(2, 73);
     EXPECT_EQ(gt, expectedGt);
+}
+
+TEST(StrGenotypeConfidenceIntervals, EmptyEvidencePreservesTiesAndWidthLimit)
+{
+    AlignMatrix alignMatrix(1);
+    FragLogliks logliks(1, 8, 20, &alignMatrix);
+    OneAlleleGenotyper oneAllele(1, {}, &logliks);
+    TwoAlleleGenotyper twoAlleles(1, 20, {}, &logliks);
+
+    // Every valid genotype has likelihood zero. Expansion starts at the zero
+    // boundary and ends at the width limit before the 95% interval is chosen.
+    RepeatGenotype expectedOne(1, { 0 });
+    expectedOne.setShortAlleleSizeInUnitsCi(0, 714);
+    EXPECT_EQ(oneAllele.genotype({ 0 }), expectedOne);
+
+    RepeatGenotype expectedTwo(1, { 0, 0 });
+    expectedTwo.setShortAlleleSizeInUnitsCi(0, 714);
+    expectedTwo.setLongAlleleSizeInUnitsCi(0, 714);
+    EXPECT_EQ(twoAlleles.genotype({ 0 }), expectedTwo);
+}
+
+TEST(StrGenotypeConfidenceIntervals, ExpansionFromZeroPreservesGenotypesAndIntervals)
+{
+    Graph graph = makeRegionGraph(decodeFeaturesFromRegex("ATTCGA(C)*ATGTCG"));
+    AlignMatrix alignMatrix(1);
+    GraphAlignment mate = decodeGraphAlignment(0, "0[6M]", &graph);
+    alignMatrix.add(decodeGraphAlignment(3, "0[3M]1[1M]1[1M]2[4M]", &graph), mate);
+    alignMatrix.add(decodeGraphAlignment(3, "0[3M]1[1M]1[1M]", &graph), mate);
+    alignMatrix.add(decodeGraphAlignment(0, "1[1M]1[1M]1[1M]2[4M]", &graph), mate);
+    alignMatrix.add(mate, decodeGraphAlignment(0, "1[1M]1[1M]1[1M]1[1M]", &graph));
+
+    FragLogliks logliks(1, 8, 20, &alignMatrix);
+    vector<double> topFragLogliks;
+    for (int fragIndex = 0; fragIndex != logliks.numFrags(); ++fragIndex)
+    {
+        topFragLogliks.push_back(logliks.getLoglik(fragIndex, 0));
+    }
+
+    OneAlleleGenotyper oneAllele(1, topFragLogliks, &logliks);
+    TwoAlleleGenotyper twoAlleles(1, 20, topFragLogliks, &logliks);
+
+    // The haploid search discovers a better genotype while expanding its CI;
+    // the diploid search retains the genotype selected from the candidate set.
+    RepeatGenotype expectedOne(1, { 2 });
+    expectedOne.setShortAlleleSizeInUnitsCi(0, 26);
+    EXPECT_EQ(oneAllele.genotype({ 0 }), expectedOne);
+
+    RepeatGenotype expectedTwo(1, { 0, 0 });
+    expectedTwo.setShortAlleleSizeInUnitsCi(0, 28);
+    expectedTwo.setLongAlleleSizeInUnitsCi(0, 83);
+    EXPECT_EQ(twoAlleles.genotype({ 0 }), expectedTwo);
+}
+
+TEST(GenotypingStrWithTwoAlleles, ParallelGridPreservesScalarGenotypeAndConfidenceIntervals)
+{
+    Graph graph = makeRegionGraph(decodeFeaturesFromRegex("ATTCGA(C)*ATGTCG"));
+    AlignMatrix aligns(1);
+    const auto mate = decodeGraphAlignment(0, "0[6M]", &graph);
+    const auto shortRead = decodeGraphAlignment(3, "0[3M]1[1M]1[1M]2[4M]", &graph);
+    const auto longRead = decodeGraphAlignment(0, "1[1M]1[1M]1[1M]1[1M]", &graph);
+    for (int i = 0; i < 256; ++i)
+        aligns.add(i % 3 ? shortRead : longRead, mate);
+    FragLogliks serialLikelihoods(1, 8, 20, &aligns), parallelLikelihoods(1, 8, 20, &aligns);
+    const auto top = serialLikelihoods.forAllele(0);
+    TwoAlleleGenotyper serial(1, 20, top, &serialLikelihoods);
+    TwoAlleleGenotyper parallel(1, 20, top, &parallelLikelihoods);
+    std::unordered_set<int> candidates;
+    for (int size = -2; size <= 32; ++size)
+        candidates.insert(size);
+    ctpl::thread_pool helpers(3);
+    EXPECT_EQ(serial.genotype(candidates), parallel.genotype(candidates, &helpers));
 }

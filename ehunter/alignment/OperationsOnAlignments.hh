@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: canonical alignment supports skipping repeated unchanged intersections and an explicit reference fold.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #pragma once
 
@@ -48,10 +53,12 @@ int getNumNonrepeatMatchesUpstream(graphtools::NodeId nodeId, graphtools::GraphA
 int getNumNonrepeatMatchesDownstream(graphtools::NodeId nodeId, graphtools::GraphAlignment alignment);
 
 int scoreAlignmentToNonloopNodes(
-    graphtools::GraphAlignment alignment, LinearAlignmentParameters parameters = LinearAlignmentParameters());
+    const graphtools::GraphAlignment& alignment, LinearAlignmentParameters parameters = LinearAlignmentParameters());
 
 int countFullOverlaps(graphtools::NodeId nodeId, graphtools::GraphAlignment alignment);
 
 graphtools::GraphAlignment computeCanonicalAlignment(const std::list<graphtools::GraphAlignment>& alignments);
+// ExpansionHunter v5.0.0's fold, which runs every step; the reference of computeCanonicalAlignment.
+graphtools::GraphAlignment computeCanonicalAlignmentReference(const std::list<graphtools::GraphAlignment>& alignments);
 
 }

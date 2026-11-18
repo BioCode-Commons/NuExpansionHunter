@@ -19,6 +19,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: tests cover moved count tables and source reuse.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "core/CountTable.hh"
 
@@ -77,4 +82,30 @@ TEST(TruncatingCounts, TypicalCountTables_CountsTruncated)
 
         EXPECT_EQ(expectedCountTable, collapseTopElements(countTable, 3));
     }
+}
+
+TEST(MovingCountTable, PreservesTargetAndAllowsSourceReuse)
+{
+    const CountTable expected({ { -2, 3 }, { 7, 9 } });
+    CountTable source = expected;
+    CountTable target(std::move(source));
+    EXPECT_EQ(expected, target);
+    source.clear();
+    source.incrementCountOf(11);
+    EXPECT_EQ(1, source.countOf(11));
+    CountTable assigned(std::map<int32_t, int32_t> { { 100, 2 } });
+    assigned = std::move(target);
+    EXPECT_EQ(expected, assigned);
+    target.clear();
+    target.setCountOf(17, 4);
+    EXPECT_EQ(4, target.countOf(17));
+}
+
+TEST(MovingCountTable, SelfMovePreservesTheTable)
+{
+    CountTable table({ { 1, 3 }, { 8, 7 } });
+    const CountTable expected = table;
+    CountTable& alias = table;
+    table = std::move(alias);
+    EXPECT_EQ(expected, table);
 }

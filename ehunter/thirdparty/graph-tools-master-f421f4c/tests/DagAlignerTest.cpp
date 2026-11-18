@@ -17,10 +17,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: tests compare SIMD recurrences, score limits, and matrix reuse with scalar behavior.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphalign/DagAlignerAffine.hh"
+#include "graphalign/dagAligner/BaseMatchingPenaltyMatrix.hh"
 
 #include "gtest/gtest.h"
+
+#include <random>
+#include <vector>
 
 using std::string;
 
@@ -772,4 +781,315 @@ TEST(RepeatExpansion, two_repeats)
 
     EXPECT_EQ(32, bestScore);
     EXPECT_EQ("6[1=]7[3=]8[3=]5[1D1=]", toString(cigars.at(0)));
+}
+
+namespace
+{
+template <bool penalizeMove> void checkSinglePredecessorRecurrence()
+{
+    const FixedPenaltyMatrix<> penalties(5, -4);
+    AffineAlignMatrix<FixedPenaltyMatrix<>, penalizeMove> reference(penalties, -3, -1);
+    AffineAlignMatrixVectorized<FixedPenaltyMatrix<>, penalizeMove> optimized(penalties, -3, -1);
+    const string target = "ACGTNACGT";
+    // Single predecessor rows before and after a join, including a second root.
+    const EdgeMap edges(
+        { 0, 0, 1, 1, 2, 2, 3, 4, 4 }, { 0, 1, 2, 3, 4, 6, 7, 8, 10, 11 },
+        { -1, 0, -1, 2, 1, 3, 4, 4, 5, 6, 7 });
+    for (int qLen : { 1, 15, 16, 17, 63, 64, 65, 129, 2, 32 })
+    {
+        string query;
+        for (int q = 0; q < qLen; ++q)
+        {
+            query += "ANTGXC"[(q * 7 + qLen) % 6];
+        }
+        reference.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        optimized.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        // The public dump excludes padding and compares every V score.
+        EXPECT_EQ(toString(reference), toString(optimized));
+        for (int t = -1; t < int(target.size()); ++t)
+        {
+            for (int q = -1; q < qLen; ++q)
+            {
+                EXPECT_EQ(reference.isInsertion(q, t), optimized.isInsertion(q, t));
+                if (t < 0)
+                {
+                    continue;
+                }
+                for (auto p = edges.prevNodesBegin(t); p != edges.prevNodesEnd(t); ++p)
+                {
+                    EXPECT_EQ(reference.isDeletion(q, t, *p), optimized.isDeletion(q, t, *p));
+                    EXPECT_EQ(reference.isMatch(q, t, *p), optimized.isMatch(q, t, *p));
+                    EXPECT_EQ(reference.isMismatch(q, t, *p), optimized.isMismatch(q, t, *p));
+                }
+            }
+        }
+    }
+}
+template <bool penalizeMove> void checkScoreLimitRecurrence()
+{
+    const string target = "ACGTNACGT";
+    const std::vector<int> nodes = { 0, 0, 1, 1, 2, 2, 3, 4, 4 };
+    // Duplicate each edge to force the general multiple-predecessor recurrence.
+    // Max is idempotent, so this must retain every score and traceback predicate.
+    // The disconnected row also exercises the zero-predecessor fallback.
+    const std::vector<std::size_t> index = { 0, 1, 2, 3, 4, 6, 6, 7, 9, 10 };
+    const std::vector<int> predecessors = { -1, 0, -1, 2, 1, 3, 4, 5, 6, 7 };
+    std::vector<std::size_t> duplicateIndex;
+    std::vector<int> duplicatePredecessors;
+    for (auto i : index)
+    {
+        duplicateIndex.push_back(i * 2);
+    }
+    for (auto predecessor : predecessors)
+    {
+        duplicatePredecessors.push_back(predecessor);
+        duplicatePredecessors.push_back(predecessor);
+    }
+    const EdgeMap edges(nodes, index, predecessors);
+    const EdgeMap duplicateEdges(nodes, duplicateIndex, duplicatePredecessors);
+    const Score settings[][4] = { { 5, -4, -3, -1 }, { 0, 0, 0, 0 }, { 2, -2, 2, 1 },
+                                 { 32767, -32768, 32767, 32767 }, { -32768, 32767, -32768, -32768 },
+                                 { 30000, -30000, 30000, -30000 }, { 1, -1, -32768, -1 }, { -1, 1, 32767, 1 } };
+    for (const auto& scores : settings)
+    {
+        const FixedPenaltyMatrix<> penalties(scores[0], scores[1]);
+        AffineAlignMatrixVectorized<FixedPenaltyMatrix<>, penalizeMove> optimized(penalties, scores[2], scores[3]);
+        AffineAlignMatrixVectorized<FixedPenaltyMatrix<>, penalizeMove> reference(penalties, scores[2], scores[3]);
+        for (int qLen : { 1, 15, 16, 17, 63, 64, 65, 129, 2, 32 })
+        {
+            string query;
+            for (int q = 0; q < qLen; ++q)
+            {
+                query += "ANTGXC"[(q * 7 + qLen) % 6];
+            }
+            reference.init(query.begin(), query.end(), target.begin(), target.end(), duplicateEdges);
+            optimized.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+            EXPECT_EQ(toString(reference), toString(optimized));
+            for (int t = -1; t < int(target.size()); ++t)
+            {
+                for (int q = -1; q < qLen; ++q)
+                {
+                    EXPECT_EQ(reference.isInsertion(q, t), optimized.isInsertion(q, t));
+                    if (t < 0)
+                    {
+                        continue;
+                    }
+                    for (auto p = edges.prevNodesBegin(t); p != edges.prevNodesEnd(t); ++p)
+                    {
+                        EXPECT_EQ(reference.isDeletion(q, t, *p), optimized.isDeletion(q, t, *p));
+                        EXPECT_EQ(reference.isMatch(q, t, *p), optimized.isMatch(q, t, *p));
+                        EXPECT_EQ(reference.isMismatch(q, t, *p), optimized.isMismatch(q, t, *p));
+                    }
+                }
+            }
+        }
+    }
+}
+} // namespace
+
+TEST(AffineAlignmentMatrix, SinglePredecessorRowsMatchScalarRecurrence)
+{
+    checkSinglePredecessorRecurrence<true>();
+    checkSinglePredecessorRecurrence<false>();
+}
+
+// Kernel K-01 against the scalar matrix: the default gap scores (-8, -2) select the vector insertion
+// blocks (AVX-512BW, AVX2 or NEON, whichever the CPU has), which the -3/-1 comparisons above never reach.
+template <bool penalizeMove> void checkVectorInsertionScan()
+{
+    const FixedPenaltyMatrix<> penalties(5, -4);
+    AffineAlignMatrix<FixedPenaltyMatrix<>, penalizeMove> reference(penalties, -8, -2);
+    AffineAlignMatrixVectorized<FixedPenaltyMatrix<>, penalizeMove> optimized(penalties, -8, -2);
+    const string target = "ACGTNACGTTTTTTTTTTTTACGTACGTAAAAAAAAAACCCCCC";
+    const EdgeMap edges(
+        { 0, 0, 1, 1, 2, 2, 3, 4, 4 }, { 0, 1, 2, 3, 4, 6, 7, 8, 10, 11 },
+        { -1, 0, -1, 2, 1, 3, 4, 4, 5, 6, 7 });
+    const EdgeMap chain({ { -1, 0 }, { int(target.size()), int(target.size()) } }, { 0 });
+    for (const EdgeMap* map : { &edges, &chain })
+    {
+        const string rows = map == &edges ? target.substr(0, 9) : target;
+        for (int qLen : { 15, 16, 17, 31, 32, 33, 48, 63, 64, 65, 96, 127, 128, 129, 200 })
+        {
+            string query;
+            for (int q = 0; q < qLen; ++q)
+                query += "ACGTTTTTTGA"[(q * 5 + qLen) % 11];
+            reference.init(query.begin(), query.end(), rows.begin(), rows.end(), *map);
+            optimized.init(query.begin(), query.end(), rows.begin(), rows.end(), *map);
+            EXPECT_EQ(toString(reference), toString(optimized)) << qLen;
+            for (int t = -1; t < int(rows.size()); ++t)
+                for (int q = -1; q < qLen; ++q)
+                    ASSERT_EQ(reference.isInsertion(q, t), optimized.isInsertion(q, t)) << qLen << " " << q << " " << t;
+        }
+    }
+}
+
+TEST(AffineAlignmentMatrix, VectorInsertionScanMatchesScalarMatrixWithDefaultGaps)
+{
+    checkVectorInsertionScan<true>();
+    checkVectorInsertionScan<false>();
+}
+
+TEST(AffineAlignmentMatrix, SinglePredecessorMatchesGeneralRecurrenceAtScoreLimits)
+{
+    checkScoreLimitRecurrence<true>();
+    checkScoreLimitRecurrence<false>();
+}
+
+namespace
+{
+template <bool penalizeMove> void checkReusedTargetPenaltyProfiles()
+{
+    const BaseMatchingPenaltyMatrix penalties(5, -4);
+    AffineAlignMatrix<BaseMatchingPenaltyMatrix, penalizeMove> reference(penalties, -3, -1);
+    AffineAlignMatrixVectorized<BaseMatchingPenaltyMatrix, penalizeMove> optimized(penalties, -3, -1);
+    const std::vector<string> targets = { "ACGTXBDHKMNRSVWY", "A", "CGTXBDHKMNRSVWY", "CGTXBDHKMNRSVWY",
+                                         "NNNNN", "acgt", "Y", "ACGTXBDHKMNRSVWYACGT", "X", "ACACAC" };
+    const int queryLengths[] = { 16, 48, 32, 48, 17, 16, 31, 129, 2, 7 };
+    for (std::size_t iteration = 0; iteration < targets.size(); ++iteration)
+    {
+        const auto& target = targets[iteration];
+        const int qLen = queryLengths[iteration];
+        string query(qLen, 'A');
+        for (int q = 0; q < qLen; ++q) query[q] = "ANTGXacgt"[(q + iteration) % 9];
+        const EdgeMap edges({ { int(target.size()), int(target.size()) } }, { 0 });
+        // The scalar recurrence computes penalties directly, without profiles.
+        reference.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        optimized.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        EXPECT_EQ(toString(reference), toString(optimized));
+        Score expectedScore = 0, actualScore = 0;
+        const auto expected = reference.template nextBestAlign<false>(reference.alignBegin(), expectedScore);
+        const auto actual = optimized.template nextBestAlign<false>(optimized.alignBegin(), actualScore);
+        EXPECT_EQ(expectedScore, actualScore);
+        EXPECT_EQ(reference.targetOffset(expected), optimized.targetOffset(actual));
+        EXPECT_EQ(reference.queryOffset(expected), optimized.queryOffset(actual));
+        for (int t = -1; t < int(target.size()); ++t)
+        {
+            for (int q = -1; q < qLen; ++q)
+            {
+                EXPECT_EQ(reference.isInsertion(q, t), optimized.isInsertion(q, t));
+                if (t < 0) continue;
+                for (auto p = edges.prevNodesBegin(t); p != edges.prevNodesEnd(t); ++p)
+                {
+                    EXPECT_EQ(reference.isDeletion(q, t, *p), optimized.isDeletion(q, t, *p));
+                    EXPECT_EQ(reference.isMatch(q, t, *p), optimized.isMatch(q, t, *p));
+                    EXPECT_EQ(reference.isMismatch(q, t, *p), optimized.isMismatch(q, t, *p));
+                }
+            }
+        }
+    }
+}
+} // namespace
+
+TEST(AffineAlignmentMatrix, ReusedTargetAlphabetAndLengthsMatchScalarPenalties)
+{
+    checkReusedTargetPenaltyProfiles<true>();
+    checkReusedTargetPenaltyProfiles<false>();
+}
+
+TEST(AffineAlignmentMatrix, PaddedQueryLifetimePreservesLogicalLengthAndEmptyInputState)
+{
+    AffineAlignMatrixVectorized<BaseMatchingPenaltyMatrix, true> matrix({ 6, -4 }, -8, -2);
+    const string target(180, 'A');
+    const EdgeMap edges({ { 180, 180 } }, { 0 });
+    for (int queryLength : { 150, 17, 1, 149, 16, 150 })
+    {
+        const string query(queryLength, 'A');
+        matrix.init(query.begin(), query.end(), target.begin(), target.end(), edges);
+        for (int stage = 0; stage != 3; ++stage)
+        {
+            if (stage == 1)
+            {
+                EXPECT_THROW(matrix.init(query.begin(), query.begin(), target.begin(), target.end(), edges),
+                             std::logic_error);
+            }
+            if (stage == 2)
+            {
+                EXPECT_THROW(matrix.init(query.begin(), query.end(), target.begin(), target.begin(), edges),
+                             std::logic_error);
+            }
+            EXPECT_EQ(queryLength, matrix.queryLen());
+            Score score = 0;
+            const auto best = matrix.nextBestAlign<false>(matrix.alignBegin(), score);
+            EXPECT_EQ(6 * queryLength, score);
+            EXPECT_EQ(queryLength - 1, matrix.queryOffset(best));
+            EXPECT_EQ(queryLength - 1, matrix.targetOffset(best));
+            EXPECT_TRUE(matrix.isMatch(queryLength - 1, queryLength - 1, queryLength - 2));
+        }
+    }
+}
+
+namespace
+{
+struct RowKernelSet
+{
+    const char* name;
+    void (*fused)(const int16_t*, const int16_t*, const int16_t*, int16_t, int16_t, int16_t*, int16_t*, int);
+    void (*deletion)(const int16_t*, const int16_t*, int16_t, int16_t, int16_t*, int);
+    void (*align)(const int16_t*, const int16_t*, int16_t*, int);
+    void (*consolidate)(const int16_t*, const int16_t*, int16_t*, int);
+};
+
+std::vector<RowKernelSet> availableRowKernels()
+{
+    std::vector<RowKernelSet> sets;
+#if defined(__aarch64__) && defined(__ARM_NEON)
+    sets.push_back({ "neon", dp_fused_row_neon, dp_deletion_row_neon, dp_align_row_neon, dp_consolidate_row_neon });
+#elif defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+    sets.push_back({ "sse2", dp_fused_row_sse2, dp_deletion_row_sse2, dp_align_row_sse2, dp_consolidate_row_sse2 });
+    if (__builtin_cpu_supports("avx2"))
+        sets.push_back(
+            { "avx2", dp_fused_row_avx2, dp_deletion_row_avx2, dp_align_row_avx2, dp_consolidate_row_avx2 });
+#endif
+    return sets;
+}
+}
+
+// K-03 rows: every SIMD row pass this CPU supports writes what its reference row writes, for random and
+// boundary scores, both gap settings of the product and arbitrary ones, and row lengths of 0 to 18 blocks.
+TEST(DagAligner, RowKernelsMatchReferenceRows)
+{
+    std::mt19937 random(20261118);
+    const int16_t edges[] = { 0, 1, -1, 32767, -32768, -32767, 32766, -2, -8, -10, 5, -4 };
+    auto score = [&]() {
+        return (random() & 3) ? int16_t(random()) : edges[random() % (sizeof(edges) / sizeof(edges[0]))];
+    };
+    const auto sets = availableRowKernels();
+    for (int n : { 0, 16, 32, 48, 64, 80, 160, 256, 288 })
+    {
+        for (int round = 0; round != 300; ++round)
+        {
+            std::vector<int16_t> ep(n), vpRow(n + 1), penalties(n), e0(n), g0(n), v0(n);
+            for (int i = 0; i != n; ++i)
+            {
+                ep[i] = score();
+                penalties[i] = score();
+                e0[i] = score();
+                g0[i] = score();
+                v0[i] = score();
+            }
+            for (auto& value : vpRow)
+                value = score();
+            const int16_t gapOpen = round % 3 == 0 ? -8 : score(), gapExt = round % 3 == 0 ? -2 : score();
+            const int16_t* vp = vpRow.data() + 1;
+
+            std::vector<int16_t> eRef(n), vRef(n), dRef(e0), aRef(g0), cRef(v0);
+            dp_fused_row_reference(ep.data(), vp, penalties.data(), gapOpen, gapExt, eRef.data(), vRef.data(), n);
+            dp_deletion_row_reference(ep.data(), vp, gapOpen, gapExt, dRef.data(), n);
+            dp_align_row_reference(vp, penalties.data(), aRef.data(), n);
+            dp_consolidate_row_reference(g0.data(), e0.data(), cRef.data(), n);
+            for (const auto& set : sets)
+            {
+                std::vector<int16_t> e(n), v(n), d(e0), a(g0), c(v0);
+                set.fused(ep.data(), vp, penalties.data(), gapOpen, gapExt, e.data(), v.data(), n);
+                set.deletion(ep.data(), vp, gapOpen, gapExt, d.data(), n);
+                set.align(vp, penalties.data(), a.data(), n);
+                set.consolidate(g0.data(), e0.data(), c.data(), n);
+                ASSERT_EQ(eRef, e) << set.name << " fused E, n=" << n;
+                ASSERT_EQ(vRef, v) << set.name << " fused V, n=" << n;
+                ASSERT_EQ(dRef, d) << set.name << " deletion, n=" << n;
+                ASSERT_EQ(aRef, a) << set.name << " align, n=" << n;
+                ASSERT_EQ(cRef, c) << set.name << " consolidate, n=" << n;
+            }
+        }
+    }
 }

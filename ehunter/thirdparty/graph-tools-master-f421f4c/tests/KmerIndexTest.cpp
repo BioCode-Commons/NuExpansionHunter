@@ -18,15 +18,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from the GraphTools copy shipped with ExpansionHunter v5.0.0: tests compare encoded and membership indexes with enumerated graph paths.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "graphalign/KmerIndex.hh"
 
 #include <list>
+#include <map>
 
 #include "gtest/gtest.h"
 
 #include "graphcore/GraphBuilders.hh"
 #include "graphcore/Path.hh"
+#include "graphcore/PathOperations.hh"
+#include "graphutils/SequenceOperations.hh"
 
 using std::list;
 using std::string;
@@ -139,4 +147,31 @@ TEST(UniqueKmerCounting, TypicalIndex_UniqueKmersCounted)
 
     EXPECT_EQ(3u, kmer_index.numUniqueKmersOverlappingNode(0));
     EXPECT_EQ(4u, kmer_index.numUniqueKmersOverlappingNode(2));
+}
+
+TEST(KmerIndexInitialization, NodeWindowsMatchEnumeratedGraphPaths)
+{
+    auto graph = makeStrGraph("TTTTTTTTTTTTTTTTACGTRTTACGTACGTACGTACGT", "AT",
+                              "TGCATGCAKACGTACGTACGTACGT");
+    for (int k : { 1, 4, 12, 16 })
+    {
+        std::map<string, std::vector<Path>> paths;
+        for (NodeId node = 0; node < graph.numNodes(); ++node)
+            for (int pos = 0; pos < static_cast<int>(graph.nodeSeq(node).size()); ++pos)
+                for (const auto& path : extendPathEnd(Path(&graph, pos, { node }, pos), k))
+                {
+                    std::vector<string> sequences;
+                    expandReferenceSequence(path.seq(), sequences);
+                    for (const auto& sequence : sequences) paths[sequence].push_back(path);
+                }
+        KmerIndex alignments(graph, k);
+        KmerIndex membership(graph, k, true);
+        EXPECT_EQ(paths.size(), alignments.kmers().size());
+        EXPECT_EQ(paths.size(), membership.kmers().size());
+        for (const auto& key : paths)
+        {
+            ASSERT_TRUE(membership.contains(key.first));
+            ASSERT_EQ(key.second, alignments.getPaths(key.first));
+        }
+    }
 }

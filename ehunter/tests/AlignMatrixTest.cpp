@@ -18,6 +18,11 @@
 // limitations under the License.
 //
 //
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: tests cover flat-row storage, filtering, removal, and in-repeat evidence.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
 
 #include "genotyping/AlignMatrix.hh"
 
@@ -135,4 +140,62 @@ TEST(AddingIrrPairs, OtherIrrsPresent_IrrPairsAdded)
     int numIrrPairs = 2;
     addIrrPairsIfPossibleExpansion(maxMotifsInRead, alignMatrix, numIrrPairs);
     ASSERT_EQ(alignMatrix.numReads(), 6);
+}
+
+namespace
+{
+vector<StrAlign> rowOf(const AlignMatrix& matrix, int readIndex)
+{
+    return vector<StrAlign>(matrix.rowData(readIndex), matrix.rowData(readIndex) + matrix.rowSize(readIndex));
+}
+}
+
+TEST(FlatRows, RowsBestAlignsAndRemoval_Consistent)
+{
+    Graph graph = makeRegionGraph(decodeFeaturesFromRegex("ATTCGA(C)*ATGTCG"));
+    AlignMatrix alignMatrix(1);
+    GraphAlignment flank = decodeGraphAlignment(0, "0[6M]", &graph);
+    alignMatrix.add(decodeGraphAlignment(3, "0[3M]1[1M]1[1M]2[4M]", &graph), flank);
+    alignMatrix.add(decodeGraphAlignment(0, "1[1M]1[1M]1[1M]1[1M]", &graph), flank);
+    ASSERT_EQ(alignMatrix.numReads(), 4);
+
+    const vector<StrAlign> spanning
+        = { StrAlign('F', 0, 20, 0), StrAlign('F', 1, 25, 0), StrAlign('S', 2, 45, 0), StrAlign('F', 2, 30, 0) };
+    EXPECT_EQ(rowOf(alignMatrix, 0), spanning);
+    EXPECT_EQ(alignMatrix.getBestAlign(0), StrAlign('S', 2, 45, 0));
+    EXPECT_EQ(alignMatrix.getBestAlign(2), StrAlign('I', 4, 20, 0));
+    EXPECT_EQ(alignMatrix.getMaxMotifCount(), 4);
+
+    const vector<StrAlign> inRepeat = rowOf(alignMatrix, 2);
+    const vector<StrAlign> lastFlank = rowOf(alignMatrix, 3);
+    alignMatrix.remove(1);
+    ASSERT_EQ(alignMatrix.numReads(), 3);
+    EXPECT_EQ(rowOf(alignMatrix, 0), spanning);
+    EXPECT_EQ(rowOf(alignMatrix, 1), inRepeat);
+    EXPECT_EQ(rowOf(alignMatrix, 2), lastFlank);
+    EXPECT_EQ(alignMatrix.getBestAlign(1), StrAlign('I', 4, 20, 0));
+    EXPECT_EQ(alignMatrix.getAlign(1, 9), StrAlign('I', 4, 20, 0));
+
+    alignMatrix.remove(0);
+    alignMatrix.remove(0);
+    alignMatrix.remove(0);
+    EXPECT_EQ(alignMatrix.numReads(), 0);
+    EXPECT_EQ(alignMatrix.getMaxMotifCount(), 0);
+}
+
+TEST(FlatRows, AddedIrrPairs_CopyTopRowAndBestAlign)
+{
+    Graph graph = makeRegionGraph(decodeFeaturesFromRegex("ATTCGA(C)*ATGTCG"));
+    AlignMatrix alignMatrix(1);
+    GraphAlignment mate = decodeGraphAlignment(0, "0[5M]", &graph);
+    alignMatrix.add(decodeGraphAlignment(0, "1[1M]1[1M]1[1M]1[1M]1[1M]", &graph), mate);
+    const vector<StrAlign> irr = rowOf(alignMatrix, 0);
+
+    addIrrPairsIfPossibleExpansion(6, alignMatrix, 2);
+    ASSERT_EQ(alignMatrix.numReads(), 6);
+    for (int readIndex = 2; readIndex != 6; ++readIndex)
+    {
+        EXPECT_EQ(rowOf(alignMatrix, readIndex), irr);
+        EXPECT_EQ(alignMatrix.getBestAlign(readIndex), alignMatrix.getBestAlign(0));
+    }
 }

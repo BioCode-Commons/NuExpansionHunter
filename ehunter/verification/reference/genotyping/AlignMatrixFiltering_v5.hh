@@ -1,0 +1,48 @@
+//
+// ExpansionHunter
+// Copyright 2016-2020 Illumina, Inc.
+// All rights reserved.
+//
+// Author: Egor Dolzhenko <edolzhenko@illumina.com>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+//
+//
+// Modified by NuExpansionHunter contributors, 2026.
+// This file differs from ExpansionHunter v5.0.0: re-hosted in namespace `reference` for equivalence checking.
+// Modifications are licensed under the Apache License, Version 2.0.
+//
+
+#pragma once
+
+#include "core/CountTable.hh"
+#include "reference/genotyping/AlignMatrix_v5.hh"
+
+namespace ehunter
+{
+namespace strgt
+{
+namespace reference
+{
+using ehunter::reference::StrAlign;
+using ehunter::reference::ConsistentAlignmentCalculator;
+
+void filter(AlignMatrix& aligns);
+
+CountTable countAligns(StrAlign::Type alignType, const AlignMatrix& aligns);
+
+}
+}
+
+} // namespace reference
