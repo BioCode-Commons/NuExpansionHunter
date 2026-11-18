@@ -81,9 +81,10 @@ obtained by running `ExpansionHunter --help`.
 
 #### Seeking mode
 
-In seeking mode, alignment file indexing locates specific read sets for the
-analysis of each variant. Seeking mode is recommended for analysis of small catalogs.
-This mode requires that the input BAM or CRAM file is already sorted and indexed.
+We do not recommend using Seeking mode in NuExpansionHunter at this moment. 
+For Seeking mode, please use the original Illumina version.
+
+
 
 #### Streaming mode
 
