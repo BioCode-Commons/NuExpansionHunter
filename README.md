@@ -76,6 +76,7 @@ contained in the docs folder:
 * [Output JSON files](docs/05_OutputJsonFiles.md)
 * [Output VCF files](docs/06_OutputVcfFiles.md)
 * [Performance and identity](docs/07_Performance.md)
+* [Benchmark Results](docs/08_Benchmark.md)
 
 ## Companion tools and resources
 
