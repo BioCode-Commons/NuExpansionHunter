@@ -95,24 +95,5 @@ genotyping, and analyzers are released as their findings are produced.
 
 ## Performance
 
-Wall times on HG002 (GIAB, 35x PCR-free, aligned to GRCh38 no-alt), streaming mode, on an AMD EPYC 9634
-(Zen 4) with the package's reference build: GCC 15.2, `-march=znver4 -ffp-contract=off`, libdeflate, ISA-L
-and jemalloc. "Cores" are physical cores with both SMT threads. ExpansionHunter v5.0.0 ran with
-`--threads` equal to the hardware threads; NuExpansionHunter ran with `--threads` 2.5 times the cores,
-`--decode-threads` half and `--encode-threads` a quarter of the cores, and `--bamlet-queue-mb 256`.
-Every run listed wrote the same VCF, JSON and BAM records as ExpansionHunter v5.0.0. NuExpansionHunter times
-are medians of two or three runs (single runs for TRExplorer chr22 and the whole genome); PGO denotes the
-profile-guided build of the same source, trained on a chr22 slice, the chr21-22 GangSTR set and one satellite
-window. A dash marks a configuration that was not measured.
-
-| Dataset (catalog on HG002) | Cores | ExpansionHunter v5.0.0 | NuExpansionHunter | NuExpansionHunter, PGO | Speed-up (no PGO) |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| GangSTR hg38 v13, chr21-22 | 16 | 373.2 s | 17.0 s | 15.9 s | 22.0x |
-| GangSTR hg38 v13, chr21-22 | 32 | — | 9.4 s | — | — |
-| TRExplorer v2.1, chr22 | 16 | 1,121.0 s | 129.3 s | 118.9 s | 8.7x |
-| TRExplorer v2.1, chr21-22 | 16 | 2,585.1 s | 293.8 s | 271.4 s | 8.8x |
-| TRExplorer v2.1, chr21-22 | 32 | — | 148.6 s | — | — |
-| GangSTR hg38 v13, whole genome | 16 | — | 383.9 s | 360.7 s | — |
-
-Peak memory on the whole-genome GangSTR catalog at 16 cores is 16.4 GiB. A `-march` build runs only on CPUs
-with the instructions it was compiled for; a portable build without `-march` is slower.
+See the [benchmark report](08_Benchmark.md) for wall time, peak memory,
+and output identity comparisons with ExpansionHunter v5.0.0.

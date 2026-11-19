@@ -57,6 +57,14 @@ alignment and genotyping code, catalog loading and output writing.
 See [Installation](docs/02_Installation.md), [Usage](docs/03_Usage.md) and
 [Running efficiently](docs/03_Usage.md#running-efficiently) for details.
 
+## Benchmark results
+
+On three HG002 catalog subsets, NuExpansionHunter ran 8.80–22.82× faster
+and used 70–79% less peak resident memory than ExpansionHunter v5.0.0.
+Both tools ran in streaming mode with `--threads 32` on the same 32 logical
+CPUs. VCF, JSON, and decoded BAM outputs matched in all three comparisons.
+See the [benchmark report](docs/08_Benchmark.md) for results and methods.
+
 ## License
 
 NuExpansionHunter is provided under the terms and conditions of the
@@ -76,7 +84,6 @@ contained in the docs folder:
 * [Output JSON files](docs/05_OutputJsonFiles.md)
 * [Output VCF files](docs/06_OutputVcfFiles.md)
 * [Performance and identity](docs/07_Performance.md)
-* [Benchmark Results](docs/08_Benchmark.md)
 
 ## Companion tools and resources
 
