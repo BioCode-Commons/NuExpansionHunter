@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "project": "NuExpansionHunter",
+  "evidence_url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/a7c2e4d6e172d004df4ca9202d90a974a7d3552f/docs/08_Benchmark.md#hg002-chromosome-subsets",
+  "rss_unit": "GiB",
+  "rss_scope": "process peak RSS",
+  "time_scope": "Streaming genotyping from an aligned BAM through output writing, including catalog loading",
+  "rows": [
+    {
+      "dataset": "HG002 · GangSTR hg38 v13, chr21–22",
+      "resources": "32 logical CPUs",
+      "baseline_seconds": 387.01,
+      "candidate_seconds": 16.96,
+      "baseline_rss": 6.744899749755859,
+      "candidate_rss": 1.4231452941894531
+    },
+    {
+      "dataset": "HG002 · TRExplorer v2.1, chr22",
+      "resources": "32 logical CPUs",
+      "baseline_seconds": 1126.22,
+      "candidate_seconds": 127.94,
+      "baseline_rss": 17.864036560058594,
+      "candidate_rss": 4.343097686767578
+    },
+    {
+      "dataset": "HG002 · TRExplorer v2.1, chr21–22",
+      "resources": "32 logical CPUs",
+      "baseline_seconds": 2578.22,
+      "candidate_seconds": 292.71,
+      "baseline_rss": 26.60428237915039,
+      "candidate_rss": 7.953159332275391
+    }
+  ],
+  "caption": [
+    {
+      "text": "One matched streaming run per HG002 catalog subset on an AMD EPYC 9634 with --threads 32 for both tools. "
+    },
+    {
+      "text": "Benchmark report",
+      "url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/a7c2e4d6e172d004df4ca9202d90a974a7d3552f/docs/08_Benchmark.md#hg002-chromosome-subsets"
+    },
+    {
+      "text": "."
+    }
+  ],
+  "note": [
+    {
+      "text": "Each pair used the same 32 logical CPUs across 16 physical cores. VCF and JSON bytes, BAM headers, and decoded BAM records matched in all three pairs."
+    }
+  ],
+  "display": {
+    "time_decimals": 2,
+    "rss_decimals": 2,
+    "speedup_column": true
+  },
+  "summary_context": "HG002 chromosome subsets"
+}
