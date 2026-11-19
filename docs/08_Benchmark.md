@@ -46,3 +46,28 @@ Times are in minutes; memory is peak RAM in GiB. Every row below passed all thre
 | SRR21753328 | 16 | 141.83 | 16.29 | 8.71× | 110.27 | 13.05 | 88.2% |
 
 Only GangSTR had completed matched comparisons in this snapshot. BAM identity refers to decoded records, not compressed file bytes. These results cover the completed comparisons, not the entire planned sample cohort.
+
+## HG002 chromosome subsets
+
+Each row compares one ExpansionHunter v5.0.0 run with one NuExpansionHunter
+run. All runs used the same HG002 35× PCR-free BAM restricted to chromosomes
+21 and 22 and the corresponding GRCh38 no-alt reference. The catalog subset
+determines the loci evaluated.
+
+| Catalog | Loci | v5 time (s) | NuEH time (s) | Speedup | v5 peak RSS (GiB) | NuEH peak RSS (GiB) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| GangSTR hg38 v13, chr21–22 | 22,519 | 387.01 | 16.96 | 22.82× | 6.74 | 1.42 |
+| TRExplorer v2.1, chr22 | 86,149 | 1,126.22 | 127.94 | 8.80× | 17.86 | 4.34 |
+| TRExplorer v2.1, chr21–22 | 164,507 | 2,578.22 | 292.71 | 8.81× | 26.60 | 7.95 |
+
+Both programs ran with `--analysis-mode streaming --sex male --threads 32`
+and the same BAM, reference, and catalog within each pair. Runs were pinned
+to logical CPUs `14-29,98-113` on an AMD EPYC 9634, spanning 16 physical cores
+with simultaneous multithreading. The NuExpansionHunter release build used
+GCC 15.2 with `-march=znver4`, `-ffp-contract=off`, libdeflate, ISA-L, and jemalloc.
+
+GNU time measured wall time and process peak resident set size (RSS) for
+each invocation, including catalog loading and output writing. Speedup
+divides v5 wall time by NuEH wall time. All three pairs matched on VCF and
+JSON byte digests, BAM header digests, and order-independent digests of
+decoded BAM records.
