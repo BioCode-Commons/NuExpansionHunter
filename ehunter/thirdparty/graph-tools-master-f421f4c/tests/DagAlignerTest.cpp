@@ -935,6 +935,50 @@ TEST(AffineAlignmentMatrix, SinglePredecessorMatchesGeneralRecurrenceAtScoreLimi
     checkScoreLimitRecurrence<false>();
 }
 
+TEST(AffineAlignmentMatrix, LinearRowStopKeepsTiesAndUsesStrictSuffixBound)
+{
+    using Matrix = AffineAlignMatrixVectorized<BaseMatchingPenaltyMatrix, true>;
+    Matrix full(BaseMatchingPenaltyMatrix(5, -4), -8, -2);
+    Matrix stopped(BaseMatchingPenaltyMatrix(5, -4), -8, -2);
+    stopped.setRowStop(Matrix::RowStop::kStop);
+    const struct
+    {
+        string query;
+        string target;
+        int keptRows;
+        Score score;
+        std::vector<int> endpoints;
+    } cases[] = {
+        // The suffix bound first equals the best cost (36) after row 22, counting rows from one.
+        { "AAAAA", "ACCCCACC" + string(20, 'C'), 23, -11, { 0, 4 } },
+        { "AAAAA", "AAA", 3, 3, { 2 } },
+        { "AA", "AACCCCCCCC", 2, 10, { 1 } },
+        { "A", "A", 1, 5, { 0 } },
+    };
+    for (const auto& test : cases)
+    {
+        const int tLen = test.target.size();
+        const EdgeMap edges({ { tLen, tLen } }, { 0 });
+        ASSERT_TRUE(edges.hasLinearChain(tLen));
+        for (Matrix* matrix : { &full, &stopped })
+        {
+            matrix->init(test.query.begin(), test.query.end(), test.target.begin(), test.target.end(), edges);
+            Score score = 0;
+            auto endpoint = matrix->nextBestAlign<false>(matrix->alignBegin(), score);
+            EXPECT_EQ(test.score, score);
+            std::vector<int> offsets;
+            while (endpoint != matrix->alignEnd() && score == test.score)
+            {
+                offsets.push_back(matrix->targetOffset(endpoint));
+                endpoint = matrix->nextBestAlign<false>(endpoint + 1, score);
+            }
+            EXPECT_EQ(test.endpoints, offsets);
+        }
+        EXPECT_EQ(tLen, full.keptRows());
+        EXPECT_EQ(test.keptRows, stopped.keptRows());
+    }
+}
+
 namespace
 {
 template <bool penalizeMove> void checkReusedTargetPenaltyProfiles()

@@ -153,6 +153,30 @@ Use the name without `EH_VERIFY_` in the CMake option.
 | FOLD_SKIP | OFF | K-21: execute every canonical fold step |
 | LAYOUT | REFERENCE | K-15, K-28: hash k-mer layout and owned streaming catalog |
 | SHADOW | ON | K-05, K-21, K-22, K-31: compare supported in-tree references and poison dropped dense rows |
+| EXTENSION_CACHE | ON | Experimental cross-locus reuse of pinned single-node extension traces |
+
+With `EXTENSION_CACHE=ON`, the streaming pipeline stores a bounded, in-process
+table of optimal scores and ordered raw CIGARs for target alignments of shared
+inputs. Hits require the same input pair, physical mate, read orientation,
+extension direction, complete oriented query bytes and certified target prefix.
+Donor and recipient independently pass the default-score, single-node and
+full-target score-width guards. The receiving extension still remaps paths to
+its graph. A busy bucket, a missing donor or a trace that exceeds the table's
+capacity uses the ordinary extension alignment. A hit skips sparse/dense
+search measurements and uses the optimum to update the ordinary cost hint.
+
+For query length Q and donor score S, a linear pinned endpoint consuming t
+target bases costs at least 2(t − Q) relative to the all-match score 5Q.
+The cached prefix of length L = Q + floor((5Q − S)/2) + 1 therefore contains
+every endpoint and predecessor on an optimal traceback. All later endpoints
+also strictly exceed the optimum cost on the recipient. The cache preserves
+the entire returned CIGAR vector and its order, including ties.
+
+`EH_VERIFY="EXTENSION_CACHE=ON;SHADOW=ON"` also runs the uncached alignment
+on every hit and checks the optimum score and the complete ordered raw vector.
+`verification_extension_cache_cases` exercises both extension directions,
+remapping across graphs, tied traces, byte guards and lock contention. The
+application logs only aggregate table counts when this switch is enabled.
 
 ## K-mer index boundary profiles
 

@@ -129,12 +129,17 @@ constexpr bool kFoldSkip = EH_VERIFY_FOLD_SKIP == EH_VERIFY_DEFAULT;
 constexpr bool kReferenceLayout = EH_VERIFY_LAYOUT == EH_VERIFY_REFERENCE;
 // SHADOW=ON: kernels with an in-tree reference also run it and abort on a difference (K-05, K-21, K-22, K-31).
 constexpr bool kShadow = EH_VERIFY_SHADOW == EH_VERIFY_ON;
+#ifdef EH_VERIFY_EXTENSION_CACHE
+constexpr bool kExtensionCache = true;
+#else
+constexpr bool kExtensionCache = false;
+#endif
 
 constexpr bool kAnySet = EH_VERIFY_SIMD != EH_VERIFY_DEFAULT || EH_VERIFY_FAST_PATHS != EH_VERIFY_DEFAULT
     || EH_VERIFY_BUDGET_SEARCH != EH_VERIFY_DEFAULT || EH_VERIFY_ROW_STOP != EH_VERIFY_DEFAULT
     || EH_VERIFY_FUSED_ROWS != EH_VERIFY_DEFAULT || EH_VERIFY_GRAPH_CACHE != EH_VERIFY_DEFAULT
     || EH_VERIFY_FOLD_SKIP != EH_VERIFY_DEFAULT || EH_VERIFY_LAYOUT != EH_VERIFY_DEFAULT
-    || EH_VERIFY_SHADOW != EH_VERIFY_DEFAULT;
+    || EH_VERIFY_SHADOW != EH_VERIFY_DEFAULT || kExtensionCache;
 
 // Settings of this build, for the log; empty in a release build.
 inline std::string describeSettings()
@@ -153,6 +158,7 @@ inline std::string describeSettings()
     if (!kFoldSkip) add("FOLD_SKIP=OFF");
     if (kReferenceLayout) add("LAYOUT=REFERENCE");
     if (kShadow) add("SHADOW=ON");
+    if (kExtensionCache) add("EXTENSION_CACHE=ON");
     return text;
 }
 }

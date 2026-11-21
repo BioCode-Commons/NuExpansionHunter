@@ -30,6 +30,7 @@
 #include <limits>
 #include <locale>
 #include <stdexcept>
+#include <vector>
 
 #include <boost/optional.hpp>
 
@@ -106,6 +107,20 @@ static int32_t trimSuffixNearNodeEdge(int32_t requested_trim_len, int32_t min_pa
 
 list<GraphAlignment> GappedGraphAligner::align(const string& query, AlignerSelector& alignerSelector) const
 {
+    return alignImpl(query, alignerSelector, nullptr);
+}
+
+std::pair<list<GraphAlignment>, bool>
+GappedGraphAligner::alignForCanonicalSelection(const string& query, AlignerSelector& alignerSelector) const
+{
+    bool selectedProduct = false;
+    auto alignments = alignImpl(query, alignerSelector, &selectedProduct);
+    return { std::move(alignments), selectedProduct };
+}
+
+list<GraphAlignment>
+GappedGraphAligner::alignImpl(const string& query, AlignerSelector& alignerSelector, bool* selectedProduct) const
+{
     try
     {
         const auto* seedFacet = alignerSelector.seedSearchFacet();
@@ -120,8 +135,8 @@ list<GraphAlignment> GappedGraphAligner::align(const string& query, AlignerSelec
             const int kMinPathLength = 2;
             trimSuffixNearNodeEdge(seed_affix_trim_len_, kMinPathLength, seed_path);
             const int trimmed_prefix_len = trimPrefixNearNodeEdge(seed_affix_trim_len_, kMinPathLength, seed_path);
-            return extendSeedToFullAlignments(
-                std::move(seed_path), query, seed_start_on_query + trimmed_prefix_len, alignerSelector);
+            return extendSeedToFullAlignmentsImpl(
+                std::move(seed_path), query, seed_start_on_query + trimmed_prefix_len, alignerSelector, selectedProduct);
         }
         else
         {
@@ -315,12 +330,228 @@ GappedGraphAligner::searchForAlignmentSeed(const string& query, const std::ctype
     return optional_seed;
 }
 
+namespace
+{
+using Extensions = list<PathAndAlignment>;
+
+bool validExtension(const PathAndAlignment& extension, const Path& commonPath, size_t expectedReferenceLength,
+    size_t expectedQueryLength, bool isPrefix)
+{
+    const auto& alignment = extension.second;
+    if (!(extension.first == commonPath) || alignment.operations().empty()
+        || (isPrefix && alignment.referenceStart() != 0))
+        return false;
+    const auto& seam = isPrefix ? alignment.back() : alignment.front();
+    if (seam.type() == OperationType::kSoftclip && alignment.numOperations() != 1)
+        return false;
+
+    // Check the true lengths before using the uint32_t alignment counts and seam sums.
+    uint64_t referenceLength = 0;
+    uint64_t queryLength = 0;
+    for (const auto& op : alignment)
+    {
+        const auto reference = op.referenceLength();
+        const auto query = op.queryLength();
+        if (reference == 0 && query == 0)
+            return false;
+        referenceLength += reference;
+        queryLength += query;
+        if (referenceLength > expectedReferenceLength || queryLength > expectedQueryLength)
+            return false;
+    }
+    return referenceLength == expectedReferenceLength && queryLength == expectedQueryLength;
+}
+
+struct ProductScratch
+{
+    std::vector<uint32_t> nodeEnds;
+    std::vector<uint64_t> key;
+    std::vector<uint64_t> bestKey;
+};
+
+struct CanonicalProduct
+{
+    Path path;
+    const Alignment& prefix;
+    Alignment& suffix;
+};
+
+class ProjectedOperationKey
+{
+public:
+    ProjectedOperationKey(ProductScratch& scratch, uint32_t position, size_t node)
+        : key_(scratch.key)
+        , nextNodeEnd_(scratch.nodeEnds.data() + node)
+        , position_(position)
+    {
+        key_.clear();
+    }
+
+    void append(const Operation& op)
+    {
+        if (op.referenceLength() == 0)
+        {
+            appendPiece(op.type(), op.length());
+            return;
+        }
+
+        uint32_t remaining = op.length();
+        while (position_ + remaining > *nextNodeEnd_)
+        {
+            const uint32_t pieceLength = *nextNodeEnd_ - position_;
+            if (pieceLength != 0)
+                appendPiece(op.type(), pieceLength);
+            key_.push_back(0);
+            remaining -= pieceLength;
+            position_ = *nextNodeEnd_++;
+        }
+        appendPiece(op.type(), remaining);
+        position_ += remaining;
+    }
+
+    void appendSuffix(uint32_t matchLength, const Alignment& suffix)
+    {
+        auto op = suffix.begin();
+        if (op->type() == OperationType::kMatch)
+            matchLength += (op++)->length();
+        append(Operation(OperationType::kMatch, matchLength));
+        for (; op != suffix.end(); ++op)
+            append(*op);
+    }
+
+private:
+    void appendPiece(OperationType type, uint32_t length)
+    {
+        // Alignment comparisons order by operation type, then by length. A
+        // node end sorts before any operation, as in a lexicographic list comparison.
+        key_.push_back(((static_cast<uint64_t>(type) + 1) << 32) | length);
+    }
+
+    std::vector<uint64_t>& key_;
+    const uint32_t* nextNodeEnd_;
+    uint32_t position_;
+};
+
+optional<CanonicalProduct> selectCanonicalProduct(const Extensions& prefixes, const Path& seed, size_t seedLength,
+    Extensions& suffixes, size_t queryPrefixLength, size_t queryLength, size_t querySuffixLength)
+{
+    if (prefixes.empty() || suffixes.empty() || (prefixes.size() == 1 && suffixes.size() == 1)
+        || seedLength == 0 || queryLength > std::numeric_limits<int32_t>::max()
+        || queryPrefixLength > queryLength || seedLength > queryLength - queryPrefixLength
+        || querySuffixLength != queryLength - queryPrefixLength - seedLength)
+        return {};
+
+    const Path& prefixPath = prefixes.front().first;
+    const Path& suffixPath = suffixes.front().first;
+    const size_t prefixLength = prefixPath.length();
+    const size_t suffixLength = suffixPath.length();
+    constexpr size_t maxLength = std::numeric_limits<int32_t>::max();
+    if (prefixLength > maxLength || seedLength > maxLength || suffixLength > maxLength
+        || static_cast<uint64_t>(prefixLength) + seedLength + suffixLength > maxLength
+        || prefixPath.graphRawPtr() != seed.graphRawPtr() || suffixPath.graphRawPtr() != seed.graphRawPtr()
+        || !checkIfBookended(prefixPath, seed) || !checkIfBookended(seed, suffixPath))
+        return {};
+    for (const auto& prefix : prefixes)
+        if (!validExtension(prefix, prefixPath, prefixLength, queryPrefixLength, true))
+            return {};
+    for (const auto& suffix : suffixes)
+        if (!validExtension(suffix, suffixPath, suffixLength, querySuffixLength, false))
+            return {};
+
+    Path fullPath = concatenatePaths(concatenatePaths(prefixPath, seed), suffixPath);
+    thread_local ProductScratch scratch;
+    scratch.nodeEnds.clear();
+    uint32_t position = 0;
+    for (size_t node = 0; node < fullPath.numNodes(); ++node)
+    {
+        const size_t length = fullPath.getNodeOverlapLengthByIndex(node);
+        if (length == 0 || length > maxLength - position
+            || fullPath.graphRawPtr()->nodeSeqLength(fullPath.getNodeIdByIndex(node)) > maxLength)
+            return {};
+        position += length;
+        scratch.nodeEnds.push_back(position);
+    }
+    if (position != prefixLength + seedLength + suffixLength)
+        return {};
+
+    // The positive seed makes the second merge seam a match for every prefix.
+    // Start a suffix key at the final seed base. A real prefix can only add a
+    // constant to that first match piece, shared by every suffix candidate.
+    // Later pieces and the ownership of zero-reference operations are unchanged.
+    auto bestSuffix = suffixes.begin();
+    if (suffixes.size() > 1)
+    {
+        const uint32_t finalSeedBase = prefixLength + seedLength - 1;
+        const size_t seedNode = std::upper_bound(scratch.nodeEnds.begin(), scratch.nodeEnds.end(), finalSeedBase)
+            - scratch.nodeEnds.begin();
+        for (auto it = suffixes.begin(); it != suffixes.end(); ++it)
+        {
+            ProjectedOperationKey key(scratch, finalSeedBase, seedNode);
+            key.appendSuffix(1, it->second);
+            if (it == suffixes.begin() || scratch.key < scratch.bestKey)
+            {
+                bestSuffix = it;
+                scratch.key.swap(scratch.bestKey);
+            }
+        }
+    }
+
+    auto bestPrefix = prefixes.begin();
+    if (prefixes.size() > 1)
+    {
+        for (auto it = prefixes.begin(); it != prefixes.end(); ++it)
+        {
+            const Alignment& prefix = it->second;
+            auto end = prefix.end();
+            uint32_t matchLength = seedLength;
+            if (prefix.back().type() == OperationType::kMatch)
+                matchLength += (--end)->length();
+
+            ProjectedOperationKey key(scratch, 0, 0);
+            for (auto op = prefix.begin(); op != end; ++op)
+                key.append(*op);
+            key.appendSuffix(matchLength, bestSuffix->second);
+            if (it == prefixes.begin() || scratch.key < scratch.bestKey)
+            {
+                bestPrefix = it;
+                scratch.key.swap(scratch.bestKey);
+            }
+        }
+    }
+
+    return CanonicalProduct{ std::move(fullPath), bestPrefix->second, bestSuffix->second };
+}
+
+Alignment mergeWithSeed(const Alignment& prefix, size_t seedLength)
+{
+    // Preserve the CIGAR parser's range error for unusually long paths.
+    Alignment seed = seedLength <= static_cast<size_t>(std::numeric_limits<int>::max())
+        ? Alignment(prefix.referenceLength(), { Operation(OperationType::kMatch, seedLength) })
+        : Alignment(prefix.referenceLength(), to_string(seedLength) + "M");
+    return mergeAlignments(prefix, seed);
+}
+
+GraphAlignment mergeAndProject(const Alignment& prefixWithSeed, int32_t suffixStart, Alignment& suffix, Path path)
+{
+    suffix.setReferenceStart(suffixStart);
+    Alignment fullAlignment = mergeAlignments(prefixWithSeed, suffix);
+    return projectAlignmentOntoGraph(std::move(fullAlignment), std::move(path));
+}
+}
+
 // Contract [K-17]
 // Requires (fast path): the seed covers the whole query on one node.
 // Ensures:  the single full-length match equals the general prefix/suffix extension below for the same seed.
 // Reference: the general extension (EH_VERIFY_FAST_PATHS=OFF).
 list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
     Path seed_path, const string& query, size_t seed_start_on_query, AlignerSelector& alignerSelector) const
+{
+    return extendSeedToFullAlignmentsImpl(std::move(seed_path), query, seed_start_on_query, alignerSelector, nullptr);
+}
+
+list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignmentsImpl(
+    Path seed_path, const string& query, size_t seed_start_on_query, AlignerSelector& alignerSelector,
+    bool* selectedProduct) const
 {
     assert(seed_path.length() > 1);
 
@@ -380,10 +611,26 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
         suffix_extensions.emplace_back(
             std::move(suffix_path), Alignment(0, { Operation(OperationType::kMatch, 1) }));
         seed_path.shrinkEndBy(1);
+        query_suffix_len = 1;
     }
 
     // Merge alignments together
     const size_t seed_length = seed_path.length();
+    if (verify::kFastPaths && selectedProduct)
+    {
+        auto product = selectCanonicalProduct(
+            prefix_extensions, seed_path, seed_length, suffix_extensions, query_prefix_len, query.size(),
+            query_suffix_len);
+        if (product)
+        {
+            Alignment prefixWithSeed = mergeWithSeed(product->prefix, seed_length);
+            list<GraphAlignment> selected;
+            selected.push_back(mergeAndProject(prefixWithSeed, prefixWithSeed.referenceLength(), product->suffix,
+                std::move(product->path)));
+            *selectedProduct = true;
+            return selected;
+        }
+    }
     list<GraphAlignment> top_graph_alignments;
     for (PathAndAlignment& prefix_path_and_alignment : prefix_extensions)
     {
@@ -392,11 +639,7 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
         const int32_t prefix_plus_seed_length = prefix_plus_seed_path.length();
 
         Alignment& prefix_alignment = prefix_path_and_alignment.second;
-        // Preserve the CIGAR parser's range error for unusually long paths.
-        Alignment kmer_alignment = seed_length <= static_cast<size_t>(std::numeric_limits<int>::max())
-            ? Alignment(prefix_alignment.referenceLength(), { Operation(OperationType::kMatch, seed_length) })
-            : Alignment(prefix_alignment.referenceLength(), to_string(seed_length) + "M");
-        Alignment prefix_plus_kmer_alignment = mergeAlignments(prefix_alignment, kmer_alignment);
+        Alignment prefix_plus_kmer_alignment = mergeWithSeed(prefix_alignment, seed_length);
 
         for (PathAndAlignment& suffix_path_and_alignment : suffix_extensions)
         {
@@ -404,9 +647,8 @@ list<GraphAlignment> GappedGraphAligner::extendSeedToFullAlignments(
             Alignment& suffix_alignment = suffix_path_and_alignment.second;
             Path full_path = concatenatePaths(prefix_plus_seed_path, suffix_path);
 
-            suffix_alignment.setReferenceStart(prefix_plus_seed_length);
-            Alignment full_alignment = mergeAlignments(prefix_plus_kmer_alignment, suffix_alignment);
-            top_graph_alignments.push_back(projectAlignmentOntoGraph(std::move(full_alignment), std::move(full_path)));
+            top_graph_alignments.push_back(mergeAndProject(prefix_plus_kmer_alignment, prefix_plus_seed_length,
+                suffix_alignment, std::move(full_path)));
         }
     }
 

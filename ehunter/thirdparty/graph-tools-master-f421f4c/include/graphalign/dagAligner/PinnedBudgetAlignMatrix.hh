@@ -51,6 +51,8 @@ struct BudgetSearch
     };
     bool skip = false;
     Outcome outcome = kNotAttempted;
+    // PinnedDagAligner consumes only the best score and optimal tracebacks.
+    bool bestEndpointsOnly = false;
 };
 
 class PinnedBudgetAlignMatrix
@@ -92,28 +94,43 @@ public:
         // non-default scores and unusual graph inputs.
         const bool eligible = eligibleScores_ && queryLength_ >= 16 && targetLength_ >= 8
             && int64_t(15) * queryLength_ + int64_t(10) * targetLength_ + 10 < 32768;
+        const int fullTargetLength = targetLength_;
+        const bool linear = eligible && edges.hasLinearChain(fullTargetLength);
+        const bool compact = graphtools::verify::kFastPaths && linear && minimumCost <= 9
+            && queryLength_ <= fullTargetLength;
+        const bool boundPrefix = graphtools::verify::kRowStop && !graphtools::verify::kShadow && linear
+            && search && search->bestEndpointsOnly && fullTargetLength - queryLength_ > 16;
         // A proven linear chain has only one ungapped full-query endpoint.
         // With at most one mismatch its cost is <=9, below every gap opening.
         // Keep just the mismatch position instead of allocating per-target rows
         // and cells, or translating an unused extension past the query length.
-        if (graphtools::verify::kFastPaths && eligible && minimumCost <= 9 && queryLength_ <= targetLength_
-            && edges.hasLinearChain(targetLength_))
+        int translated = 0;
+        if (compact || boundPrefix)
         {
             query_.resize(queryLength_);
             target_.resize(queryLength_);
             penalty_.translateQuery(queryBegin, queryEnd, query_.begin());
             penalty_.translateTarget(targetBegin, std::next(targetBegin, queryLength_), target_.begin());
-            linearMismatch_ = linearFirstMismatch();
-            if (linearMismatch_ >= 0)
+            translated = queryLength_;
+            if (compact)
             {
-                compactLinear_ = true;
-                return;
+                linearMismatch_ = linearFirstMismatch();
+                if (linearMismatch_ >= 0)
+                {
+                    compactLinear_ = true;
+                    return;
+                }
             }
+            if (boundPrefix)
+                targetLength_ = linearTargetPrefixLength(fullTargetLength);
         }
+        const bool clipped = targetLength_ != fullTargetLength;
+        if (clipped)
+            targetEnd = std::next(targetBegin, targetLength_);
         const bool skipped = eligible && search && search->skip && !graphtools::verify::kBudgetSearchAlways;
         if (skipped)
             search->outcome = BudgetSearch::kSkipped;
-        if (eligible && !skipped && prepareRows(edges))
+        if (eligible && !skipped && prepareRows(edges, linear))
         {
             if (search)
                 search->outcome = BudgetSearch::kFailed; // until a budget succeeds
@@ -131,9 +148,6 @@ public:
             }
             if (attemptLimit(firstBudget, 0, spent) > spent)
             {
-                // The unsuccessful compact linear check already translated
-                // the query and the first queryLength target bases.
-                const int translated = linearMismatch_ == -2 ? 0 : queryLength_;
                 if (!translated)
                 {
                     query_.resize(queryLength_);
@@ -168,7 +182,7 @@ public:
         }
         // The row stop needs the default scores (endpoint cost = 5 * query - score)
         // and true scores in the rows it drops: the 16-bit guard for the whole target.
-        const bool rowStop = eligibleScores_ && int64_t(15) * queryLength_ + int64_t(10) * targetLength_ + 10 < 32768;
+        const bool rowStop = eligibleScores_ && int64_t(15) * queryLength_ + int64_t(10) * fullTargetLength + 10 < 32768;
         dense_.setRowStop(
             rowStop && graphtools::verify::kRowStop ? DenseMatrix::RowStop::kStop : DenseMatrix::RowStop::kOff);
         if (eligible)
@@ -176,7 +190,7 @@ public:
             // Only fills that a search could have replaced measure the dense
             // alternative; shorter queries and other scores never compete.
             const auto denseStart = std::chrono::steady_clock::now();
-            dense_.init(queryBegin, queryEnd, targetBegin, targetEnd, edges);
+            dense_.init(queryBegin, queryEnd, targetBegin, targetEnd, edges, clipped ? fullTargetLength : 0);
             denseNanos_
                 += std::chrono::duration<double, std::nano>(std::chrono::steady_clock::now() - denseStart).count();
             denseCells_ += double(queryLength_) * dense_.keptRows();
@@ -390,11 +404,11 @@ private:
                     return false;
         return true;
     }
-    bool prepareRows(const EdgeMap& edges)
+    bool prepareRows(const EdgeMap& edges, bool linear)
     {
         rows_.resize(targetLength_);
         linearGraph_ = true;
-        if (edges.hasLinearChain(targetLength_))
+        if (linear)
         {
             edgeCount_ = targetLength_;
             minimumEndpointCost_ = 7 * std::max(queryLength_ - targetLength_, 0);
@@ -469,6 +483,26 @@ private:
     Cost add(Cost value, int increment) const
     {
         return value != infinity() && int(value) + increment <= budget_ ? Cost(value + increment) : infinity();
+    }
+
+    int linearTargetPrefixLength(int fullTargetLength) const
+    {
+        // The ungapped diagonal is feasible at cost 9 per mismatch. On this
+        // chain, consuming L target bases and Q query bases needs at least
+        // L-Q deletions, each costing at least 2 even at the virtual row.
+        // Keep equality to preserve every optimal endpoint and its traceback.
+        const int extra = fullTargetLength - queryLength_;
+        int cost = 0;
+        for (int i = 0; i < queryLength_; ++i)
+        {
+            if (!penalty_.isMatch(query_[i], target_[i]))
+            {
+                cost += 9;
+                if (cost / 2 >= extra)
+                    return fullTargetLength;
+            }
+        }
+        return queryLength_ + cost / 2;
     }
 
     // At budget 9 every finite path is ungapped: opening a deletion costs 10,

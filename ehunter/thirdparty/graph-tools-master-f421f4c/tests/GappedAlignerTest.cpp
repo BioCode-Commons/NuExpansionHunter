@@ -35,6 +35,7 @@
 #include "graphcore/Graph.hh"
 #include "graphcore/GraphBuilders.hh"
 #include "graphcore/Path.hh"
+#include "graphutils/VerifyPolicy.hh"
 
 using std::list;
 using std::make_pair;
@@ -132,6 +133,62 @@ TEST(SeedUppercase, SnapshotPreservesScalarRatherThanRangeFacetSemantics)
     selector.setSeedSearchLocale(std::locale(std::locale::classic(), new DistinctRangeUppercase));
     const list<GraphAlignment> expected = { decodeGraphAlignment(0, "0[8M]", &graph) };
     EXPECT_EQ(aligner.align("acgtactg", selector), expected);
+}
+
+TEST(CanonicalProductSelection, SharedPathWithTiedPrefixesAndSuffixes)
+{
+    Graph graph(1);
+    graph.setNodeSeq(0, "TTAATGCACCGTAAAGATAAAGTAGTATTA");
+    GappedGraphAligner aligner(&graph, 5, 4, 0);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    const string query = "AATACACCATAAAGAGAGA";
+
+    const auto exhaustive = aligner.align(query, selector);
+    ASSERT_EQ(4u, exhaustive.size());
+    EXPECT_EQ(decodeGraphAlignment(2, "0[3M1X3M5D1X1D6M1X1I2M1S]", &graph), exhaustive.front());
+
+    const auto selected = aligner.alignForCanonicalSelection(query, selector);
+    EXPECT_EQ(verify::kFastPaths, selected.second);
+    EXPECT_EQ(verify::kFastPaths ? list<GraphAlignment>{ exhaustive.front() } : exhaustive, selected.first);
+}
+
+TEST(CanonicalProductSelection, SharedMultiNodePathWithBoundaryInsertion)
+{
+    Graph graph(2);
+    graph.setNodeSeq(0, "GCCGTGTGTTCTCTAG");
+    graph.setNodeSeq(1, "AAAACCCGGT");
+    graph.addEdge(0, 1);
+    GappedGraphAligner aligner(&graph, 5, 4, 4);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    const string query = "GCCGTGTGTTCTCTAGAAAAACCCGGT";
+
+    // The seed is trimmed back to the node boundary. A tied suffix with a
+    // leading insertion extends node 0's operation list and sorts last.
+    const auto exhaustive = aligner.align(query, selector);
+    ASSERT_EQ(5u, exhaustive.size());
+    EXPECT_EQ(decodeGraphAlignment(0, "0[16M]1[1M1I9M]", &graph), exhaustive.front());
+    EXPECT_EQ(decodeGraphAlignment(0, "0[16M1I]1[10M]", &graph), exhaustive.back());
+
+    const auto selected = aligner.alignForCanonicalSelection(query, selector);
+    EXPECT_EQ(verify::kFastPaths, selected.second);
+    EXPECT_EQ(verify::kFastPaths ? list<GraphAlignment>{ exhaustive.front() } : exhaustive, selected.first);
+}
+
+TEST(CanonicalProductSelection, MixedEndPositionsKeepExhaustiveResults)
+{
+    Graph graph(1);
+    graph.setNodeSeq(0, "TTAATGCACCGTAAAGATAAAGTAGTATTA");
+    GappedGraphAligner aligner(&graph, 5, 4, 0);
+    AlignerSelector selector(AlignerType::DAG_ALIGNER);
+    const string query = "AATCACCGTAAGAGATATCGAT";
+
+    const auto exhaustive = aligner.align(query, selector);
+    ASSERT_EQ(4u, exhaustive.size());
+    EXPECT_NE(exhaustive.front().path().endPosition(), exhaustive.back().path().endPosition());
+
+    const auto selected = aligner.alignForCanonicalSelection(query, selector);
+    EXPECT_FALSE(selected.second);
+    EXPECT_EQ(exhaustive, selected.first);
 }
 
 TEST(DISABLED_ExtendingAlignmentSuffix, UniquelyMappingQuery_AlignmentExtended)

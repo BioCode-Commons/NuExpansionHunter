@@ -26,6 +26,7 @@
 #pragma once
 
 #include <array>
+#include <limits>
 #include <list>
 #include <map>
 #include <string>
@@ -40,6 +41,9 @@
 #include "graphcore/Graph.hh"
 #include "graphcore/Path.hh"
 #include "graphutils/VerifyPolicy.hh"
+#ifdef EH_VERIFY_EXTENSION_CACHE
+#include "graphutils/ExtensionTraceCache.hh"
+#endif
 
 namespace graphtools
 {
@@ -110,6 +114,7 @@ class PinnedDagAligner
         }
         graphalign::dagAligner::BudgetSearch search;
         search.skip = history.skipsLeft != 0 && !graphtools::verify::kBudgetSearchAlways;
+        search.bestEndpointsOnly = true;
         return search;
     }
 
@@ -470,9 +475,78 @@ class PinnedDagAligner
         }
     }
 
-    template <typename GraphT, typename PathT>
+    // Accumulate node visits in traceback order and validate connectivity once
+    // when building the path. A later node visit can hide an invalid intermediate
+    // position, so check the moving endpoint after each reference-consuming run.
+    class TracebackPath
+    {
+        const Path& seed_;
+        const bool reverse_;
+        const NodeId seedNode_;
+        int32_t position_;
+        size_t nodeLength_;
+        std::vector<NodeId> nodes_;
+        bool shifted_ = false;
+
+    public:
+        TracebackPath(const Path& seed, bool reverse)
+            : seed_(seed)
+            , reverse_(reverse)
+            , seedNode_(reverse ? seed.firstNodeId() : seed.lastNodeId())
+            , position_(reverse ? seed.startPosition() : seed.endPosition())
+            , nodeLength_(seed.graphRawPtr()->nodeSeqLength(seedNode_))
+        {
+        }
+
+        NodeId lastNodeId() const { return nodes_.empty() ? seedNode_ : nodes_.back(); }
+
+        int32_t endPosition() const { return reverse_ ? static_cast<int32_t>(nodeLength_ - position_) : position_; }
+
+        void extendEndToNode(NodeId node)
+        {
+            if (nodes_.empty())
+            {
+                nodes_.reserve(seed_.numNodes() + 1);
+                if (reverse_)
+                    nodes_.insert(nodes_.end(), seed_.nodeIds().rbegin(), seed_.nodeIds().rend());
+                else
+                    nodes_.insert(nodes_.end(), seed_.begin(), seed_.end());
+            }
+            nodes_.push_back(node);
+            nodeLength_ = seed_.graphRawPtr()->nodeSeqLength(node);
+            if (reverse_ && nodeLength_ > size_t(std::numeric_limits<int32_t>::max()))
+                throw std::logic_error("Invalid traceback node length");
+            position_ = reverse_ ? static_cast<int32_t>(nodeLength_) : 0;
+        }
+
+        void shiftEndAlongNode(int32_t length)
+        {
+            const int64_t shift = reverse_ ? -int64_t(length) : length;
+            const int64_t position = position_ + shift;
+            const bool singleNode = nodes_.empty() && seed_.numNodes() == 1;
+            if (position < 0 || position > std::numeric_limits<int32_t>::max() || size_t(position) > nodeLength_
+                || (singleNode && (reverse_ ? position > seed_.endPosition() : position < seed_.startPosition())))
+                throw std::logic_error("Invalid traceback node position");
+            position_ = static_cast<int32_t>(position);
+            shifted_ = true;
+        }
+
+        Path finish()
+        {
+            if (nodes_.empty() && !shifted_)
+                return seed_;
+            if (nodes_.empty())
+                nodes_ = seed_.nodeIds();
+            else if (reverse_)
+                std::reverse(nodes_.begin(), nodes_.end());
+            return Path(seed_.graphRawPtr(), reverse_ ? position_ : seed_.startPosition(), std::move(nodes_),
+                        reverse_ ? seed_.endPosition() : position_);
+        }
+    };
+
+    template <typename PathT>
     static void parseGraphCigar(
-        const GraphT& graph, const graphalign::dagAligner::Cigar& cigar, PathT& path, std::list<Operation>& operations)
+        const Graph& graph, const Cigar& cigar, PathT& path, std::list<Operation>& operations)
     {
         using namespace graphalign::dagAligner;
         for (const Cigar::Operation& op : cigar)
@@ -527,6 +601,33 @@ class PinnedDagAligner
         }
     }
 
+    static Path buildTracebackPath(
+        const Path& seed, const Cigar& cigar, bool reverse, std::list<Operation>& operations)
+    {
+        const Graph& graph = *seed.graphRawPtr();
+        try
+        {
+            TracebackPath path(seed, reverse);
+            parseGraphCigar(graph, cigar, path, operations);
+            return path.finish();
+        }
+        catch (const std::logic_error&)
+        {
+            // Replay an invalid alignment with the existing mutations to report
+            // the same first failing operation and path as before.
+            operations.clear();
+            Path path = seed;
+            if (reverse)
+            {
+                ReversePath reversePath(path);
+                parseGraphCigar(graph, cigar, reversePath, operations);
+            }
+            else
+                parseGraphCigar(graph, cigar, path, operations);
+            return path;
+        }
+    }
+
     typedef int MappedId;
 
     struct PreparedGraph
@@ -536,6 +637,9 @@ class PinnedDagAligner
         NodeId startNode = 0;
         size_t startOffset = 0, extension = 0;
         bool reverse = false;
+#ifdef EH_VERIFY_EXTENSION_CACHE
+        bool singleNodePreparation = false;
+#endif
         std::vector<MappedId> nodeIds;
         Edges edges;
         std::string target;
@@ -594,10 +698,18 @@ class PinnedDagAligner
         {
             if (reverse)
                 bfsDiscoverEdges(ReverseGraph(graph), startNode, startOffset, extension,
-                                 entry.nodeIds, entry.edges, entry.target, entry.originalIds);
+                                 entry.nodeIds, entry.edges, entry.target, entry.originalIds
+#ifdef EH_VERIFY_EXTENSION_CACHE
+                                 , entry.singleNodePreparation
+#endif
+                );
             else
                 bfsDiscoverEdges(graph, startNode, startOffset, extension,
-                                 entry.nodeIds, entry.edges, entry.target, entry.originalIds);
+                                 entry.nodeIds, entry.edges, entry.target, entry.originalIds
+#ifdef EH_VERIFY_EXTENSION_CACHE
+                                 , entry.singleNodePreparation
+#endif
+                );
             entry.edges.emplace_back(entry.target.length(), entry.target.length());
             if (!entry.target.empty())
                 entry.alignerEdges.reset(entry.edges, entry.nodeIds);
@@ -624,6 +736,43 @@ class PinnedDagAligner
         }
         return entry;
     }
+
+#ifdef EH_VERIFY_EXTENSION_CACHE
+    int alignPreparedExtension(const Graph& graph, const PreparedGraph& prepared, const std::string& query,
+        int minimumCost, int direction, std::vector<Cigar>& cigars)
+    {
+        const auto solve = [&](std::vector<Cigar>& result) {
+            auto search = beginSearch(graph, direction);
+            aligner_.alignWithCostGuidance(query.begin(), query.end(), prepared.target.begin(), prepared.target.end(),
+                prepared.alignerEdges, minimumCost, preferredInitialBudget(minimumCost), &search);
+            endSearch(direction, search);
+            graphalign::dagAligner::Score secondBestScore = 0;
+            return aligner_.backtrackAllPaths<false>(prepared.alignerEdges, result, secondBestScore);
+        };
+        auto* scope = prepared.singleNodePreparation && defaultScores_ ? extension_cache::currentScope() : nullptr;
+        if (!scope)
+            return solve(cigars);
+        auto key = scope->key;
+        key.reversedExtension = direction != 0;
+        int score = 0;
+        if (scope->table.find(key, query, prepared.target, scope->counters, cigars, score))
+        {
+            if (graphtools::verify::kShadow)
+            {
+                std::vector<Cigar> reference;
+                if (solve(reference) != score || reference != cigars)
+                    throw std::logic_error("Cached pinned extension differs from the uncached score or ordered CIGARs");
+                ++scope->counters.shadowChecks;
+            }
+            // The caller still trains its cost hint using this exact score.
+            // Sparse/dense timing and search history observe actual fills only.
+            return score;
+        }
+        score = solve(cigars);
+        scope->table.publish(key, query, prepared.target, score, cigars, scope->counters);
+        return score;
+    }
+#endif
 
     void unmapNodeIds(const std::vector<NodeId>& originalIds, graphalign::dagAligner::Cigar& cigar)
     {
@@ -698,6 +847,11 @@ public:
 
         if (!target.empty())
         {
+            std::vector<Cigar> cigars;
+#ifdef EH_VERIFY_EXTENSION_CACHE
+            const int bestScore = alignPreparedExtension(*seedPath.graphRawPtr(), prepared, queryPiece,
+                minimumCost, 0, cigars);
+#else
             const auto& alignerEdges = prepared.alignerEdges;
 
             auto search = beginSearch(*seedPath.graphRawPtr(), 0);
@@ -705,9 +859,9 @@ public:
                                            alignerEdges, minimumCost, preferredInitialBudget(minimumCost), &search);
             endSearch(0, search);
 
-            std::vector<Cigar> cigars;
             Score secondBestScore = 0;
             Score bestScore = aligner_.backtrackAllPaths<false>(alignerEdges, cigars, secondBestScore);
+#endif
 
             score = bestScore;
             observeAlignmentCost(queryPiece.size(), bestScore, minimumCost);
@@ -717,10 +871,8 @@ public:
 
                 unmapNodeIds(originalIds, cigar);
 
-                Path path = seedPath;
                 std::list<Operation> operations;
-                parseGraphCigar(*seedPath.graphRawPtr(), cigar, path, operations);
-
+                Path path = buildTracebackPath(seedPath, cigar, false, operations);
                 ret.emplace_back(std::move(path), Alignment(seedPath.length(), std::move(operations)));
             }
         }
@@ -738,7 +890,6 @@ public:
         int minimumCost = 0;
         if (tryUniqueUngappedAlignment(seedPath, queryPiece, extensionLen, false, ret, score, &minimumCost))
             return ret;
-        ReverseGraph rg(*seedPath.graphRawPtr());
         PreparedGraph temporary;
         const auto& prepared = prepareGraph(*seedPath.graphRawPtr(), seedPath.firstNodeId(),
                                             ConstReversePath(seedPath).endPosition(), extensionLen, true, temporary);
@@ -748,17 +899,21 @@ public:
 
         if (!target.empty())
         {
-            const auto& alignerEdges = prepared.alignerEdges;
-
             std::reverse(queryPiece.begin(), queryPiece.end());
+            std::vector<Cigar> cigars;
+#ifdef EH_VERIFY_EXTENSION_CACHE
+            const int bestScore = alignPreparedExtension(*seedPath.graphRawPtr(), prepared, queryPiece,
+                minimumCost, 1, cigars);
+#else
+            const auto& alignerEdges = prepared.alignerEdges;
             auto search = beginSearch(*seedPath.graphRawPtr(), 1);
             aligner_.alignWithCostGuidance(queryPiece.begin(), queryPiece.end(), target.begin(), target.end(),
                                            alignerEdges, minimumCost, preferredInitialBudget(minimumCost), &search);
             endSearch(1, search);
 
-            std::vector<Cigar> cigars;
             Score secondBestScore = 0;
             Score bestScore = aligner_.backtrackAllPaths<false>(alignerEdges, cigars, secondBestScore);
+#endif
 
             score = bestScore;
             observeAlignmentCost(queryPiece.size(), bestScore, minimumCost);
@@ -768,10 +923,8 @@ public:
 
                 unmapNodeIds(originalIds, cigar);
 
-                Path path = seedPath;
-                ReversePath rp(path);
                 std::list<Operation> operations;
-                parseGraphCigar(rg, cigar, rp, operations);
+                Path path = buildTracebackPath(seedPath, cigar, true, operations);
                 operations.reverse();
 
                 // reversed alignments always start at the beginning of the path because
@@ -1061,7 +1214,11 @@ private:
     static void bfsDiscoverEdges(
         const GraphT& graph, const NodeId startNodeId, const std::size_t startNodeOffset, const std::size_t seqLen,
         std::vector<MappedId>& nodeIds, std::vector<Edge>& edges, std::string& target,
-        std::vector<NodeId>& originalIds)
+        std::vector<NodeId>& originalIds
+#ifdef EH_VERIFY_EXTENSION_CACHE
+        , bool& singleNodePreparation
+#endif
+    )
     {
         const auto startNodeLength = graph.nodeSeqLength(startNodeId);
         if (seqLen && startNodeOffset < startNodeLength
@@ -1074,8 +1231,14 @@ private:
             nodeIds.assign(1, 0);
             originalIds.assign(1, startNodeId);
             target = graph.nodeSeq(startNodeId).substr(startNodeOffset);
+#ifdef EH_VERIFY_EXTENSION_CACHE
+            singleNodePreparation = true;
+#endif
             return;
         }
+#ifdef EH_VERIFY_EXTENSION_CACHE
+        singleNodePreparation = false;
+#endif
         // length of shortest path to the first node character
         const std::map<NodeId, int> nodeStartSeqOffset = extractSubgraph(graph, startNodeId, startNodeOffset, seqLen);
 

@@ -45,12 +45,18 @@
 #include "sample/StreamingPairSource.hh"
 #include "sample/ParallelPairSource.hh"
 #include "spdlog/spdlog.h"
+#ifdef EH_VERIFY_EXTENSION_CACHE
+#include "graphutils/ExtensionTraceCache.hh"
+#endif
 
 namespace ehunter
 {
 namespace
 {
 using Analyzer = locus::LocusEvidence;
+#ifdef EH_VERIFY_EXTENSION_CACHE
+namespace extension_cache = graphtools::extension_cache;
+#endif
 
 // Construct a locus on the worker that first needs its indexes. The catalog
 // drives read discovery independently, including loci with no admitted pairs.
@@ -130,6 +136,9 @@ class OrderedLocusPipeline
     {
         Input(PackedRead& first, PackedRead& second) : read(first.releaseRead()), mate(second.releaseRead()) {}
         Read read, mate;
+#ifdef EH_VERIFY_EXTENSION_CACHE
+        const uint64_t extensionToken = extension_cache::nextPairToken();
+#endif
     };
     struct Item
     {
@@ -173,6 +182,9 @@ public:
     OrderedLocusPipeline(TaskExecutor& executor, StreamingAnalyzers& analyzers,
                          graphtools::AlignerType type, locus::AlignWriterPtr writer, size_t stagingSlots)
         : executor_(executor), analyzers_(analyzers), writer_(dynamic_cast<BamletWriter*>(writer.get())),
+#ifdef EH_VERIFY_EXTENSION_CACHE
+          extensionCounters_(executor.workerCount()),
+#endif
           indexes_(analyzers.size()),
           recency_(analyzers.size() + 1), indexLimit_(std::min(analyzers.size(),
               executor.workerCount() > analyzers.size() / 8192 ? analyzers.size() : 8192 * executor.workerCount())),
@@ -344,6 +356,9 @@ public:
     {
         flush();
         executor_.wait();
+#ifdef EH_VERIFY_EXTENSION_CACHE
+        logExtensionCache();
+#endif
         for (auto& buffer : outputBuffers_)
             buffer.flush();
         collectCompleted();
@@ -482,8 +497,14 @@ private:
                     if (item.regionType == locus::RegionType::kTarget)
                     {
                         if (item.input)
+                        {
+#ifdef EH_VERIFY_EXTENSION_CACHE
+                            extension_cache::Scope scope(extensionTable_, extensionCounters_[worker].counts,
+                                item.input->extensionToken, chunk->locus, item.inputType == AnalyzerInputType::kMateOnly);
+#endif
                             item.alignments = aligner.alignSharedMates(item.firstRead(), item.secondRead(),
                                 item.read, item.mate, *selectors_[worker]);
+                        }
                         else
                             item.alignments = aligner.alignMates(
                                 *item.read, item.mate ? &*item.mate : nullptr, *selectors_[worker]);
@@ -548,11 +569,43 @@ private:
         }
     }
 
+#ifdef EH_VERIFY_EXTENSION_CACHE
+    void logExtensionCache() const
+    {
+        extension_cache::Counters total;
+        for (const auto& worker : extensionCounters_)
+        {
+            total.eligible += worker.counts.eligible;
+            total.hits += worker.counts.hits;
+            total.published += worker.counts.published;
+            total.evicted += worker.counts.evicted;
+            total.traceTooLarge += worker.counts.traceTooLarge;
+            total.busyLookups += worker.counts.busyLookups;
+            total.busyPublishes += worker.counts.busyPublishes;
+            total.shadowChecks += worker.counts.shadowChecks;
+            total.expandedHits += worker.counts.expandedHits;
+        }
+        spdlog::info("Pinned extension cache eligible={} hits={} published={} evicted={} trace_too_large={} "
+            "busy_lookups={} busy_publishes={} shadow_checks={} original_size_hits={} expanded_hits={}",
+            total.eligible, total.hits, total.published, total.evicted, total.traceTooLarge, total.busyLookups,
+            total.busyPublishes, total.shadowChecks, total.hits - total.expandedHits, total.expandedHits);
+    }
+#endif
+
     TaskExecutor& executor_;
     StreamingAnalyzers& analyzers_;
     BamletWriter* writer_;
     std::vector<BamletWriter::BatchBuffer> outputBuffers_;
     std::vector<std::unique_ptr<graphtools::AlignerSelector>> selectors_;
+#ifdef EH_VERIFY_EXTENSION_CACHE
+    extension_cache::Table extensionTable_;
+    struct WorkerExtensionCounters
+    {
+        extension_cache::Counters counts;
+        char padding[64]; // Keep hot counters from adjacent workers on separate cache lines.
+    };
+    std::vector<WorkerExtensionCounters> extensionCounters_;
+#endif
     std::unordered_map<size_t, std::shared_ptr<Chunk>> filling_, tails_;
     uint64_t nextNumber_ = 0;
     size_t bufferedItems_ = 0, bufferedCharge_ = 0;

@@ -116,7 +116,8 @@ namespace dagAligner
 
         template <typename QueryIt, typename TargetIt>
         void
-        init(QueryIt queryBegin, QueryIt queryEnd, TargetIt targetBegin, TargetIt targetEnd, const EdgeMap& edgeMap)
+        init(QueryIt queryBegin, QueryIt queryEnd, TargetIt targetBegin, TargetIt targetEnd, const EdgeMap& edgeMap,
+             std::size_t fullTargetLength = 0)
         {
             if (queryEnd == queryBegin)
             {
@@ -139,9 +140,12 @@ namespace dagAligner
             target_.clear();
             penaltyMatrix_.translateTarget(targetBegin, targetEnd, std::back_inserter(target_));
 
-            reset(edgeMap);
+            // A caller may pass a prefix of a certified chain while retaining
+            // the original edge map for traceback.
+            const bool linearPrefix = fullTargetLength > target_.size() && edgeMap.hasLinearChain(fullTargetLength);
+            reset(edgeMap, linearPrefix);
 
-            fill(edgeMap);
+            fill(edgeMap, linearPrefix);
         }
 
         typedef AlignMatrix::const_iterator const_iterator;
@@ -209,7 +213,7 @@ namespace dagAligner
         // Ensures:  every cell that fill, the endpoint scan or the traceback reads was written in the same call, so the
         //           observable results do not depend on the matrices' previous contents.
         // Reference: the same reset with every interior cell cleared (fillInterior = true).
-        void reset(const EdgeMap& edgeMap)
+        void reset(const EdgeMap& edgeMap, bool linearPrefix)
         {
             const int qLen = actualQueryLength_;
             const int tLen = target_.size();
@@ -236,7 +240,7 @@ namespace dagAligner
                 }
             }
 
-            const bool ordered = edgeMap.hasOrderedNodeSpans(tLen);
+            const bool ordered = linearPrefix || edgeMap.hasOrderedNodeSpans(tLen);
             v_.reset(qLen, tLen, !ordered);
             g_.resize((qLen + step - 1) / step * step);
             insertionLeft_.resize(std::size_t(tLen) + 1);
@@ -359,12 +363,15 @@ namespace dagAligner
         }
 
         // __attribute((noinline))
-        void fill(const EdgeMap& edgeMap)
+        void fill(const EdgeMap& edgeMap, bool linearPrefix)
         {
             const int qLen = actualQueryLength_;
             const int tLen = target_.size();
             keptRows_ = tLen;
-            const bool stopping = rowStop_ != RowStop::kOff && prepareRowStop(edgeMap, qLen, tLen);
+            const bool stopEnabled = rowStop_ != RowStop::kOff;
+            const bool linearStop = stopEnabled && (linearPrefix || edgeMap.hasLinearChain(tLen));
+            const bool stopping = linearStop || (stopEnabled && prepareRowStop(edgeMap, qLen, tLen));
+            const int linearShortfallCost = linearStop ? 7 * std::max(qLen - tLen, 0) : 0;
             // Every row pass covers whole blocks of step cells, as the padded rows allow.
             const int lanes = (qLen + step - 1) / step * step;
             int best = std::numeric_limits<int>::min();
@@ -397,8 +404,14 @@ namespace dagAligner
                 if (stopping && keptRows_ == tLen)
                 {
                     best = std::max(best, int(v_.at(qLen - 1, t)));
+                    // Later chain rows have path lengths from t + 2 to tLen. The minimum cost bound
+                    // comes from the length closest to qLen, with no possible endpoint in an empty suffix.
+                    const int suffixBound = linearStop
+                        ? (t + 1 == tLen ? std::numeric_limits<int>::max()
+                                         : 2 * std::max(t + 2 - qLen, 0) + linearShortfallCost)
+                        : rowStopBound_[t + 1];
                     // Strict: a later endpoint with the same cost would be co-optimal.
-                    if (rowStopBound_[t + 1] > 5 * qLen - best)
+                    if (suffixBound > 5 * qLen - best)
                     {
                         keptRows_ = t + 1;
                         // A shadow build fills every row and checks the dropped ones below.

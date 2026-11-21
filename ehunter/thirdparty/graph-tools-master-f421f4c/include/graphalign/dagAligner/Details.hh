@@ -495,6 +495,9 @@ namespace dagAligner
         typedef Operations::const_iterator const_iterator;
         const_iterator begin() const { return cigar_.begin(); }
         const_iterator end() const { return cigar_.end(); }
+#ifdef EH_VERIFY_EXTENSION_CACHE
+        void reserve(size_t count) { cigar_.reserve(count); }
+#endif
         void push_back(const Operation& op) { cigar_.push_back(op); }
         Operation pop_back()
         {
