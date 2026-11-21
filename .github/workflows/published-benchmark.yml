@@ -1,0 +1,45 @@
+name: Published benchmark
+on:
+  pull_request:
+    paths: ['benchmarks/published.json', '.github/workflows/published-benchmark.yml']
+  push:
+    branches: [main]
+    paths: ['benchmarks/published.json', '.github/workflows/published-benchmark.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: BioCode-Commons/BioCode-Commons.github.io
+          path: .publisher
+          persist-credentials: false
+      - name: Validate published data
+        env:
+          PROJECT: ${{ github.event.repository.name }}
+        run: python3 .publisher/scripts/benchmarks.py benchmarks/published.json "$PROJECT"
+      - name: Create short-lived website token
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        id: publisher
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510
+        with:
+          app-id: ${{ vars.BENCHMARK_APP_ID }}
+          private-key: ${{ secrets.BENCHMARK_APP_PRIVATE_KEY }}
+          owner: BioCode-Commons
+          repositories: BioCode-Commons.github.io
+          permission-actions: write
+      - name: Notify website
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          PUBLISH_TOKEN: ${{ steps.publisher.outputs.token }}
+        run: |
+          curl --fail-with-body --silent --show-error \
+            -X POST -H "Authorization: Bearer $PUBLISH_TOKEN" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            https://api.github.com/repos/BioCode-Commons/BioCode-Commons.github.io/actions/workflows/benchmarks.yml/dispatches \
+            -d '{"ref":"main"}'
