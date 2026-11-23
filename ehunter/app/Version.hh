@@ -33,6 +33,6 @@
 namespace ehunter
 {
 
-const std::string kProgramVersion = "NuExpansionHunter v1.0.0 (based on ExpansionHunter v5.0.0)";
+const std::string kProgramVersion = "NuExpansionHunter v1.1.0 (based on ExpansionHunter v5.0.0)";
 
 }

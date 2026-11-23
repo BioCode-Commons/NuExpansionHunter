@@ -702,11 +702,88 @@ void checkSearchOutcomes()
     matrix.init(shortQuery.begin(), shortQuery.end(), target.begin(), target.end(), edges, 0, 0, &search);
     if (search.outcome != BudgetSearch::kNotAttempted) throw std::runtime_error("Eligibility outcome differs");
 }
+
+// Compare forward and reverse clipped-chain solves with a full-target dense oracle
+// whose row stop is off. Check retained length, score and ordered raw traceback
+// ties, then check the wrapper's score and alignment count.
+void checkLinearTargetPrefix()
+{
+    using namespace graphalign::dagAligner;
+    constexpr int split = 32;
+    const BaseMatchingPenaltyMatrix penalty(5, -4);
+    Aligner<AffineAlignMatrixVectorized<BaseMatchingPenaltyMatrix, true>, false> reference(penalty, -8, -2);
+    Aligner<PinnedBudgetAlignMatrix, false> candidate(penalty, -8, -2);
+    PinnedBudgetAlignMatrix matrix(penalty, -8, -2);
+    CheckedPinnedAligner wrapper(5, -4, -8, -2);
+    for (bool suffix : { false, true })
+    {
+        std::string target = dna(30, suffix ? 513 : 314) + "CAAAT" + dna(477, suffix ? 147 : 655);
+        std::string query = target.substr(0, 70);
+        query.erase(32, 1); // Three tied deletions straddle the node boundary.
+        target[2] = 'N'; // Reference ambiguity and query ambiguity are asymmetric.
+        query[8] = 'X';
+        query[9] = static_cast<char>(::tolower(query[9]));
+        const int length = target.size();
+        const EdgeMap edges({{ split - 1, split }, { length, length }}, suffix ? std::vector<int>{1, 0}
+                                                                             : std::vector<int>{0, 1});
+        int mismatchCost = 0;
+        for (size_t i = 0; i < query.size(); ++i)
+            if (!checkIfReferenceBaseMatchesQueryBase(target[i], query[i]))
+                mismatchCost += 9;
+        const int keep = query.size() + mismatchCost / 2;
+        if (keep >= length || mismatchCost <= 9)
+            throw std::runtime_error("Linear target prefix witness is ineligible");
+
+        reference.align(query.begin(), query.end(), target.begin(), target.end(), edges);
+        std::vector<Cigar> expected;
+        Score second = 0;
+        const Score score = reference.backtrackAllPaths<false>(edges, expected, second);
+        if (expected.size() < 2)
+            throw std::runtime_error("Linear target prefix witness lacks traceback ties");
+
+        for (bool skip : { false, true })
+        {
+            BudgetSearch search;
+            search.skip = skip;
+            search.bestEndpointsOnly = true;
+            matrix.init(query.begin(), query.end(), target.begin(), target.end(), edges, 0, 0, &search);
+            const int expectedEnd = graphtools::verify::kRowStop && !graphtools::verify::kShadow ? keep : length;
+            if (matrix.alignEnd() != expectedEnd)
+                throw std::runtime_error("Linear target prefix did not retain the proven number of rows");
+            candidate.alignWithCostGuidance(query.begin(), query.end(), target.begin(), target.end(), edges, 0, 0, &search);
+            std::vector<Cigar> actual;
+            if (candidate.backtrackAllPaths<false>(edges, actual, second) != score || actual != expected)
+                throw std::runtime_error("Linear target prefix changed the ordered raw tracebacks");
+        }
+
+        std::string first = target.substr(0, split), last = target.substr(split);
+        if (suffix)
+        {
+            std::reverse(first.begin(), first.end());
+            std::reverse(last.begin(), last.end());
+            std::swap(first, last);
+            std::reverse(query.begin(), query.end());
+        }
+        Graph graph(2);
+        graph.setNodeSeq(0, first);
+        graph.setNodeSeq(1, last);
+        graph.addEdge(0, 1);
+        const int position = suffix ? last.size() : 0;
+        const Path seed(&graph, position, { suffix ? NodeId(1) : NodeId(0) }, position);
+        int wrapperScore = 0;
+        const auto results = suffix ? wrapper.suffixAlign(seed, query, length, wrapperScore)
+                                    : wrapper.prefixAlign(seed, query, length, wrapperScore);
+        if (wrapperScore != score || results.size() != expected.size())
+            throw std::runtime_error("Linear target prefix changed wrapper score or alignment count");
+    }
+}
+
 int main()
 {
     try
     {
         checkSearchOutcomes();
+        checkLinearTargetPrefix();
         Digest out; out.dump = true;
         const auto count = verifyPinned(out) + verifyAlgorithmCases(out);
         std::cout << "pinned-cases " << count << '\n';

@@ -27,7 +27,8 @@ repeatable dependency include directories. --package-build/EH_PACKAGE_BUILD and
 --verification-build SETTINGS=DIRECTORY is repeatable: each directory must have
 been configured with -DEH_VERIFY="SETTINGS". EH_VERIFICATION_BUILDS can contain a
 JSON object mapping settings to directories. Supply matching static libraries;
-the script never builds ExpansionHunter. --library and --v5-library override the
+every supplied policy must match a probe. The script never builds ExpansionHunter.
+--library and --v5-library override the
 package and v5 library lists, respectively (repeat for each library); environment
 alternatives EH_PACKAGE_LIBRARIES and EH_V5_LIBRARIES are path-separated lists.
 --dependency-library/EH_DEPENDENCY_LIBRARIES adds libraries shared by all builds.
@@ -57,11 +58,12 @@ import tempfile
 GT = Path("ehunter/thirdparty/graph-tools-master-f421f4c")
 PROBES = (
     ("insertion_scan_oracle", "SIMD=SCALAR"),
-    ("pinned_align_cases", "BUDGET_SEARCH=NEVER;FAST_PATHS=OFF"),
-    ("ungapped_fastpath_cases", "FAST_PATHS=OFF;SIMD=SCALAR"),
+    ("pinned_align_cases", "BUDGET_SEARCH=NEVER;FAST_PATHS=OFF;EXTENSION_CACHE=OFF"),
+    ("ungapped_fastpath_cases", "FAST_PATHS=OFF;EXTENSION_CACHE=OFF;SIMD=SCALAR"),
     ("dense_dp_cases", None),
     ("budget_matrix_state", "BUDGET_SEARCH=ALWAYS;FUSED_ROWS=OFF"),
-    ("pinned_wrapper_cases", "GRAPH_CACHE=OFF;FAST_PATHS=OFF"),
+    ("pinned_wrapper_cases", "GRAPH_CACHE=OFF;FAST_PATHS=OFF;EXTENSION_CACHE=OFF"),
+    ("extension_cache_cases", "EXTENSION_CACHE=OFF;BUDGET_SEARCH=ON"),
     ("graph_has_edge_oracle", "LAYOUT=REFERENCE"),
     ("kmer_index_oracle", "LAYOUT=REFERENCE"),
     ("orientation_oracle", None),
@@ -101,15 +103,28 @@ def main():
     args = parser.parse_args()
     if args.package_build is None or args.v5_build is None:
         parser.error("Supply --package-build and --v5-build (or their environment variables)")
+    required_policies = {frozenset(settings(policy).items()): policy for _, policy in PROBES if policy}
+    policies = {}
+    try:
+        supplied = list(json.loads(os.environ.get("EH_VERIFICATION_BUILDS", "{}")).items())
+        supplied += [value.rsplit("=", 1) for value in args.verification_build]
+        for key, path in supplied:
+            policy = required_policies.get(frozenset(settings(key).items()))
+            if policy is None:
+                parser.error("Unused verification build: " + key)
+            if policy in policies:
+                parser.error("Duplicate verification build: " + key)
+            policies[policy] = Path(path).resolve()
+    except (AttributeError, TypeError, ValueError) as error:
+        parser.error("Invalid verification build: " + str(error))
+    missing = [policy for policy in required_policies.values() if policy not in policies]
+    if missing:
+        parser.error("Missing verification builds: " + ", ".join(missing))
     source = Path(__file__).resolve().parents[3]
     verification = source / "ehunter/verification"
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
     package_build, v5_build = args.package_build.resolve(), args.v5_build.resolve()
-    policies = {key: Path(value).resolve() for key, value in json.loads(os.environ.get("EH_VERIFICATION_BUILDS", "{}")).items()}
-    for value in args.verification_build:
-        key, path = value.rsplit("=", 1)
-        policies[key] = Path(path).resolve()
     default_names = [Path("libExpansionHunterLib.a"), GT.relative_to("ehunter") / "libgraphtools.a"]
     package_libraries = [p.resolve() for p in args.library] or [package_build / p for p in default_names]
     v5_libraries = [p.resolve() for p in args.v5_library] or [v5_build / p for p in default_names]
@@ -146,7 +161,7 @@ def main():
                                 raise ValueError("Cannot create v5.0.0 worktree")
                             tree, libraries = v5_source, v5_libraries
                         else:
-                            build = next(path for key, path in policies.items() if settings(key) == settings(policy))
+                            build = policies[policy]
                             if cache_policy(build) != settings(policy):
                                 raise ValueError("Policy build EH_VERIFY does not match " + policy)
                             libraries = [build / p.relative_to(package_build) for p in package_libraries]
@@ -154,7 +169,7 @@ def main():
                         for library in libraries:
                             if not library.is_file():
                                 raise ValueError("Missing library " + str(library))
-                    except (ValueError, OSError, StopIteration) as error:
+                    except (ValueError, OSError) as error:
                         (out / (name + "-" + side + "-configuration.stderr")).write_text(str(error) + "\n")
                         build_failed = True
                         continue

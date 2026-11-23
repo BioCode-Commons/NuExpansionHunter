@@ -25,9 +25,10 @@
 // extremes of every policy. A release build defines none of the EH_VERIFY_*
 // macros. They are set only through the CMake option EH_VERIFY, for example
 // -DEH_VERIFY="SIMD=SCALAR;BUDGET_SEARCH=NEVER", which defines
-// EH_VERIFY_<NAME>=EH_VERIFY_<VALUE>. Kernel code reads the constants below and
-// never tests the macros directly. ehunter/verification/README.md lists the
-// switches with the kernels each one covers.
+// EH_VERIFY_<NAME>=EH_VERIFY_<VALUE>. Kernel code reads the constants below.
+// EXTENSION_CACHE is also tested with #if so that OFF compiles out the trace
+// table and its scope. ehunter/verification/README.md lists the switches with
+// the kernels each one covers.
 #pragma once
 
 #include <string>
@@ -66,6 +67,9 @@
 #ifndef EH_VERIFY_LAYOUT
 #define EH_VERIFY_LAYOUT EH_VERIFY_DEFAULT
 #endif
+#ifndef EH_VERIFY_EXTENSION_CACHE
+#define EH_VERIFY_EXTENSION_CACHE EH_VERIFY_DEFAULT
+#endif
 #ifndef EH_VERIFY_SHADOW
 #define EH_VERIFY_SHADOW EH_VERIFY_DEFAULT
 #endif
@@ -78,8 +82,8 @@
 #error "EH_VERIFY: FAST_PATHS must be OFF"
 #endif
 #if EH_VERIFY_BUDGET_SEARCH != EH_VERIFY_DEFAULT && EH_VERIFY_BUDGET_SEARCH != EH_VERIFY_NEVER                       \
-    && EH_VERIFY_BUDGET_SEARCH != EH_VERIFY_ALWAYS
-#error "EH_VERIFY: BUDGET_SEARCH must be NEVER or ALWAYS"
+    && EH_VERIFY_BUDGET_SEARCH != EH_VERIFY_ALWAYS && EH_VERIFY_BUDGET_SEARCH != EH_VERIFY_ON
+#error "EH_VERIFY: BUDGET_SEARCH must be ON, NEVER or ALWAYS"
 #endif
 #if EH_VERIFY_ROW_STOP != EH_VERIFY_DEFAULT && EH_VERIFY_ROW_STOP != EH_VERIFY_OFF
 #error "EH_VERIFY: ROW_STOP must be OFF"
@@ -100,6 +104,10 @@
 #error "EH_VERIFY: SHADOW must be ON"
 #endif
 
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_DEFAULT && EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+#error "EH_VERIFY: EXTENSION_CACHE must be OFF"
+#endif
+
 namespace graphtools
 {
 namespace verify
@@ -111,10 +119,13 @@ constexpr bool kScalarOnly = EH_VERIFY_SIMD == EH_VERIFY_SCALAR;
 constexpr bool kNoAvx2 = EH_VERIFY_SIMD == EH_VERIFY_SCALAR || EH_VERIFY_SIMD == EH_VERIFY_SSE42;
 // SIMD=AVX2: no AVX-512 path; AVX2 paths still require the CPU to support AVX2.
 constexpr bool kNoAvx512 = EH_VERIFY_SIMD != EH_VERIFY_DEFAULT;
-// FAST_PATHS=OFF: every extension goes to the DP with no proven minimum cost (K-09, K-11, K-12, K-17).
+// FAST_PATHS=OFF: use DP without a proven minimum cost (K-09, K-11, K-12, K-17).
+// Also set EXTENSION_CACHE=OFF so cached traces cannot bypass the DP.
 constexpr bool kFastPaths = EH_VERIFY_FAST_PATHS == EH_VERIFY_DEFAULT;
-// BUDGET_SEARCH=NEVER: every eligible call uses the dense matrix (K-07, K-10).
-constexpr bool kBudgetSearchNever = EH_VERIFY_BUDGET_SEARCH == EH_VERIFY_NEVER;
+// Release builds use the measured dense policy. ON restores adaptive budget search;
+// NEVER explicitly selects dense fallback (K-07, K-10).
+constexpr bool kBudgetSearchNever = EH_VERIFY_BUDGET_SEARCH == EH_VERIFY_DEFAULT
+    || EH_VERIFY_BUDGET_SEARCH == EH_VERIFY_NEVER;
 // BUDGET_SEARCH=ALWAYS: every eligible call searches, with no skip, no measured cap and no cost hint (K-10).
 constexpr bool kBudgetSearchAlways = EH_VERIFY_BUDGET_SEARCH == EH_VERIFY_ALWAYS;
 // ROW_STOP=OFF: the dense fill computes every row (K-05).
@@ -123,18 +134,21 @@ constexpr bool kRowStop = EH_VERIFY_ROW_STOP == EH_VERIFY_DEFAULT;
 constexpr bool kFusedRows = EH_VERIFY_FUSED_ROWS == EH_VERIFY_DEFAULT;
 // GRAPH_CACHE=OFF: the target graph is prepared afresh for every call (K-13).
 constexpr bool kGraphCache = EH_VERIFY_GRAPH_CACHE == EH_VERIFY_DEFAULT;
-// FOLD_SKIP=OFF: the canonical fold runs every step (K-21).
+// FOLD_SKIP=OFF: execute every canonical fold step (K-21). Also set FAST_PATHS=OFF
+// for exhaustive product construction before the reference fold.
 constexpr bool kFoldSkip = EH_VERIFY_FOLD_SKIP == EH_VERIFY_DEFAULT;
 // LAYOUT=REFERENCE: hash layout for every k-mer index, owned catalog in streaming (K-15, K-28).
 constexpr bool kReferenceLayout = EH_VERIFY_LAYOUT == EH_VERIFY_REFERENCE;
 // SHADOW=ON: kernels with an in-tree reference also run it and abort on a difference (K-05, K-21, K-22, K-31).
 constexpr bool kShadow = EH_VERIFY_SHADOW == EH_VERIFY_ON;
+// EXTENSION_CACHE=OFF: solve every extension without cross-locus trace reuse.
+constexpr bool kExtensionCache = EH_VERIFY_EXTENSION_CACHE == EH_VERIFY_DEFAULT;
 
 constexpr bool kAnySet = EH_VERIFY_SIMD != EH_VERIFY_DEFAULT || EH_VERIFY_FAST_PATHS != EH_VERIFY_DEFAULT
     || EH_VERIFY_BUDGET_SEARCH != EH_VERIFY_DEFAULT || EH_VERIFY_ROW_STOP != EH_VERIFY_DEFAULT
     || EH_VERIFY_FUSED_ROWS != EH_VERIFY_DEFAULT || EH_VERIFY_GRAPH_CACHE != EH_VERIFY_DEFAULT
     || EH_VERIFY_FOLD_SKIP != EH_VERIFY_DEFAULT || EH_VERIFY_LAYOUT != EH_VERIFY_DEFAULT
-    || EH_VERIFY_SHADOW != EH_VERIFY_DEFAULT;
+    || EH_VERIFY_SHADOW != EH_VERIFY_DEFAULT || EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_DEFAULT;
 
 // Settings of this build, for the log; empty in a release build.
 inline std::string describeSettings()
@@ -145,7 +159,8 @@ inline std::string describeSettings()
     else if (kNoAvx2) add("SIMD=SSE42");
     else if (kNoAvx512) add("SIMD=AVX2");
     if (!kFastPaths) add("FAST_PATHS=OFF");
-    if (kBudgetSearchNever) add("BUDGET_SEARCH=NEVER");
+    if (EH_VERIFY_BUDGET_SEARCH == EH_VERIFY_NEVER) add("BUDGET_SEARCH=NEVER");
+    if (EH_VERIFY_BUDGET_SEARCH == EH_VERIFY_ON) add("BUDGET_SEARCH=ON");
     if (kBudgetSearchAlways) add("BUDGET_SEARCH=ALWAYS");
     if (!kRowStop) add("ROW_STOP=OFF");
     if (!kFusedRows) add("FUSED_ROWS=OFF");
@@ -153,6 +168,7 @@ inline std::string describeSettings()
     if (!kFoldSkip) add("FOLD_SKIP=OFF");
     if (kReferenceLayout) add("LAYOUT=REFERENCE");
     if (kShadow) add("SHADOW=ON");
+    if (!kExtensionCache) add("EXTENSION_CACHE=OFF");
     return text;
 }
 }

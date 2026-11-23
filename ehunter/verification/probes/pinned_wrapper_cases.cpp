@@ -210,6 +210,68 @@ void rangeCases()
     });
 }
 
+// Check that forward and reverse CIGAR traceback preserve seed coordinates and
+// repeat visits in both graph layouts, and reject a seed disconnected by graph assignment.
+void tracebackPathCases()
+{
+    const auto makeGraph = [](bool connected) -> Graph {
+        Graph graph(5);
+        graph.setNodeSeq(0, "TTGG");
+        graph.setNodeSeq(1, "CA");
+        graph.setNodeSeq(2, "GGG");
+        graph.setNodeSeq(3, "AG");
+        graph.setNodeSeq(4, "TCCA");
+        graph.addEdge(0, 1);
+        graph.addEdge(1, 1);
+        if (connected)
+            graph.addEdge(1, 2);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 3);
+        graph.addEdge(3, 4);
+        return graph;
+    };
+
+    Graph graph = makeGraph(true);
+    bothStorage(graph, [](const Graph& stored, const std::string&) {
+        // Non-default scoring sends both extensions through CIGAR traceback.
+        CheckedPinnedAligner aligner(6, -4, -8, -2);
+        const Path seed(&stored, 0, { 1, 2, 3 }, 2);
+        int score = -773;
+        const auto prefix = aligner.prefixAlign(seed, "AGAGTC", 12, score);
+        if (prefix.size() != 1 || score != 36 || !(prefix.front().first == Path(&stored, 0, { 1, 2, 3, 3, 3, 4 }, 2))
+            || prefix.front().second.referenceStart() != seed.length() || prefix.front().second.generateCigar() != "6M")
+            throw std::runtime_error("prefix traceback changed the seed or repeat visits");
+        const auto suffix = aligner.suffixAlign(seed, "GGCACA", 12, score);
+        if (suffix.size() != 1 || score != 36 || !(suffix.front().first == Path(&stored, 2, { 0, 1, 1, 1, 2, 3 }, 2))
+            || suffix.front().second.referenceStart() != 0 || suffix.front().second.generateCigar() != "6M")
+            throw std::runtime_error("suffix traceback changed the seed or repeat visits");
+    });
+
+    // A seed can become disconnected after a graph assignment. The oracle
+    // compares the first failing operation's diagnostic and the published score.
+    CheckedPinnedAligner aligner(6, -4, -8, -2);
+    const Path seed(&graph, 0, { 1, 2, 3 }, 2);
+    graph = makeGraph(false);
+    for (bool suffix : { false, true })
+    {
+        int score = -773;
+        try
+        {
+            if (suffix)
+                aligner.suffixAlign(seed, "GGCACA", 12, score);
+            else
+                aligner.prefixAlign(seed, "AGAGTC", 12, score);
+        }
+        catch (const std::runtime_error& error)
+        {
+            if (std::string(error.what()).find("Path is not connected") != std::string::npos)
+                continue;
+            throw;
+        }
+        throw std::runtime_error("traceback accepted a disconnected seed");
+    }
+}
+
 void boundaryAndScoringCases()
 {
     for (int targetLength : { 16, 17, 3251, 3252 })
@@ -305,6 +367,7 @@ int main()
     {
         terminalCases();
         rangeCases();
+        tracebackPathCases();
         boundaryAndScoringCases();
         smallGraphBoundaryCases();
         std::cout << "TOTAL " << cases << '\n';

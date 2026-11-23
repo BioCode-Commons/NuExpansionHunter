@@ -45,12 +45,19 @@
 #include "sample/StreamingPairSource.hh"
 #include "sample/ParallelPairSource.hh"
 #include "spdlog/spdlog.h"
+#include "graphutils/VerifyPolicy.hh"
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+#include "graphutils/ExtensionTraceCache.hh"
+#endif
 
 namespace ehunter
 {
 namespace
 {
 using Analyzer = locus::LocusEvidence;
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+namespace extension_cache = graphtools::extension_cache;
+#endif
 
 // Construct a locus on the worker that first needs its indexes. The catalog
 // drives read discovery independently, including loci with no admitted pairs.
@@ -130,6 +137,9 @@ class OrderedLocusPipeline
     {
         Input(PackedRead& first, PackedRead& second) : read(first.releaseRead()), mate(second.releaseRead()) {}
         Read read, mate;
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+        const uint64_t extensionToken = extension_cache::nextPairToken();
+#endif
     };
     struct Item
     {
@@ -482,8 +492,14 @@ private:
                     if (item.regionType == locus::RegionType::kTarget)
                     {
                         if (item.input)
+                        {
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+                            extension_cache::Scope scope(extensionTable_, item.input->extensionToken, chunk->locus,
+                                item.inputType == AnalyzerInputType::kMateOnly);
+#endif
                             item.alignments = aligner.alignSharedMates(item.firstRead(), item.secondRead(),
                                 item.read, item.mate, *selectors_[worker]);
+                        }
                         else
                             item.alignments = aligner.alignMates(
                                 *item.read, item.mate ? &*item.mate : nullptr, *selectors_[worker]);
@@ -553,6 +569,9 @@ private:
     BamletWriter* writer_;
     std::vector<BamletWriter::BatchBuffer> outputBuffers_;
     std::vector<std::unique_ptr<graphtools::AlignerSelector>> selectors_;
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+    extension_cache::Table extensionTable_;
+#endif
     std::unordered_map<size_t, std::shared_ptr<Chunk>> filling_, tails_;
     uint64_t nextNumber_ = 0;
     size_t bufferedItems_ = 0, bufferedCharge_ = 0;

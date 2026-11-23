@@ -26,8 +26,14 @@
 
 #include "locus/LocusAligner.hh"
 
+#include <stdexcept>
+
 #include "alignment/AlignmentFilters.hh"
 #include "alignment/OperationsOnAlignments.hh"
+#include "graphutils/VerifyPolicy.hh"
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+#include "graphutils/ExtensionTraceCache.hh"
+#endif
 
 namespace ehunter
 {
@@ -85,6 +91,7 @@ void LocusAligner::writeAlignedPair(const Read& read, const Read* mate, const Al
 }
 
 template <typename Writable>
+// Contract [K-39]: return the canonical alignment from the scored seed extensions.
 LocusAligner::OptionalAlign LocusAligner::alignRead(
     const Read& read, Writable writable, graphtools::AlignerSelector& alignerSelector) const
 {
@@ -100,8 +107,19 @@ LocusAligner::OptionalAlign LocusAligner::alignRead(
     {
         return {};
     }
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+    if (auto* scope = graphtools::extension_cache::currentScope())
+        scope->key.reversedRead = oriented != &read;
+#endif
 
-    auto readAligns = aligner_.align(oriented->sequence(), alignerSelector);
+    // In an equal-path product every intersection leaves the first alignment
+    // unchanged or ends the fold by returning that first alignment.
+    auto selection = aligner_.alignForCanonicalSelection(oriented->sequence(), alignerSelector);
+    auto& readAligns = selection.first;
+    if (graphtools::verify::kShadow && selection.second
+        && !(readAligns.front()
+             == computeCanonicalAlignmentReference(aligner_.align(oriented->sequence(), alignerSelector))))
+        throw std::logic_error("Canonical extension product differs from exhaustive alignment");
     if (readAligns.empty())
     {
         return {};
@@ -123,11 +141,18 @@ LocusAligner::AlignedPair LocusAligner::alignMates(
     return filterPair(read.sequence().size(), std::move(first), std::move(second));
 }
 
+// Align both physical mates while keeping each mate and orientation distinct for trace reuse.
 LocusAligner::AlignedPair LocusAligner::alignSharedMates(const Read& read, const Read* mate,
     boost::optional<Read>& reversedRead, boost::optional<Read>& reversedMate,
     graphtools::AlignerSelector& alignerSelector) const
 {
     auto first = alignRead(read, [&]() -> Read& { reversedRead.emplace(read); return *reversedRead; }, alignerSelector);
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+    // A second read in a shared item always comes from the physical mate
+    // slot of Input. BAM first-mate flags can be identical for both records.
+    if (auto* scope = graphtools::extension_cache::currentScope())
+        scope->key.mateSlot = true;
+#endif
     auto second = mate ? alignRead(*mate, [&]() -> Read& {
         reversedMate.emplace(*mate);
         return *reversedMate;

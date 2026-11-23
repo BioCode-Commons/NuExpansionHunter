@@ -144,6 +144,11 @@ public:
      */
     std::list<GraphAlignment> align(const std::string& query, AlignerSelector& alignerSelector) const;
 
+    // For callers that take the smallest alignment from an equal-path product.
+    // The flag reports whether the exhaustive list was replaced with that one alignment.
+    std::pair<std::list<GraphAlignment>, bool>
+    alignForCanonicalSelection(const std::string& query, AlignerSelector& alignerSelector) const;
+
     /**
      * Extends a seed path corresponding to a perfect match to the query sequence to full-length alignments
      *
@@ -180,6 +185,12 @@ public:
         AlignerSelector& alignerSelector) const;
 
 private:
+    std::list<GraphAlignment>
+    alignImpl(const std::string& query, AlignerSelector& alignerSelector, bool* selectedProduct) const;
+    std::list<GraphAlignment> extendSeedToFullAlignmentsImpl(
+        Path seed_path, const std::string& query, size_t seed_start_on_query, AlignerSelector& alignerSelector,
+        bool* selectedProduct) const;
+
     const size_t kmer_len_;
     const size_t padding_len_;
     const int32_t seed_affix_trim_len_;

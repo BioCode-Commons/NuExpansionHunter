@@ -3,199 +3,199 @@
   "project": "NuExpansionHunter",
   "evidence_url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/867b8c82be2f6434547652cb446f40d1edb0b8d3/docs/08_Benchmark.md",
   "rss_unit": "GiB",
-  "memory_metric": "Peak RAM",
-  "rss_scope": "Peak RAM as reported in the source, which does not specify the accounting method.",
-  "time_scope": "Matched whole-genome streaming runs; source times in minutes converted to seconds. The report does not give a separate index-build time.",
+  "memory_metric": "Peak RSS",
+  "rss_scope": "GNU time maximum resident set size, converted to GiB. Four 8-thread v5 control values use the published rounded measurements.",
+  "time_scope": "Elapsed wall time for matched whole-genome streaming invocations, in seconds. Index construction has no separate timing in this comparison.",
   "rows": [
     {
       "dataset": "ERR1955394",
       "resources": "8 threads",
       "baseline_seconds": 10618.2,
-      "candidate_seconds": 1429.2,
+      "candidate_seconds": 1082.64,
       "baseline_rss": 72.02,
-      "candidate_rss": 8.72
+      "candidate_rss": 8.781311
     },
     {
       "dataset": "ERR1955394",
       "resources": "16 threads",
-      "baseline_seconds": 5806.8,
-      "candidate_seconds": 723.0,
-      "baseline_rss": 84.05,
-      "candidate_rss": 10.55
+      "baseline_seconds": 5807.0,
+      "candidate_seconds": 549.78,
+      "baseline_rss": 84.051369,
+      "candidate_rss": 10.609516
     },
     {
       "dataset": "ERR1955394",
       "resources": "32 threads",
       "baseline_seconds": 5121.0,
-      "candidate_seconds": 364.2,
-      "baseline_rss": 155.39,
-      "candidate_rss": 14.25
+      "candidate_seconds": 278.21,
+      "baseline_rss": 155.388134,
+      "candidate_rss": 14.310242
     },
     {
       "dataset": "ERR1955395",
       "resources": "8 threads",
       "baseline_seconds": 13237.8,
-      "candidate_seconds": 1753.2,
+      "candidate_seconds": 1272.89,
       "baseline_rss": 72.21,
-      "candidate_rss": 8.73
+      "candidate_rss": 8.794327
     },
     {
       "dataset": "ERR1955395",
       "resources": "16 threads",
       "baseline_seconds": 7542.0,
-      "candidate_seconds": 885.0,
-      "baseline_rss": 82.2,
-      "candidate_rss": 10.58
+      "candidate_seconds": 647.08,
+      "baseline_rss": 82.203667,
+      "candidate_rss": 10.637611
     },
     {
       "dataset": "ERR1955395",
       "resources": "32 threads",
-      "baseline_seconds": 6427.2,
-      "candidate_seconds": 445.2,
-      "baseline_rss": 164.21,
-      "candidate_rss": 14.26
+      "baseline_seconds": 6427.0,
+      "candidate_seconds": 327.54,
+      "baseline_rss": 164.208183,
+      "candidate_rss": 14.337749
     },
     {
       "dataset": "ERR1955396",
       "resources": "8 threads",
       "baseline_seconds": 12306.0,
-      "candidate_seconds": 1652.4,
+      "candidate_seconds": 1221.69,
       "baseline_rss": 72.09,
-      "candidate_rss": 8.74
+      "candidate_rss": 8.805531
     },
     {
       "dataset": "ERR1955396",
       "resources": "16 threads",
-      "baseline_seconds": 6553.8,
-      "candidate_seconds": 832.8,
-      "baseline_rss": 72.51,
-      "candidate_rss": 10.54
+      "baseline_seconds": 6554.0,
+      "candidate_seconds": 619.66,
+      "baseline_rss": 72.506958,
+      "candidate_rss": 10.611465
     },
     {
       "dataset": "ERR1955396",
       "resources": "32 threads",
-      "baseline_seconds": 5674.8,
-      "candidate_seconds": 417.0,
-      "baseline_rss": 148.1,
-      "candidate_rss": 14.15
+      "baseline_seconds": 5675.0,
+      "candidate_seconds": 311.64,
+      "baseline_rss": 148.102196,
+      "candidate_rss": 14.252876
     },
     {
       "dataset": "ERR1955398",
       "resources": "8 threads",
       "baseline_seconds": 14452.8,
-      "candidate_seconds": 2007.6,
+      "candidate_seconds": 1436.9,
       "baseline_rss": 72.1,
-      "candidate_rss": 8.91
+      "candidate_rss": 8.973064
     },
     {
       "dataset": "ERR1955398",
       "resources": "16 threads",
-      "baseline_seconds": 7732.2,
-      "candidate_seconds": 1012.2,
-      "baseline_rss": 74.74,
-      "candidate_rss": 10.75
+      "baseline_seconds": 7732.0,
+      "candidate_seconds": 728.93,
+      "baseline_rss": 74.740791,
+      "candidate_rss": 10.805775
     },
     {
       "dataset": "ERR1955398",
       "resources": "32 threads",
-      "baseline_seconds": 6919.8,
-      "candidate_seconds": 507.0,
-      "baseline_rss": 163.64,
-      "candidate_rss": 14.4
+      "baseline_seconds": 6920.0,
+      "candidate_seconds": 365.54,
+      "baseline_rss": 163.64064,
+      "candidate_rss": 14.468472
     },
     {
       "dataset": "SRR21753324",
       "resources": "8 threads",
-      "baseline_seconds": 11299.2,
-      "candidate_seconds": 1416.0,
-      "baseline_rss": 73.54,
-      "candidate_rss": 9.59
+      "baseline_seconds": 11299.0,
+      "candidate_seconds": 1133.96,
+      "baseline_rss": 73.536243,
+      "candidate_rss": 9.657429
     },
     {
       "dataset": "SRR21753324",
       "resources": "16 threads",
-      "baseline_seconds": 6538.2,
-      "candidate_seconds": 719.4,
-      "baseline_rss": 107.77,
-      "candidate_rss": 11.4
+      "baseline_seconds": 6538.0,
+      "candidate_seconds": 579.86,
+      "baseline_rss": 107.767994,
+      "candidate_rss": 11.478748
     },
     {
       "dataset": "SRR21753325",
       "resources": "8 threads",
-      "baseline_seconds": 10420.2,
-      "candidate_seconds": 1341.0,
-      "baseline_rss": 72.76,
-      "candidate_rss": 9.47
+      "baseline_seconds": 10420.0,
+      "candidate_seconds": 1061.99,
+      "baseline_rss": 72.758118,
+      "candidate_rss": 9.534714
     },
     {
       "dataset": "SRR21753325",
       "resources": "16 threads",
-      "baseline_seconds": 6217.2,
-      "candidate_seconds": 679.8,
-      "baseline_rss": 105.85,
-      "candidate_rss": 11.27
+      "baseline_seconds": 6217.0,
+      "candidate_seconds": 543.73,
+      "baseline_rss": 105.854225,
+      "candidate_rss": 11.354824
     },
     {
       "dataset": "SRR21753326",
       "resources": "8 threads",
-      "baseline_seconds": 10657.8,
-      "candidate_seconds": 1344.0,
-      "baseline_rss": 72.65,
-      "candidate_rss": 9.07
+      "baseline_seconds": 10658.0,
+      "candidate_seconds": 1055.67,
+      "baseline_rss": 72.651821,
+      "candidate_rss": 9.142826
     },
     {
       "dataset": "SRR21753326",
       "resources": "16 threads",
-      "baseline_seconds": 6085.8,
-      "candidate_seconds": 678.0,
-      "baseline_rss": 101.25,
-      "candidate_rss": 10.9
+      "baseline_seconds": 6086.0,
+      "candidate_seconds": 539.2,
+      "baseline_rss": 101.249748,
+      "candidate_rss": 10.978409
     },
     {
       "dataset": "SRR21753327",
       "resources": "8 threads",
       "baseline_seconds": 12378.0,
-      "candidate_seconds": 1543.2,
-      "baseline_rss": 80.88,
-      "candidate_rss": 12.62
+      "candidate_seconds": 1167.58,
+      "baseline_rss": 80.882015,
+      "candidate_rss": 12.703838
     },
     {
       "dataset": "SRR21753327",
       "resources": "16 threads",
-      "baseline_seconds": 6658.8,
-      "candidate_seconds": 783.6,
-      "baseline_rss": 82.34,
-      "candidate_rss": 14.42
+      "baseline_seconds": 6659.0,
+      "candidate_seconds": 599.98,
+      "baseline_rss": 82.34354,
+      "candidate_rss": 14.516945
     },
     {
       "dataset": "SRR21753328",
       "resources": "8 threads",
-      "baseline_seconds": 15205.2,
-      "candidate_seconds": 1931.4,
-      "baseline_rss": 76.89,
-      "candidate_rss": 11.25
+      "baseline_seconds": 15205.0,
+      "candidate_seconds": 1522.84,
+      "baseline_rss": 76.888569,
+      "candidate_rss": 11.305889
     },
     {
       "dataset": "SRR21753328",
       "resources": "16 threads",
-      "baseline_seconds": 8509.8,
-      "candidate_seconds": 977.4,
-      "baseline_rss": 110.27,
-      "candidate_rss": 13.05
+      "baseline_seconds": 8510.0,
+      "candidate_seconds": 773.16,
+      "baseline_rss": 110.266624,
+      "candidate_rss": 13.121998
     }
   ],
   "caption": [
     {
-      "text": "GangSTR hg38 v13 (832,152 loci) · 22 completed WGS comparisons on AMD EPYC 9634. Same thread count and CPU allocation for both tools. "
+      "text": "NuExpansionHunter v1.1.0 versus ExpansionHunter v5.0.0 · GangSTR hg38 v13 (832,152 loci) · 22 completed WGS comparisons on AMD EPYC 9634 with the same worker, input BAM, thread count, and CPU mask in each pair. "
     },
     {
-      "text": "November 19 benchmark",
+      "text": "November 23, 2026 benchmark",
       "url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/867b8c82be2f6434547652cb446f40d1edb0b8d3/docs/08_Benchmark.md"
     }
   ],
   "note": [
     {
-      "text": "Mean per-sample speedups were 7.69× at 8 threads (9 samples), 8.50× at 16 (9 samples), and 13.94× at 32 (4 samples). Eight additional 32-thread ExpansionHunter v5.0.0 runs hit the 172 GiB memory limit and are excluded. All 22 completed comparisons matched for VCF, JSON and decoded BAM records. Per-row speedups use the published times rounded to 0.01 min, so the last digit can differ from the report."
+      "text": "Mean per-sample speedups were 10.09× at 8 threads (9 samples), 11.06× at 16 (9 samples), and 18.79× at 32 (4 samples). Eight additional 32-thread ExpansionHunter v5.0.0 runs hit the 172 GiB memory cap and are excluded. All 22 completed comparisons matched the VCF, JSON, BAM header, and decoded BAM record multiset. The four 8-thread control baselines use the published rounded v5 measurements."
     }
   ],
   "display": {

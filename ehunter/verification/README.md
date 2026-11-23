@@ -29,7 +29,7 @@ the unused low nibble of an odd-length sequence is immaterial to decoded records
 Evidence rows must fit a 16-bit best-cell index and fewer than 2^32 cells per locus.
 The argument composes alignment equivalence (K-01–K-14), read equivalence
 (K-15–K-23), locus equivalence (K-24–K-29, K-34–K-35), and output equivalence
-(K-30–K-33, K-36). See [OBLIGATIONS.md](OBLIGATIONS.md) for individual contracts.
+(K-30–K-33, K-36), with certified alignment extensions (K-37–K-39). See [OBLIGATIONS.md](OBLIGATIONS.md) for individual contracts.
 
 ## Trusted base
 
@@ -45,11 +45,11 @@ set does not establish an unbounded equivalence claim.
 
 | Kind | Definition | Location |
 | --- | --- | --- |
-| R1 | Scalar pure function or restated v5 loop | Beside the optimized kernel |
-| R2 | Executable v5 computation retained by the product | Dense matrix, general edge builder, owned catalog, serial paths |
-| R3 | v5 text with namespace, include and necessary type adaptors | `reference/` |
+| Scalar reference | Scalar pure function or restated v5 loop | Beside the optimized kernel |
+| In-tree reference | Executable v5 computation retained by the product | Dense matrix, general edge builder, owned catalog, serial paths |
+| Re-hosted reference | v5 text with namespace, include and necessary type adaptors | `reference/` |
 
-The R3 matrix uses the R3 `StrAlign` calculator and filter, so it does not share the
+The re-hosted matrix uses the re-hosted `StrAlign` calculator and filter, so it does not share the
 optimized summary calculation. `JsonWriter_v5.hh` extracts the whole-document
 `JsonWriter::write` body; its callable adaptor returns a string to the unit test.
 The variant visitors remain shared. `check_reference.sh` records every upstream
@@ -86,6 +86,13 @@ build uses, for example, `-DEH_VERIFY="SIMD=SCALAR;BUDGET_SEARCH=NEVER"`.
 Compile the libraries and probes with matching switches; changing only a probe's
 flags does not switch a kernel compiled into a library.
 
+The verification scripts need the local upstream `v5.0.0` tag. Fetch it if
+it is missing.
+
+```sh
+git fetch https://github.com/Illumina/ExpansionHunter.git 'refs/tags/v5.0.0:refs/tags/v5.0.0'
+```
+
 ```sh
 bash ehunter/verification/scripts/run_proofs.sh
 bash ehunter/verification/scripts/check_reference.sh
@@ -93,10 +100,11 @@ python3 ehunter/verification/scripts/run_probes.py --help
 python3 ehunter/verification/scripts/run_probes.py \
   --package-build build --v5-build build-v5 --out probe-output \
   --verification-build 'SIMD=SCALAR=build-scalar' \
-  --verification-build 'BUDGET_SEARCH=NEVER;FAST_PATHS=OFF=build-dense' \
-  --verification-build 'FAST_PATHS=OFF;SIMD=SCALAR=build-fastpaths' \
+  --verification-build 'BUDGET_SEARCH=NEVER;FAST_PATHS=OFF;EXTENSION_CACHE=OFF=build-dense' \
+  --verification-build 'FAST_PATHS=OFF;EXTENSION_CACHE=OFF;SIMD=SCALAR=build-fastpaths' \
   --verification-build 'BUDGET_SEARCH=ALWAYS;FUSED_ROWS=OFF=build-general' \
-  --verification-build 'GRAPH_CACHE=OFF;FAST_PATHS=OFF=build-uncached' \
+  --verification-build 'GRAPH_CACHE=OFF;FAST_PATHS=OFF;EXTENSION_CACHE=OFF=build-uncached' \
+  --verification-build 'EXTENSION_CACHE=OFF;BUDGET_SEARCH=ON=build-uncached-adaptive' \
   --verification-build 'LAYOUT=REFERENCE=build-layout'
 ```
 
@@ -104,11 +112,18 @@ Prepare each supplied policy build with exactly the corresponding `EH_VERIFY`
 value; all library paths, dependency includes, compiler and linker flags are
 arguments or environment variables documented in the runner. The runner builds
 only probes against these supplied libraries. It creates and removes a detached
-v5.0.0 worktree for probes using v5 APIs. Package-only APIs use in-process oracles
-and compare default with the specified policy build. One line per probe reports
+v5.0.0 worktree for probes using v5 APIs. For K-38, `pinned_align_cases` compares
+the result with an in-process dense oracle that fills the full target with row
+stopping off. The runner also compares the package probe with the
+`BUDGET_SEARCH=NEVER;FAST_PATHS=OFF;EXTENSION_CACHE=OFF` policy build, which
+still has row stopping enabled. At fixture scope, compare package outputs with
+a `ROW_STOP=OFF;FOLD_SKIP=OFF` build to exercise full-target fills.
+For K-37, the cache probe compares cached dense and uncached adaptive alignments.
+The runner rejects unused policy builds. One line per probe reports
 `IDENTICAL`, `DIFFERS`, or `BUILD FAILED`; any failure gives a nonzero exit.
 Commands and complete outputs remain under `--out`. Run builds and executable
-checks under the shared build/run lock and the designated CPU affinity.
+checks with a build lock of your choice and a fixed CPU set. For example,
+invoke each command as `flock "$BUILD_LOCK" taskset -c "$CPU_SET" command`.
 
 `dense_dp_cases` compares v5.0.0 only on inputs that meet the K-04/K-05
 precondition: ordered DAG rows, where every predecessor row is lower than its
@@ -129,7 +144,7 @@ verification targets and is not registered with ctest because it needs data.
 `qemu-aarch64` on an x86-64 host) and `ROUNDS`.
 `run_proofs.sh` accepts kernel names and the `CBMC`, `CC`, `CXX`, `TASKSET`,
 `HTSLIB_INCLUDE`, and `HTSLIB_LIBS` environment variables. It writes proof and
-hardware-model results under `results/`. The CMake targets register all ten
+hardware-model results under `results/`. The CMake targets register all eleven
 probes plus K-25 with ctest. Fixture generators in `fixtures/` accept their output
 and converter paths as arguments; `generate_complex_fixtures.py` includes late
 mismatches, complex indels, skewed loads and a heavy third locus.
@@ -145,19 +160,51 @@ Use the name without `EH_VERIFY_` in the CMake option.
 | Name | Values | Kernels and effect |
 | --- | --- | --- |
 | SIMD | SCALAR, SSE42, AVX2 | K-01, K-03 rows, K-09, K-19, K-22, K-23, K-31: pin dispatch. SCALAR: every kernel scalar. SSE42: the x86-64-v2 tier (SSE row kernels, K-19, K-23 and the k-mer probe; K-01, K-09, K-22 and K-31 scalar). AVX2: no AVX-512. AVX2 and AVX-512 still check CPU support |
-| FAST_PATHS | OFF | K-09, K-11, K-12, K-17: general DP without a fast-path minimum-cost hint |
-| BUDGET_SEARCH | NEVER, ALWAYS | K-07, K-10: dense fallback, or search without skip, measured cap or cost hint |
-| ROW_STOP | OFF | K-05: fill all dense rows |
+| FAST_PATHS | OFF | K-09, K-11, K-12, K-17, K-39: general DP without a fast-path minimum-cost hint and exhaustive seed-product construction. Also set `EXTENSION_CACHE=OFF` so cache hits cannot bypass DP |
+| BUDGET_SEARCH | ON, NEVER, ALWAYS | K-07, K-10: restore adaptive search, explicitly select dense fallback (the release default), or search without skip, measured cap or cost hint |
+| ROW_STOP | OFF | K-05, K-38: fill all dense rows and retain the full linear target |
 | FUSED_ROWS | OFF | K-03, K-08: general dense and sparse row code |
 | GRAPH_CACHE | OFF | K-13: prepare the target afresh |
-| FOLD_SKIP | OFF | K-21: execute every canonical fold step |
+| FOLD_SKIP | OFF | K-21: execute every canonical fold step. Also set `FAST_PATHS=OFF` for exhaustive product construction before the reference fold |
 | LAYOUT | REFERENCE | K-15, K-28: hash k-mer layout and owned streaming catalog |
-| SHADOW | ON | K-05, K-21, K-22, K-31: compare supported in-tree references and poison dropped dense rows |
+| SHADOW | ON | K-05, K-21, K-22, K-31, K-37, K-39: compare supported in-tree references and poison dropped dense rows |
+| EXTENSION_CACHE | OFF | K-37: disable release cross-locus reuse of pinned single-node extension traces |
+
+For the full reference product and fold with uncached DP extensions, configure
+with `-DEH_VERIFY="FOLD_SKIP=OFF;FAST_PATHS=OFF;EXTENSION_CACHE=OFF"`.
+
+In a release build (`EH_VERIFY` empty), the streaming pipeline stores a bounded, in-process
+table of optimal scores and ordered raw CIGARs for target alignments of shared
+inputs. Hits require the same input pair, physical mate, read orientation,
+extension direction, complete oriented query bytes and certified target prefix.
+Donor and recipient independently pass the default-score, single-node and
+full-target score-width guards. The receiving extension still remaps paths to
+its graph. A busy bucket, a missing donor or a trace that exceeds the table's
+capacity uses the ordinary extension alignment. A hit skips sparse/dense
+search measurements and uses the optimum to update the ordinary cost hint.
+
+For query length Q and donor score S, a linear pinned endpoint consuming t
+target bases costs at least 2(t − Q) relative to the all-match score 5Q.
+The cached prefix of length L = Q + floor((5Q − S)/2) + 1 therefore contains
+every endpoint and predecessor on an optimal traceback. All later endpoints
+also strictly exceed the optimum cost on the recipient. The cache preserves
+the entire returned CIGAR vector and its order, including ties.
+
+`EH_VERIFY="SHADOW=ON"` also runs the uncached alignment
+on every hit and checks the optimum score and the complete ordered raw vector.
+`verification_extension_cache_cases` exercises both extension directions,
+remapping across graphs, tied traces, same-bucket key collisions, byte guards
+and lock contention.
+The table has 4,096 buckets with four round-robin slots each and at most 64 MiB
+of retained bucket storage per streaming pipeline, independent of locus count.
+The cache probe is registered whenever `EH_BUILD_VERIFICATION=ON`; with
+`EXTENSION_CACHE=OFF` it checks the same alignment cases with cache activity
+disabled and still tests the table codec, keys and contention directly.
 
 ## K-mer index boundary profiles
 
 `kmer_index_oracle` runs every profile by default; `audit PROFILE` selects one.
-It compares independent path enumeration and the R3 index, checks mapped/copy/move
+It compares independent path enumeration and the package index, checks mapped/copy/move
 lifetime, and queries bucket boundaries and 100,000 seeded random keys per profile.
 The reference-layout build expects hash storage throughout.
 
@@ -196,6 +243,9 @@ against the hardware (AMD Zen 4, AVX2 and AVX-512BW) on 19.5 million comparisons
 | K-19 base run | CBMC + SIMD models | 16-byte block + 2-byte tail, both directions | proved, seeded fault detected |
 | K-22 read decoding | CBMC + SIMD models | 32-base block + 1-base tail, exact-size arrays | proved, seeded fault detected |
 | K-31 BAM packing | CBMC + SIMD models | 32-base vector + 1-base tail, exact-size arrays | proved, seeded fault detected |
+| K-37 extension-trace cache | Differential executable and shadow comparison | 16 CIGARs, 256 operations, 64 MiB per pipeline | Case-tested |
+| K-38 linear bounds | Differential executable and cost inequality | Default scores, certified linear chain and full-target 16-bit guard | Case-tested |
+| K-39 canonical seed product | GoogleTest and shadow comparison | Positive seed, valid seams and same-path tied products | Case-tested |
 
 NEON tested under emulation; intrinsic models not cross-checked on ARM hardware. The NEON kernels (K-01, K-03
 rows, K-09, K-19, K-22, K-23 and K-31) live next to their scalar references in the same headers.

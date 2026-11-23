@@ -55,7 +55,11 @@ template <typename Tag, typename Tag::Member member> struct Access
 };
 template <typename GraphT>
 using Discover = void (*)(const GraphT&, NodeId, std::size_t, std::size_t, std::vector<int>&,
-    std::vector<std::pair<int, int>>&, std::string&, std::vector<NodeId>&);
+    std::vector<std::pair<int, int>>&, std::string&, std::vector<NodeId>&
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+    , bool&
+#endif
+    );
 struct ForwardTag { using Member = Discover<Graph>; friend Member access(ForwardTag); };
 struct ReverseTag { using Member = Discover<ReverseGraph>; friend Member access(ReverseTag); };
 template struct Access<ForwardTag, &graphtools::PinnedDagAligner::bfsDiscoverEdges<Graph>>;
@@ -76,7 +80,12 @@ void check(Discover<GraphT> discover, const GraphT& graph, NodeId node, std::siz
     std::vector<NodeId> originalIds;
     try
     {
+#if EH_VERIFY_EXTENSION_CACHE != EH_VERIFY_OFF
+        bool singleNodePreparation = false;
+        discover(graph, node, offset, extension, nodeIds, edges, target, originalIds, singleNodePreparation);
+#else
         discover(graph, node, offset, extension, nodeIds, edges, target, originalIds);
+#endif
     }
     catch (const std::exception&)
     {

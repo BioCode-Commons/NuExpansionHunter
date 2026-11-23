@@ -81,7 +81,7 @@ ExternalProject_Add(htslib
 )
 
 
-# GCC 13 and later no longer include <cstdint> through other standard headers;
+# GCC 13 and later require an explicit <cstdint> include for fixed-width types;
 # spdlog 1.6.1, googletest 1.10.0 and abseil 20210324.2 rely on that.
 set(EH_DEPENDENCY_CXX_FLAGS "")
 if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))

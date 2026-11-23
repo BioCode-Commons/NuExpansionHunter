@@ -33,12 +33,15 @@ target_link_libraries(VerificationReferences PUBLIC ExpansionHunterLib graphtool
 set(VERIFICATION_PROBES
     insertion_scan_oracle pinned_align_cases ungapped_fastpath_cases dense_dp_cases
     budget_matrix_state pinned_wrapper_cases graph_has_edge_oracle kmer_index_oracle
-    orientation_oracle pinned_suffix_vs_v5)
+    orientation_oracle pinned_suffix_vs_v5 extension_cache_cases)
 foreach(probe IN LISTS VERIFICATION_PROBES)
     add_executable(${probe} probes/${probe}.cpp)
     target_link_libraries(${probe} VerificationReferences ExpansionHunterLib graphtools)
     add_test(NAME verification_${probe} COMMAND ${probe})
 endforeach()
+if(TARGET extension_cache_cases)
+    set_tests_properties(verification_extension_cache_cases PROPERTIES TIMEOUT 30)
+endif()
 # Not registered with ctest: it needs a BAM, a reference and catalogs (see README).
 add_executable(catalog_row_order probes/catalog_row_order.cpp)
 target_link_libraries(catalog_row_order ExpansionHunterLib graphtools)

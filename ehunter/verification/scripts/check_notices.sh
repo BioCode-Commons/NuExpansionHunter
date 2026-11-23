@@ -21,7 +21,7 @@
 
 set -eu
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-exec taskset -c 80-83,164-167 python3 - "$script_dir/../../.." <<'PY'
+exec ${TASKSET:-} python3 - "$script_dir/../../.." <<'PY'
 from pathlib import Path
 import os
 import re

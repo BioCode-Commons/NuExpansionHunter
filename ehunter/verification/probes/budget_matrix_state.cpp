@@ -31,6 +31,8 @@ namespace lifecycle
 
 using namespace graphalign::dagAligner;
 
+// Report the matrix extent, best score and every tied optimal endpoint in traversal order.
+// The sparse matrix may omit endpoints whose costs exceed its successful budget.
 void inspect(const char* name, PinnedBudgetAlignMatrix& matrix, const std::string& query,
              const std::string& target, const EdgeMap& edges)
 {
@@ -41,11 +43,15 @@ void inspect(const char* name, PinnedBudgetAlignMatrix& matrix, const std::strin
         Score score = -1973;
         const auto best = matrix.nextBestAlign<false>(matrix.alignBegin(), score);
         std::cout << "best " << best << ' ' << score << ' ' << matrix.alignEnd() << '\n';
-        if (best != matrix.alignEnd())
+        auto endpoint = best;
+        while (endpoint != matrix.alignEnd())
         {
             Score nextScore = -1973;
-            const auto next = matrix.nextBestAlign<false>(best + 1, nextScore);
-            std::cout << "next " << next << ' ' << nextScore << '\n';
+            const auto next = matrix.nextBestAlign<false>(endpoint + 1, nextScore);
+            if (next == matrix.alignEnd() || nextScore != score)
+                break;
+            std::cout << "optimal-tie " << next << '\n';
+            endpoint = next;
         }
     }
     catch (const std::exception& error)

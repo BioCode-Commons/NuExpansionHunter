@@ -64,7 +64,8 @@ optional arguments.
 
 * `--help` (`-h`) Prints the help message.
 
-* `--version` (`-v`) Prints `NuExpansionHunter v1.0.0 (based on ExpansionHunter v5.0.0)`.
+* `--version` (`-v`) Prints `Starting NuExpansionHunter v1.1.0 (based on ExpansionHunter v5.0.0)`
+  to stderr and exits.
 
 `auto` is a default value, not an option. In the formulas, `threads` is the
 value of `--threads` and division is integer division. Explicit codec thread
@@ -81,9 +82,9 @@ obtained by running `ExpansionHunter --help`.
 
 #### Seeking mode
 
-We do not recommend using Seeking mode in NuExpansionHunter at this moment. 
-For Seeking mode, please use the original Illumina version.
-
+Seeking mode retrieves reads by locus using the input alignment index. Use it
+for a small number of loci. Streaming mode is the focus of the parallel input,
+ordered worker pipeline and extension-trace cache.
 
 
 #### Streaming mode
@@ -93,8 +94,9 @@ analyzed during this reading operation. Streaming mode is recommended for the an
 of large catalogs, but does require more memory as a function of catalog size. This mode
 does not require that the BAM or CRAM file is sorted or indexed.
 
-When an alignment index is present, streaming mode uses an indexed range scan.
-A BAM index is not required. Realigned BAM records in streaming mode are not in
+Indexed streaming requires the parallel reader and a suitable regular BAM with
+a usable index. Streaming can fall back to sequential scanning. Realigned BAM
+records in streaming mode are not in
 ExpansionHunter v5.0.0's order: they have the same multiset of decoded records,
 with scheduling-dependent order and compression level 1. See
 [Performance and identity](07_Performance.md) for the complete limits.
@@ -135,16 +137,17 @@ catalog is built in memory from the input files.
 * Use streaming mode (`--analysis-mode streaming`) for catalogs with more than a
   few loci. Seeking mode is meant for a handful of loci.
 * Set `--threads` to the number of hardware threads. The automatic decode,
-  encode and queue settings derived from it matched hand-tuned settings in our
-  measurements, so no other thread option is needed.
+  encode and queue settings adapt to the worker count. The [benchmark](../BENCHMARK.md)
+  uses these defaults with `--threads 8`, `--threads 16` and `--threads 32` on
+  the same number of logical CPUs.
 * For several samples with the same catalog, prepare a [catalog cache](#catalog-cache)
   once and pass it to every run. The run then skips catalog parsing and graph
   and index construction. The cache is memory-mapped read-only, so concurrent
   runs on one machine share it.
 * Build with the optional libraries (libdeflate, ISA-L and jemalloc; see
-  [Installation](02_Installation.md)). Without them, a GangSTR chr21-22 run was
-  30% slower and used 5% more memory.
+  [Installation](02_Installation.md)). The benchmark builds include the optional libraries.
 * Memory grows with `--threads` on large catalogs, because each worker keeps
-  recently used locus indexes. On a machine with little memory, lower
+  recently used locus indexes. Streaming also uses at most 64 MiB for the
+  extension-trace table per pipeline. On a machine with little memory, lower
   `--threads` or split the catalog into parts and run them separately.
 * Keep the BAM, its index and the reference on local disk.

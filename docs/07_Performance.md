@@ -6,13 +6,14 @@ The optimization work focuses on streaming mode. Items marked *(streaming)*
 apply only to streaming mode; the others apply to both modes. Seeking mode
 keeps ExpansionHunter v5.0.0's per-locus loop and index-based read retrieval.
 
-* Vectorized affine dynamic programming (DP) with an early row stop.
-* Exact budgeted sparse DP for low-cost extensions, with a measured search cap and skip history.
+* Vectorized affine dynamic programming (DP), with certified linear-target bounds and an early row stop (K-38).
+* Dense alignment by default. Adaptive budgeted sparse DP is available for differential verification.
 * Single-node and unique-ungapped fast paths proven by cost bounds.
 * Prepared-graph cache.
+* *(streaming)* Bounded reuse of complete, ordered single-node extension traces across loci (K-37).
 * Frozen k-mer index layouts and SIMD probes.
 * SIMD read decoding and BAM packing.
-* Canonical-alignment fold that skips steps proven unchanged.
+* Direct selection from certified canonical seed products (K-39) and canonical-intersection step skipping.
 * *(streaming)* Parallel streaming pipeline with ordered per-locus reduction: pairing lanes, staging, a worker pool, a byte-bounded BAM sink and positional BGZF output.
 * Flat evidence rows.
 * *(streaming)* Compact frozen catalog. Its reusable cache (`--catalog-cache`) also serves seeking mode.
@@ -37,7 +38,8 @@ Three choices are deliberate. The DP row passes have no AVX-512 version: on Zen 
 slower than 256-bit ones for rows of a few hundred cells. The short per-read scans (mismatch scan, read decoding, BAM packing) have no
 AVX-512 version: reads of 100-250 bases take only a few 32-byte AVX2 steps. They also have no SSE tier: CPUs
 without AVX2 run them scalar, with identical output. NEON is part of AArch64 and is selected at compile time; it
-has been tested under emulation, not on ARM hardware.
+is covered by emulated AArch64 tests. The extension cache, certified target bounds
+and canonical product selection use the same eligibility rules in every SIMD tier.
 
 ## Identity guarantee and its limits
 
@@ -77,6 +79,14 @@ decoded records as ExpansionHunter v5.0.0. See the
 10. **Catalog caches.** The schema id ties each cache to the exact source tree.
     A cache from a different tree is rejected with an error; there is no fallback
     to parsing. Rebuild caches whenever the program is rebuilt.
+11. **Extension traces.** Streaming reuse is local to one pipeline and requires
+    the same read pair, physical mate, orientation, direction, complete query,
+    and certified target prefix. Both loci independently satisfy the default-score,
+    single-node and score-width guards. Accepted hits reproduce every ordered
+    optimal traceback and remap its node IDs. A miss solves the receiving target.
+12. **Alignment scope.** Certified linear bounds and canonical product selection
+    preserve the optimal endpoints and canonical alignment consumed by genotyping.
+    Internal second-best scores and nonoptimal matrix cells are outside this contract.
 
 ## Resource controls
 
@@ -93,26 +103,6 @@ Catalog compaction releases construction storage; optional jemalloc returns
 freed catalog memory. Unmatched mates and worker scratch are released before
 genotyping, and analyzers are released as their findings are produced.
 
-## Performance
+## Benchmarks
 
-Wall times on HG002 (GIAB, 35x PCR-free, aligned to GRCh38 no-alt), streaming mode, on an AMD EPYC 9634
-(Zen 4) with the package's reference build: GCC 15.2, `-march=znver4 -ffp-contract=off`, libdeflate, ISA-L
-and jemalloc. "Cores" are physical cores with both SMT threads. ExpansionHunter v5.0.0 ran with
-`--threads` equal to the hardware threads; NuExpansionHunter ran with `--threads` 2.5 times the cores,
-`--decode-threads` half and `--encode-threads` a quarter of the cores, and `--bamlet-queue-mb 256`.
-Every run listed wrote the same VCF, JSON and BAM records as ExpansionHunter v5.0.0. NuExpansionHunter times
-are medians of two or three runs (single runs for TRExplorer chr22 and the whole genome); PGO denotes the
-profile-guided build of the same source, trained on a chr22 slice, the chr21-22 GangSTR set and one satellite
-window. A dash marks a configuration that was not measured.
-
-| Dataset (catalog on HG002) | Cores | ExpansionHunter v5.0.0 | NuExpansionHunter | NuExpansionHunter, PGO | Speed-up (no PGO) |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| GangSTR hg38 v13, chr21-22 | 16 | 373.2 s | 17.0 s | 15.9 s | 22.0x |
-| GangSTR hg38 v13, chr21-22 | 32 | — | 9.4 s | — | — |
-| TRExplorer v2.1, chr22 | 16 | 1,121.0 s | 129.3 s | 118.9 s | 8.7x |
-| TRExplorer v2.1, chr21-22 | 16 | 2,585.1 s | 293.8 s | 271.4 s | 8.8x |
-| TRExplorer v2.1, chr21-22 | 32 | — | 148.6 s | — | — |
-| GangSTR hg38 v13, whole genome | 16 | — | 383.9 s | 360.7 s | — |
-
-Peak memory on the whole-genome GangSTR catalog at 16 cores is 16.4 GiB. A `-march` build runs only on CPUs
-with the instructions it was compiled for; a portable build without `-march` is slower.
+Matched whole-genome measurements and their CPU allocation are in [BENCHMARK.md](../BENCHMARK.md).

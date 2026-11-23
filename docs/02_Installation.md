@@ -1,12 +1,12 @@
 # Installation
 
-NuExpansionHunter is distributed as source; no prebuilt binaries are provided.
+NuExpansionHunter v1.1.0 is distributed as source. The default build enables
+bounded extension-trace reuse in streaming mode and selects dense alignment for
+extensions that need dynamic programming.
 
-Tested platforms and compilers:
+Build targets
 
-* Linux x86-64 (Ubuntu) with GCC 11.5, 12.5, 13.4 and 15.2, using the commands
-  below unchanged; the unit tests pass with each. The performance figures in
-  [Performance](07_Performance.md) use GCC 15.2.
+* Linux x86-64 (Ubuntu) with GCC. The [benchmark](../BENCHMARK.md) uses GCC 15.2.
 * Linux ARM64 (ARMv8-A): built with a cross compiler and tested under emulation.
   The NEON code has not been run on ARM hardware.
 
@@ -17,7 +17,8 @@ macOS, Clang and other compilers are not tested.
 
 Prerequisites:
 
-* [GCC](https://gcc.gnu.org/) 11 or later (C++11).
+* [GCC](https://gcc.gnu.org/) with C++11 support. Tested with GCC 15.2. GCC 11
+  or later is expected to work.
 * [CMake](https://cmake.org/) version 3.13.0 or above.
 * Git: the superbuild applies the htslib patches with `git apply`.
 * Development libraries for zlib, bzip2, xz and curl. On Ubuntu:
@@ -27,11 +28,11 @@ If the above prerequisites are satisfied, you are ready to
 build the program. Note that during the build procedure, cmake will
 attempt to download and install `abseil`, `boost`, `googletest`, `htslib`,
 and `spdlog` so an active internet connection is required. Assuming
-that the source code is contained in a directory `ExpansionHunter/`,
+that the source code is contained in a directory `NuExpansionHunter/`,
 the build procedure can be initiated as follows:
 
 ```bash
-cd ExpansionHunter
+cd NuExpansionHunter
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
@@ -70,9 +71,7 @@ directly, a `-march` or `-mcpu` flag in `CMAKE_CXX_FLAGS` takes the place of
 
 Three optional libraries make NuExpansionHunter faster. Install their
 development packages before running `cmake` to use them. On Ubuntu:
-`apt install libdeflate-dev libisal-dev libjemalloc-dev`. Without them, the
-GangSTR chr21-22 run of [Performance](07_Performance.md) at 16 cores took 30%
-longer and used 5% more memory.
+`apt install libdeflate-dev libisal-dev libjemalloc-dev`.
 
 | Library | Ubuntu package | Used for | Option |
 | --- | --- | --- | --- |
@@ -127,8 +126,11 @@ instructions.
 
 ## Profile-guided optimization (PGO)
 
-Use the dependencies and CPU setting above. Set `$PGO` to a fresh absolute
-profile directory. Both compiler passes must use the same build directory
+Use the dependencies and CPU setting above. The training recipe uses
+GCC 15.2 and `CPU=znver4`, with libdeflate, ISA-L and jemalloc. The whole-genome
+comparisons use the portable Release build described above. Set `$PGO` to a fresh absolute
+profile directory and declare a Bash array named `CODEC_OPTIONS` with the
+optional-library arguments from the optimized build. Both compiler passes use the same build directory
 (`$BUILD/optimized`) so the profile counts match the object paths.
 
 1. Configure and build the instrumented executable:
@@ -138,16 +140,18 @@ profile directory. Both compiler passes must use the same build directory
    cmake -S ehunter -B "$BUILD/optimized" \
      -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$BUILD/install" \
      -DCMAKE_CXX_FLAGS="-march=$CPU -ffp-contract=off -fprofile-generate=$PGO/counts -fprofile-update=atomic" \
-     -DEH_VERIFY=
+     -DEH_VERIFY= "${CODEC_OPTIONS[@]}"
    cmake --build "$BUILD/optimized" --target ExpansionHunter --parallel
    ```
 
-2. Train with three streaming runs, in order, accumulating counts in the same
-   `$PGO/counts` directory. Use a repeat catalog on two chromosomes, a dense
-   repeat catalog on one of those chromosomes, and a mixed catalog including
-   satellite-pileup loci. For each run, set `$READS`, `$REFERENCE` and `$CATALOG`
-   to the matching inputs and `$RUN` to `1`, `2` or `3`. Execute this command
-   once for each input set without clearing the counts directory:
+2. Train on 35× PCR-free HG002 reads aligned to GRCh38 no-alt. Run streaming
+   with the GangSTR hg38 v13 chr21–22 catalog first, TRExplorer v2.1 on the
+   chr22 20–25 Mb slice second, and a dense chr4 HSAT3 window third. Point
+   `$READS`, `$REFERENCE` and `$CATALOG` at the matching inputs. Set `$RUN` to
+   `1`, `2` or `3` and accumulate every run in the same `$PGO/counts` directory.
+   Training used 16 cores with SMT and 40 compute workers.
+   For the chr22 slice, omit the three
+   explicit codec and queue options to use their automatic settings.
 
    ```bash
    "$BUILD/optimized/ExpansionHunter" \
@@ -165,7 +169,7 @@ profile directory. Both compiler passes must use the same build directory
    cmake -S ehunter -B "$BUILD/optimized" \
      -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$BUILD/install" \
      -DCMAKE_CXX_FLAGS="-march=$CPU -ffp-contract=off -fprofile-use=$PGO/counts -fprofile-correction -fprofile-partial-training" \
-     -DEH_VERIFY=
+     -DEH_VERIFY= "${CODEC_OPTIONS[@]}"
    cmake --build "$BUILD/optimized" --target ExpansionHunter UnitTests --parallel
    "$BUILD/optimized/UnitTests"
    ```
@@ -174,7 +178,10 @@ profile directory. Both compiler passes must use the same build directory
 
 The `EH_VERIFY` CMake option selects verification implementations and checks.
 Release builds leave it empty (`-DEH_VERIFY=`). The `install` target refuses a
-verification build. See the [verification documentation](../ehunter/verification/README.md)
+verification build. `EXTENSION_CACHE=OFF` disables trace reuse, and
+`BUDGET_SEARCH=ON` restores adaptive budget search for differential checks.
+`BUDGET_SEARCH=ALWAYS` forces eligible searches; `NEVER` explicitly selects the
+release dense policy. See the [verification documentation](../ehunter/verification/README.md)
 for supported settings and their contracts.
 
 ## Binary distribution

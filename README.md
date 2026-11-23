@@ -1,4 +1,4 @@
-# NuExpansionHunter
+# NuExpansionHunter v1.1.0
 
 There are a number of regions in the human genome consisting of repetitions of
 short unit sequence (commonly a trimer). Such repeat regions can expand to a
@@ -19,8 +19,23 @@ and a realigned BAM with the same header and the same multiset of decoded record
 [Performance and identity](docs/07_Performance.md). See also the
 [verification documentation](ehunter/verification/README.md).
 
-In the current version of NuExpansionHunter, we focus only on the **streaming mode** of the 
-original ExpansionHunter. For the **seeking mode**, we recommend users to run the original version by Illumina.
+NuExpansionHunter focuses on **streaming mode** for large catalogs. Version 1.1.0
+reuses validated extension traces across loci, bounds dense alignment to endpoints
+that can still reach the optimum, and selects canonical alignments directly when
+all optimal seed extensions share a path. The default build uses dense alignment
+for extensions that need dynamic programming.
+
+| Obligation | Optimized function and reference | Contract | Probe / tool | Bound | Status |
+| --- | --- | --- | --- | --- | --- |
+| K-37 Extension traces | `alignPreparedExtension` vs. `EXTENSION_CACHE=OFF;BUDGET_SEARCH=ON` | Same optimum and ordered raw CIGARs after certified byte checks | `extension_cache_cases`, differential executable | 4,096 × 4 slots, 16 CIGARs, 256 operations | Case-tested |
+| K-38 Linear bounds | `linearTargetPrefixLength` and dense row stop vs. full-target fill with `ROW_STOP=OFF` | Keep every optimal endpoint and traceback | `pinned_align_cases` and `dense_dp_cases`, differential executables | Default scores, certified linear target, 16-bit score guard | Case-tested |
+| K-39 Canonical product | `alignForCanonicalSelection` vs. exhaustive product and fold with `FAST_PATHS=OFF;FOLD_SKIP=OFF` | Same canonical alignment for certified common paths and seams | `CanonicalProductSelection` and `SHADOW=ON`, GoogleTest and differential executable | Positive seed, common paths, finite paired-tie cases | Case-tested |
+
+See the [obligation register](ehunter/verification/OBLIGATIONS.md) for the contracts and bounds.
+
+In matched whole-genome streaming runs against ExpansionHunter v5.0.0,
+v1.1.0 delivered mean speedups of **10.09–18.79×** and mean peak RSS
+reductions of **86.9–90.9%** by thread count. [Benchmark results](BENCHMARK.md)
 
 ## Quick start
 
@@ -76,7 +91,7 @@ contained in the docs folder:
 * [Output JSON files](docs/05_OutputJsonFiles.md)
 * [Output VCF files](docs/06_OutputVcfFiles.md)
 * [Performance and identity](docs/07_Performance.md)
-* [Benchmark Results](docs/08_Benchmark.md)
+* [Benchmark Results](BENCHMARK.md)
 
 ## Companion tools and resources
 
