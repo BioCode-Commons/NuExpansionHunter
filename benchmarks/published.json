@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "NuExpansionHunter",
-  "evidence_url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/867b8c82be2f6434547652cb446f40d1edb0b8d3/docs/08_Benchmark.md",
+  "evidence_url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/19a02eecb425f1aabd03163bbf28361e1fe6a9fc/docs/08_Benchmark.md",
   "rss_unit": "GiB",
   "memory_metric": "Peak RSS",
   "rss_scope": "GNU time maximum resident set size, converted to GiB. Four 8-thread v5 control values use the published rounded measurements.",
@@ -190,7 +190,7 @@
     },
     {
       "text": "November 23, 2026 benchmark",
-      "url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/867b8c82be2f6434547652cb446f40d1edb0b8d3/docs/08_Benchmark.md"
+      "url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/19a02eecb425f1aabd03163bbf28361e1fe6a9fc/docs/08_Benchmark.md"
     }
   ],
   "note": [
