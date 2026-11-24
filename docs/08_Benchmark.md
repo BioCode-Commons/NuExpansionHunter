@@ -19,9 +19,10 @@ each pair and then averaged within that thread count.
 | 32 | 4 | 100.6 | 5.3 | 18.79× | 157.8 | 14.3 | 90.9% |
 
 The 32-thread group covers four samples, so comparisons across thread counts
-also reflect the change in sample mix. Eight additional 32-thread
-ExpansionHunter v5.0.0 runs hit the 172 GiB memory cap on November 18–19, 2026
-and are excluded from the performance averages.
+also reflect the change in sample mix. Nine of the 21 B1 ExpansionHunter
+v5.0.0 runs at 32 threads hit the 172 GiB memory cap on November 18–19, 2026.
+Five of those samples appear in the 8- and 16-thread groups. The performance
+averages cover completed pairs.
 
 ## Per-sample results
 
@@ -32,16 +33,16 @@ compression.
 
 | Sample | Threads | v5 wall (min) | v1.1.0 wall (min) | Speedup | v5 peak RSS (GiB) | v1.1.0 peak RSS (GiB) | RSS reduction |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| ERR1955394[^rounded-v5] | 8 | 176.97 | 18.04 | 9.81× | 72.02 | 8.78 | 87.8% |
+| ERR1955394 | 8 | 176.97 | 18.04 | 9.81× | 72.02 | 8.78 | 87.8% |
 | ERR1955394 | 16 | 96.78 | 9.16 | 10.56× | 84.05 | 10.61 | 87.4% |
 | ERR1955394 | 32 | 85.35 | 4.64 | 18.41× | 155.39 | 14.31 | 90.8% |
-| ERR1955395[^rounded-v5] | 8 | 220.63 | 21.21 | 10.40× | 72.21 | 8.79 | 87.8% |
+| ERR1955395 | 8 | 220.63 | 21.21 | 10.40× | 72.21 | 8.79 | 87.8% |
 | ERR1955395 | 16 | 125.70 | 10.78 | 11.66× | 82.20 | 10.64 | 87.1% |
 | ERR1955395 | 32 | 107.12 | 5.46 | 19.62× | 164.21 | 14.34 | 91.3% |
-| ERR1955396[^rounded-v5] | 8 | 205.10 | 20.36 | 10.07× | 72.09 | 8.81 | 87.8% |
+| ERR1955396 | 8 | 205.10 | 20.36 | 10.07× | 72.09 | 8.81 | 87.8% |
 | ERR1955396 | 16 | 109.23 | 10.33 | 10.58× | 72.51 | 10.61 | 85.4% |
 | ERR1955396 | 32 | 94.58 | 5.19 | 18.21× | 148.10 | 14.25 | 90.4% |
-| ERR1955398[^rounded-v5] | 8 | 240.88 | 23.95 | 10.06× | 72.10 | 8.97 | 87.6% |
+| ERR1955398 | 8 | 240.88 | 23.95 | 10.06× | 72.10 | 8.97 | 87.6% |
 | ERR1955398 | 16 | 128.87 | 12.15 | 10.61× | 74.74 | 10.81 | 85.5% |
 | ERR1955398 | 32 | 115.33 | 6.09 | 18.93× | 163.64 | 14.47 | 91.2% |
 | SRR21753324 | 8 | 188.32 | 18.90 | 9.96× | 73.54 | 9.66 | 86.9% |
@@ -55,9 +56,16 @@ compression.
 | SRR21753328 | 8 | 253.42 | 25.38 | 9.98× | 76.89 | 11.31 | 85.3% |
 | SRR21753328 | 16 | 141.83 | 12.89 | 11.01× | 110.27 | 13.12 | 88.1% |
 
-[^rounded-v5]: For the four marked 8-thread control rows, only the published
-    v5 wall times (rounded to 0.01 min) and peak RSS values (rounded to
-    0.01 GiB) are available. The ratios and 8-thread summary use those values.
+The archived GNU time records give these v5 measurements for the four
+8-thread controls. The per-sample ratios and 8-thread summary use these
+values before rounding.
+
+| Sample | v5 wall (s) | v5 peak RSS (KiB) |
+| --- | ---: | ---: |
+| ERR1955394 | 10618 | 75516396 |
+| ERR1955395 | 13238 | 75716152 |
+| ERR1955396 | 12306 | 75592208 |
+| ERR1955398 | 14453 | 75597428 |
 
 ## Method notes
 
@@ -69,9 +77,13 @@ compression.
 - Both versions used streaming mode on eight AMD EPYC 9634 machines with the
   GangSTR hg38 v13 whole-genome catalog (832,152 loci) and the GRCh38 reference.
   Each v1.1.0 run used the same worker, input BAM, `--threads` value, and CPU
-  mask as its v5 run. The masks pinned both SMT siblings on 4, 8, or 16 physical
-  cores for the 8-, 16-, or 32-thread groups, respectively. Both versions
-  used `--aligner dag-aligner` and `--region-extension-length 1000`. The
+  mask as its v5 run. When setting up the comparisons, the v5 masks for 14 of
+  the 22 pairs were reconstructed from the B1 runner’s fixed allocation rule.
+  Completed B1 job tables confirm four of those masks, all for 8-thread
+  controls. The other ten pairs still rely on the reconstructed masks. Each
+  mask used both SMT siblings on 4, 8, or 16 physical cores for the 8-, 16-,
+  or 32-thread groups, respectively. Both versions used `--aligner dag-aligner`
+  and `--region-extension-length 1000`. The
   v1.1.0 runs were sequential on each worker under a 172 GiB memory cap.
 - GNU time measured elapsed wall time for the ExpansionHunter invocation and
   maximum resident set size (peak RSS), converted from KiB to GiB. The runs

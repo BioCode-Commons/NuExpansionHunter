@@ -4,15 +4,15 @@
   "evidence_url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/19a02eecb425f1aabd03163bbf28361e1fe6a9fc/docs/08_Benchmark.md",
   "rss_unit": "GiB",
   "memory_metric": "Peak RSS",
-  "rss_scope": "GNU time maximum resident set size, converted to GiB. Four 8-thread v5 control values use the published rounded measurements.",
+  "rss_scope": "GNU time maximum resident set size, converted to GiB.",
   "time_scope": "Elapsed wall time for matched whole-genome streaming invocations, in seconds. Index construction has no separate timing in this comparison.",
   "rows": [
     {
       "dataset": "ERR1955394",
       "resources": "8 threads",
-      "baseline_seconds": 10618.2,
+      "baseline_seconds": 10618,
       "candidate_seconds": 1082.64,
-      "baseline_rss": 72.02,
+      "baseline_rss": 72.018047332763671875,
       "candidate_rss": 8.781311
     },
     {
@@ -34,9 +34,9 @@
     {
       "dataset": "ERR1955395",
       "resources": "8 threads",
-      "baseline_seconds": 13237.8,
+      "baseline_seconds": 13238,
       "candidate_seconds": 1272.89,
-      "baseline_rss": 72.21,
+      "baseline_rss": 72.20854949951171875,
       "candidate_rss": 8.794327
     },
     {
@@ -60,7 +60,7 @@
       "resources": "8 threads",
       "baseline_seconds": 12306.0,
       "candidate_seconds": 1221.69,
-      "baseline_rss": 72.09,
+      "baseline_rss": 72.0903472900390625,
       "candidate_rss": 8.805531
     },
     {
@@ -82,9 +82,9 @@
     {
       "dataset": "ERR1955398",
       "resources": "8 threads",
-      "baseline_seconds": 14452.8,
+      "baseline_seconds": 14453,
       "candidate_seconds": 1436.9,
-      "baseline_rss": 72.1,
+      "baseline_rss": 72.095325469970703125,
       "candidate_rss": 8.973064
     },
     {
@@ -195,7 +195,7 @@
   ],
   "note": [
     {
-      "text": "Mean per-sample speedups were 10.09× at 8 threads (9 samples), 11.06× at 16 (9 samples), and 18.79× at 32 (4 samples). Eight additional 32-thread ExpansionHunter v5.0.0 runs hit the 172 GiB memory cap and are excluded. All 22 completed comparisons matched the VCF, JSON, BAM header, and decoded BAM record multiset. The four 8-thread control baselines use the published rounded v5 measurements."
+      "text": "Mean per-sample speedups were 10.09× at 8 threads (9 samples), 11.06× at 16 (9 samples), and 18.79× at 32 (4 samples). Nine of the 21 B1 ExpansionHunter v5.0.0 runs at 32 threads hit the 172 GiB memory cap. All 22 completed comparisons matched the VCF, JSON, BAM header, and decoded BAM record multiset."
     }
   ],
   "display": {

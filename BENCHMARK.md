@@ -15,9 +15,9 @@ All 22 matched the VCF, JSON, BAM header, and decoded BAM record multiset.
 | 16 | 9 | 114.2 | 10.3 | 11.06× | 91.2 | 11.6 | 87.1% |
 | 32 | 4 | 100.6 | 5.3 | 18.79× | 157.8 | 14.3 | 90.9% |
 
-Eight additional 32-thread v5 runs hit the 172 GiB memory cap and are excluded
-from the averages. Per-sample results and methods are in the
-[full benchmark report](docs/08_Benchmark.md).
+Nine of the 21 B1 v5 runs at 32 threads hit the 172 GiB memory cap.
+The averages cover completed v5 and v1.1.0 pairs. See the
+[full benchmark report](docs/08_Benchmark.md) for per-sample results and methods.
 
 ## NuExpansionHunter v1.1.0 versus v1.0.0
 
@@ -31,9 +31,10 @@ used the portable Release build in the [installation guide](docs/02_Installation
 with libdeflate, ISA-L, and jemalloc enabled. Both versions ran the GangSTR
 hg38 v13 whole-genome catalog in streaming mode at `--threads 16`, one arm at
 a time on the same 16 logical CPUs (8 cores with SMT) of each of the eight AMD
-EPYC 9634 machines used for the v5 comparison. The eight public SRA/ENA samples
-comprised four 30× controls and four high-coverage patient samples. Every
-pair matched VCF and JSON bytes, BAM headers, and decoded BAM record multisets.
+EPYC 9634 machines used for the v5 comparison. The v1.1.0 arm ran first in
+every pair. The eight public SRA/ENA samples comprised four 30× controls and
+four high-coverage patient samples. Every pair matched VCF and JSON bytes,
+BAM headers, and decoded BAM record multisets.
 
 Speedup is v1.0.0 wall time divided by v1.1.0 wall time. The geometric mean
 was 1.367× across the eight samples (range 1.255–1.452×). Peak RSS remained
