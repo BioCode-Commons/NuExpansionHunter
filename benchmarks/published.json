@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "NuExpansionHunter",
-  "evidence_url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/19a02eecb425f1aabd03163bbf28361e1fe6a9fc/docs/08_Benchmark.md",
+  "evidence_url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/9f96536612f73eeadafb17539e7fff49a06c4df4/docs/08_Benchmark.md",
   "rss_unit": "GiB",
   "memory_metric": "Peak RSS",
   "rss_scope": "GNU time maximum resident set size, converted to GiB.",
@@ -190,7 +190,7 @@
     },
     {
       "text": "November 23, 2026 benchmark",
-      "url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/19a02eecb425f1aabd03163bbf28361e1fe6a9fc/docs/08_Benchmark.md"
+      "url": "https://github.com/BioCode-Commons/NuExpansionHunter/blob/9f96536612f73eeadafb17539e7fff49a06c4df4/docs/08_Benchmark.md"
     }
   ],
   "note": [
