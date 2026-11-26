@@ -12,7 +12,7 @@ NuExpansionHunter aims to estimate sizes of such repeats by performing a targete
 search through a BAM/CRAM file for reads that span, flank, and are fully
 contained in each repeat.
 
-NuExpansionHunter is a reimplementation version of Illumina ExpansionHunter v5.0.0. For every
+NuExpansionHunter is a reimplementation of Illumina ExpansionHunter v5.0.0. For every
 input on which v5.0.0 has defined behaviour, it writes the same VCF and JSON bytes
 and a realigned BAM with the same header and the same multiset of decoded records
 (record order and compression differ), with the exceptions listed in
@@ -33,9 +33,12 @@ for extensions that need dynamic programming.
 
 See the [obligation register](ehunter/verification/OBLIGATIONS.md) for the contracts and bounds.
 
-In matched whole-genome streaming runs against ExpansionHunter v5.0.0,
-v1.1.0 delivered mean speedups of **10.09–18.79×** and mean peak RSS
-reductions of **86.9–90.9%** by thread count. [Benchmark results](BENCHMARK.md)
+In matched GangSTR whole-genome streaming runs at 4–16 threads, v1.1.0 was
+**9.77–11.02× faster** by geometric mean and used **86.8–88.3% less peak RSS**
+than stock ExpansionHunter v5.0.0. At 32 threads, the stock build hit the
+172 GiB memory cap on 9 of 21 genomes. The speedup was **19.02×** on the 12
+completed pairs and **9.7–10.5×** on five genomes against v5.0.0 rebuilt with
+jemalloc and libdeflate. [Benchmark results](BENCHMARK.md)
 
 ## Quick start
 

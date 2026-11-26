@@ -99,10 +99,22 @@ buffers, batch pointer storage and compressed-block reservations, including the
 consumer's batch. One oversized batch may enter an empty sink to ensure progress.
 Worker-local packing buffers, codec scratch and bookkeeping are separate; this
 is not a process RAM limit. Producers wait when the budget is full.
-Catalog compaction releases construction storage; optional jemalloc returns
-freed catalog memory. Unmatched mates and worker scratch are released before
-genotyping, and analyzers are released as their findings are produced.
+Catalog compaction releases construction storage. Optional jemalloc returns
+freed catalog memory. Streaming releases unmatched mates and per-locus indexes
+before genotyping. Some thread-local alignment buffers can stay allocated
+until the worker exits. Analyzers are released as their findings are produced.
 
 ## Benchmarks
 
-Matched whole-genome measurements and their CPU allocation are in [BENCHMARK.md](../BENCHMARK.md).
+For whole-genome GangSTR streaming at 16 threads, NuExpansionHunter v1.1.0
+took a median of 10 minutes with 10.8 GiB median peak RSS across 23 matched
+pairs. Stock ExpansionHunter v5.0.0 took 1.8 hours with 82.3 GiB median peak
+RSS. NuExpansionHunter’s largest peak at 16 threads was 14.5 GiB.
+
+The full TRExplorer v2.1 catalog used 63.2–77.4 GiB of peak RSS at 16–32
+threads. Some runs exceeded 64 GiB. Even the lowest measured peak left less
+than 1 GiB on a 64 GiB machine for the operating system and other processes.
+Set `--threads` based on the logical CPUs and RAM available to the job.
+With limited RAM, lower `--threads` or split the catalog. [Usage](03_Usage.md#running-efficiently)
+See the [benchmark report](08_Benchmark.md) for results by catalog and thread
+count.
