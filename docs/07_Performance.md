@@ -59,7 +59,7 @@ decoded records as ExpansionHunter v5.0.0. See the
    zero to the unused low nibble of the last sequence byte; v5.0.0 leaves it
    uninitialized. Decoded records are equal.
 3. **Size limits.** An evidence row's best-alignment index above 65,535 or a
-   locus with more than 2^32 cells causes an error. v5.0.0 has neither limit.
+   locus with 2^32 or more cells causes an error. v5.0.0 has neither limit.
 4. **Graph consistency.** Freezing a catalog rejects a node whose reference
    projection length differs from its node length. Streaming always freezes
    the catalog.

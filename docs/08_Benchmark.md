@@ -142,8 +142,9 @@ and is shown to one decimal place.
   catalog cache.
 - **Run order and repeats.** The 4-thread runs alternated which tool ran first.
   The 8–32-thread pairs used archived stock measurements from November 18–20,
-  2026, taken 3–6 days before the NuExpansionHunter runs and at lower scheduling
-  priority. The CPU masks were recorded for all 56 archived baselines. Wall
+  2026, taken 3–6 days before the NuExpansionHunter runs. The archived runs used
+  a lowered scheduling priority; the priority of the main NuExpansionHunter
+  runs was not recorded. The CPU masks were recorded for all 56 archived baselines. Wall
   times differed by at most 1.05% over 12 stock repeats and 0.32% over nine
   NuExpansionHunter repeats. Each genome contributes one pair per thread count.
   Runs that hit the memory cap are excluded from speedup and RSS summaries.
@@ -174,7 +175,9 @@ faster. The ranges were 8.91–8.96× at 8 threads (two genomes), 9.14–9.22× 
 ## Output identity and HG002 agreement
 
 All 231 completed output sets in the benchmark identity series matched across 15
-groups (199 from NuExpansionHunter runs and 32 from ExpansionHunter builds).
+groups. Of these, 197 NuExpansionHunter output sets were compared with v5.0.0,
+2 were compared with another NuExpansionHunter run because no v5.0.0 run
+exists for that genome, and 32 came from ExpansionHunter builds.
 It includes repeated runs, library and SIMD variants, and BAM and CRAM input.
 The four checks compare VCF and JSON bytes, the BAM header, and the multiset
 of decoded BAM records regardless of order or compression. Illumina’s
